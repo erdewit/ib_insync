@@ -1,0 +1,189 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ib_insync.ticker &#8212; IB-insync 0.6.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">IB-insync</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=erdewit&repo=ib_insync&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Source code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../links.html">Links</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ib_insync.ticker</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="n">Object</span>
+<span class="kn">from</span> <span class="nn">ib_insync.util</span> <span class="k">import</span> <span class="n">isNan</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Ticker&#39;</span><span class="p">]</span>
+
+
+<span class="n">nan</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Ticker"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Ticker">[docs]</a><span class="k">class</span> <span class="nc">Ticker</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Current market data for a contract.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;contract&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;bid&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;bidSize&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;ask&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;askSize&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;last&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;lastSize&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;prevBid&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;prevBidSize&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;prevAsk&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;prevAskSize&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;prevLast&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;prevLastSize&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;volume&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;open&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;close&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;low13week&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;high13week&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;low26week&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;high26week&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;low52week&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;high52week&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;avVolume&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;putOpenInterest&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;callOpenInterest&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;putVolume&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;callVolume&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;futuresOpenInterest&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
+        <span class="s1">&#39;ticks&#39;</span><span class="p">:</span> <span class="kc">None</span> <span class="p">}</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="fm">__init__</span> <span class="o">=</span> <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="n">d</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isNan</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ticks</span><span class="p">:</span>
+            <span class="c1"># ticks can grow too large to display</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;ticks&#39;</span><span class="p">)</span>
+        <span class="n">clsName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{k}</span><span class="s1">=</span><span class="si">{v!r}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{clsName}</span><span class="s1">(</span><span class="si">{kwargs}</span><span class="s1">)&#39;</span>
+
+    <span class="fm">__str__</span> <span class="o">=</span> <span class="fm">__repr__</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>
+
+    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Ticker.marketPrice"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Ticker.marketPrice">[docs]</a>    <span class="k">def</span> <span class="nf">marketPrice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the first available one of</span>
+<span class="sd">        </span>
+<span class="sd">        * last price</span>
+<span class="sd">        </span>
+<span class="sd">        * average of bid and ask</span>
+<span class="sd">        </span>
+<span class="sd">        * close price</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last</span>
+        <span class="k">if</span> <span class="n">isNan</span><span class="p">(</span><span class="n">price</span><span class="p">):</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bid</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ask</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">isNan</span><span class="p">(</span><span class="n">price</span><span class="p">):</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span>
+        <span class="k">return</span> <span class="n">price</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2017, Ewald de Wit.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
