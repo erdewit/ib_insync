@@ -31,7 +31,7 @@ Requirements:
 * A running TWS or IB gateway application (version 963 or higher) with the 
   `API port enabled <https://interactivebrokers.github.io/tws-api/initial_setup.html>`_.
 
-`IB-insync home page. <https://github.com/erdewit/ib_insync/docs/html>`_
+`IB-insync home page. <http://rawgit.com/erdewit/ib_insync/master/docs/html/index.html>`_
 
 Example
 -------
@@ -56,7 +56,7 @@ This is a complete script to download historical data:
     print(bars)
 
 Be sure to take a look at the
-`example notebooks <https://github.com/erdewit/ib_insync/docs/html/notebooks.html>`_ too.
+`example notebooks <http://rawgit.com/erdewit/ib_insync/master/docs/html/notebooks.html>`_ too.
 
 Disclaimer
 ----------
