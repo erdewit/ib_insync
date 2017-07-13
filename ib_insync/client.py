@@ -67,6 +67,16 @@ class Client(EClient):
         self.apiEnd = None
         self.apiError = None
 
+    def reset(self):
+        EClient.reset(self)
+        self._data = b''
+        self._readyEvent = asyncio.Event()
+        self._reqIdSeq = 0
+        self._accounts = None
+        self._startTime = time.time()
+        self._numBytesRecv = 0
+        self._numMsgRecv = 0
+
     def run(self):
         loop = asyncio.get_event_loop()
         loop.run_forever()
@@ -91,15 +101,12 @@ class Client(EClient):
         self._reqIdSeq += 1
         return newId
 
-    def reset(self):
-        EClient.reset(self)
-        self._data = b''
-        self._readyEvent = asyncio.Event()
-        self._reqIdSeq = 0
-        self._accounts = None
-        self._startTime = time.time()
-        self._numBytesRecv = 0
-        self._numMsgRecv = 0
+    def getAccounts(self) -> [str]:
+        """
+        Get the list of account names that are under management.
+        """
+        assert self._accounts
+        return self._accounts
 
     def connect(self, host, port, clientId, timeout=2):
         """
@@ -197,7 +204,8 @@ class Client(EClient):
                     if self._accounts:
                         self._readyEvent.set()
                 elif fields[0] == b'15':
-                    _, _, self._accounts = fields
+                    _, _, acc = fields
+                    self._accounts = acc.decode().split(',')
                     if self._reqIdSeq:
                         self._readyEvent.set()
 

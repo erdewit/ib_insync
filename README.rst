@@ -68,6 +68,12 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.6.1
+^^^^^^^^^^^^^
+
+* Added UTC timezone to some timestamps
+* Fixed issue #1
+
 Version 0.6.0
 ^^^^^^^^^^^^^
 

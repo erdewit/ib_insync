@@ -333,7 +333,7 @@ class IB:
         """
         orderId = order.orderId or self.client.getReqId()
         self.client.placeOrder(orderId, contract, order)
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.timezone.utc)
         if not isinstance(order, Order):
             order = Order(**order.__dict__)
         trade = self.wrapper.trades.get(orderId)
@@ -358,7 +358,7 @@ class IB:
         Cancel the order and return the trade it belongs to.
         """
         self.client.cancelOrder(order.orderId)
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.timezone.utc)
         trade = self.wrapper.trades.get(order.orderId)
         if trade.orderStatus.status in OrderStatus.ActiveStates:
             logEntry = TradeLogEntry(now, OrderStatus.PendingCancel, '')
@@ -385,7 +385,7 @@ class IB:
         """
         This is called at startup - no need to call again.
         
-        Request account and portfolio values if the default account
+        Request account and portfolio values of the default account
         and keep updated. Returns when both account values and portfolio
         are filled.
 
@@ -697,8 +697,9 @@ class IB:
         return [self.ticker(c) for c in contracts]
 
     async def reqAccountUpdatesAsync(self,):
+        defaultAccount = self.client.getAccounts()[0]
         future = self.wrapper.startReq('accountValues')
-        self.client.reqAccountUpdates(True, '')
+        self.client.reqAccountUpdates(True, defaultAccount)
         await future
 
     async def reqAccountSummaryAsync(self):
