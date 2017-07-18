@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ticker &#8212; IB-insync 0.6.0 documentation</title>
+    <title>ib_insync.ticker &#8212; IB-insync 0.7.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.6.0',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -90,9 +90,15 @@
 
 <div class="viewcode-block" id="Ticker"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Ticker">[docs]</a><span class="k">class</span> <span class="nc">Ticker</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Current market data for a contract.</span>
+<span class="sd">    Current market data such as bid, ask, last price, etc. for a contract.</span>
+<span class="sd">            </span>
+<span class="sd">    Streaming level-1 ticks of type ``TickData`` are stored in</span>
+<span class="sd">    the ``ticks`` list.</span>
+<span class="sd">    </span>
+<span class="sd">    Streaming level-2 ticks of type ``MktDepthData`` are stored in the</span>
+<span class="sd">    ``domTicks`` list. The order book (DOM) is available as lists of</span>
+<span class="sd">    ``DOMLevel`` in ``domBids`` and ``domAsks``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;contract&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
@@ -125,7 +131,10 @@
         <span class="s1">&#39;putVolume&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
         <span class="s1">&#39;callVolume&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
         <span class="s1">&#39;futuresOpenInterest&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;ticks&#39;</span><span class="p">:</span> <span class="kc">None</span> <span class="p">}</span>
+        <span class="s1">&#39;ticks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;domBids&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;domAsks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;domTicks&#39;</span><span class="p">:</span> <span class="kc">None</span> <span class="p">}</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
     <span class="fm">__init__</span> <span class="o">=</span> <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span>
 
@@ -135,9 +144,11 @@
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="n">d</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isNan</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
                 <span class="n">attrs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ticks</span><span class="p">:</span>
-            <span class="c1"># ticks can grow too large to display</span>
-            <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;ticks&#39;</span><span class="p">)</span>
+        <span class="c1"># ticks can grow too large to display</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;ticks&#39;</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;domTicks&#39;</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;domBids&#39;</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;domAsks&#39;</span><span class="p">)</span>
         <span class="n">clsName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{k}</span><span class="s1">=</span><span class="si">{v!r}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{clsName}</span><span class="s1">(</span><span class="si">{kwargs}</span><span class="s1">)&#39;</span>
@@ -155,9 +166,7 @@
 <span class="sd">        Return the first available one of</span>
 <span class="sd">        </span>
 <span class="sd">        * last price</span>
-<span class="sd">        </span>
 <span class="sd">        * average of bid and ask</span>
-<span class="sd">        </span>
 <span class="sd">        * close price</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last</span>

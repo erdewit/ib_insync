@@ -14,12 +14,14 @@ __all__ = (
     'ComboLeg UnderComp OrderComboLeg OrderState OrderStatus '
     'ScannerSubscription SoftDollarTier '
     'Execution CommissionReport ExecutionFilter '
-    'BarData RealTimeBar HistogramData NewsProvider '
-    'AccountValue RealTimeBar TickData BracketOrder '
-    'Trade TradeLogEntry ScanData TagValue '
+    'BarData RealTimeBar HistogramData '
+    'NewsProvider DepthMktDataDescription '
+    'AccountValue RealTimeBar TickData MktDepthData BracketOrder '
+    'DOMLevel Trade TradeLogEntry ScanData TagValue '
     'PortfolioItem Position Fill '
     'OptionComputation OptionChain '
-    'NewsArticle HistoricalNews NewsTick ConnectionStats '
+    'NewsArticle HistoricalNews NewsTick NewsBulletin '
+    'ConnectionStats '
     ).split()
 
 
@@ -28,11 +30,8 @@ class Object:
     Base object, with:
     
     * __slots__ set to avoid typos;
-    
     * A general constructor;
-    
     * A general string representation;
-    
     * A default equality testing that compares attributes.
     """
     __slots__ = ()
@@ -205,12 +204,45 @@ class NewsProvider(Object):
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 
+class DepthMktDataDescription(Object):
+    defaults = ibapi.common.DepthMktDataDescription().__dict__
+    __slots__ = defaults.keys()
+    __init__ = Object.__init__
+
+
+class Trade(namedtuple('Trade', 'contract order orderStatus fills log')):
+    __slots__ = ()
+
+    def isActive(self):
+        """
+        Is this an ongoing trade?
+        """
+        return self.orderStatus.status in OrderStatus.ActiveStates
+
+    def filled(self):
+        """
+        Number of shares filled.
+        """
+        return sum(f.execution.shares for f in self.fills)
+
+    def remaining(self):
+        """
+        Number of share remaining to be filled.
+        """
+        return self.order.totalQuantity - self.filled()
+
 
 AccountValue = namedtuple('AccountValue',
     'account tag value currency')
 
 TickData = namedtuple('TickData',
     'time tickType price size')
+
+MktDepthData = namedtuple('MktDepthData',
+    'time position marketMaker operation side price size')
+
+DOMLevel = namedtuple('DOMLevel',
+    'price size marketMaker')
 
 BracketOrder = namedtuple('BracketOrder',
     'parent takeProfit stopLoss')
@@ -231,9 +263,6 @@ PortfolioItem = namedtuple('PortfolioItem', (
 Position = namedtuple('Position',
     'account contract position avgCost')
 
-Trade = namedtuple('Trade',
-    'contract order orderStatus fills log')
-
 Fill = namedtuple('Fill',
     'contract execution commissionReport time')
 
@@ -251,6 +280,9 @@ HistoricalNews = namedtuple('HistoricalNews',
 
 NewsTick = namedtuple('NewsTick',
     'timeStamp providerCode articleId headline extraData')
+
+NewsBulletin = namedtuple('NewsBulletin',
+    'msgId msgType message origExchange')
 
 ConnectionStats = namedtuple('ConnectionStats',
     'startTime duration numBytesRecv numBytesSent numMsgRecv numMsgSent')

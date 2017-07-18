@@ -126,6 +126,9 @@ class Forex(Contract):
 
     __str__ = __repr__
 
+    def pair(self):
+        return self.symbol + self.currency
+
 
 class Index(Contract):
     __slots__ = ()

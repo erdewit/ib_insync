@@ -204,8 +204,8 @@ class Client(EClient):
                     if self._accounts:
                         self._readyEvent.set()
                 elif fields[0] == b'15':
-                    _, _, acc = fields
-                    self._accounts = acc.decode().split(',')
+                    _, _, accts = fields
+                    self._accounts = accts.decode().split(',')
                     if self._reqIdSeq:
                         self._readyEvent.set()
 

@@ -42,7 +42,7 @@ class IB:
 
     While some of the request methods are blocking from the perspective
     of the user, the framework will still keep spinning in the background
-    and handle all messages received from TWS/IBG. It is import to
+    and handle all messages received from TWS/IBG. It is important to
     not block the framework from doing its work. If, for example,
     the user code spends much time in a calculation, or uses time.sleep()
     with a long delay, the framework will stop spinning, messages
@@ -57,7 +57,7 @@ class IB:
     request takes to finish.
 
     So what is "too long"? That depends on the situation. If, for example,
-    the timestamp of tick data is to remain accurate within a milisecond,
+    the timestamp of tick data is to remain accurate within a millisecond,
     then the user code must not spend longer than a milisecond. If, on
     the other extreme, there is very little incoming data and there
     is no desire for accurate timestamps, then the user code can block
@@ -140,7 +140,7 @@ class IB:
         """
         List of account names.
         """
-        return self.wrapper.accounts
+        return list(self.wrapper.accounts)
 
     def accountValues(self) -> [AccountValue]:
         """
@@ -226,28 +226,26 @@ class IB:
         """
         Get ticker of the given contract. It must have been requested before
         with reqMktData with the same contract object. The ticker may not be
-        ready yet if called directly after reqMktData.
-        
-        The returned ticker stores all received TickData in
-        its ``ticks`` attribute.
+        ready yet if called directly after :py:meth:`.reqMktData`.
         """
-        return self.wrapper.getTicker(contract)
+        return self.wrapper.tickers.get(id(contract))
 
     def tickers(self) -> [Ticker]:
         """
         Get a list of all tickers.
         """
-        return self.wrapper.getTickers()
+        return list(self.wrapper.tickers.values())
 
     def pendingTickers(self) -> [Ticker]:
         """
-        Get a list of all tickers that have pending ticks.
+        Get a list of all tickers that have pending ticks or domTicks.
         """
-        return self.wrapper.getPendingTickers()
+        return list(self.wrapper.pendingTickers)
 
     def clearPendingTickers(self):
         """
-        Clear both the list of pending tickers and their pending ticks.
+        Clear both the list of pending tickers and their pending ticks
+        and domTicks.
         """
         self.wrapper.clearPendingTickers()
 
@@ -257,6 +255,12 @@ class IB:
         The article itself can be retrieved with :py:meth:`.reqNewsArticle`.
         """
         return self.wrapper.newsTicks
+
+    def newsBulletins(self) -> [NewsBulletin]:
+        """
+        List of IB news bulletins.
+        """
+        return list(self.wrapper.newsBulletins.values())
 
     def reqTickers(self, *contracts: [Contract],
             regulatorySnapshot: bool=False) -> [Ticker]:
@@ -350,6 +354,7 @@ class IB:
             logEntry = TradeLogEntry(now, orderStatus.status, '')
             trade = Trade(contract, order, orderStatus, [], [logEntry])
             self.wrapper.trades[orderId] = trade
+        _logger.info(f'placeOrder: {trade}')
         return trade
 
     @api
@@ -363,6 +368,7 @@ class IB:
         if trade.orderStatus.status in OrderStatus.ActiveStates:
             logEntry = TradeLogEntry(now, OrderStatus.PendingCancel, '')
             trade.log.append(logEntry)
+        _logger.info(f'cancelOrder: {trade}')
         return trade
 
     @api
@@ -372,13 +378,7 @@ class IB:
         clients or TWS/IB gateway.
         """
         self.client.reqGlobalCancel()
-
-    @api
-    def cancelPositions(self) -> None:
-        """
-        Liquidate all positions.
-        """
-        self.client.cancelPositions()
+        _logger.info(f'reqGlobalCancel')
 
     @api
     def reqAccountUpdates(self) -> None:
@@ -482,7 +482,7 @@ class IB:
         or it can be given as a string in 'yyyyMMdd HH:mm:ss' format.
         
         If formatDate=2 is used for an intraday request the returned date
-        field will be a timezone aware datetime.datetime with UTC timezone.
+        field will be a timezone-aware datetime.datetime with UTC timezone.
         
         This method is blocking.
 
@@ -491,33 +491,6 @@ class IB:
         return self.run(self.reqHistoricalDataAsync(contract, endDateTime,
                 durationStr, barSizeSetting, whatToShow,
                 useRTH, formatDate, keepUpToDate, chartOptions))
-
-    @api
-    def reqMktData(self, contract: Contract, genericTickList: str,
-                snapshot: bool, regulatorySnapshot: bool,
-                mktDataOptions=None):
-        """
-        Subscribe to tick data or request a snapshot.
-        The results are available from the ticker() method.
-
-        https://interactivebrokers.github.io/tws-api/md_request.html
-        """
-        reqId = self.client.getReqId()
-        self.wrapper.startReqMktData(reqId, contract)
-        self.client.reqMktData(reqId, contract, genericTickList,
-                snapshot, regulatorySnapshot, mktDataOptions)
-
-    def cancelMktData(self, contract: Contract):
-        """
-        Unsubscribe tick data for the given contract.
-        The contract object must be the same as used to subscribe with.
-        """
-        reqId = self.wrapper.getTickerReqId(contract)
-        if reqId:
-            self.client.cancelMktData(reqId)
-        else:
-            _logger.error('cancelMktData: '
-                    f'No reqId found for contract {contract}')
 
     @api
     def reqMarketDataType(self, marketDataType: int):
@@ -531,6 +504,81 @@ class IB:
         https://interactivebrokers.github.io/tws-api/market_data_type.html
         """
         self.client.reqMarketDataType(marketDataType)
+
+    @api
+    def reqHeadTimeStamp(self, contract: Contract, whatToShow: str,
+            useRTH: bool, formatDate: int=1) -> datetime.datetime:
+        """
+        Get the datetime of earliest available historical data for the contract.
+        
+        If formatDate=2 then the result is returned as a
+        timezone-aware datetime.datetime with UTC timezone.
+        """
+        return self.run(self.reqHeadTimeStampAsync(contract, whatToShow,
+                useRTH, formatDate))
+
+    @api
+    def reqMktData(self, contract: Contract, genericTickList: str,
+                snapshot: bool, regulatorySnapshot: bool,
+                mktDataOptions=None) -> Ticker:
+        """
+        Subscribe to tick data or request a snapshot.
+        The results are available from the ticker() method.
+
+        https://interactivebrokers.github.io/tws-api/md_request.html
+        """
+        reqId = self.client.getReqId()
+        ticker = self.wrapper.startTicker(reqId, contract)
+        self.client.reqMktData(reqId, contract, genericTickList,
+                snapshot, regulatorySnapshot, mktDataOptions)
+        return ticker
+
+    def cancelMktData(self, contract: Contract):
+        """
+        Unsubscribe tick data for the given contract.
+        The contract object must be the same as used to subscribe with.
+        """
+        ticker = self.ticker(contract)
+        reqId = self.wrapper.ticker2MktDataReqId.pop(ticker, 0)
+        self.wrapper.reqId2Ticker.pop(reqId, 0)
+        if reqId:
+            self.client.cancelMktData(reqId)
+        else:
+            _logger.error('cancelMktData: '
+                    f'No reqId found for contract {contract}')
+
+    @api
+    def reqMktDepthExchanges(self):
+        """
+        Get those exchanges that have have multiple market makers
+        (and have ticks returned with marketMaker info). 
+        """
+        return self.run(self.reqMktDepthExchangesAsync())
+
+    @api
+    def reqMktDepth(self, contract: Contract, numRows: int=15,
+                mktDepthOptions: [TagValue]=None) -> Ticker:
+        """
+        """
+        reqId = self.client.getReqId()
+        ticker = self.wrapper.startTicker(reqId, contract, isMktDepth=True)
+        self.client.reqMktDepth(reqId, contract, numRows, mktDepthOptions)
+        return ticker
+
+    @api
+    def cancelMktDepth(self, contract: Contract):
+        """
+        Unsubscribe market depth data for the given contract.
+        The contract object must be the same as used to subscribe with.
+        """
+        ticker = self.ticker(contract)
+        reqId = self.wrapper.ticker2MktDepthReqId.pop(ticker, 0)
+        self.wrapper.reqId2Ticker.pop(reqId, 0)
+        if reqId:
+            self.client.cancelMktDepth(reqId)
+        else:
+            _logger.error('cancelMktDepth: '
+                    f'No reqId found for contract {contract}')
 
     @api
     def reqHistogramData(self, contract: Contract,
@@ -622,6 +670,16 @@ class IB:
         return self.run(self.reqSecDefOptParamsAsync(underlyingSymbol,
                 futFopExchange, underlyingSecType, underlyingConId))
 
+    @api
+    def exerciseOptions(self, contract, exerciseAction, exerciseQuantity,
+            account, override):
+        """
+        https://interactivebrokers.github.io/tws-api/option_exercising.html
+        """
+        self.wrapper.exerciseOptions(contract, exerciseAction, exerciseQuantity,
+            account, override)
+
+    @api
     def reqNewsProviders(self) -> [NewsProvider]:
         """
         Get a list of news providers.
@@ -630,21 +688,21 @@ class IB:
         """
         return self.run(self.reqNewsProvidersAsync())
 
-    def reqNewsArticle(self, providerCode: str, articleId: str,
-            newsArticleOptions: [TagValue]) -> NewsArticle:
+    @api
+    def reqNewsArticle(self, providerCode: str, articleId: str):
         """
         Get the body of a news article.
 
         This method is blocking.
-        
+
         https://interactivebrokers.github.io/tws-api/news.html
         """
-        return self.run(self.reqNewsArticleAsync(providerCode,
-                articleId, newsArticleOptions))
+        return self.run(self.reqNewsArticleAsync(providerCode, articleId))
 
+    @api
     def reqHistoricalNews(self, conId: int, providerCodes: str,
             startDateTime: str, endDateTime: str, totalResults: int,
-            historicalNewsOptions: [TagValue]) -> HistoricalNews:
+            historicalNewsOptions: [TagValue]=None) -> HistoricalNews:
         """
         Get historical news headline.
 
@@ -653,6 +711,43 @@ class IB:
         return self.run(self.reqHistoricalNewsAsync(conId, providerCodes,
                 startDateTime, endDateTime, totalResults,
                 historicalNewsOptions))
+
+    @api
+    def reqNewsBulletins(self, allMessages: bool):
+        """
+        Subscribe to IB news bulletins. If allMessages=True then fetch
+        all messages for the day.
+        """
+        self.client.reqNewsBulletins(allMessages)
+
+    @api
+    def cancelNewsBulletins(self):
+        """
+        Cancel subscribtion to IB news bulletins.
+        """
+        self.client.cancelNewsBulletins()
+
+    @api
+    def requestFA(self, faDataType: int) -> str:
+        """
+        faDataType:
+        
+        * 1 = Groups;
+        * 2 = Profiles;
+        * 3 = Account Aliases.
+
+        This method is blocking.
+        
+        https://interactivebrokers.github.io/tws-api/financial_advisor_methods_and_orders.html
+        """
+        return self.run(self.requestFAAsync(faDataType))
+
+    @api
+    def replaceFA(self, faDataType: int, xml: str):
+        """
+        https://interactivebrokers.github.io/tws-api/financial_advisor_methods_and_orders.html
+        """
+        self.wrapper.replaceFA(faDataType, xml)
 
     # now entering the parallel async universe
 
@@ -690,7 +785,7 @@ class IB:
             reqId = self.client.getReqId()
             future = self.wrapper.startReq(reqId)
             futures.append(future)
-            self.wrapper.startReqMktData(reqId, contract)
+            self.wrapper.startTicker(reqId, contract)
             self.client.reqMktData(reqId, contract, '',
                     1, regulatorySnapshot, None)
         await asyncio.gather(*futures)
@@ -752,11 +847,10 @@ class IB:
             end = ''
         elif isinstance(endDateTime, datetime.datetime):
             end = endDateTime.strftime('%Y%m%d %H:%M:%S'),
-        else:
+        elif isinstance(endDateTime, datetime.date):
             end = endDateTime.strftime('%Y%m%d 23:59:59')
-        formatDate = (formatDate if formatDate else
-                1 if barSizeSetting in ('1 day', '1 week', '1 month')
-                else 2)
+        else:
+            end = endDateTime
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqHistoricalData(reqId, contract, end,
@@ -765,11 +859,26 @@ class IB:
         await future
         return future.result()
 
+    async def reqHeadTimeStampAsync(self, contract, whatToShow,
+            useRTH, formatDate):
+        reqId = self.client.getReqId()
+        future = self.wrapper.startReq(reqId)
+        self.client.reqHeadTimeStamp(reqId, contract, whatToShow,
+            useRTH, formatDate)
+        await future
+        return future.result()
+
     async def reqMktDataAsync(self, contract, genericTickList,
                 snapshot, regulatorySnapshot, mktDataOptions):
         reqId = self.client.getReqId()
         self.client.reqMktData(self, reqId, contract,
                 genericTickList, snapshot, regulatorySnapshot, mktDataOptions)
+
+    async def reqMktDepthExchangesAsync(self):
+        future = self.wrapper.startReq('mktDepthExchanges')
+        self.client.reqMktDepthExchanges()
+        await future
+        return future.result()
 
     async def reqHistogramDataAsync(self, contract, useRTH, period):
         reqId = self.client.getReqId()
@@ -782,7 +891,7 @@ class IB:
             fundamentalDataOptions=None):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
-        self.client.reqFundamentalData(contract, reportType,
+        self.client.reqFundamentalData(reqId, contract, reportType,
                 fundamentalDataOptions)
         await future
         return future.result()
@@ -848,32 +957,47 @@ class IB:
         await future
         return future.result()
 
-    async def reqNewsArticleAsync(self, providerCode, articleId,
-            newsArticleOptions):
+    async def reqNewsArticleAsync(self, providerCode, articleId):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
-        self.client.reqNewsArticle(reqId, providerCode, articleId,
-                newsArticleOptions)
+        self.client.reqNewsArticle(reqId, providerCode, articleId)
         await future
         return future.result()
 
     async def reqHistoricalNewsAsync(self, conId, providerCodes,
             startDateTime, endDateTime, totalResults,
-            historicalNewsOptions):
+            _historicalNewsOptions=None):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
-        self.client.reqHistoricalNews(conId, providerCodes,
-            startDateTime, endDateTime, totalResults,
-            historicalNewsOptions)
-        await future
+        # API does not take historicalNewsOptions parameter
+        self.client.reqHistoricalNews(reqId, conId, providerCodes,
+            startDateTime, endDateTime, totalResults)
+        try:
+            await asyncio.wait_for(future, 4)
+            return future.result()
+        except:
+            _logger.error('reqHistoricalNewsAsync: Timeout')
+
+    async def requestFAAsync(self, faDataType):
+        future = self.wrapper.startReq('requestFA')
+        self.client.requestFA(faDataType)
+        try:
+            await asyncio.wait_for(future, 4)
+            return future.result()
+        except:
+            _logger.error('requestFAAsync: Timeout')
+            return
         return future.result()
 
 
 if __name__ == '__main__':
+#     import uvloop
+#     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     from ib_insync.contract import *
-    util.logToConsole(logging.DEBUG)
+    asyncio.get_event_loop().set_debug(True)
+    util.logToConsole(logging.INFO)
     ib = IB()
-    ib.connect('127.0.0.1', 7497, clientId=13)
+    ib.connect('127.0.0.1', 7497, clientId=20)
 
     aex = Index('EOE', 'FTA')
     eurusd = Forex('EURUSD')
@@ -913,14 +1037,6 @@ if __name__ == '__main__':
         chains = ib.reqSecDefOptParams('EOE', '', 'IND', conId)
         chain = next(c for c in chains if c.tradingClass == 'AEX')
         print(chain)
-        print
-        options = [Option('EOE', expiry, strike, right, 'FTA', multiplier=100)
-                for strike in chain.strikes
-                for expiry in chain.expirations
-                for right in ('P', 'C')]
-        print(len(options), ' options')
-        print()
-        print(options)
     if 0:
         print(ib.reqContractDetails(aapl))
         bars = ib.reqHistoricalData(
@@ -937,10 +1053,34 @@ if __name__ == '__main__':
         print(ib.reqTickers(amd, eurusd, aex))
         print(ib.ticker(tsla))
     if 0:
-        s = ib.reqNewsProviders()
-        print(s)
         m = ib.reqMatchingSymbols('Intel')
         print(m)
+    if 0:
+        print(ib.requestFA(1))
+    if 0:
+        print(ib.reqHeadTimeStamp(intc, 'TRADES', True, 1))
+    if 0:
+        print(ib.reqFundamentalData(intc, 'ReportsFinSummary'))
+    if 0:
+        newsProviders = ib.reqNewsProviders()
+        print(newsProviders)
+        codes = '+'.join(np.code for np in newsProviders)
+        ib.qualifyContracts(intc)
+        headlines = ib.reqHistoricalNews(intc.conId, codes, "", "", 10)
+        latest = headlines[0]
+        print(latest)
+        article = ib.reqNewsArticle(latest.providerCode, latest.articleId)
+        print(article)
+    if 0:
+        ib.reqNewsBulletins(True)
+        ib.sleep(5)
+        print(ib.newsBulletins())
+    if 0:
+        ticker = ib.reqMktDepth(eurusd, 5)
+        while ib.sleep(5):
+            print([d.price for d in ticker.domBids],
+                    [d.price for d in ticker.domAsks])
+
 #     ib.run()
     ib.disconnect()
 

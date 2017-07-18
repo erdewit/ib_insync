@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.objects &#8212; IB-insync 0.6.0 documentation</title>
+    <title>ib_insync.objects &#8212; IB-insync 0.7.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.6.0',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -95,12 +95,14 @@
     <span class="s1">&#39;ComboLeg UnderComp OrderComboLeg OrderState OrderStatus &#39;</span>
     <span class="s1">&#39;ScannerSubscription SoftDollarTier &#39;</span>
     <span class="s1">&#39;Execution CommissionReport ExecutionFilter &#39;</span>
-    <span class="s1">&#39;BarData RealTimeBar HistogramData NewsProvider &#39;</span>
-    <span class="s1">&#39;AccountValue RealTimeBar TickData BracketOrder &#39;</span>
-    <span class="s1">&#39;Trade TradeLogEntry ScanData TagValue &#39;</span>
+    <span class="s1">&#39;BarData RealTimeBar HistogramData &#39;</span>
+    <span class="s1">&#39;NewsProvider DepthMktDataDescription &#39;</span>
+    <span class="s1">&#39;AccountValue RealTimeBar TickData MktDepthData BracketOrder &#39;</span>
+    <span class="s1">&#39;DOMLevel Trade TradeLogEntry ScanData TagValue &#39;</span>
     <span class="s1">&#39;PortfolioItem Position Fill &#39;</span>
     <span class="s1">&#39;OptionComputation OptionChain &#39;</span>
-    <span class="s1">&#39;NewsArticle HistoricalNews NewsTick ConnectionStats &#39;</span>
+    <span class="s1">&#39;NewsArticle HistoricalNews NewsTick NewsBulletin &#39;</span>
+    <span class="s1">&#39;ConnectionStats &#39;</span>
     <span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
 
@@ -109,11 +111,8 @@
 <span class="sd">    Base object, with:</span>
 <span class="sd">    </span>
 <span class="sd">    * __slots__ set to avoid typos;</span>
-<span class="sd">    </span>
 <span class="sd">    * A general constructor;</span>
-<span class="sd">    </span>
 <span class="sd">    * A general string representation;</span>
-<span class="sd">    </span>
 <span class="sd">    * A default equality testing that compares attributes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
@@ -286,12 +285,45 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
     <span class="fm">__init__</span> <span class="o">=</span> <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span></div>
 
+<div class="viewcode-block" id="DepthMktDataDescription"><a class="viewcode-back" href="../../api.html#ib_insync.objects.DepthMktDataDescription">[docs]</a><span class="k">class</span> <span class="nc">DepthMktDataDescription</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">DepthMktDataDescription</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="fm">__init__</span> <span class="o">=</span> <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span></div>
+
+
+<div class="viewcode-block" id="Trade"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Trade">[docs]</a><span class="k">class</span> <span class="nc">Trade</span><span class="p">(</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Trade&#39;</span><span class="p">,</span> <span class="s1">&#39;contract order orderStatus fills log&#39;</span><span class="p">)):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="Trade.isActive"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Trade.isActive">[docs]</a>    <span class="k">def</span> <span class="nf">isActive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Is this an ongoing trade?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">ActiveStates</span></div>
+
+<div class="viewcode-block" id="Trade.filled"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Trade.filled">[docs]</a>    <span class="k">def</span> <span class="nf">filled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Number of shares filled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">shares</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fills</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Trade.remaining"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Trade.remaining">[docs]</a>    <span class="k">def</span> <span class="nf">remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Number of share remaining to be filled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">totalQuantity</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">filled</span><span class="p">()</span></div></div>
+
 
 <span class="n">AccountValue</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;AccountValue&#39;</span><span class="p">,</span>
     <span class="s1">&#39;account tag value currency&#39;</span><span class="p">)</span>
 
 <span class="n">TickData</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;TickData&#39;</span><span class="p">,</span>
     <span class="s1">&#39;time tickType price size&#39;</span><span class="p">)</span>
+
+<span class="n">MktDepthData</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;MktDepthData&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;time position marketMaker operation side price size&#39;</span><span class="p">)</span>
+
+<span class="n">DOMLevel</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;DOMLevel&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;price size marketMaker&#39;</span><span class="p">)</span>
 
 <span class="n">BracketOrder</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;BracketOrder&#39;</span><span class="p">,</span>
     <span class="s1">&#39;parent takeProfit stopLoss&#39;</span><span class="p">)</span>
@@ -312,9 +344,6 @@
 <span class="n">Position</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Position&#39;</span><span class="p">,</span>
     <span class="s1">&#39;account contract position avgCost&#39;</span><span class="p">)</span>
 
-<span class="n">Trade</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Trade&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;contract order orderStatus fills log&#39;</span><span class="p">)</span>
-
 <span class="n">Fill</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Fill&#39;</span><span class="p">,</span>
     <span class="s1">&#39;contract execution commissionReport time&#39;</span><span class="p">)</span>
 
@@ -332,6 +361,9 @@
 
 <span class="n">NewsTick</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;NewsTick&#39;</span><span class="p">,</span>
     <span class="s1">&#39;timeStamp providerCode articleId headline extraData&#39;</span><span class="p">)</span>
+
+<span class="n">NewsBulletin</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;NewsBulletin&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;msgId msgType message origExchange&#39;</span><span class="p">)</span>
 
 <span class="n">ConnectionStats</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;ConnectionStats&#39;</span><span class="p">,</span>
     <span class="s1">&#39;startTime duration numBytesRecv numBytesSent numMsgRecv numMsgSent&#39;</span><span class="p">)</span>

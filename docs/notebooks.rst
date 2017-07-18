@@ -15,6 +15,7 @@ Here are some recipe notebooks:
    Option chain <https://github.com/erdewit/ib_insync/tree/master/notebooks/option_chain.ipynb>
    Historical data <https://github.com/erdewit/ib_insync/tree/master/notebooks/historical_data.ipynb>
    Live data <https://github.com/erdewit/ib_insync/tree/master/notebooks/live_data.ipynb>
+   Market depth <https://github.com/erdewit/ib_insync/tree/master/notebooks/market_depth.ipynb>
    Ordering <https://github.com/erdewit/ib_insync/tree/master/notebooks/ordering.ipynb>
 
 Jupyter can be started with the command ``jupyter notebook``.

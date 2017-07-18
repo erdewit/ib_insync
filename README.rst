@@ -68,6 +68,13 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.7.0
+^^^^^^^^^^^^^
+
+* added lots of request methods
+* order book (DOM) added
+* notebooks updated
+
 Version 0.6.1
 ^^^^^^^^^^^^^
 
@@ -84,10 +91,7 @@ Good luck and enjoy,
 
 :author: Ewald de Wit <ewald.de.wit@gmail.com>
 
-.. _asyncio: https://docs.python.org/3.6/library/asyncio.html
-.. _PyQt5: https://pypi.python.org/pypi/PyQt5
 .. _Python: http://www.python.org
 .. _`Interactive Brokers Python API`: http://interactivebrokers.github.io
-.. _`notebook examples`: https://github.com/erdewit/ib_insync/blob/master/notebooks
 
 

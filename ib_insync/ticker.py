@@ -9,9 +9,15 @@ nan = float('nan')
 
 class Ticker(Object):
     """
-    Current market data for a contract.
+    Current market data such as bid, ask, last price, etc. for a contract.
+            
+    Streaming level-1 ticks of type ``TickData`` are stored in
+    the ``ticks`` list.
+    
+    Streaming level-2 ticks of type ``MktDepthData`` are stored in the
+    ``domTicks`` list. The order book (DOM) is available as lists of
+    ``DOMLevel`` in ``domBids`` and ``domAsks``.
     """
-
     defaults = {
         'contract': None,
         'time': nan,
@@ -44,7 +50,10 @@ class Ticker(Object):
         'putVolume': nan,
         'callVolume': nan,
         'futuresOpenInterest': nan,
-        'ticks': None }
+        'ticks': None,
+        'domBids': None,
+        'domAsks': None,
+        'domTicks': None }
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 
@@ -54,9 +63,11 @@ class Ticker(Object):
             v = getattr(self, k)
             if v != d and not isNan(v):
                 attrs[k] = v
-        if self.ticks:
-            # ticks can grow too large to display
-            attrs.pop('ticks')
+        # ticks can grow too large to display
+        attrs.pop('ticks')
+        attrs.pop('domTicks')
+        attrs.pop('domBids')
+        attrs.pop('domAsks')
         clsName = self.__class__.__name__
         kwargs = ', '.join(f'{k}={v!r}' for k, v in attrs.items())
         return f'{clsName}({kwargs})'
@@ -74,9 +85,7 @@ class Ticker(Object):
         Return the first available one of
         
         * last price
-        
         * average of bid and ask
-        
         * close price
         """
         price = self.last
