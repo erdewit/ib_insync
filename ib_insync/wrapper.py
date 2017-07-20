@@ -458,7 +458,7 @@ class Wrapper(EWrapper):
         # side: 0 = ask, 1 = bid
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
-            _logger.error(f'tickSize: Unknown reqId: {reqId}')
+            _logger.error(f'updateMktDepthL2: Unknown reqId: {reqId}')
             return
         ticker.time = self.lastTime
 

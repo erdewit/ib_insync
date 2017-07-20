@@ -140,6 +140,65 @@ class timeit:
         print(self.title + ' took ' + formatSI(time.time() - self.t0) + 's')
 
 
+def _candlestick(ax, quotes, width=0.2, colorup='k', colordown='r',
+                 alpha=1.0):
+    # https://github.com/matplotlib/mpl_finance/blob/master/mpl_finance.py
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Rectangle
+
+    OFFSET = width / 2.0
+
+    for q in quotes:
+        t, open, high, low, close = q[:5]
+
+        if close >= open:
+            color = colorup
+            lower = open
+            height = close - open
+        else:
+            color = colordown
+            lower = close
+            height = open - close
+
+        vline = Line2D(
+            xdata=(t, t), ydata=(low, high),
+            color=color,
+            linewidth=0.5,
+            antialiased=True,
+        )
+
+        rect = Rectangle(
+            xy=(t - OFFSET, lower),
+            width=width,
+            height=height,
+            facecolor=color,
+            edgecolor=color,
+        )
+        rect.set_alpha(alpha)
+
+        ax.add_line(vline)
+        ax.add_patch(rect)
+    ax.autoscale_view()
+
+
+if 0:
+    def loop_asyncio_orig(kernel):
+        '''Start a kernel with asyncio event loop support.'''
+        loop = asyncio.get_event_loop()
+
+        def kernel_handler():
+            loop.call_soon(kernel.do_one_iteration)
+            loop.call_later(kernel._poll_interval, kernel_handler)
+
+        loop.call_soon(kernel_handler)
+        try:
+            if not loop.is_running():
+                loop.run_forever()
+        finally:
+            loop.run_until_complete(loop.shutdown_asyncgens())
+            loop.close()
+
+
 def useQt():
     """
     Let the Qt event loop spin the asycio event loop.

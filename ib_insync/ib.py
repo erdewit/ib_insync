@@ -114,7 +114,7 @@ class IB:
         """
         loop = asyncio.get_event_loop()
         if not awaitables:
-            self.client.run()
+            loop.run_forever()
         elif len(awaitables) == 1:
             return loop.run_until_complete(*awaitables)
         else:
@@ -492,6 +492,21 @@ class IB:
                 durationStr, barSizeSetting, whatToShow,
                 useRTH, formatDate, keepUpToDate, chartOptions))
 
+    def reqDailyBars(self, contract: Contract, year: int,
+            whatToShow=None, useRTH=True) -> [BarData]:
+        """
+        Convenience method to return the daily bars for one year.
+
+        This method is blocking.
+        """
+        dt = datetime.datetime(year, 12, 31, 23, 59, 59)
+        if not whatToShow:
+            whatToShow = 'MIDPOINT' if isinstance(contract, Forex) else 'TRADES'
+        bars = ib.reqHistoricalData(contract, dt, '365 D',
+                '1 day', whatToShow, useRTH)
+        bars = [b for b in bars if b.date.year == year]
+        return bars
+
     @api
     def reqMarketDataType(self, marketDataType: int):
         """
@@ -842,7 +857,7 @@ class IB:
 
     async def reqHistoricalDataAsync(self, contract, endDateTime,
             durationStr, barSizeSetting, whatToShow, useRTH,
-            formatDate=0, keepUpToDate=False, chartOptions=None):
+            formatDate=1, keepUpToDate=False, chartOptions=None):
         if not endDateTime:
             end = ''
         elif isinstance(endDateTime, datetime.datetime):

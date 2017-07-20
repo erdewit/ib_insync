@@ -72,6 +72,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.7.2
+^^^^^^^^^^^^^
+
+* Removed import from ipykernel 
+
 Version 0.7.1
 ^^^^^^^^^^^^^
 
