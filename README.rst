@@ -30,6 +30,10 @@ Requirements:
 * The `Interactive Brokers Python API`_ version 9.73.03 or higher;
 * A running TWS or IB gateway application (version 963 or higher) with the 
   `API port enabled <https://interactivebrokers.github.io/tws-api/initial_setup.html>`_.
+  
+To install packages needed for the notebooks::
+
+    pip3 install -U PyQt5 quamash jupyter numpy pandas
 
 `IB-insync home page. <http://rawgit.com/erdewit/ib_insync/master/docs/html/index.html>`_
 
@@ -67,6 +71,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 
 Changelog
 ---------
+
+Version 0.7.1
+^^^^^^^^^^^^^
+
+* Removed dependencies for installing via pip
 
 Version 0.7.0
 ^^^^^^^^^^^^^

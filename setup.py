@@ -12,7 +12,7 @@ with codecs.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='ib_insync',
-    version='0.7.0',
+    version='0.7.1',
     description=('Make it easy to use the Interactive Brokers Python API'),
     long_description=long_description,
     url='https://github.com/erdewit/ib_insync',
@@ -29,6 +29,5 @@ setup(
     ],
     keywords='ibapi asyncio qt pyqt pyqt5 jupyter interactive brokers async',
     packages=['ib_insync'],
-    install_requires=['PyQt5', 'quamash', 'jupyter', 'numpy',
-            'pandas', 'seaborn'],
+#     install_requires=['PyQt5', 'quamash', 'jupyter', 'numpy', 'pandas'],
 )
