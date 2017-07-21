@@ -1,3 +1,5 @@
+|Gitter| |PyVersion| |Status| |PyPiVersion| |License|
+
 Introduction
 ============
 
@@ -62,6 +64,11 @@ This is a complete script to download historical data:
 Be sure to take a look at the
 `example notebooks <http://rawgit.com/erdewit/ib_insync/master/docs/html/notebooks.html>`_ too.
 
+Discussion
+----------
+
+`Gitter chat room. <https://gitter.im/ib_insync>`_
+
 Disclaimer
 ----------
 
@@ -108,4 +115,21 @@ Good luck and enjoy,
 .. _Python: http://www.python.org
 .. _`Interactive Brokers Python API`: http://interactivebrokers.github.io
 
+.. |Gitter| image:: https://img.shields.io/badge/GITTER-join%20chat-brightgreen.svg
+   :alt: Join the Gitter chat
+   :target: https://gitter.im/ib_insync
+
+.. |PyPiVersion| image:: https://img.shields.io/pypi/v/ib_insync.svg
+   :alt: PyPi
+   :target: https://pypi.python.org/pypi/ib_insync
+
+.. |PyVersion| image:: https://img.shields.io/badge/python-3.6+-blue.svg
+   :alt:
+
+.. |Status| image:: https://img.shields.io/badge/status-beta-green.svg
+   :alt:
+
+.. |License| image:: https://img.shields.io/badge/license-BSD-blue.svg
+   :alt:
+   
 
