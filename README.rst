@@ -117,7 +117,7 @@ Good luck and enjoy,
 
 .. |Group| image:: https://img.shields.io/badge/groups.io-insync-green.svg
    :alt: Join the user group
-   :target: https://groups.io/g/gginsync
+   :target: https://groups.io/g/insync
 
 .. |PyPiVersion| image:: https://img.shields.io/pypi/v/ib_insync.svg
    :alt: PyPi
