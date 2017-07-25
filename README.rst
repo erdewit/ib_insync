@@ -1,4 +1,4 @@
-|Gitter| |PyVersion| |Status| |PyPiVersion| |License|
+|Group| |PyVersion| |Status| |PyPiVersion| |License|
 
 Introduction
 ============
@@ -67,7 +67,7 @@ Be sure to take a look at the
 Discussion
 ----------
 
-`Gitter chat room. <https://gitter.im/ib_insync>`_
+`User group <https://groups.io/g/insync>`_
 
 Disclaimer
 ----------
@@ -115,9 +115,9 @@ Good luck and enjoy,
 .. _Python: http://www.python.org
 .. _`Interactive Brokers Python API`: http://interactivebrokers.github.io
 
-.. |Gitter| image:: https://img.shields.io/badge/GITTER-join%20chat-brightgreen.svg
-   :alt: Join the Gitter chat
-   :target: https://gitter.im/ib_insync
+.. |Group| image:: https://img.shields.io/badge/groups.io-insync-green.svg
+   :alt: Join the user group
+   :target: https://groups.io/g/gginsync
 
 .. |PyPiVersion| image:: https://img.shields.io/pypi/v/ib_insync.svg
    :alt: PyPi
