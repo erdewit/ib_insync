@@ -67,7 +67,8 @@ Be sure to take a look at the
 Discussion
 ----------
 
-`User group <https://groups.io/g/insync>`_
+The `insync user group <https://groups.io/g/insync>`_ is the place to discuss
+IB-insync and anything related to it.
 
 Disclaimer
 ----------
