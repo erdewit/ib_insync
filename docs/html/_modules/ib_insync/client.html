@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.client &#8212; IB-insync 0.7.2 documentation</title>
+    <title>ib_insync.client &#8212; IB-insync 0.7.3 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.2',
+        VERSION:     '0.7.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -21,7 +21,6 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -112,7 +111,7 @@
 <span class="sd">    </span>
 <span class="sd">    * ``client.connect()`` will block until the client is ready to</span>
 <span class="sd">      serve requests; It is not necessary to wait for ``nextValidId``</span>
-<span class="sd">      to start requests as the client has done already done that.</span>
+<span class="sd">      to start requests as the client has already done that.</span>
 <span class="sd">      The reqId is directly available  with :py:meth:`.getReqId()`.</span>
 <span class="sd">      </span>
 <span class="sd">    * ``client.connectAsync()`` is a coroutine for connecting asynchronously.</span>
@@ -120,13 +119,15 @@
 <span class="sd">    * When blocking, ``client.connect()`` can be made to time out with</span>
 <span class="sd">      the timeout parameter (default 2 seconds).</span>
 <span class="sd">      </span>
-<span class="sd">    * ``wrapper.tcpDataArrived()`` hook; If the wrapper has this method</span>
-<span class="sd">      it is invoked directly after a network packet has arrived.</span>
+<span class="sd">    * Optional ``wrapper.tcpDataArrived()`` method;</span>
+<span class="sd">      If the wrapper has this method it is invoked directly after</span>
+<span class="sd">      a network packet has arrived.</span>
 <span class="sd">      A possible use is to timestamp all data in the packet with</span>
 <span class="sd">      the exact same time.</span>
 <span class="sd">      </span>
-<span class="sd">    * ``wrapper.tcpDataProcessed()`` hook; If the wrapper has this method</span>
-<span class="sd">      it is invoked after the network packet&#39;s data has been handled.</span>
+<span class="sd">    * Optional ``wrapper.tcpDataProcessed()`` method;</span>
+<span class="sd">      If the wrapper has this method it is invoked after the</span>
+<span class="sd">      network packet&#39;s data has been handled.</span>
 <span class="sd">      A possible use is to write or evaluate the newly arrived data in</span>
 <span class="sd">      one batch instead of item by item.</span>
 <span class="sd">      </span>
@@ -162,11 +163,17 @@
         <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
         <span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="Client.isReady"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.isReady">[docs]</a>    <span class="k">def</span> <span class="nf">isReady</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Is the API connection up and running?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span><span class="o">.</span><span class="n">is_set</span><span class="p">()</span></div>
+
 <div class="viewcode-block" id="Client.connectionStats"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connectionStats">[docs]</a>    <span class="k">def</span> <span class="nf">connectionStats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConnectionStats</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get statistics about the connection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">(),</span> <span class="s1">&#39;Not connected&#39;</span>
         <span class="k">return</span> <span class="n">ConnectionStats</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span><span class="p">,</span>
                 <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span><span class="p">,</span>
@@ -177,7 +184,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get new request ID.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">(),</span> <span class="s1">&#39;Not connected&#39;</span>
         <span class="n">newId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">newId</span></div>
@@ -186,6 +193,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the list of account names that are under management.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">(),</span> <span class="s1">&#39;Not connected&#39;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accounts</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accounts</span></div>
 
@@ -220,11 +228,15 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;API connection failed: </span><span class="si">{e!r}</span><span class="s1">&#39;</span>
-            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="ne">ConnectionRefusedError</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Make sure API port on TWS/IBG is open&#39;</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">raise</span></div>
 
     <span class="k">def</span> <span class="nf">_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
@@ -298,10 +310,13 @@
 
     <span class="k">def</span> <span class="nf">_onSocketDisconnected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isConnected</span><span class="p">():</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Peer closed connection&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;Peer closed connection&#39;</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;clientId </span><span class="si">{self.clientId}</span><span class="s1"> already in use?&#39;</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Disconnected&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>

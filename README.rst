@@ -80,6 +80,12 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.7.3
+^^^^^^^^^^^^^
+
+* IB.whatIfOrder() added
+* Added detection and warning about common setup problems
+
 Version 0.7.2
 ^^^^^^^^^^^^^
 

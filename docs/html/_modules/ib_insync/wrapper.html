@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.wrapper &#8212; IB-insync 0.7.2 documentation</title>
+    <title>ib_insync.wrapper &#8212; IB-insync 0.7.3 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.2',
+        VERSION:     '0.7.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -21,7 +21,6 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -170,7 +169,7 @@
 <div class="viewcode-block" id="Wrapper.clearPendingTickers"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.clearPendingTickers">[docs]</a>    <span class="k">def</span> <span class="nf">clearPendingTickers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clear both the list of pending tickers and their pending</span>
-<span class="sd">        level-1 and level-2 ticks.</span>
+<span class="sd">        ticks and domTicks.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="p">[:]</span>
@@ -180,22 +179,11 @@
                 <span class="k">del</span> <span class="n">ticker</span><span class="o">.</span><span class="n">domAsks</span><span class="p">[:]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_registerCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eventName</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Invoke callback after an event. Events::</span>
-<span class="sd">        </span>
-<span class="sd">            * orderStatus(Trade)</span>
-<span class="sd">            * execDetails(Trade, Fill)</span>
-<span class="sd">            * commissionReport(Trade, Fill, CommissionReport)</span>
-<span class="sd">            * updatePortfolio(PortfolioItem)</span>
-<span class="sd">            * position(Position)</span>
-<span class="sd">            * tickNews(NewsTick)</span>
-<span class="sd">            </span>
-<span class="sd">        Unregistering is done by setting the callback to None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">[</span><span class="n">eventName</span><span class="p">]</span> <span class="o">=</span> <span class="n">callback</span>
+<div class="viewcode-block" id="Wrapper.setCallback"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.setCallback">[docs]</a>    <span class="k">def</span> <span class="nf">setCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eventName</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">[</span><span class="n">eventName</span><span class="p">]</span> <span class="o">=</span> <span class="n">callback</span></div>
 
     <span class="k">def</span> <span class="nf">_handleEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eventName</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="c1"># invoke optional callback</span>
         <span class="n">cb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">eventName</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cb</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -261,14 +249,22 @@
 
 <div class="viewcode-block" id="Wrapper.openOrder"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.openOrder">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">openOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">orderState</span><span class="p">):</span>
-        <span class="n">contract</span> <span class="o">=</span> <span class="n">Contract</span><span class="p">(</span><span class="o">**</span><span class="n">contract</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="p">(</span><span class="o">**</span><span class="n">order</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
-        <span class="n">orderStatus</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">orderState</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
-        <span class="n">trade</span> <span class="o">=</span> <span class="n">Trade</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">orderStatus</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s1">&#39;openOrders&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">clientId</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span> <span class="ow">and</span> <span class="n">orderId</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">[</span><span class="n">orderId</span><span class="p">]</span> <span class="o">=</span> <span class="n">trade</span>
-            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;openOrder: </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">whatIf</span><span class="p">:</span>
+            <span class="c1"># response to whatIfOrder</span>
+            <span class="n">orderState</span> <span class="o">=</span> <span class="n">OrderState</span><span class="p">(</span><span class="o">**</span><span class="n">orderState</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">orderId</span><span class="p">,</span> <span class="n">orderState</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">contract</span> <span class="o">=</span> <span class="n">Contract</span><span class="p">(</span><span class="o">**</span><span class="n">contract</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="p">(</span><span class="o">**</span><span class="n">order</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+            <span class="n">orderStatus</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">orderState</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">softDollarTier</span><span class="p">:</span>
+                <span class="n">order</span><span class="o">.</span><span class="n">softDollarTier</span> <span class="o">=</span> <span class="n">SoftDollarTier</span><span class="p">(</span>
+                        <span class="o">**</span><span class="n">order</span><span class="o">.</span><span class="n">softDollarTier</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+            <span class="n">trade</span> <span class="o">=</span> <span class="n">Trade</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">orderStatus</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s1">&#39;openOrders&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">clientId</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span> <span class="ow">and</span> <span class="n">orderId</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">[</span><span class="n">orderId</span><span class="p">]</span> <span class="o">=</span> <span class="n">trade</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;openOrder: </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.openOrderEnd"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.openOrderEnd">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">openOrderEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -315,7 +311,7 @@
                 <span class="n">trade</span><span class="o">.</span><span class="n">fills</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">Filled</span><span class="p">:</span>
                     <span class="c1"># orderStatus might not have set status to Filled</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">trade</span><span class="o">.</span><span class="n">remaining</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">remaining</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">Filled</span>
                 <span class="n">logEntry</span> <span class="o">=</span> <span class="n">TradeLogEntry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span>
                         <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
@@ -443,9 +439,10 @@
             <span class="n">ticker</span><span class="o">.</span><span class="n">high52week</span> <span class="o">=</span> <span class="n">price</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">21</span><span class="p">:</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">avVolume</span> <span class="o">=</span> <span class="n">price</span>
-        <span class="n">tick</span> <span class="o">=</span> <span class="n">TickData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">price</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">tick</span> <span class="o">=</span> <span class="n">TickData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.tickSize"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.tickSize">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">tickSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
@@ -476,9 +473,10 @@
             <span class="n">ticker</span><span class="o">.</span><span class="n">putVolume</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">86</span><span class="p">:</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">futuresOpenInterest</span> <span class="o">=</span> <span class="n">size</span>
-        <span class="n">tick</span> <span class="o">=</span> <span class="n">TickData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">ticker</span><span class="o">.</span><span class="n">last</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
-        <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">tick</span> <span class="o">=</span> <span class="n">TickData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">ticker</span><span class="o">.</span><span class="n">last</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+            <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.tickSnapshotEnd"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.tickSnapshotEnd">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">tickSnapshotEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
@@ -700,7 +698,8 @@
 <div class="viewcode-block" id="Wrapper.tcpDataProcessed"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.tcpDataProcessed">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">tcpDataProcessed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;updated&#39;</span><span class="p">)</span></div></div>
 
 </pre></div>
 

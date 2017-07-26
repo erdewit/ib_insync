@@ -153,10 +153,12 @@ class OrderStatus(Object):
     __slots__ = defaults.keys()
     __init__ = Object.__init__
     OrderStates = ('PendingSubmit', 'PendingCancel', 'PreSubmitted',
-            'Submitted', 'ApiCanceled', 'Cancelled', 'Filled', 'Inactive')
+            'Submitted', 'ApiPending', 'ApiCanceled', 'Cancelled',
+            'Filled', 'Inactive')
+    # ApiPending is undocumented, it can be returned from req(All)OpenOrders
 for k in OrderStatus.OrderStates:
     setattr(OrderStatus, k, k)
-OrderStatus.ActiveStates = (OrderStatus.PendingSubmit,
+OrderStatus.ActiveStates = (OrderStatus.PendingSubmit, OrderStatus.ApiPending,
         OrderStatus.PreSubmitted, OrderStatus.Submitted)
 
 class ScannerSubscription(Object):
@@ -227,7 +229,7 @@ class Trade(namedtuple('Trade', 'contract order orderStatus fills log')):
 
     def remaining(self):
         """
-        Number of share remaining to be filled.
+        Number of shares remaining to be filled.
         """
         return self.order.totalQuantity - self.filled()
 

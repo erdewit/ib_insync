@@ -14,7 +14,7 @@ class Ticker(Object):
     Streaming level-1 ticks of type ``TickData`` are stored in
     the ``ticks`` list.
     
-    Streaming level-2 ticks of type ``MktDepthData`` are stored in the
+    Streaming level-2 ticks of type :class:`objects.MktDepthData` are stored in the
     ``domTicks`` list. The order book (DOM) is available as lists of
     ``DOMLevel`` in ``domBids`` and ``domAsks``.
     """

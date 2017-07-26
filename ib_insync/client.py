@@ -31,7 +31,7 @@ class Client(EClient):
     
     * ``client.connect()`` will block until the client is ready to
       serve requests; It is not necessary to wait for ``nextValidId``
-      to start requests as the client has done already done that.
+      to start requests as the client has already done that.
       The reqId is directly available  with :py:meth:`.getReqId()`.
       
     * ``client.connectAsync()`` is a coroutine for connecting asynchronously.
@@ -39,13 +39,15 @@ class Client(EClient):
     * When blocking, ``client.connect()`` can be made to time out with
       the timeout parameter (default 2 seconds).
       
-    * ``wrapper.tcpDataArrived()`` hook; If the wrapper has this method
-      it is invoked directly after a network packet has arrived.
+    * Optional ``wrapper.tcpDataArrived()`` method;
+      If the wrapper has this method it is invoked directly after
+      a network packet has arrived.
       A possible use is to timestamp all data in the packet with
       the exact same time.
       
-    * ``wrapper.tcpDataProcessed()`` hook; If the wrapper has this method
-      it is invoked after the network packet's data has been handled.
+    * Optional ``wrapper.tcpDataProcessed()`` method;
+      If the wrapper has this method it is invoked after the
+      network packet's data has been handled.
       A possible use is to write or evaluate the newly arrived data in
       one batch instead of item by item.
       
@@ -81,11 +83,17 @@ class Client(EClient):
         loop = asyncio.get_event_loop()
         loop.run_forever()
 
+    def isReady(self):
+        """
+        Is the API connection up and running?
+        """
+        return self._readyEvent.is_set()
+
     def connectionStats(self) -> ConnectionStats:
         """
         Get statistics about the connection.
         """
-        assert self.conn
+        assert self.isReady(), 'Not connected'
         return ConnectionStats(
                 self._startTime,
                 time.time() - self._startTime,
@@ -96,7 +104,7 @@ class Client(EClient):
         """
         Get new request ID.
         """
-        assert self._reqIdSeq
+        assert self.isReady(), 'Not connected'
         newId = self._reqIdSeq
         self._reqIdSeq += 1
         return newId
@@ -105,6 +113,7 @@ class Client(EClient):
         """
         Get the list of account names that are under management.
         """
+        assert self.isReady(), 'Not connected'
         assert self._accounts
         return self._accounts
 
@@ -139,11 +148,15 @@ class Client(EClient):
             if self.apiStart:
                 self.apiStart()
         except Exception as e:
+            print(e)
             self.reset()
             msg = f'API connection failed: {e!r}'
-            _logger.exception(msg)
+            _logger.error(msg)
             if self.apiError:
                 self.apiError(msg)
+            if isinstance(e, ConnectionRefusedError):
+                msg = 'Make sure API port on TWS/IBG is open'
+                _logger.error(msg)
             raise
 
     def _prefix(self, msg):
@@ -217,10 +230,13 @@ class Client(EClient):
 
     def _onSocketDisconnected(self):
         if self.isConnected():
-            msg = 'Peer closed connection'
+            msg = f'Peer closed connection'
             _logger.error(msg)
             if self.apiError:
                 self.apiError(msg)
+            if not self.isReady():
+                msg = f'clientId {self.clientId} already in use?'
+                _logger.error(msg)
         else:
             _logger.info('Disconnected')
         self.reset()

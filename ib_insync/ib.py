@@ -8,7 +8,7 @@ from ibapi.account_summary_tags import AccountSummaryTags
 from ib_insync.client import Client
 from ib_insync.wrapper import Wrapper
 from ib_insync.contract import Contract
-from ib_insync.order import Order, LimitOrder, StopOrder
+from ib_insync.order import Order, LimitOrder, StopOrder, MarketOrder
 from ib_insync.ticker import Ticker
 from ib_insync.objects import *  # @UnusedImport
 import ib_insync.util as util
@@ -30,13 +30,16 @@ class IB:
     automatically kept in sync with the TWS/IBG application.
       
     This class has most request methods of EClient, with the
-    same name and parameters (with some exceptions).
+    same names and parameters (except for the reqId parameter
+    which is not needed anymore).
     Request methods that return a result come in two versions:
       
     * Blocking: Will block until complete and return the result.
       The current state will be kept updated while the request is ongoing;
         
-    * Asynchronous: Implemented as coroutines for advanced users.
+    * Asynchronous: All methods that have the "Async" postfix.
+      Implemented as coroutines or methods that return a Future,
+      intended for advanced users.
     
     **The One Rule:**
 
@@ -135,6 +138,22 @@ class IB:
         """
         self.run(self.wrapper.updateEvent.wait())
         return True
+
+    def setCallback(self, eventName, callback):
+        """
+        Set an optional callback to be invoked after an event. Events::
+        
+            * updated()
+            * orderStatus(Trade)
+            * execDetails(Trade, Fill)
+            * commissionReport(Trade, Fill, CommissionReport)
+            * updatePortfolio(PortfolioItem)
+            * position(Position)
+            * tickNews(NewsTick)
+            
+        Unsetting is done by supplying None as callback.
+        """
+        self.wrapper.setCallback(eventName, callback)
 
     def managedAccounts(self) -> [str]:
         """
@@ -275,7 +294,7 @@ class IB:
 
     def qualifyContracts(self, *contracts: [Contract]) -> [Contract]:
         """
-        Fully qualify the given contracts. This will fill in
+        Fully qualify the given contracts in-place. This will fill in
         the missing fields in the contract, especially the conId.
 
         Returns a list of contracts that have been successfully qualified.
@@ -328,6 +347,15 @@ class IB:
             o.ocaType = ocaType
         return orders
 
+    def whatIfOrder(self, contract: Contract, order: Order) -> OrderState:
+        """
+        Retrieve commission and margin impact without actually
+        placing the order. The given order will not be modified in any way.
+        
+        This method is blocking.
+        """
+        return self.run(self.whatIfOrderAsync(contract, order))
+
     @api
     def placeOrder(self, contract: Contract, order: Order) -> Trade:
         """
@@ -347,6 +375,7 @@ class IB:
             logEntry = TradeLogEntry(now,
                     trade.orderStatus.status, 'Modify')
             trade.log.append(logEntry)
+            _logger.info(f'placeOrder: Modify order {trade}')
         else:
             # this is a new order
             order.orderId = orderId
@@ -354,7 +383,7 @@ class IB:
             logEntry = TradeLogEntry(now, orderStatus.status, '')
             trade = Trade(contract, order, orderStatus, [], [logEntry])
             self.wrapper.trades[orderId] = trade
-        _logger.info(f'placeOrder: {trade}')
+            _logger.info(f'placeOrder: New order {trade}')
         return trade
 
     @api
@@ -365,10 +394,13 @@ class IB:
         self.client.cancelOrder(order.orderId)
         now = datetime.datetime.now(datetime.timezone.utc)
         trade = self.wrapper.trades.get(order.orderId)
-        if trade.orderStatus.status in OrderStatus.ActiveStates:
-            logEntry = TradeLogEntry(now, OrderStatus.PendingCancel, '')
-            trade.log.append(logEntry)
-        _logger.info(f'cancelOrder: {trade}')
+        if trade:
+            if trade.orderStatus.status in OrderStatus.ActiveStates:
+                logEntry = TradeLogEntry(now, OrderStatus.PendingCancel, '')
+                trade.log.append(logEntry)
+            _logger.info(f'cancelOrder: {trade}')
+        else:
+            _logger.error(f'cancelOrder: Unknown orderId {order.orderId}')
         return trade
 
     @api
@@ -501,7 +533,8 @@ class IB:
         """
         dt = datetime.datetime(year, 12, 31, 23, 59, 59)
         if not whatToShow:
-            whatToShow = 'MIDPOINT' if isinstance(contract, Forex) else 'TRADES'
+            whatToShow = 'MIDPOINT' if isinstance(
+                    contract, (Forex, CFD, Commodity)) else 'TRADES'
         bars = ib.reqHistoricalData(contract, dt, '365 D',
                 '1 day', whatToShow, useRTH)
         bars = [b for b in bars if b.date.year == year]
@@ -572,7 +605,7 @@ class IB:
 
     @api
     def reqMktDepth(self, contract: Contract, numRows: int=15,
-                mktDepthOptions: [TagValue]=None) -> Ticker:
+                mktDepthOptions=None) -> Ticker:
         """
         """
         reqId = self.client.getReqId()
@@ -717,7 +750,7 @@ class IB:
     @api
     def reqHistoricalNews(self, conId: int, providerCodes: str,
             startDateTime: str, endDateTime: str, totalResults: int,
-            historicalNewsOptions: [TagValue]=None) -> HistoricalNews:
+            historicalNewsOptions=None) -> HistoricalNews:
         """
         Get historical news headline.
 
@@ -777,9 +810,8 @@ class IB:
         _logger.info('Synchronization complete')
 
     async def qualifyContractsAsync(self, *contracts):
-        future = asyncio.gather(
+        detailsLists = await asyncio.gather(
                 *(self.reqContractDetailsAsync(c) for c in contracts))
-        detailsLists = await future
         result = []
         for contract, detailsList in zip(contracts, detailsLists):
             if not detailsList:
@@ -787,7 +819,7 @@ class IB:
             elif len(detailsList) > 1:
                 possibles = [details.summary for details in detailsList]
                 _logger.error(f'Ambiguous contract: {contract}, '
-                    f'possibles are {possibles}')
+                        f'possibles are {possibles}')
             else:
                 details = detailsList[0]
                 contract.update(**details.summary.dict())
@@ -806,44 +838,48 @@ class IB:
         await asyncio.gather(*futures)
         return [self.ticker(c) for c in contracts]
 
-    async def reqAccountUpdatesAsync(self,):
+    def whatIfOrderAsync(self, contract, order):
+        whatIfOrder = Order(**order.dict()).update(whatIf=True)
+        reqId = self.client.getReqId()
+        future = self.wrapper.startReq(reqId)
+        self.client.placeOrder(reqId, contract, whatIfOrder)
+        return future
+
+    def reqAccountUpdatesAsync(self,):
         defaultAccount = self.client.getAccounts()[0]
         future = self.wrapper.startReq('accountValues')
         self.client.reqAccountUpdates(True, defaultAccount)
-        await future
+        return future
 
-    async def reqAccountSummaryAsync(self):
+    def reqAccountSummaryAsync(self):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqAccountSummary(reqId, groupName='All',
                 tags=AccountSummaryTags.AllTags)
-        await future
+        return future
 
-    async def reqOpenOrdersAsync(self):
+    def reqOpenOrdersAsync(self):
         future = self.wrapper.startReq('openOrders')
         self.client.reqOpenOrders()
-        await future
-        return future.result()
+        return future
 
-    async def reqExecutionsAsync(self, execFilter=None):
+    def reqExecutionsAsync(self, execFilter=None):
         execFilter = execFilter or ExecutionFilter()
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqExecutions(reqId, execFilter)
-        await future
-        return future.result()
+        return future
 
-    async def reqPositionsAsync(self):
+    def reqPositionsAsync(self):
         future = self.wrapper.startReq('positions')
         self.client.reqPositions()
-        await future
+        return future
 
-    async def reqContractDetailsAsync(self, contract):
+    def reqContractDetailsAsync(self, contract):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqContractDetails(reqId, contract)
-        await future
-        return future.result()
+        return future
 
     async def reqMatchingSymbolsAsync(self, pattern):
         reqId = self.client.getReqId()
@@ -855,7 +891,7 @@ class IB:
         except:
             _logger.error('reqMatchingSymbolsAsync: Timeout')
 
-    async def reqHistoricalDataAsync(self, contract, endDateTime,
+    def reqHistoricalDataAsync(self, contract, endDateTime,
             durationStr, barSizeSetting, whatToShow, useRTH,
             formatDate=1, keepUpToDate=False, chartOptions=None):
         if not endDateTime:
@@ -871,45 +907,34 @@ class IB:
         self.client.reqHistoricalData(reqId, contract, end,
                 durationStr, barSizeSetting, whatToShow,
                 useRTH, formatDate, keepUpToDate, chartOptions)
-        await future
-        return future.result()
+        return future
 
-    async def reqHeadTimeStampAsync(self, contract, whatToShow,
+    def reqHeadTimeStampAsync(self, contract, whatToShow,
             useRTH, formatDate):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqHeadTimeStamp(reqId, contract, whatToShow,
             useRTH, formatDate)
-        await future
-        return future.result()
+        return future
 
-    async def reqMktDataAsync(self, contract, genericTickList,
-                snapshot, regulatorySnapshot, mktDataOptions):
-        reqId = self.client.getReqId()
-        self.client.reqMktData(self, reqId, contract,
-                genericTickList, snapshot, regulatorySnapshot, mktDataOptions)
-
-    async def reqMktDepthExchangesAsync(self):
+    def reqMktDepthExchangesAsync(self):
         future = self.wrapper.startReq('mktDepthExchanges')
         self.client.reqMktDepthExchanges()
-        await future
-        return future.result()
+        return future
 
-    async def reqHistogramDataAsync(self, contract, useRTH, period):
+    def reqHistogramDataAsync(self, contract, useRTH, period):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqHistogramData(contract, useRTH, period)
-        await future
-        return future.result()
+        return future
 
-    async def reqFundamentalDataAsync(self, contract, reportType,
+    def reqFundamentalDataAsync(self, contract, reportType,
             fundamentalDataOptions=None):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqFundamentalData(reqId, contract, reportType,
                 fundamentalDataOptions)
-        await future
-        return future.result()
+        return future
 
     async def reqScannerSubscriptionAsync(self, subscription,
             scannerSubscriptionOptions=None):
@@ -921,11 +946,10 @@ class IB:
         self.client.cancelScannerSubscription(reqId)
         return future.result()
 
-    async def reqScannerParametersAsync(self):
+    def reqScannerParametersAsync(self):
         future = self.wrapper.startReq('scannerParams')
         self.client.reqScannerParameters()
-        await future
-        return future.result()
+        return future
 
     async def calculateImpliedVolatilityAsync(self, contract, optionPrice,
                 underPrice, implVolOptions):
@@ -957,27 +981,24 @@ class IB:
         finally:
             self.client.cancelCalculateOptionPrice(reqId)
 
-    async def reqSecDefOptParamsAsync(self, underlyingSymbol,
+    def reqSecDefOptParamsAsync(self, underlyingSymbol,
             futFopExchange, underlyingSecType, underlyingConId):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqSecDefOptParams(reqId, underlyingSymbol,
                 futFopExchange, underlyingSecType, underlyingConId)
-        await future
-        return future.result()
+        return future
 
-    async def reqNewsProvidersAsync(self):
+    def reqNewsProvidersAsync(self):
         future = self.wrapper.startReq('newsProviders')
         self.client.reqNewsProviders()
-        await future
-        return future.result()
+        return future
 
-    async def reqNewsArticleAsync(self, providerCode, articleId):
+    def reqNewsArticleAsync(self, providerCode, articleId):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqNewsArticle(reqId, providerCode, articleId)
-        await future
-        return future.result()
+        return future
 
     async def reqHistoricalNewsAsync(self, conId, providerCodes,
             startDateTime, endDateTime, totalResults,
@@ -1049,7 +1070,8 @@ if __name__ == '__main__':
         print(ib.calculateOptionPrice(option,
                 volatility=0.1, underPrice=513))
     if 0:
-        chains = ib.reqSecDefOptParams('EOE', '', 'IND', conId)
+        ib.qualifyContracts(aex)
+        chains = ib.reqSecDefOptParams(aex.symbol, '', aex.secType, aex.conId)
         chain = next(c for c in chains if c.tradingClass == 'AEX')
         print(chain)
     if 0:
@@ -1066,7 +1088,6 @@ if __name__ == '__main__':
         print(ib.reqTickers(amd))
         print(ib.reqTickers(eurusd))
         print(ib.reqTickers(amd, eurusd, aex))
-        print(ib.ticker(tsla))
     if 0:
         m = ib.reqMatchingSymbols('Intel')
         print(m)
@@ -1095,7 +1116,12 @@ if __name__ == '__main__':
         while ib.sleep(5):
             print([d.price for d in ticker.domBids],
                     [d.price for d in ticker.domAsks])
+    if 0:
+        order = MarketOrder('BUY', 100)
+        state = ib.whatIfOrder(amd, order)
+        print(state)
 
-#     ib.run()
+    # ib.run()
     ib.disconnect()
+
 

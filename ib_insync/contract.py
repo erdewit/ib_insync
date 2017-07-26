@@ -20,6 +20,7 @@ class Contract(Object):
         CFD('IBUS30')
         Future('ES', '20180921', 'GLOBEX')
         Option('SPY', '20170721', 240, 'C', 'SMART')
+        Bond(secIdType='ISIN', secId='US03076KAA60')
     """
     defaults = ibapi.contract.Contract().__dict__
     __slots__ = list(defaults.keys()) + \
@@ -29,7 +30,7 @@ class Contract(Object):
     @staticmethod
     def create(**kwargs):
         """
-        Create and a return a specialized contract based on the given setType,
+        Create and a return a specialized contract based on the given secType,
         or a general Contract if secType is not given.
         """
         secType = kwargs.pop('secType', '')

@@ -224,7 +224,7 @@ def useQt():
             self.run_forever()
         finally:
             future.remove_done_callback(stop)
-        while(not future.done()):
+        while not future.done():
             qApp.processEvents()
             if future.done():
                 break

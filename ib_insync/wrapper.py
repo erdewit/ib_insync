@@ -89,7 +89,7 @@ class Wrapper(EWrapper):
     def clearPendingTickers(self):
         """
         Clear both the list of pending tickers and their pending
-        level-1 and level-2 ticks.
+        ticks and domTicks.
         """
         for ticker in self.pendingTickers:
             del ticker.ticks[:]
@@ -99,22 +99,11 @@ class Wrapper(EWrapper):
                 del ticker.domAsks[:]
         self.pendingTickers.clear()
 
-    def _registerCallback(self, eventName, callback):
-        """
-        Invoke callback after an event. Events::
-        
-            * orderStatus(Trade)
-            * execDetails(Trade, Fill)
-            * commissionReport(Trade, Fill, CommissionReport)
-            * updatePortfolio(PortfolioItem)
-            * position(Position)
-            * tickNews(NewsTick)
-            
-        Unregistering is done by setting the callback to None.
-        """
+    def setCallback(self, eventName, callback):
         self._callbacks[eventName] = callback
 
     def _handleEvent(self, eventName, *args):
+        # invoke optional callback
         cb = self._callbacks.get(eventName)
         if cb:
             try:
@@ -180,14 +169,22 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def openOrder(self, orderId, contract, order, orderState):
-        contract = Contract(**contract.__dict__)
-        order = Order(**order.__dict__)
-        orderStatus = OrderStatus(status=orderState.status)
-        trade = Trade(contract, order, orderStatus, [], [])
-        self._results['openOrders'].append(trade)
-        if order.clientId == self.clientId and orderId not in self.trades:
-            self.trades[orderId] = trade
-            _logger.info(f'openOrder: {trade}')
+        if order.whatIf:
+            # response to whatIfOrder
+            orderState = OrderState(**orderState.__dict__)
+            self._endReq(orderId, orderState)
+        else:
+            contract = Contract(**contract.__dict__)
+            order = Order(**order.__dict__)
+            orderStatus = OrderStatus(status=orderState.status)
+            if order.softDollarTier:
+                order.softDollarTier = SoftDollarTier(
+                        **order.softDollarTier.__dict__)
+            trade = Trade(contract, order, orderStatus, [], [])
+            self._results['openOrders'].append(trade)
+            if order.clientId == self.clientId and orderId not in self.trades:
+                self.trades[orderId] = trade
+                _logger.info(f'openOrder: {trade}')
 
     @iswrapper
     def openOrderEnd(self):
@@ -234,7 +231,7 @@ class Wrapper(EWrapper):
                 trade.fills.append(fill)
                 if trade.orderStatus.status != OrderStatus.Filled:
                     # orderStatus might not have set status to Filled
-                    if not trade.remaining():
+                    if trade.remaining() <= 0:
                         trade.orderStatus.status = OrderStatus.Filled
                 logEntry = TradeLogEntry(self.lastTime,
                         trade.orderStatus.status,
@@ -362,9 +359,10 @@ class Wrapper(EWrapper):
             ticker.high52week = price
         elif tickType == 21:
             ticker.avVolume = price
-        tick = TickData(self.lastTime, tickType, price, 0)
-        ticker.ticks.append(tick)
-        self.pendingTickers.add(ticker)
+        if price != -1.0:
+            tick = TickData(self.lastTime, tickType, price, 0)
+            ticker.ticks.append(tick)
+            self.pendingTickers.add(ticker)
 
     @iswrapper
     def tickSize(self, reqId, tickType, size):
@@ -395,9 +393,10 @@ class Wrapper(EWrapper):
             ticker.putVolume = size
         elif tickType == 86:
             ticker.futuresOpenInterest = size
-        tick = TickData(self.lastTime, tickType, ticker.last, size)
-        ticker.ticks.append(tick)
-        self.pendingTickers.add(ticker)
+        if size != 0:
+            tick = TickData(self.lastTime, tickType, ticker.last, size)
+            ticker.ticks.append(tick)
+            self.pendingTickers.add(ticker)
 
     @iswrapper
     def tickSnapshotEnd(self, reqId):
@@ -620,4 +619,5 @@ class Wrapper(EWrapper):
     def tcpDataProcessed(self):
         self.updateEvent.set()
         self.updateEvent.clear()
+        self._handleEvent('updated')
 
