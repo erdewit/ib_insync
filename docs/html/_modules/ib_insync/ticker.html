@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ticker &#8212; IB-insync 0.7.3 documentation</title>
+    <title>ib_insync.ticker &#8212; IB-insync 0.8.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.3',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -94,9 +94,13 @@
 <span class="sd">    Streaming level-1 ticks of type ``TickData`` are stored in</span>
 <span class="sd">    the ``ticks`` list.</span>
 <span class="sd">    </span>
-<span class="sd">    Streaming level-2 ticks of type :class:`objects.MktDepthData` are stored in the</span>
+<span class="sd">    Streaming level-2 ticks of type ``MktDepthData`` are stored in the</span>
 <span class="sd">    ``domTicks`` list. The order book (DOM) is available as lists of</span>
 <span class="sd">    ``DOMLevel`` in ``domBids`` and ``domAsks``.</span>
+<span class="sd">    </span>
+<span class="sd">    For options the ``OptionComputation`` values for the bid, ask, resp.</span>
+<span class="sd">    last price are stored in the ``bidGreeks``, ``askGreeks`` resp.</span>
+<span class="sd">    ``lastGreeks`` attributes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;contract&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
@@ -133,7 +137,11 @@
         <span class="s1">&#39;ticks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="s1">&#39;domBids&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="s1">&#39;domAsks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;domTicks&#39;</span><span class="p">:</span> <span class="kc">None</span> <span class="p">}</span>
+        <span class="s1">&#39;domTicks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;bidGreeks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;askGreeks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;lastGreeks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;modelGreeks&#39;</span><span class="p">:</span> <span class="kc">None</span> <span class="p">}</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
     <span class="fm">__init__</span> <span class="o">=</span> <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span>
 

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Contents &#8212; IB-insync 0.7.3 documentation</title>
+    <title>Contents &#8212; IB-insync 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.3',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -105,8 +105,8 @@
 <li class="toctree-l2"><a class="reference external" href="https://github.com/erdewit/ib_insync/tree/master/notebooks/basics.ipynb">Basics</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://github.com/erdewit/ib_insync/tree/master/notebooks/contract_details.ipynb">Contract details</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://github.com/erdewit/ib_insync/tree/master/notebooks/option_chain.ipynb">Option chain</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://github.com/erdewit/ib_insync/tree/master/notebooks/historical_data.ipynb">Historical data</a></li>
-<li class="toctree-l2"><a class="reference external" href="https://github.com/erdewit/ib_insync/tree/master/notebooks/live_data.ipynb">Live data</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://github.com/erdewit/ib_insync/tree/master/notebooks/bar_data.ipynb">Bar data</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://github.com/erdewit/ib_insync/tree/master/notebooks/tick_data.ipynb">Tick data</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://github.com/erdewit/ib_insync/tree/master/notebooks/market_depth.ipynb">Market depth</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://github.com/erdewit/ib_insync/tree/master/notebooks/ordering.ipynb">Ordering</a></li>
 </ul>
@@ -125,14 +125,11 @@
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal"><span class="pre">ib_insync</span></code> package is build on top of the Python API
 from Interactive Brokers. The objective is to make it as
-easy as possible to use the API, without sacrificing any
-functionality.</p>
+easy as possible to use the API to its fullest extent.</p>
 <p>The main features are:</p>
 <ul class="simple">
-<li>An <code class="docutils literal"><span class="pre">IB</span></code> component that automatically keeps its state
-in sync with the world;</li>
-<li>A sequential style of programming that is easy to understand
-for novice users (no more callbacks);</li>
+<li>An <code class="docutils literal"><span class="pre">IB</span></code> component that automatically keeps in sync;</li>
+<li>An easy to use linear style of programming (no more callbacks);</li>
 <li>A fully asynchonous framework based on
 <a class="reference external" href="https://docs.python.org/3.6/library/asyncio.html">asyncio</a>
 for advanced users;</li>
@@ -150,8 +147,8 @@ for advanced users;</li>
 <li>A running TWS or IB gateway application (version 963 or higher) with the
 <a class="reference external" href="https://interactivebrokers.github.io/tws-api/initial_setup.html">API port enabled</a>.</li>
 </ul>
-<p>To install packages needed for the notebooks:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">PyQt5</span> <span class="n">quamash</span> <span class="n">jupyter</span> <span class="n">numpy</span> <span class="n">pandas</span>
+<p>To install packages needed for the examples and notebooks:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">jupyter</span> <span class="n">numpy</span> <span class="n">pandas</span>
 </pre></div>
 </div>
 <p><a class="reference external" href="http://rawgit.com/erdewit/ib_insync/master/docs/html/index.html">IB-insync home page.</a></p>
@@ -164,15 +161,21 @@ for advanced users;</li>
 <span class="n">ib</span> <span class="o">=</span> <span class="n">IB</span><span class="p">()</span>
 <span class="n">ib</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">7497</span><span class="p">,</span> <span class="n">clientId</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">bars</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalData</span><span class="p">(</span>
-        <span class="n">contract</span><span class="o">=</span><span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;TSLA&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">),</span>
-        <span class="n">endDateTime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">durationStr</span><span class="o">=</span><span class="s1">&#39;30 D&#39;</span><span class="p">,</span>
-        <span class="n">barSizeSetting</span><span class="o">=</span><span class="s1">&#39;1 hour&#39;</span><span class="p">,</span>
-        <span class="n">whatToShow</span><span class="o">=</span><span class="s1">&#39;TRADES&#39;</span><span class="p">,</span>
-        <span class="n">useRTH</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">contract</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;AMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
+<span class="n">bars</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalData</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="n">endDateTime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">durationStr</span><span class="o">=</span><span class="s1">&#39;30 D&#39;</span><span class="p">,</span>
+        <span class="n">barSizeSetting</span><span class="o">=</span><span class="s1">&#39;1 hour&#39;</span><span class="p">,</span> <span class="n">whatToShow</span><span class="o">=</span><span class="s1">&#39;TRADES&#39;</span><span class="p">,</span> <span class="n">useRTH</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">bars</span><span class="p">)</span>
+<span class="c1"># convert to pandas dataframe:</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">df</span><span class="p">(</span><span class="n">bars</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>                   <span class="n">date</span>   <span class="nb">open</span>   <span class="n">high</span>    <span class="n">low</span>  <span class="n">close</span>  <span class="n">volume</span>  <span class="n">barCount</span>  <span class="n">average</span>
+<span class="mi">0</span>   <span class="mi">2017</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">23</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">14.14</span>  <span class="mf">14.35</span>  <span class="mf">13.90</span>  <span class="mf">14.24</span>  <span class="mi">190461</span>     <span class="mi">31287</span>   <span class="mf">14.187</span>
+<span class="mi">1</span>   <span class="mi">2017</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">23</span> <span class="mi">16</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">14.23</span>  <span class="mf">14.65</span>  <span class="mf">14.16</span>  <span class="mf">14.62</span>  <span class="mi">266730</span>     <span class="mi">41320</span>   <span class="mf">14.461</span>
+<span class="o">...</span>
+<span class="mi">206</span> <span class="mi">2017</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">04</span> <span class="mi">21</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">13.13</span>  <span class="mf">13.15</span>  <span class="mf">13.08</span>  <span class="mf">13.12</span>   <span class="mi">88656</span>     <span class="mi">21886</span>   <span class="mf">13.113</span>
 </pre></div>
 </div>
 <p>Be sure to take a look at the
@@ -190,6 +193,17 @@ IB-insync and anything related to it.</p>
 </div>
 <div class="section" id="changelog">
 <h2>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="version-0-8-0">
+<h3>Version 0.8.0<a class="headerlink" href="#version-0-8-0" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>support for realtime bars and keepUpToDate for historical bars</li>
+<li>added option greeks to Ticker</li>
+<li>new IB.waitUntil and IB.timeRange scheduling methods</li>
+<li>notebooks no longer depend on PyQt5 for live updates</li>
+<li>notebooks can be run in one go (‘run all’)</li>
+<li>tick handling bypasses ibapi decoder for more efficiency</li>
+</ul>
+</div>
 <div class="section" id="version-0-7-3">
 <h3>Version 0.7.3<a class="headerlink" href="#version-0-7-3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">

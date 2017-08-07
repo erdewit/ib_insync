@@ -5,15 +5,12 @@ Introduction
 
 The ``ib_insync`` package is build on top of the Python API
 from Interactive Brokers. The objective is to make it as
-easy as possible to use the API, without sacrificing any
-functionality.
+easy as possible to use the API to its fullest extent.
 
 The main features are:
 
-* An ``IB`` component that automatically keeps its state
-  in sync with the world;
-* A sequential style of programming that is easy to understand 
-  for novice users (no more callbacks);
+* An ``IB`` component that automatically keeps in sync;
+* An easy to use linear style of programming (no more callbacks);
 * A fully asynchonous framework based on
   `asyncio <https://docs.python.org/3.6/library/asyncio.html>`_
   for advanced users;
@@ -33,9 +30,9 @@ Requirements:
 * A running TWS or IB gateway application (version 963 or higher) with the 
   `API port enabled <https://interactivebrokers.github.io/tws-api/initial_setup.html>`_.
   
-To install packages needed for the notebooks::
+To install packages needed for the examples and notebooks::
 
-    pip3 install -U PyQt5 quamash jupyter numpy pandas
+    pip3 install -U jupyter numpy pandas
 
 `IB-insync home page. <http://rawgit.com/erdewit/ib_insync/master/docs/html/index.html>`_
 
@@ -47,19 +44,26 @@ This is a complete script to download historical data:
 .. code-block:: python
 
     from ib_insync import *
-
+      
     ib = IB()
     ib.connect('127.0.0.1', 7497, clientId=1)
+    
+    contract = Stock('AMD', 'SMART', 'USD')
+    bars = ib.reqHistoricalData(contract, endDateTime='', durationStr='30 D',
+            barSizeSetting='1 hour', whatToShow='TRADES', useRTH=True)
+    
+    # convert to pandas dataframe:
+    df = util.df(bars)
+    print(df)
+    
+Output::
 
-    bars = ib.reqHistoricalData(
-            contract=Stock('TSLA', 'SMART', 'USD'),
-            endDateTime='',
-            durationStr='30 D',
-            barSizeSetting='1 hour',
-            whatToShow='TRADES',
-            useRTH=True)
+                       date   open   high    low  close  volume  barCount  average
+    0   2017-06-23 15:30:00  14.14  14.35  13.90  14.24  190461     31287   14.187
+    1   2017-06-23 16:00:00  14.23  14.65  14.16  14.62  266730     41320   14.461
+    ...
+    206 2017-08-04 21:00:00  13.13  13.15  13.08  13.12   88656     21886   13.113
 
-    print(bars)
 
 Be sure to take a look at the
 `example notebooks <http://rawgit.com/erdewit/ib_insync/master/docs/html/notebooks.html>`_ too.
@@ -79,6 +83,16 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 
 Changelog
 ---------
+
+Version 0.8.0
+^^^^^^^^^^^^^
+
+* support for realtime bars and keepUpToDate for historical bars
+* added option greeks to Ticker
+* new IB.waitUntil and IB.timeRange scheduling methods
+* notebooks no longer depend on PyQt5 for live updates
+* notebooks can be run in one go ('run all')
+* tick handling bypasses ibapi decoder for more efficiency 
 
 Version 0.7.3
 ^^^^^^^^^^^^^

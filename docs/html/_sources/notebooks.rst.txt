@@ -13,8 +13,8 @@ Here are some recipe notebooks:
    Basics <https://github.com/erdewit/ib_insync/tree/master/notebooks/basics.ipynb>
    Contract details <https://github.com/erdewit/ib_insync/tree/master/notebooks/contract_details.ipynb>
    Option chain <https://github.com/erdewit/ib_insync/tree/master/notebooks/option_chain.ipynb>
-   Historical data <https://github.com/erdewit/ib_insync/tree/master/notebooks/historical_data.ipynb>
-   Live data <https://github.com/erdewit/ib_insync/tree/master/notebooks/live_data.ipynb>
+   Bar data <https://github.com/erdewit/ib_insync/tree/master/notebooks/bar_data.ipynb>
+   Tick data <https://github.com/erdewit/ib_insync/tree/master/notebooks/tick_data.ipynb>
    Market depth <https://github.com/erdewit/ib_insync/tree/master/notebooks/market_depth.ipynb>
    Ordering <https://github.com/erdewit/ib_insync/tree/master/notebooks/ordering.ipynb>
 

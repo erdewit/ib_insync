@@ -8,25 +8,6 @@ import time
 
 from ib_insync.objects import Object
 
-__all__ = (
-        'dateRange allowCtrlC logToFile logToConsole '
-        'isNan formatSI timeit useQt').split()
-
-
-def dateRange(startDate, endDate, skipWeekend=True):
-    """
-    Iterate the days from given start date up to and including end date.
-    """
-    day = datetime.timedelta(days=1)
-    date = startDate
-    while True:
-        if skipWeekend:
-            while date.weekday() >= 5:
-                date += day
-        if date > endDate:
-            break
-        yield date
-        date += day
 
 def df(objs, labels=None):
     """
@@ -52,6 +33,61 @@ def df(objs, labels=None):
         exclude = [label for label in df if label not in labels]
         df.drop(exclude)
     return df
+
+
+def barplot(bars, title='', upColor='blue', downColor='red'):
+    """
+    Create candlestick plot for the given bars. The bars can be given as
+    a DataFrame or as a list of bar objects.
+    """
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Rectangle
+
+    if isinstance(bars, pd.DataFrame):
+        ohlcTups = [tuple(v) for v in
+                bars[['open', 'high', 'low', 'close']].values]
+    else:
+        ohlcTups = [(b.open, b.high, b.low, b.close) for b in bars]
+
+    fig, ax = plt.subplots()
+    ax.set_title(title)
+    ax.grid(True)
+    fig.set_size_inches(10, 6)
+    for n, (open_, high, low, close) in enumerate(ohlcTups):
+        if close >= open_:
+            color = upColor
+            bodyHi, bodyLo = close, open_
+        else:
+            color = downColor
+            bodyHi, bodyLo = open_, close
+        line = Line2D(
+                xdata=(n, n),
+                ydata=(low, bodyLo),
+                color=color,
+                linewidth=1)
+        ax.add_line(line)
+        line = Line2D(
+                xdata=(n, n),
+                ydata=(high, bodyHi),
+                color=color,
+                linewidth=1)
+        ax.add_line(line)
+        rect = Rectangle(
+                xy=(n - 0.3, bodyLo),
+                width=0.6,
+                height=bodyHi - bodyLo,
+                edgecolor=color,
+                facecolor=color,
+                alpha=0.4,
+                antialiased=True
+        )
+        ax.add_patch(rect)
+
+    ax.autoscale_view()
+    return fig
+
 
 def allowCtrlC():
     """
@@ -140,54 +176,98 @@ class timeit:
         print(self.title + ' took ' + formatSI(time.time() - self.t0) + 's')
 
 
-def _candlestick(ax, quotes, width=0.2, colorup='k', colordown='r',
-                 alpha=1.0):
-    # https://github.com/matplotlib/mpl_finance/blob/master/mpl_finance.py
-    from matplotlib.lines import Line2D
-    from matplotlib.patches import Rectangle
+def syncAwait(future):
+    """
+    Synchronously wait until future is done, accounting for the possibilty
+    that the event loop is already running.
+    """
+    try:
+        import quamash
+    except ImportError:
+        quamash = None
 
-    OFFSET = width / 2.0
-
-    for q in quotes:
-        t, open, high, low, close = q[:5]
-
-        if close >= open:
-            color = colorup
-            lower = open
-            height = close - open
+    loop = asyncio.get_event_loop()
+    if loop.is_running():
+        if quamash and isinstance(loop, quamash.QEventLoop):
+            result = syncAwaitQt(future)
         else:
-            color = colordown
-            lower = close
-            height = open - close
-
-        vline = Line2D(
-            xdata=(t, t), ydata=(low, high),
-            color=color,
-            linewidth=0.5,
-            antialiased=True,
-        )
-
-        rect = Rectangle(
-            xy=(t - OFFSET, lower),
-            width=width,
-            height=height,
-            facecolor=color,
-            edgecolor=color,
-        )
-        rect.set_alpha(alpha)
-
-        ax.add_line(vline)
-        ax.add_patch(rect)
-    ax.autoscale_view()
+            result = syncAwaitAsyncio(future)
+    else:
+        result = loop.run_until_complete(future)
+    return result
 
 
-if 0:
-    def loop_asyncio_orig(kernel):
-        '''Start a kernel with asyncio event loop support.'''
+def syncAwaitAsyncio(future):
+    assert asyncio.Task is asyncio.tasks._PyTask
+    asyncio._asyncAwait = True
+    loop = asyncio.get_event_loop()
+    preserved_ready = list(loop._ready)
+    loop._ready.clear()
+    future = asyncio.ensure_future(future)
+    current_tasks = asyncio.Task._current_tasks
+    preserved_task = current_tasks.get(loop)
+    while not future.done():
+        loop._run_once()
+        if loop._stopping:
+            break
+    loop._ready.extendleft(preserved_ready)
+    if preserved_task is not None:
+        current_tasks[loop] = preserved_task
+    else:
+        current_tasks.pop(loop, None)
+    asyncio._asyncAwait = False
+    return future.result()
+
+
+def syncAwaitQt(self, future):
+    import PyQt5.Qt as qt
+
+    future = asyncio.ensure_future(future)
+    def stop(*_args):
+        self.stop()
+    future.add_done_callback(stop)
+    qApp = qt.QApplication.instance()
+    try:
+        self.run_forever()
+    finally:
+        future.remove_done_callback(stop)
+    while not future.done():
+        qApp.processEvents()
+        if future.done():
+            break
+        time.sleep(0.005)
+    return future.result()
+
+
+def patchAsyncio():
+    """
+    Patch asyncio to use pure Python implementation of Future and Task,
+    to deal with nested event loops in asynAwait.
+    """
+    if asyncio.Task is not asyncio.tasks._PyTask:
+        asyncio.Task = asyncio.tasks._CTask = asyncio.tasks.Task = \
+                asyncio.tasks._PyTask
+        asyncio.Future = asyncio.futures._CFuture = asyncio.futures.Future = \
+                asyncio.futures._PyFuture
+    asyncio._asyncAwait = False
+
+
+def startLoop():
+    """
+    Use asyncio event loop for Jupyter notebooks.
+    """
+    patchAsyncio()
+    from ipykernel.eventloops import register_integration, enable_gui
+
+    @register_integration('asyncio')
+    def loop_asyncio(kernel):
+        '''
+        Start a kernel with asyncio event loop support.
+        '''
         loop = asyncio.get_event_loop()
 
         def kernel_handler():
-            loop.call_soon(kernel.do_one_iteration)
+            kernel.do_one_iteration()
             loop.call_later(kernel._poll_interval, kernel_handler)
 
         loop.call_soon(kernel_handler)
@@ -197,6 +277,8 @@ if 0:
         finally:
             loop.run_until_complete(loop.shutdown_asyncgens())
             loop.close()
+
+    enable_gui('asyncio')
 
 
 def useQt():
@@ -213,22 +295,35 @@ def useQt():
     loop = quamash.QEventLoop()
     asyncio.set_event_loop(loop)
 
-    # fix the issue were run_until_complete does not work in Jupyter
-    def run_until_complete(self, future):
-        future = asyncio.ensure_future(future)
-        def stop(*_args):
-            self.stop()
-        future.add_done_callback(stop)
-        qApp = qt.QApplication.instance()
-        try:
-            self.run_forever()
-        finally:
-            future.remove_done_callback(stop)
-        while not future.done():
-            qApp.processEvents()
-            if future.done():
-                break
-            time.sleep(0.001)
-        return future.result()
-    quamash.QEventLoop.run_until_complete = run_until_complete
 
+def formatIBDatetime(dt):
+    """
+    Format date or datetime to what string that IB uses.
+    """
+    if not dt:
+        s = ''
+    elif isinstance(dt, datetime.datetime):
+        s = dt.strftime('%Y%m%d %H:%M:%S')
+    elif isinstance(dt, datetime.date):
+        s = dt.strftime('%Y%m%d 23:59:59')
+    else:
+        s = dt
+    return s
+
+
+def parseIBDatetime(s):
+    """
+    Parse string in IB date or datatime format to datetime.
+    """
+    if len(s) == 8:
+        # YYYYmmdd
+        y = int(s[0:4])
+        m = int(s[4:6])
+        d = int(s[6:8])
+        dt = datetime.date(y, m, d)
+    elif s.isdigit():
+        dt = datetime.datetime.fromtimestamp(
+                int(s), datetime.timezone.utc)
+    else:
+        dt = datetime.datetime.strptime(s, '%Y%m%d  %H:%M:%S')
+    return dt

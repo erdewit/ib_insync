@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.util &#8212; IB-insync 0.7.3 documentation</title>
+    <title>ib_insync.util &#8212; IB-insync 0.8.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.3',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -88,27 +88,8 @@
 
 <span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="n">Object</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;dateRange allowCtrlC logToFile logToConsole &#39;</span>
-        <span class="s1">&#39;isNan formatSI timeit useQt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="dateRange"><a class="viewcode-back" href="../../api.html#ib_insync.util.dateRange">[docs]</a><span class="k">def</span> <span class="nf">dateRange</span><span class="p">(</span><span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="n">skipWeekend</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Iterate the days from given start date up to and including end date.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">day</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="n">startDate</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">skipWeekend</span><span class="p">:</span>
-            <span class="k">while</span> <span class="n">date</span><span class="o">.</span><span class="n">weekday</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
-                <span class="n">date</span> <span class="o">+=</span> <span class="n">day</span>
-        <span class="k">if</span> <span class="n">date</span> <span class="o">&gt;</span> <span class="n">endDate</span><span class="p">:</span>
-            <span class="k">break</span>
-        <span class="k">yield</span> <span class="n">date</span>
-        <span class="n">date</span> <span class="o">+=</span> <span class="n">day</span></div>
-
-<span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="df"><a class="viewcode-back" href="../../api.html#ib_insync.util.df">[docs]</a><span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create pandas DataFrame from the sequence of same-type objects.</span>
 <span class="sd">    When a list of labels is given then only retain those labels and</span>
@@ -131,7 +112,62 @@
     <span class="k">if</span> <span class="n">labels</span><span class="p">:</span>
         <span class="n">exclude</span> <span class="o">=</span> <span class="p">[</span><span class="n">label</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">df</span> <span class="k">if</span> <span class="n">label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">]</span>
         <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">df</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="barplot"><a class="viewcode-back" href="../../api.html#ib_insync.util.barplot">[docs]</a><span class="k">def</span> <span class="nf">barplot</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">upColor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">downColor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create candlestick plot for the given bars. The bars can be given as</span>
+<span class="sd">    a DataFrame or as a list of bar objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.lines</span> <span class="k">import</span> <span class="n">Line2D</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="k">import</span> <span class="n">Rectangle</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="n">ohlcTups</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span>
+                <span class="n">bars</span><span class="p">[[</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ohlcTups</span> <span class="o">=</span> <span class="p">[(</span><span class="n">b</span><span class="o">.</span><span class="n">open</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">high</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">close</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bars</span><span class="p">]</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="p">(</span><span class="n">open_</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">close</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ohlcTups</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">close</span> <span class="o">&gt;=</span> <span class="n">open_</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">upColor</span>
+            <span class="n">bodyHi</span><span class="p">,</span> <span class="n">bodyLo</span> <span class="o">=</span> <span class="n">close</span><span class="p">,</span> <span class="n">open_</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">downColor</span>
+            <span class="n">bodyHi</span><span class="p">,</span> <span class="n">bodyLo</span> <span class="o">=</span> <span class="n">open_</span><span class="p">,</span> <span class="n">close</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">Line2D</span><span class="p">(</span>
+                <span class="n">xdata</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span>
+                <span class="n">ydata</span><span class="o">=</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">bodyLo</span><span class="p">),</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">Line2D</span><span class="p">(</span>
+                <span class="n">xdata</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span>
+                <span class="n">ydata</span><span class="o">=</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">bodyHi</span><span class="p">),</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">rect</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span>
+                <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">bodyLo</span><span class="p">),</span>
+                <span class="n">width</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+                <span class="n">height</span><span class="o">=</span><span class="n">bodyHi</span> <span class="o">-</span> <span class="n">bodyLo</span><span class="p">,</span>
+                <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+                <span class="n">antialiased</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">fig</span></div>
+
 
 <div class="viewcode-block" id="allowCtrlC"><a class="viewcode-back" href="../../api.html#ib_insync.util.allowCtrlC">[docs]</a><span class="k">def</span> <span class="nf">allowCtrlC</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -220,54 +256,98 @@
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s1">&#39; took &#39;</span> <span class="o">+</span> <span class="n">formatSI</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_candlestick</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">quotes</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">colorup</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">colordown</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
-                 <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
-    <span class="c1"># https://github.com/matplotlib/mpl_finance/blob/master/mpl_finance.py</span>
-    <span class="kn">from</span> <span class="nn">matplotlib.lines</span> <span class="k">import</span> <span class="n">Line2D</span>
-    <span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="k">import</span> <span class="n">Rectangle</span>
+<div class="viewcode-block" id="syncAwait"><a class="viewcode-back" href="../../api.html#ib_insync.util.syncAwait">[docs]</a><span class="k">def</span> <span class="nf">syncAwait</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Synchronously wait until future is done, accounting for the possibilty</span>
+<span class="sd">    that the event loop is already running.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">quamash</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">quamash</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="n">OFFSET</span> <span class="o">=</span> <span class="n">width</span> <span class="o">/</span> <span class="mf">2.0</span>
-
-    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">quotes</span><span class="p">:</span>
-        <span class="n">t</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">close</span> <span class="o">=</span> <span class="n">q</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">close</span> <span class="o">&gt;=</span> <span class="nb">open</span><span class="p">:</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">colorup</span>
-            <span class="n">lower</span> <span class="o">=</span> <span class="nb">open</span>
-            <span class="n">height</span> <span class="o">=</span> <span class="n">close</span> <span class="o">-</span> <span class="nb">open</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">loop</span><span class="o">.</span><span class="n">is_running</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">quamash</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span> <span class="n">quamash</span><span class="o">.</span><span class="n">QEventLoop</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">syncAwaitQt</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">colordown</span>
-            <span class="n">lower</span> <span class="o">=</span> <span class="n">close</span>
-            <span class="n">height</span> <span class="o">=</span> <span class="nb">open</span> <span class="o">-</span> <span class="n">close</span>
-
-        <span class="n">vline</span> <span class="o">=</span> <span class="n">Line2D</span><span class="p">(</span>
-            <span class="n">xdata</span><span class="o">=</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">ydata</span><span class="o">=</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">),</span>
-            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-            <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-            <span class="n">antialiased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="n">rect</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span>
-            <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">OFFSET</span><span class="p">,</span> <span class="n">lower</span><span class="p">),</span>
-            <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
-            <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
-            <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-            <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">rect</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
-
-        <span class="n">ax</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="n">vline</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">()</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">syncAwaitAsyncio</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
 
 
-<span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">loop_asyncio_orig</span><span class="p">(</span><span class="n">kernel</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Start a kernel with asyncio event loop support.&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="syncAwaitAsyncio"><a class="viewcode-back" href="../../api.html#ib_insync.util.syncAwaitAsyncio">[docs]</a><span class="k">def</span> <span class="nf">syncAwaitAsyncio</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="ow">is</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_PyTask</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">_asyncAwait</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+    <span class="n">preserved_ready</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">loop</span><span class="o">.</span><span class="n">_ready</span><span class="p">)</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">_ready</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
+    <span class="n">current_tasks</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="o">.</span><span class="n">_current_tasks</span>
+    <span class="n">preserved_task</span> <span class="o">=</span> <span class="n">current_tasks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">_run_once</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">loop</span><span class="o">.</span><span class="n">_stopping</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">_ready</span><span class="o">.</span><span class="n">extendleft</span><span class="p">(</span><span class="n">preserved_ready</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">preserved_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">current_tasks</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="n">preserved_task</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">current_tasks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">_asyncAwait</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="syncAwaitQt"><a class="viewcode-back" href="../../api.html#ib_insync.util.syncAwaitQt">[docs]</a><span class="k">def</span> <span class="nf">syncAwaitQt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">PyQt5.Qt</span> <span class="k">as</span> <span class="nn">qt</span>
+
+    <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="o">*</span><span class="n">_args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+    <span class="n">future</span><span class="o">.</span><span class="n">add_done_callback</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span>
+    <span class="n">qApp</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">future</span><span class="o">.</span><span class="n">remove_done_callback</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
+        <span class="n">qApp</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
+            <span class="k">break</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.005</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="patchAsyncio"><a class="viewcode-back" href="../../api.html#ib_insync.util.patchAsyncio">[docs]</a><span class="k">def</span> <span class="nf">patchAsyncio</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Patch asyncio to use pure Python implementation of Future and Task,</span>
+<span class="sd">    to deal with nested event loops in asynAwait.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_PyTask</span><span class="p">:</span>
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_CTask</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> \
+                <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_PyTask</span>
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">_CFuture</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Future</span> <span class="o">=</span> \
+                <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">_PyFuture</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">_asyncAwait</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="startLoop"><a class="viewcode-back" href="../../api.html#ib_insync.util.startLoop">[docs]</a><span class="k">def</span> <span class="nf">startLoop</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Use asyncio event loop for Jupyter notebooks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">patchAsyncio</span><span class="p">()</span>
+    <span class="kn">from</span> <span class="nn">ipykernel.eventloops</span> <span class="k">import</span> <span class="n">register_integration</span><span class="p">,</span> <span class="n">enable_gui</span>
+
+    <span class="nd">@register_integration</span><span class="p">(</span><span class="s1">&#39;asyncio&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">loop_asyncio</span><span class="p">(</span><span class="n">kernel</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Start a kernel with asyncio event loop support.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
 
         <span class="k">def</span> <span class="nf">kernel_handler</span><span class="p">():</span>
-            <span class="n">loop</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="n">kernel</span><span class="o">.</span><span class="n">do_one_iteration</span><span class="p">)</span>
+            <span class="n">kernel</span><span class="o">.</span><span class="n">do_one_iteration</span><span class="p">()</span>
             <span class="n">loop</span><span class="o">.</span><span class="n">call_later</span><span class="p">(</span><span class="n">kernel</span><span class="o">.</span><span class="n">_poll_interval</span><span class="p">,</span> <span class="n">kernel_handler</span><span class="p">)</span>
 
         <span class="n">loop</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="n">kernel_handler</span><span class="p">)</span>
@@ -277,6 +357,8 @@
         <span class="k">finally</span><span class="p">:</span>
             <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">loop</span><span class="o">.</span><span class="n">shutdown_asyncgens</span><span class="p">())</span>
             <span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">enable_gui</span><span class="p">(</span><span class="s1">&#39;asyncio&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="useQt"><a class="viewcode-back" href="../../api.html#ib_insync.util.useQt">[docs]</a><span class="k">def</span> <span class="nf">useQt</span><span class="p">():</span>
@@ -291,27 +373,40 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">():</span>
         <span class="n">_qApp</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
     <span class="n">loop</span> <span class="o">=</span> <span class="n">quamash</span><span class="o">.</span><span class="n">QEventLoop</span><span class="p">()</span>
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span></div>
 
-    <span class="c1"># fix the issue were run_until_complete does not work in Jupyter</span>
-    <span class="k">def</span> <span class="nf">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">):</span>
-        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="o">*</span><span class="n">_args</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="n">future</span><span class="o">.</span><span class="n">add_done_callback</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span>
-        <span class="n">qApp</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="n">future</span><span class="o">.</span><span class="n">remove_done_callback</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-            <span class="n">qApp</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-                <span class="k">break</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-    <span class="n">quamash</span><span class="o">.</span><span class="n">QEventLoop</span><span class="o">.</span><span class="n">run_until_complete</span> <span class="o">=</span> <span class="n">run_until_complete</span></div>
 
+<div class="viewcode-block" id="formatIBDatetime"><a class="viewcode-back" href="../../api.html#ib_insync.util.formatIBDatetime">[docs]</a><span class="k">def</span> <span class="nf">formatIBDatetime</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Format date or datetime to what string that IB uses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dt</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1"> 23:59:59&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">dt</span>
+    <span class="k">return</span> <span class="n">s</span></div>
+
+
+<div class="viewcode-block" id="parseIBDatetime"><a class="viewcode-back" href="../../api.html#ib_insync.util.parseIBDatetime">[docs]</a><span class="k">def</span> <span class="nf">parseIBDatetime</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse string in IB date or datatime format to datetime.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="c1"># YYYYmmdd</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">  %H:%M:%S&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dt</span></div>
 </pre></div>
 
           </div>

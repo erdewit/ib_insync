@@ -12,7 +12,7 @@ with codecs.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='ib_insync',
-    version='0.7.3',
+    version='0.8.0',
     description='Python sync/async framework for Interactive Brokers API',
     long_description=long_description,
     url='https://github.com/erdewit/ib_insync',

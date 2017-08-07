@@ -15,7 +15,8 @@ class Contract(Object):
     Some examples::
     
         Contract(conId=270639)
-        Stock('AMD' 'SMART', 'USD')
+        Stock('AMD', 'SMART', 'USD')
+        Stock('INTC', 'SMART', 'USD', primaryExchange='NASDAQ')
         Forex('EURUSD')
         CFD('IBUS30')
         Future('ES', '20180921', 'GLOBEX')

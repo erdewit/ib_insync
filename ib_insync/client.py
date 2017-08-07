@@ -2,12 +2,16 @@ import struct
 import asyncio
 import logging
 import time
+import io
 
 import ibapi
 from ibapi.client import EClient
 from ibapi.wrapper import EWrapper, iswrapper
+from ibapi.common import UNSET_INTEGER, UNSET_DOUBLE
 
-from ib_insync.objects import ConnectionStats
+from ib_insync.objects import (ConnectionStats, BarData, HistoricalTick,
+        HistoricalTickBidAsk, HistoricalTickLast)
+from ib_insync.contract import Contract
 import ib_insync.util as util
 
 __all__ = ['Client']
@@ -38,7 +42,11 @@ class Client(EClient):
       
     * When blocking, ``client.connect()`` can be made to time out with
       the timeout parameter (default 2 seconds).
-      
+    
+    * Optional ``wrapper.priceSizeTick(reqId, tickType, price, size)`` that
+      combines price and size instead of the two wrapper methods
+      priceTick and sizeTick.
+    
     * Optional ``wrapper.tcpDataArrived()`` method;
       If the wrapper has this method it is invoked directly after
       a network packet has arrived.
@@ -61,6 +69,7 @@ class Client(EClient):
         EClient.__init__(self, wrapper)
 
         # extra optional wrapper methods
+        self._priceSizeTick = getattr(wrapper, 'priceSizeTick', None)
         self._tcpDataArrived = getattr(wrapper, 'tcpDataArrived', None)
         self._tcpDataProcessed = getattr(wrapper, 'tcpDataProcessed', None)
 
@@ -159,6 +168,9 @@ class Client(EClient):
                 _logger.error(msg)
             raise
 
+    def sendMsg(self, msg):
+        self.conn.sendMsg(self._prefix(msg.encode()))
+
     def _prefix(self, msg):
         # prefix a message with its length
         return struct.pack('>I', len(msg)) + msg
@@ -209,21 +221,11 @@ class Client(EClient):
                 _logger.info(
                         f'Logged on to server version {self.serverVersion_}')
             else:
-                # snoop for nextValidId and managedAccounts response,
-                # when both are in then the client is ready
-                if fields[0] == b'9':
-                    _, _, validId = fields
-                    self._reqIdSeq = int(validId)
-                    if self._accounts:
-                        self._readyEvent.set()
-                elif fields[0] == b'15':
-                    _, _, accts = fields
-                    self._accounts = accts.decode().split(',')
-                    if self._reqIdSeq:
-                        self._readyEvent.set()
-
                 # decode and handle the message
-                self.decoder.interpret(fields)
+                try:
+                    self._decode(fields)
+                except:
+                    _logger.exception('Decode failed')
 
         if self._tcpDataProcessed:
             self._tcpDataProcessed()
@@ -248,6 +250,130 @@ class Client(EClient):
         self.reset()
         if self.apiError:
             self.apiError(msg)
+
+    def reqHistoricalTicks(self, reqId, contract, startDateTime,
+            endDateTime, numberOfTicks, whatToShow, useRth,
+            ignoreSize, miscOptions):
+        msgId = 96
+        msg = self._encode(msgId, reqId, contract, startDateTime, endDateTime,
+                numberOfTicks, whatToShow, useRth, ignoreSize, miscOptions)
+        self.sendMsg(msg)
+
+    def _encode(self, *fields):
+        """
+        Serialize the given fields to a string conforming to the
+        IB socket protocol.
+        """
+        result = io.StringIO()
+        for field in fields:
+            if field is None:
+                pass
+            elif isinstance(field, Contract):
+                c = field
+                result.write('\0'.join(str(f) for f in (
+                        c.conId, c.symbol, c.secType,
+                        c.lastTradeDateOrContractMonth, c.strike,
+                        c.right, c.multiplier, c.exchange,
+                        c.primaryExchange, c.currency,
+                        c.localSymbol, c.tradingClass,
+                        1 if c.includeExpired else 0)))
+            elif type(field) is list:
+                # list of TagValue
+                result.write(''.join(f'{v.tag}={v.value};' for v in field))
+            elif type(field) is bool:
+                result.write('1' if field else '0')
+            elif field in (UNSET_INTEGER, UNSET_DOUBLE):
+                pass
+            else:
+                result.write(str(field))
+
+            result.write('\0')
+        return result.getvalue()
+
+    def _decode(self, fields):
+        """
+        Decode the fields of the single response and call the appropriate
+        callback handler.
+        """
+        msgId = int(fields[0])
+
+        # bypass the abapi decoder for ticks since it is rather inefficient
+        if msgId == 1:
+            if self._priceSizeTick:
+                _, _, reqId, tickType, price, size, _ = fields
+                self._priceSizeTick(int(reqId), int(tickType),
+                        float(price), int(size))
+                return
+        elif msgId == 12:
+            _, _, reqId, position, operation, side, price, size = fields
+            self.wrapper.updateMktDepth(int(reqId), int(position),
+                    int(operation), int(side), float(price), int(size))
+            return
+        elif msgId == 46:
+            _, _, reqId, tickType, value = fields
+            self.wrapper.tickString(int(reqId), int(tickType), value.decode())
+            return
+        elif msgId == 90:
+            _, reqId, barCount, date, open_, close, high, low, \
+                    average, volume = fields
+            bar = BarData(date.decode(), float(open_), float(high),
+                    float(low), float(close), float(volume),
+                    int(barCount), float(average))
+            self.wrapper.historicalDataUpdate(int(reqId), bar)
+            return
+
+        # snoop for nextValidId and managedAccounts response,
+        # when both are in then the client is ready
+        elif msgId == 9:
+            _, _, validId = fields
+            self._reqIdSeq = int(validId)
+            if self._accounts:
+                self._readyEvent.set()
+        elif msgId == 15:
+            _, _, accts = fields
+            self._accounts = accts.decode().split(',')
+            if self._reqIdSeq:
+                self._readyEvent.set()
+
+        # new features not yet in ibapi
+        elif msgId == 96:
+            reqId, nTicks, *fields = fields
+            ticks = []
+            for _ in range(nTicks):
+                time, _, price, size, *fields = fields
+                tick = HistoricalTick(int(time), float(price), int(size))
+                ticks.append(tick)
+            done = fields[0] == b'1'
+            self.wrapper.historicalTicks(int(reqId), ticks, done)
+            return
+        elif msgId == 97:
+            reqId, nTicks, *fields = fields
+            ticks = []
+            for _ in range(nTicks):
+                time, mask, priceBid, priceAsk, sizeBid, sizeAsk, \
+                        *fields = fields
+                tick = HistoricalTickBidAsk(int(time), int(mask),
+                        float(priceBid), float(priceAsk),
+                        int(sizeBid), int(sizeAsk))
+                ticks.append(tick)
+            done = fields[0] == b'1'
+            self.wrapper.historicalTicksBidAsk(int(reqId), ticks, done)
+            return
+        elif msgId == 98:
+            reqId, nTicks, *fields = fields
+            ticks = []
+            for _ in range(nTicks):
+                time, mask, price, size, exchange, \
+                        specialConditions, *fields = fields
+                tick = HistoricalTickLast(int(time), int(mask),
+                        float(price), int(size),
+                        exchange.decode(), specialConditions.decode())
+                ticks.append(tick)
+            done = fields[0] == b'1'
+            self.wrapper.historicalTicksLast(int(reqId), ticks, done)
+            return
+
+        self.decoder.interpret(fields)
 
 
 class Connection:

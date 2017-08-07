@@ -14,9 +14,13 @@ class Ticker(Object):
     Streaming level-1 ticks of type ``TickData`` are stored in
     the ``ticks`` list.
     
-    Streaming level-2 ticks of type :class:`objects.MktDepthData` are stored in the
+    Streaming level-2 ticks of type ``MktDepthData`` are stored in the
     ``domTicks`` list. The order book (DOM) is available as lists of
     ``DOMLevel`` in ``domBids`` and ``domAsks``.
+    
+    For options the ``OptionComputation`` values for the bid, ask, resp.
+    last price are stored in the ``bidGreeks``, ``askGreeks`` resp.
+    ``lastGreeks`` attributes.
     """
     defaults = {
         'contract': None,
@@ -53,7 +57,11 @@ class Ticker(Object):
         'ticks': None,
         'domBids': None,
         'domAsks': None,
-        'domTicks': None }
+        'domTicks': None,
+        'bidGreeks': None,
+        'askGreeks': None,
+        'lastGreeks': None,
+        'modelGreeks': None }
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.7.3 documentation</title>
+    <title>API docs &#8212; IB-insync 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.3',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -91,7 +91,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.7.3.</p>
+<p>Release 0.8.0.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -115,7 +115,7 @@ Request methods that return a result come in two versions:</p>
 <li>Blocking: Will block until complete and return the result.
 The current state will be kept updated while the request is ongoing;</li>
 <li>Asynchronous: All methods that have the “Async” postfix.
-Implemented as coroutines or methods that return a Future,
+Implemented as coroutines or methods that return a Future and
 intended for advanced users.</li>
 </ul>
 <p><strong>The One Rule:</strong></p>
@@ -144,7 +144,7 @@ calls IB.sleep(0); This will let the framework handle any pending
 work and return when finished. The operation should be aware
 that the current state may have been updated during the sleep(0) call.</p>
 <p>For introducing a delay, never use time.sleep() but use
-<a class="reference internal" href="#ib_insync.ib.IB.sleep" title="ib_insync.ib.IB.sleep"><code class="xref py py-meth docutils literal"><span class="pre">sleep()</span></code></a> or  <a class="reference internal" href="#ib_insync.ib.IB.waitOnUpdate" title="ib_insync.ib.IB.waitOnUpdate"><code class="xref py py-meth docutils literal"><span class="pre">waitOnUpdate()</span></code></a> instead.</p>
+<a class="reference internal" href="#ib_insync.ib.IB.sleep" title="ib_insync.ib.IB.sleep"><code class="xref py py-meth docutils literal"><span class="pre">sleep()</span></code></a> instead.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.accountSummary">
 <code class="descname">accountSummary</code><span class="sig-paren">(</span><em>account: str = ''</em><span class="sig-paren">)</span> &#x2192; [&lt;class 'ib_insync.objects.AccountValue'&gt;]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.accountSummary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.accountSummary" title="Permalink to this definition">¶</a></dt>
@@ -198,6 +198,12 @@ a stop-loss order. Submit the bracket like:</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.ib.IB.cancelHistoricalData">
+<code class="descname">cancelHistoricalData</code><span class="sig-paren">(</span><em>bars</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelHistoricalData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelHistoricalData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel the update subscription for the historical bars.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.ib.IB.cancelMktData">
 <code class="descname">cancelMktData</code><span class="sig-paren">(</span><em>contract: ib_insync.contract.Contract</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelMktData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelMktData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unsubscribe tick data for the given contract.
@@ -220,19 +226,18 @@ The contract object must be the same as used to subscribe with.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.cancelOrder">
 <code class="descname">cancelOrder</code><span class="sig-paren">(</span><em>order: ib_insync.order.Order</em><span class="sig-paren">)</span> &#x2192; ib_insync.objects.Trade<a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelOrder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelOrder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cancel the order and return the trade it belongs to.</p>
+<dd><p>Cancel the order and return the Trade it belongs to.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="ib_insync.ib.IB.clearPendingTickers">
-<code class="descname">clearPendingTickers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.clearPendingTickers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.clearPendingTickers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear both the list of pending tickers and their pending ticks
-and domTicks.</p>
+<dt id="ib_insync.ib.IB.cancelRealTimeBars">
+<code class="descname">cancelRealTimeBars</code><span class="sig-paren">(</span><em>bars</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelRealTimeBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelRealTimeBars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel the realtime bars subscription.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.connect">
-<code class="descname">connect</code><span class="sig-paren">(</span><em>host: str</em>, <em>port: int</em>, <em>clientId: int</em>, <em>timeout=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.connect" title="Permalink to this definition">¶</a></dt>
+<code class="descname">connect</code><span class="sig-paren">(</span><em>host: str</em>, <em>port: int</em>, <em>clientId: int</em>, <em>timeout: float = 2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to a TWS or IB gateway application running at host:port.
 After the connect the client is immediately ready to serve requests.</p>
 <p>This method is blocking.</p>
@@ -297,13 +302,13 @@ The article itself can be retrieved with <a class="reference internal" href="#ib
 <dl class="method">
 <dt id="ib_insync.ib.IB.openOrders">
 <code class="descname">openOrders</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; [&lt;class 'ib_insync.order.Order'&gt;]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.openOrders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.openOrders" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of all open trades.</p>
+<dd><p>List of all open orders.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.openTrades">
 <code class="descname">openTrades</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; [&lt;class 'ib_insync.objects.Trade'&gt;]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.openTrades"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.openTrades" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of all open trades.</p>
+<dd><p>List of all open order tickets.</p>
 </dd></dl>
 
 <dl class="method">
@@ -322,7 +327,7 @@ The article itself can be retrieved with <a class="reference internal" href="#ib
 <dt id="ib_insync.ib.IB.placeOrder">
 <code class="descname">placeOrder</code><span class="sig-paren">(</span><em>contract: ib_insync.contract.Contract</em>, <em>order: ib_insync.order.Order</em><span class="sig-paren">)</span> &#x2192; ib_insync.objects.Trade<a class="reference internal" href="_modules/ib_insync/ib.html#IB.placeOrder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.placeOrder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Place a new order or modify an existing order.
-Returns a Trade that is kept live updated with
+Returns an Trade that is kept live updated with
 status changes, fills, etc.</p>
 </dd></dl>
 
@@ -352,6 +357,13 @@ the missing fields in the contract, especially the conId.</p>
 <dt id="ib_insync.ib.IB.qualifyContractsAsync">
 <code class="descname">qualifyContractsAsync</code><span class="sig-paren">(</span><em>*contracts</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.qualifyContractsAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.qualifyContractsAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.realtimeBars">
+<code class="descname">realtimeBars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.realtimeBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.realtimeBars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of all live updated bars. These can be 5 second realtime
+bars or live updated historical bars.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.replaceFA">
@@ -404,13 +416,6 @@ ContractDetails.summary attribute.</p>
 <dt id="ib_insync.ib.IB.reqContractDetailsAsync">
 <code class="descname">reqContractDetailsAsync</code><span class="sig-paren">(</span><em>contract</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqContractDetailsAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqContractDetailsAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.ib.IB.reqDailyBars">
-<code class="descname">reqDailyBars</code><span class="sig-paren">(</span><em>contract: ib_insync.contract.Contract</em>, <em>year: int</em>, <em>whatToShow=None</em>, <em>useRTH=True</em><span class="sig-paren">)</span> &#x2192; [&lt;class 'ib_insync.objects.BarData'&gt;]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqDailyBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqDailyBars" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience method to return the daily bars for one year.</p>
-<p>This method is blocking.</p>
-</dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqExecutions">
@@ -481,7 +486,7 @@ or it can be given as a string in ‘yyyyMMdd HH:mm:ss’ format.</p>
 <p>If formatDate=2 is used for an intraday request the returned date
 field will be a timezone-aware datetime.datetime with UTC timezone.</p>
 <p>This method is blocking.</p>
-<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/historical_data.html">https://interactivebrokers.github.io/tws-api/historical_data.html</a></p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/historical_bars.html">https://interactivebrokers.github.io/tws-api/historical_bars.html</a></p>
 </dd></dl>
 
 <dl class="method">
@@ -499,6 +504,19 @@ field will be a timezone-aware datetime.datetime with UTC timezone.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqHistoricalNewsAsync">
 <code class="descname">reqHistoricalNewsAsync</code><span class="sig-paren">(</span><em>conId</em>, <em>providerCodes</em>, <em>startDateTime</em>, <em>endDateTime</em>, <em>totalResults</em>, <em>_historicalNewsOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqHistoricalNewsAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqHistoricalNewsAsync" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.reqHistoricalTicks">
+<code class="descname">reqHistoricalTicks</code><span class="sig-paren">(</span><em>contract</em>, <em>startDateTime</em>, <em>endDateTime</em>, <em>numberOfTicks</em>, <em>whatToShow</em>, <em>useRth</em>, <em>ignoreSize</em>, <em>miscOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqHistoricalTicks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqHistoricalTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Not yet supported</em></p>
+<p>Request historical ticks.</p>
+<p>This method is blocking.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.reqHistoricalTicksAsync">
+<code class="descname">reqHistoricalTicksAsync</code><span class="sig-paren">(</span><em>contract</em>, <em>startDateTime</em>, <em>endDateTime</em>, <em>numberOfTicks</em>, <em>whatToShow</em>, <em>useRth</em>, <em>ignoreSize</em>, <em>miscOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqHistoricalTicksAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqHistoricalTicksAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -604,10 +622,9 @@ all messages for the day.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqPositions">
-<code class="descname">reqPositions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqPositions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqPositions" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqPositions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; [&lt;class 'ib_insync.objects.Position'&gt;]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqPositions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqPositions" title="Permalink to this definition">¶</a></dt>
 <dd><p>It is recommended to use <a class="reference internal" href="#ib_insync.ib.IB.positions" title="ib_insync.ib.IB.positions"><code class="xref py py-meth docutils literal"><span class="pre">positions()</span></code></a> instead.</p>
-<p>Request and return a list of positions for all accounts.
-Returns when postions are filled.</p>
+<p>Request and return a list of positions for all accounts.</p>
 <p>This method is blocking.</p>
 </dd></dl>
 
@@ -615,6 +632,13 @@ Returns when postions are filled.</p>
 <dt id="ib_insync.ib.IB.reqPositionsAsync">
 <code class="descname">reqPositionsAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqPositionsAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqPositionsAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.reqRealTimeBars">
+<code class="descname">reqRealTimeBars</code><span class="sig-paren">(</span><em>contract</em>, <em>barSize</em>, <em>whatToShow</em>, <em>useRTH</em>, <em>realTimeBarsOptions=None</em><span class="sig-paren">)</span> &#x2192; [&lt;class 'ib_insync.objects.RealTimeBar'&gt;]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqRealTimeBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqRealTimeBars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request realtime 5 second bars.</p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/realtime_bars.html">https://interactivebrokers.github.io/tws-api/realtime_bars.html</a></p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqScannerData">
@@ -664,7 +688,7 @@ The list is returned when all tickers are ready.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqTickersAsync">
-<code class="descname">reqTickersAsync</code><span class="sig-paren">(</span><em>*contracts</em>, <em>regulatorySnapshot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqTickersAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqTickersAsync" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqTickersAsync</code><span class="sig-paren">(</span><em>*contracts</em>, <em>regulatorySnapshot=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqTickersAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqTickersAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -699,6 +723,7 @@ the list of their results.</p>
 <code class="descname">setCallback</code><span class="sig-paren">(</span><em>eventName</em>, <em>callback</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.setCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.setCallback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set an optional callback to be invoked after an event. Events:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">updated</span><span class="p">()</span>
+<span class="o">*</span> <span class="n">pendingTickers</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">pendingTickers</span><span class="p">))</span>
 <span class="o">*</span> <span class="n">orderStatus</span><span class="p">(</span><span class="n">Trade</span><span class="p">)</span>
 <span class="o">*</span> <span class="n">execDetails</span><span class="p">(</span><span class="n">Trade</span><span class="p">,</span> <span class="n">Fill</span><span class="p">)</span>
 <span class="o">*</span> <span class="n">commissionReport</span><span class="p">(</span><span class="n">Trade</span><span class="p">,</span> <span class="n">Fill</span><span class="p">,</span> <span class="n">CommissionReport</span><span class="p">)</span>
@@ -732,15 +757,34 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 </dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.ib.IB.timeRange">
+<code class="descname">timeRange</code><span class="sig-paren">(</span><em>start: datetime.time</em>, <em>end: datetime.time</em>, <em>step: float</em><span class="sig-paren">)</span> &#x2192; typing.Iterator[datetime.datetime]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.timeRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.timeRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator that waits periodically until certain time points are
+reached while yielding those time points.</p>
+<p>The startTime and dateTime parameters can be specified as
+datetime.datetime, or as datetime.time in which case today
+is used as the date.</p>
+<p>The step parameter is the number of seconds of each period.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.ib.IB.trades">
 <code class="descname">trades</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; [&lt;class 'ib_insync.objects.Trade'&gt;]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.trades"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.trades" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of all trades from this session.</p>
+<dd><p>List of all order tickets from this session.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.waitOnUpdate">
 <code class="descname">waitOnUpdate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; True<a class="reference internal" href="_modules/ib_insync/ib.html#IB.waitOnUpdate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.waitOnUpdate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait on any new update to arrive from the network.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.waitUntil">
+<code class="descname">waitUntil</code><span class="sig-paren">(</span><em>t: datetime.time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.waitUntil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.waitUntil" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the given time t is reached.</p>
+<p>The time can be specified as datetime.datetime,
+or as datetime.time in which case today is used as the date.</p>
 </dd></dl>
 
 <dl class="method">
@@ -781,6 +825,9 @@ The reqId is directly available  with <a class="reference internal" href="#ib_in
 <li><code class="docutils literal"><span class="pre">client.connectAsync()</span></code> is a coroutine for connecting asynchronously.</li>
 <li>When blocking, <code class="docutils literal"><span class="pre">client.connect()</span></code> can be made to time out with
 the timeout parameter (default 2 seconds).</li>
+<li>Optional <code class="docutils literal"><span class="pre">wrapper.priceSizeTick(reqId,</span> <span class="pre">tickType,</span> <span class="pre">price,</span> <span class="pre">size)</span></code> that
+combines price and size instead of the two wrapper methods
+priceTick and sizeTick.</li>
 <li>Optional <code class="docutils literal"><span class="pre">wrapper.tcpDataArrived()</span></code> method;
 If the wrapper has this method it is invoked directly after
 a network packet has arrived.
@@ -841,6 +888,11 @@ is raised if the connection is not established within the timout period.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.client.Client.reqHistoricalTicks">
+<code class="descname">reqHistoricalTicks</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>startDateTime</em>, <em>endDateTime</em>, <em>numberOfTicks</em>, <em>whatToShow</em>, <em>useRth</em>, <em>ignoreSize</em>, <em>miscOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqHistoricalTicks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqHistoricalTicks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.client.Client.reset">
 <code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reset" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -848,6 +900,11 @@ is raised if the connection is not established within the timout period.</p>
 <dl class="method">
 <dt id="ib_insync.client.Client.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.sendMsg">
+<code class="descname">sendMsg</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.sendMsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.sendMsg" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1001,7 +1058,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 140623232920824: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139883161631208: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1492,7 +1549,8 @@ arguments. To simplify working with contracts, there are also more
 specialized contracts that take optional positional arguments.
 Some examples:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Contract</span><span class="p">(</span><span class="n">conId</span><span class="o">=</span><span class="mi">270639</span><span class="p">)</span>
-<span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;AMD&#39;</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
+<span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;AMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
+<span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;INTC&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="n">primaryExchange</span><span class="o">=</span><span class="s1">&#39;NASDAQ&#39;</span><span class="p">)</span>
 <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;EURUSD&#39;</span><span class="p">)</span>
 <span class="n">CFD</span><span class="p">(</span><span class="s1">&#39;IBUS30&#39;</span><span class="p">)</span>
 <span class="n">Future</span><span class="p">(</span><span class="s1">&#39;ES&#39;</span><span class="p">,</span> <span class="s1">&#39;20180921&#39;</span><span class="p">,</span> <span class="s1">&#39;GLOBEX&#39;</span><span class="p">)</span>
@@ -1687,9 +1745,12 @@ or a general Contract if secType is not given.</p>
 <dd><p>Current market data such as bid, ask, last price, etc. for a contract.</p>
 <p>Streaming level-1 ticks of type <code class="docutils literal"><span class="pre">TickData</span></code> are stored in
 the <code class="docutils literal"><span class="pre">ticks</span></code> list.</p>
-<p>Streaming level-2 ticks of type <code class="xref py py-class docutils literal"><span class="pre">objects.MktDepthData</span></code> are stored in the
+<p>Streaming level-2 ticks of type <code class="docutils literal"><span class="pre">MktDepthData</span></code> are stored in the
 <code class="docutils literal"><span class="pre">domTicks</span></code> list. The order book (DOM) is available as lists of
 <code class="docutils literal"><span class="pre">DOMLevel</span></code> in <code class="docutils literal"><span class="pre">domBids</span></code> and <code class="docutils literal"><span class="pre">domAsks</span></code>.</p>
+<p>For options the <code class="docutils literal"><span class="pre">OptionComputation</span></code> values for the bid, ask, resp.
+last price are stored in the <code class="docutils literal"><span class="pre">bidGreeks</span></code>, <code class="docutils literal"><span class="pre">askGreeks</span></code> resp.
+<code class="docutils literal"><span class="pre">lastGreeks</span></code> attributes.</p>
 <p>Attribute values can be given positionally or as keyword.
 If an attribute is not given it will take its value from the
 ‘defaults’ class member. If an attribute is given both positionally
@@ -1697,6 +1758,11 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.ask">
 <code class="descname">ask</code><a class="headerlink" href="#ib_insync.ticker.Ticker.ask" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.askGreeks">
+<code class="descname">askGreeks</code><a class="headerlink" href="#ib_insync.ticker.Ticker.askGreeks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1712,6 +1778,11 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.bid">
 <code class="descname">bid</code><a class="headerlink" href="#ib_insync.ticker.Ticker.bid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.bidGreeks">
+<code class="descname">bidGreeks</code><a class="headerlink" href="#ib_insync.ticker.Ticker.bidGreeks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1741,7 +1812,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.defaults">
-<code class="descname">defaults</code><em class="property"> = {'contract': None, 'time': nan, 'bid': nan, 'bidSize': nan, 'ask': nan, 'askSize': nan, 'last': nan, 'lastSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'volume': nan, 'open': nan, 'high': nan, 'low': nan, 'close': nan, 'low13week': nan, 'high13week': nan, 'low26week': nan, 'high26week': nan, 'low52week': nan, 'high52week': nan, 'avVolume': nan, 'putOpenInterest': nan, 'callOpenInterest': nan, 'putVolume': nan, 'callVolume': nan, 'futuresOpenInterest': nan, 'ticks': None, 'domBids': None, 'domAsks': None, 'domTicks': None}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'contract': None, 'time': nan, 'bid': nan, 'bidSize': nan, 'ask': nan, 'askSize': nan, 'last': nan, 'lastSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'volume': nan, 'open': nan, 'high': nan, 'low': nan, 'close': nan, 'low13week': nan, 'high13week': nan, 'low26week': nan, 'high26week': nan, 'low52week': nan, 'high52week': nan, 'avVolume': nan, 'putOpenInterest': nan, 'callOpenInterest': nan, 'putVolume': nan, 'callVolume': nan, 'futuresOpenInterest': nan, 'ticks': None, 'domBids': None, 'domAsks': None, 'domTicks': None, 'bidGreeks': None, 'askGreeks': None, 'lastGreeks': None, 'modelGreeks': None}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1790,6 +1861,11 @@ and as keyword, the keyword wins.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.lastGreeks">
+<code class="descname">lastGreeks</code><a class="headerlink" href="#ib_insync.ticker.Ticker.lastGreeks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.lastSize">
 <code class="descname">lastSize</code><a class="headerlink" href="#ib_insync.ticker.Ticker.lastSize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1824,6 +1900,11 @@ and as keyword, the keyword wins.</p>
 <li>close price</li>
 </ul>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.modelGreeks">
+<code class="descname">modelGreeks</code><a class="headerlink" href="#ib_insync.ticker.Ticker.modelGreeks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.open">
@@ -1895,7 +1976,7 @@ and as keyword, the keyword wins.</p>
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">Object</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#Object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.Object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base object, with:</p>
 <ul class="simple">
-<li>__slots__ set to avoid typos;</li>
+<li>__slots__ to avoid typos;</li>
 <li>A general constructor;</li>
 <li>A general string representation;</li>
 <li>A default equality testing that compares attributes.</li>
@@ -3109,6 +3190,132 @@ and as keyword, the keyword wins.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="ib_insync.objects.TickAttribute">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">TickAttribute</code><span class="sig-paren">(</span><em>canAutoExecute</em>, <em>pastLimit</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.TickAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of TickAttribute(canAutoExecute, pastLimit)</p>
+<dl class="attribute">
+<dt id="ib_insync.objects.TickAttribute.canAutoExecute">
+<code class="descname">canAutoExecute</code><a class="headerlink" href="#ib_insync.objects.TickAttribute.canAutoExecute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.TickAttribute.pastLimit">
+<code class="descname">pastLimit</code><a class="headerlink" href="#ib_insync.objects.TickAttribute.pastLimit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.objects.HistoricalTick">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">HistoricalTick</code><span class="sig-paren">(</span><em>time</em>, <em>price</em>, <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.HistoricalTick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of HistoricalTick(time, price, size)</p>
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTick.price">
+<code class="descname">price</code><a class="headerlink" href="#ib_insync.objects.HistoricalTick.price" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTick.size">
+<code class="descname">size</code><a class="headerlink" href="#ib_insync.objects.HistoricalTick.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTick.time">
+<code class="descname">time</code><a class="headerlink" href="#ib_insync.objects.HistoricalTick.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.objects.HistoricalTickBidAsk">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">HistoricalTickBidAsk</code><span class="sig-paren">(</span><em>time</em>, <em>mask</em>, <em>priceBid</em>, <em>priceAsk</em>, <em>sizeBid</em>, <em>sizeAsk</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.HistoricalTickBidAsk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of HistoricalTickBidAsk(time, mask, priceBid, priceAsk, sizeBid, sizeAsk)</p>
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTickBidAsk.mask">
+<code class="descname">mask</code><a class="headerlink" href="#ib_insync.objects.HistoricalTickBidAsk.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTickBidAsk.priceAsk">
+<code class="descname">priceAsk</code><a class="headerlink" href="#ib_insync.objects.HistoricalTickBidAsk.priceAsk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTickBidAsk.priceBid">
+<code class="descname">priceBid</code><a class="headerlink" href="#ib_insync.objects.HistoricalTickBidAsk.priceBid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTickBidAsk.sizeAsk">
+<code class="descname">sizeAsk</code><a class="headerlink" href="#ib_insync.objects.HistoricalTickBidAsk.sizeAsk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTickBidAsk.sizeBid">
+<code class="descname">sizeBid</code><a class="headerlink" href="#ib_insync.objects.HistoricalTickBidAsk.sizeBid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTickBidAsk.time">
+<code class="descname">time</code><a class="headerlink" href="#ib_insync.objects.HistoricalTickBidAsk.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.objects.HistoricalTickLast">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">HistoricalTickLast</code><span class="sig-paren">(</span><em>time</em>, <em>mask</em>, <em>price</em>, <em>size</em>, <em>exchange</em>, <em>specialConditions</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.HistoricalTickLast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of HistoricalTickLast(time, mask, price, size, exchange, specialConditions)</p>
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTickLast.exchange">
+<code class="descname">exchange</code><a class="headerlink" href="#ib_insync.objects.HistoricalTickLast.exchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTickLast.mask">
+<code class="descname">mask</code><a class="headerlink" href="#ib_insync.objects.HistoricalTickLast.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTickLast.price">
+<code class="descname">price</code><a class="headerlink" href="#ib_insync.objects.HistoricalTickLast.price" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTickLast.size">
+<code class="descname">size</code><a class="headerlink" href="#ib_insync.objects.HistoricalTickLast.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTickLast.specialConditions">
+<code class="descname">specialConditions</code><a class="headerlink" href="#ib_insync.objects.HistoricalTickLast.specialConditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.HistoricalTickLast.time">
+<code class="descname">time</code><a class="headerlink" href="#ib_insync.objects.HistoricalTickLast.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="ib_insync.objects.MktDepthData">
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">MktDepthData</code><span class="sig-paren">(</span><em>time</em>, <em>position</em>, <em>marketMaker</em>, <em>operation</em>, <em>side</em>, <em>price</em>, <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.MktDepthData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of MktDepthData(time, position, marketMaker, operation, side, price, size)</p>
@@ -3157,30 +3364,6 @@ and as keyword, the keyword wins.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="ib_insync.objects.BracketOrder">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">BracketOrder</code><span class="sig-paren">(</span><em>parent</em>, <em>takeProfit</em>, <em>stopLoss</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.BracketOrder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create new instance of BracketOrder(parent, takeProfit, stopLoss)</p>
-<dl class="attribute">
-<dt id="ib_insync.objects.BracketOrder.parent">
-<code class="descname">parent</code><a class="headerlink" href="#ib_insync.objects.BracketOrder.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.objects.BracketOrder.stopLoss">
-<code class="descname">stopLoss</code><a class="headerlink" href="#ib_insync.objects.BracketOrder.stopLoss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.objects.BracketOrder.takeProfit">
-<code class="descname">takeProfit</code><a class="headerlink" href="#ib_insync.objects.BracketOrder.takeProfit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="ib_insync.objects.DOMLevel">
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">DOMLevel</code><span class="sig-paren">(</span><em>price</em>, <em>size</em>, <em>marketMaker</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.DOMLevel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of DOMLevel(price, size, marketMaker)</p>
@@ -3199,6 +3382,30 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.objects.DOMLevel.size">
 <code class="descname">size</code><a class="headerlink" href="#ib_insync.objects.DOMLevel.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.objects.BracketOrder">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">BracketOrder</code><span class="sig-paren">(</span><em>parent</em>, <em>takeProfit</em>, <em>stopLoss</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.BracketOrder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of BracketOrder(parent, takeProfit, stopLoss)</p>
+<dl class="attribute">
+<dt id="ib_insync.objects.BracketOrder.parent">
+<code class="descname">parent</code><a class="headerlink" href="#ib_insync.objects.BracketOrder.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.BracketOrder.stopLoss">
+<code class="descname">stopLoss</code><a class="headerlink" href="#ib_insync.objects.BracketOrder.stopLoss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.BracketOrder.takeProfit">
+<code class="descname">takeProfit</code><a class="headerlink" href="#ib_insync.objects.BracketOrder.takeProfit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
 </dd></dl>
 
@@ -3428,60 +3635,54 @@ and as keyword, the keyword wins.</p>
 
 <dl class="class">
 <dt id="ib_insync.objects.OptionComputation">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">OptionComputation</code><span class="sig-paren">(</span><em>tickType</em>, <em>impliedVol</em>, <em>delta</em>, <em>optPrice</em>, <em>pvDividend</em>, <em>gamma</em>, <em>vega</em>, <em>theta</em>, <em>undPrice</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.OptionComputation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create new instance of OptionComputation(tickType, impliedVol, delta, optPrice, pvDividend, gamma, vega, theta, undPrice)</p>
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">OptionComputation</code><span class="sig-paren">(</span><em>impliedVol</em>, <em>delta</em>, <em>optPrice</em>, <em>pvDividend</em>, <em>gamma</em>, <em>vega</em>, <em>theta</em>, <em>undPrice</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.OptionComputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of OptionComputation(impliedVol, delta, optPrice, pvDividend, gamma, vega, theta, undPrice)</p>
 <dl class="attribute">
 <dt id="ib_insync.objects.OptionComputation.delta">
 <code class="descname">delta</code><a class="headerlink" href="#ib_insync.objects.OptionComputation.delta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
+<dd><p>Alias for field number 1</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.objects.OptionComputation.gamma">
 <code class="descname">gamma</code><a class="headerlink" href="#ib_insync.objects.OptionComputation.gamma" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 5</p>
+<dd><p>Alias for field number 4</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.objects.OptionComputation.impliedVol">
 <code class="descname">impliedVol</code><a class="headerlink" href="#ib_insync.objects.OptionComputation.impliedVol" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
+<dd><p>Alias for field number 0</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.objects.OptionComputation.optPrice">
 <code class="descname">optPrice</code><a class="headerlink" href="#ib_insync.objects.OptionComputation.optPrice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
+<dd><p>Alias for field number 2</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.objects.OptionComputation.pvDividend">
 <code class="descname">pvDividend</code><a class="headerlink" href="#ib_insync.objects.OptionComputation.pvDividend" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
+<dd><p>Alias for field number 3</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.objects.OptionComputation.theta">
 <code class="descname">theta</code><a class="headerlink" href="#ib_insync.objects.OptionComputation.theta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 7</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.objects.OptionComputation.tickType">
-<code class="descname">tickType</code><a class="headerlink" href="#ib_insync.objects.OptionComputation.tickType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
+<dd><p>Alias for field number 6</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.objects.OptionComputation.undPrice">
 <code class="descname">undPrice</code><a class="headerlink" href="#ib_insync.objects.OptionComputation.undPrice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 8</p>
+<dd><p>Alias for field number 7</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.objects.OptionComputation.vega">
 <code class="descname">vega</code><a class="headerlink" href="#ib_insync.objects.OptionComputation.vega" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 6</p>
+<dd><p>Alias for field number 5</p>
 </dd></dl>
 
 </dd></dl>
@@ -3712,13 +3913,6 @@ and as keyword, the keyword wins.</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="ib_insync.wrapper.Wrapper.clearPendingTickers">
-<code class="descname">clearPendingTickers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.clearPendingTickers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.clearPendingTickers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear both the list of pending tickers and their pending
-ticks and domTicks.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.commissionReport">
 <code class="descname">commissionReport</code><span class="sig-paren">(</span><em>commissionReport</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.commissionReport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.commissionReport" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3731,6 +3925,16 @@ ticks and domTicks.</p>
 <dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.contractDetailsEnd">
 <code class="descname">contractDetailsEnd</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.contractDetailsEnd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.contractDetailsEnd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.endLiveBars">
+<code class="descname">endLiveBars</code><span class="sig-paren">(</span><em>bars</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.endLiveBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.endLiveBars" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.endTicker">
+<code class="descname">endTicker</code><span class="sig-paren">(</span><em>ticker</em>, <em>isMktDepth=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.endTicker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.endTicker" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3774,6 +3978,11 @@ ticks and domTicks.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.historicalDataUpdate">
+<code class="descname">historicalDataUpdate</code><span class="sig-paren">(</span><em>reqId</em>, <em>bar</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.historicalDataUpdate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.historicalDataUpdate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.historicalNews">
 <code class="descname">historicalNews</code><span class="sig-paren">(</span><em>reqId</em>, <em>time</em>, <em>providerCode</em>, <em>articleId</em>, <em>headline</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.historicalNews"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.historicalNews" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3781,6 +3990,21 @@ ticks and domTicks.</p>
 <dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.historicalNewsEnd">
 <code class="descname">historicalNewsEnd</code><span class="sig-paren">(</span><em>reqId</em>, <em>_hasMore</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.historicalNewsEnd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.historicalNewsEnd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.historicalTicks">
+<code class="descname">historicalTicks</code><span class="sig-paren">(</span><em>reqId</em>, <em>ticks</em>, <em>done</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.historicalTicks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.historicalTicks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.historicalTicksBidAsk">
+<code class="descname">historicalTicksBidAsk</code><span class="sig-paren">(</span><em>reqId</em>, <em>ticks</em>, <em>done</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.historicalTicksBidAsk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.historicalTicksBidAsk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.historicalTicksLast">
+<code class="descname">historicalTicksLast</code><span class="sig-paren">(</span><em>reqId</em>, <em>ticks</em>, <em>done</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.historicalTicksLast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.historicalTicksLast" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3829,6 +4053,16 @@ ticks and domTicks.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.priceSizeTick">
+<code class="descname">priceSizeTick</code><span class="sig-paren">(</span><em>reqId</em>, <em>tickType</em>, <em>price</em>, <em>size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.priceSizeTick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.priceSizeTick" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.realtimeBar">
+<code class="descname">realtimeBar</code><span class="sig-paren">(</span><em>reqId</em>, <em>time</em>, <em>open_</em>, <em>high</em>, <em>low</em>, <em>close</em>, <em>volume</em>, <em>wap</em>, <em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.realtimeBar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.realtimeBar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.receiveFA">
 <code class="descname">receiveFA</code><span class="sig-paren">(</span><em>_faDataType</em>, <em>faXmlData</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.receiveFA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.receiveFA" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3867,6 +4101,12 @@ ticks and domTicks.</p>
 <dt id="ib_insync.wrapper.Wrapper.setCallback">
 <code class="descname">setCallback</code><span class="sig-paren">(</span><em>eventName</em>, <em>callback</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.setCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.setCallback" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.startLiveBars">
+<code class="descname">startLiveBars</code><span class="sig-paren">(</span><em>reqId</em>, <em>historical=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.startLiveBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.startLiveBars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Associate a live bars subscription with the given reqId.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.startReq">
@@ -3913,16 +4153,6 @@ reqId associated with the contract. Return the ticker.</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="ib_insync.wrapper.Wrapper.tickPrice">
-<code class="descname">tickPrice</code><span class="sig-paren">(</span><em>reqId</em>, <em>tickType</em>, <em>price</em>, <em>_attrib</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.tickPrice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.tickPrice" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.wrapper.Wrapper.tickSize">
-<code class="descname">tickSize</code><span class="sig-paren">(</span><em>reqId</em>, <em>tickType</em>, <em>size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.tickSize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.tickSize" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.tickSnapshotEnd">
 <code class="descname">tickSnapshotEnd</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.tickSnapshotEnd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.tickSnapshotEnd" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3963,9 +4193,18 @@ reqId associated with the contract. Return the ticker.</p>
 <div class="section" id="module-ib_insync.util">
 <span id="utilities"></span><h2>Utilities<a class="headerlink" href="#module-ib_insync.util" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="ib_insync.util.dateRange">
-<code class="descclassname">ib_insync.util.</code><code class="descname">dateRange</code><span class="sig-paren">(</span><em>startDate</em>, <em>endDate</em>, <em>skipWeekend=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#dateRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.dateRange" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterate the days from given start date up to and including end date.</p>
+<dt id="ib_insync.util.df">
+<code class="descclassname">ib_insync.util.</code><code class="descname">df</code><span class="sig-paren">(</span><em>objs</em>, <em>labels=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create pandas DataFrame from the sequence of same-type objects.
+When a list of labels is given then only retain those labels and
+drop the rest.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.barplot">
+<code class="descclassname">ib_insync.util.</code><code class="descname">barplot</code><span class="sig-paren">(</span><em>bars</em>, <em>title=''</em>, <em>upColor='blue'</em>, <em>downColor='red'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#barplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.barplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create candlestick plot for the given bars. The bars can be given as
+a DataFrame or as a list of bar objects.</p>
 </dd></dl>
 
 <dl class="function">
@@ -4005,9 +4244,51 @@ reqId associated with the contract. Return the ticker.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="ib_insync.util.syncAwait">
+<code class="descclassname">ib_insync.util.</code><code class="descname">syncAwait</code><span class="sig-paren">(</span><em>future</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#syncAwait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.syncAwait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synchronously wait until future is done, accounting for the possibilty
+that the event loop is already running.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.syncAwaitAsyncio">
+<code class="descclassname">ib_insync.util.</code><code class="descname">syncAwaitAsyncio</code><span class="sig-paren">(</span><em>future</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#syncAwaitAsyncio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.syncAwaitAsyncio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.syncAwaitQt">
+<code class="descclassname">ib_insync.util.</code><code class="descname">syncAwaitQt</code><span class="sig-paren">(</span><em>self</em>, <em>future</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#syncAwaitQt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.syncAwaitQt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.patchAsyncio">
+<code class="descclassname">ib_insync.util.</code><code class="descname">patchAsyncio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#patchAsyncio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.patchAsyncio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Patch asyncio to use pure Python implementation of Future and Task,
+to deal with nested event loops in asynAwait.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.startLoop">
+<code class="descclassname">ib_insync.util.</code><code class="descname">startLoop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#startLoop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.startLoop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use asyncio event loop for Jupyter notebooks.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="ib_insync.util.useQt">
 <code class="descclassname">ib_insync.util.</code><code class="descname">useQt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#useQt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.useQt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Let the Qt event loop spin the asycio event loop.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.formatIBDatetime">
+<code class="descclassname">ib_insync.util.</code><code class="descname">formatIBDatetime</code><span class="sig-paren">(</span><em>dt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#formatIBDatetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.formatIBDatetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format date or datetime to what string that IB uses.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.parseIBDatetime">
+<code class="descclassname">ib_insync.util.</code><code class="descname">parseIBDatetime</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#parseIBDatetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.parseIBDatetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse string in IB date or datatime format to datetime.</p>
 </dd></dl>
 
 </div>

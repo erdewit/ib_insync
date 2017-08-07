@@ -16,10 +16,11 @@ __all__ = (
     'Execution CommissionReport ExecutionFilter '
     'BarData RealTimeBar HistogramData '
     'NewsProvider DepthMktDataDescription '
-    'AccountValue RealTimeBar TickData MktDepthData BracketOrder '
-    'DOMLevel Trade TradeLogEntry ScanData TagValue '
-    'PortfolioItem Position Fill '
-    'OptionComputation OptionChain '
+    'AccountValue RealTimeBar TickData TickAttribute '
+    'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
+    'MktDepthData DOMLevel '
+    'BracketOrder Trade TradeLogEntry ScanData TagValue '
+    'PortfolioItem Position Fill OptionComputation OptionChain '
     'NewsArticle HistoricalNews NewsTick NewsBulletin '
     'ConnectionStats '
     ).split()
@@ -29,7 +30,7 @@ class Object:
     """
     Base object, with:
     
-    * __slots__ set to avoid typos;
+    * __slots__ to avoid typos;
     * A general constructor;
     * A general string representation;
     * A default equality testing that compares attributes.
@@ -212,7 +213,8 @@ class DepthMktDataDescription(Object):
     __init__ = Object.__init__
 
 
-class Trade(namedtuple('Trade', 'contract order orderStatus fills log')):
+class Trade(namedtuple('Trade',
+        'contract order orderStatus fills log')):
     __slots__ = ()
 
     def isActive(self):
@@ -239,6 +241,18 @@ AccountValue = namedtuple('AccountValue',
 
 TickData = namedtuple('TickData',
     'time tickType price size')
+
+TickAttribute = namedtuple('TickAttribute',
+    'canAutoExecute pastLimit')
+
+HistoricalTick = namedtuple('HistoricalTick',
+    'time price size')
+
+HistoricalTickBidAsk = namedtuple('HistoricalTickBidAsk',
+    'time mask priceBid priceAsk sizeBid sizeAsk')
+
+HistoricalTickLast = namedtuple('HistoricalTickLast',
+    'time mask price size exchange specialConditions')
 
 MktDepthData = namedtuple('MktDepthData',
     'time position marketMaker operation side price size')
@@ -269,7 +283,7 @@ Fill = namedtuple('Fill',
     'contract execution commissionReport time')
 
 OptionComputation = namedtuple('OptionComputation',
-    'tickType impliedVol delta optPrice pvDividend gamma vega theta undPrice')
+    'impliedVol delta optPrice pvDividend gamma vega theta undPrice')
 
 OptionChain = namedtuple('OptionChain',
     'exchange underlyingConId tradingClass multiplier expirations strikes')
