@@ -456,9 +456,9 @@ class Wrapper(EWrapper):
         elif tickType in (8, 74):
             ticker.volume = size
         elif tickType == 27:
-            ticker.putOpenInterest = size
-        elif tickType == 28:
             ticker.callOpenInterest = size
+        elif tickType == 28:
+            ticker.putOpenInterest = size
         elif tickType == 29:
             ticker.callVolume = size
         elif tickType == 30:

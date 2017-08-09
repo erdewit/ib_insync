@@ -84,6 +84,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.2
+^^^^^^^^^^^^^
+
+* fixed swappped ticker.putOpenInterest vs ticker.callOpenInterest
+
 Version 0.8.1
 ^^^^^^^^^^^^^
 
