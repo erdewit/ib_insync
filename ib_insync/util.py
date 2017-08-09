@@ -181,17 +181,16 @@ def syncAwait(future):
     Synchronously wait until future is done, accounting for the possibilty
     that the event loop is already running.
     """
+    loop = asyncio.get_event_loop()
+
     try:
         import quamash
+        isQuamash = isinstance(loop, quamash.QEventLoop)
     except ImportError:
-        quamash = None
+        isQuamash = False
 
-    loop = asyncio.get_event_loop()
-    if loop.is_running():
-        if quamash and isinstance(loop, quamash.QEventLoop):
-            result = syncAwaitQt(future)
-        else:
-            result = syncAwaitAsyncio(future)
+    if loop.is_running() and not isQuamash:
+        result = syncAwaitAsyncio(future)
     else:
         result = loop.run_until_complete(future)
     return result
@@ -199,7 +198,6 @@ def syncAwait(future):
 
 def syncAwaitAsyncio(future):
     assert asyncio.Task is asyncio.tasks._PyTask
-    asyncio._asyncAwait = True
     loop = asyncio.get_event_loop()
     preserved_ready = list(loop._ready)
     loop._ready.clear()
@@ -215,27 +213,6 @@ def syncAwaitAsyncio(future):
         current_tasks[loop] = preserved_task
     else:
         current_tasks.pop(loop, None)
-    asyncio._asyncAwait = False
-    return future.result()
-
-
-def syncAwaitQt(self, future):
-    import PyQt5.Qt as qt
-
-    future = asyncio.ensure_future(future)
-    def stop(*_args):
-        self.stop()
-    future.add_done_callback(stop)
-    qApp = qt.QApplication.instance()
-    try:
-        self.run_forever()
-    finally:
-        future.remove_done_callback(stop)
-    while not future.done():
-        qApp.processEvents()
-        if future.done():
-            break
-        time.sleep(0.005)
     return future.result()
 
 
@@ -244,12 +221,10 @@ def patchAsyncio():
     Patch asyncio to use pure Python implementation of Future and Task,
     to deal with nested event loops in asynAwait.
     """
-    if asyncio.Task is not asyncio.tasks._PyTask:
-        asyncio.Task = asyncio.tasks._CTask = asyncio.tasks.Task = \
-                asyncio.tasks._PyTask
-        asyncio.Future = asyncio.futures._CFuture = asyncio.futures.Future = \
-                asyncio.futures._PyFuture
-    asyncio._asyncAwait = False
+    asyncio.Task = asyncio.tasks._CTask = asyncio.tasks.Task = \
+            asyncio.tasks._PyTask
+    asyncio.Future = asyncio.futures._CFuture = asyncio.futures.Future = \
+            asyncio.futures._PyFuture
 
 
 def startLoop():
@@ -294,6 +269,25 @@ def useQt():
         _qApp = qt.QApplication(sys.argv)
     loop = quamash.QEventLoop()
     asyncio.set_event_loop(loop)
+
+    # let run_until_complete handle nested event loops
+    def run_until_complete(self, future):
+        future = asyncio.ensure_future(future)
+        def stop(*_args):
+            self.stop()
+        future.add_done_callback(stop)
+        qApp = qt.QApplication.instance()
+        try:
+            self.run_forever()
+        finally:
+            future.remove_done_callback(stop)
+        while not future.done():
+            qApp.processEvents()
+            if future.done():
+                break
+            time.sleep(0.005)
+        return future.result()
+    quamash.QEventLoop.run_until_complete = run_until_complete
 
 
 def formatIBDatetime(dt):

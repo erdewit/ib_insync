@@ -84,6 +84,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.1
+^^^^^^^^^^^^^
+
+* fixed wrapper.tickSize regression
+
 Version 0.8.0
 ^^^^^^^^^^^^^
 

@@ -10,7 +10,6 @@ from ib_insync.client import Client
 from ib_insync.wrapper import Wrapper
 from ib_insync.contract import Contract
 from ib_insync.ticker import Ticker
-from ib_insync.contract import Forex, CFD, Commodity
 from ib_insync.order import Order, LimitOrder, StopOrder, MarketOrder
 from ib_insync.objects import *
 import ib_insync.util as util
@@ -113,9 +112,8 @@ class IB:
         """
         By default run the event loop forever.
         
-        When awaitables (like Tasks, Futures or coroutines) are given
-        then run the event loop until each has completed and return
-        the list of their results.
+        When awaitables (like Tasks, Futures or coroutines) are given then
+        run the event loop until each has completed and returntheir results.
         """
         loop = asyncio.get_event_loop()
         if not awaitables:
@@ -1113,7 +1111,7 @@ class IB:
 if __name__ == '__main__':
 #     import uvloop
 #     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    from ib_insync.contract import Stock, Index, Option, Future
+    from ib_insync.contract import Stock, Forex, Index, Option, Future
     asyncio.get_event_loop().set_debug(True)
     util.logToConsole(logging.INFO)
     ib = IB()
@@ -1149,8 +1147,8 @@ if __name__ == '__main__':
         print(ib.calculateOptionPrice(option,
                 volatility=0.14, underPrice=525))
     if 0:
-        ib.qualifyContracts(option)
-        ticker = ib.reqTickers(option)
+        ib.qualifyContracts(amd)
+        ticker = ib.reqTickers(amd)
         print(ticker)
     if 0:
         ib.qualifyContracts(aex)
@@ -1225,5 +1223,3 @@ if __name__ == '__main__':
             print(t)
 
     # ib.disconnect()
-
-

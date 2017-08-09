@@ -20,7 +20,8 @@ class Ticker(Object):
     
     For options the ``OptionComputation`` values for the bid, ask, resp.
     last price are stored in the ``bidGreeks``, ``askGreeks`` resp.
-    ``lastGreeks`` attributes.
+    ``lastGreeks`` attributes. There is also ``modelGreeks`` that conveys
+    the greeks as calculated by Interactive Brokers' option model.
     """
     defaults = {
         'contract': None,
@@ -48,6 +49,9 @@ class Ticker(Object):
         'high26week': nan,
         'low52week': nan,
         'high52week': nan,
+        'bidYield': nan,
+        'askYield': nan,
+        'lastYield': nan,
         'avVolume': nan,
         'putOpenInterest': nan,
         'callOpenInterest': nan,

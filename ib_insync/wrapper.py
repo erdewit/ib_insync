@@ -370,30 +370,37 @@ class Wrapper(EWrapper):
     @iswrapper
     # additional wrapper method provided by Client
     def priceSizeTick(self, reqId, tickType, price, size):
-        ticker = self.reqId2Ticker[reqId]
+        ticker = self.reqId2Ticker.get(reqId)
+        if not ticker:
+            _logger.error(f'priceSizeTick: Unknown reqId: {reqId}')
+            return
         ticker.time = self.lastTime
         # https://interactivebrokers.github.io/tws-api/tick_types.html
         if tickType in (1, 66):
-            ticker.prevBid = ticker.bid
-            ticker.prevBidSize = ticker.bidSize
-            ticker.bid = price
-            ticker.bidSize = size
+            if price != ticker.bid:
+                ticker.prevBid = ticker.bid
+                ticker.bid = price
+            if size != ticker.bidSize:
+                ticker.prevBidSize = ticker.bidSize
+                ticker.bidSize = size
         elif tickType in (2, 67):
-            ticker.prevAsk = ticker.ask
-            ticker.prevAskSize = ticker.askSize
-            ticker.ask = price
-            ticker.askSize = size
+            if price != ticker.ask:
+                ticker.prevAsk = ticker.ask
+                ticker.ask = price
+            if size != ticker.askSize:
+                ticker.prevAskSize = ticker.askSize
+                ticker.askSize = size
         elif tickType in (4, 68):
-            ticker.prevLast = ticker.last
-            ticker.prevLastSize = ticker.lastSize
-            ticker.last = price
-            ticker.lastSize = size
+            if price != ticker.last:
+                ticker.prevLast = ticker.last
+                ticker.last = price
+            if size != ticker.lastSize:
+                ticker.prevLastSize = ticker.lastSize
+                ticker.lastSize = size
         elif tickType in (6, 72):
             ticker.high = price
         elif tickType in (7, 73):
             ticker.low = price
-        elif tickType in (8, 74):
-            ticker.volume = size
         elif tickType == 9:
             ticker.close = price
         elif tickType == 14:
@@ -412,6 +419,42 @@ class Wrapper(EWrapper):
             ticker.high52week = price
         elif tickType == 21:
             ticker.avVolume = price
+        elif tickType == 50:
+            ticker.bidYield = price
+        elif tickType == 51:
+            ticker.askYield = price
+        elif tickType == 52:
+            ticker.lastYield = price
+        tick = TickData(self.lastTime, tickType, price, size)
+        ticker.ticks.append(tick)
+        self.pendingTickers.add(ticker)
+
+    @iswrapper
+    def tickSize(self, reqId, tickType, size):
+        ticker = self.reqId2Ticker.get(reqId)
+        if not ticker:
+            _logger.error(f'tickSize: Unknown reqId: {reqId}')
+            return
+        ticker.time = self.lastTime
+        price = -1.0
+        # https://interactivebrokers.github.io/tws-api/tick_types.html
+        if tickType in (0, 69):
+            price = ticker.bid
+            if size != ticker.bidSize:
+                ticker.prevBidSize = ticker.bidSize
+                ticker.bidSize = size
+        elif tickType in (3, 70):
+            price = ticker.ask
+            if size != ticker.askSize:
+                ticker.prevAskSize = ticker.askSize
+                ticker.askSize = size
+        elif tickType in (5, 71):
+            price = ticker.last
+            if size != ticker.lastSize:
+                ticker.prevLastSize = ticker.lastSize
+                ticker.lastSize = size
+        elif tickType in (8, 74):
+            ticker.volume = size
         elif tickType == 27:
             ticker.putOpenInterest = size
         elif tickType == 28:
@@ -422,10 +465,9 @@ class Wrapper(EWrapper):
             ticker.putVolume = size
         elif tickType == 86:
             ticker.futuresOpenInterest = size
-        if price != -1.0 and size != 0:
-            tick = TickData(self.lastTime, tickType, price, size)
-            ticker.ticks.append(tick)
-            self.pendingTickers.add(ticker)
+        tick = TickData(self.lastTime, tickType, price, size)
+        ticker.ticks.append(tick)
+        self.pendingTickers.add(ticker)
 
     @iswrapper
     def tickSnapshotEnd(self, reqId):

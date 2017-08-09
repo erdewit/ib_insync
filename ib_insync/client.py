@@ -297,13 +297,17 @@ class Client(EClient):
         """
         msgId = int(fields[0])
 
-        # bypass the abapi decoder for ticks since it is rather inefficient
+        # bypass the abapi decoder for ticks for more efficiency
         if msgId == 1:
             if self._priceSizeTick:
                 _, _, reqId, tickType, price, size, _ = fields
                 self._priceSizeTick(int(reqId), int(tickType),
                         float(price), int(size))
                 return
+        elif msgId == 2:
+            _, _, reqId, tickType, size = fields
+            self.wrapper.tickSize(int(reqId), int(tickType), int(size))
+            return
         elif msgId == 12:
             _, _, reqId, position, operation, side, price, size = fields
             self.wrapper.updateMktDepth(int(reqId), int(position),
@@ -362,7 +366,7 @@ class Client(EClient):
         elif msgId == 98:
             reqId, nTicks, *fields = fields
             ticks = []
-            for _ in range(nTicks):
+            for _ in range(int(nTicks)):
                 time, mask, price, size, exchange, \
                         specialConditions, *fields = fields
                 tick = HistoricalTickLast(int(time), int(mask),

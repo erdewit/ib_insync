@@ -154,7 +154,7 @@ class OrderStatus(Object):
     __slots__ = defaults.keys()
     __init__ = Object.__init__
     OrderStates = ('PendingSubmit', 'PendingCancel', 'PreSubmitted',
-            'Submitted', 'ApiPending', 'ApiCanceled', 'Cancelled',
+            'Submitted', 'ApiPending', 'ApiCancelled', 'Cancelled',
             'Filled', 'Inactive')
     # ApiPending is undocumented, it can be returned from req(All)OpenOrders
 for k in OrderStatus.OrderStates:
