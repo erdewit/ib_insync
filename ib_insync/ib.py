@@ -62,7 +62,7 @@ class IB:
 
     So what is "too long"? That depends on the situation. If, for example,
     the timestamp of tick data is to remain accurate within a millisecond,
-    then the user code must not spend longer than a milisecond. If, on
+    then the user code must not spend longer than a millisecond. If, on
     the other extreme, there is very little incoming data and there
     is no desire for accurate timestamps, then the user code can block
     for hours.
@@ -113,7 +113,7 @@ class IB:
         By default run the event loop forever.
         
         When awaitables (like Tasks, Futures or coroutines) are given then
-        run the event loop until each has completed and returntheir results.
+        run the event loop until each has completed and return their results.
         """
         loop = asyncio.get_event_loop()
         if not awaitables:
@@ -847,7 +847,7 @@ class IB:
     @api
     def cancelNewsBulletins(self):
         """
-        Cancel subscribtion to IB news bulletins.
+        Cancel subscription to IB news bulletins.
         """
         self.client.cancelNewsBulletins()
 

@@ -135,7 +135,7 @@ def isNan(x: float):
 
 def formatSI(n):
     """
-    Format the integer or float n to 3 signficant digits + SI prefix.
+    Format the integer or float n to 3 significant digits + SI prefix.
     """
     s = ''
     if n < 0:
@@ -178,7 +178,7 @@ class timeit:
 
 def syncAwait(future):
     """
-    Synchronously wait until future is done, accounting for the possibilty
+    Synchronously wait until future is done, accounting for the possibility
     that the event loop is already running.
     """
     loop = asyncio.get_event_loop()
@@ -258,7 +258,7 @@ def startLoop():
 
 def useQt():
     """
-    Let the Qt event loop spin the asycio event loop.
+    Let the Qt event loop spin the asyncio event loop.
     """
     import PyQt5.Qt as qt
     import quamash
@@ -307,7 +307,7 @@ def formatIBDatetime(dt):
 
 def parseIBDatetime(s):
     """
-    Parse string in IB date or datatime format to datetime.
+    Parse string in IB date or datetime format to datetime.
     """
     if len(s) == 8:
         # YYYYmmdd

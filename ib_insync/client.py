@@ -36,7 +36,7 @@ class Client(EClient):
     * ``client.connect()`` will block until the client is ready to
       serve requests; It is not necessary to wait for ``nextValidId``
       to start requests as the client has already done that.
-      The reqId is directly available  with :py:meth:`.getReqId()`.
+      The reqId is directly available with :py:meth:`.getReqId()`.
       
     * ``client.connectAsync()`` is a coroutine for connecting asynchronously.
       
@@ -129,10 +129,10 @@ class Client(EClient):
     def connect(self, host, port, clientId, timeout=2):
         """
         Connect to TWS/IBG at given host and port and with a clientId
-        that is not in use elsewere.
+        that is not in use elsewhere.
         
         When timeout is not zero, asyncio.TimeoutError
-        is raised if the connection is not established within the timout period.
+        is raised if the connection is not established within the timeout period.
         """
         loop = asyncio.get_event_loop()
         loop.run_until_complete(
@@ -297,7 +297,7 @@ class Client(EClient):
         """
         msgId = int(fields[0])
 
-        # bypass the abapi decoder for ticks for more efficiency
+        # bypass the ibapi decoder for ticks for more efficiency
         if msgId == 1:
             if self._priceSizeTick:
                 _, _, reqId, tickType, price, size, _ = fields

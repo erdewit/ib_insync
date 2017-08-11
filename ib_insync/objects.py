@@ -96,7 +96,7 @@ class Object:
 
     def nonDefaults(self):
         """
-        Get a dicionary of all attributes that differ from the default.
+        Get a dictionary of all attributes that differ from the default.
         """
         nonDefaults = {}
         for k, d in self.__class__.defaults.items():
