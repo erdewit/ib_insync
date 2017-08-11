@@ -18,6 +18,7 @@ __all__ = ['IB']
 
 _logger = logging.getLogger('ib_insync.ib')
 
+
 def api(f): return f  # visual marker for API request methods
 
 
@@ -81,7 +82,7 @@ class IB:
         self.wrapper = Wrapper()
         self.client = Client(self.wrapper)
 
-    def connect(self, host: str, port: int, clientId: int, timeout: float=2):
+    def connect(self, host: str, port: int, clientId: int, timeout: int=2):
         """
         Connect to a TWS or IB gateway application running at host:port.
         After the connect the client is immediately ready to serve requests. 
@@ -108,7 +109,8 @@ class IB:
             f'session time {util.formatSI(stats.duration)}s.')
         self.client.disconnect()
 
-    def run(self, *awaitables: [Awaitable]):
+    @staticmethod
+    def run(*awaitables: [Awaitable]):
         """
         By default run the event loop forever.
         
@@ -134,8 +136,9 @@ class IB:
         self.run(asyncio.sleep(secs))
         return True
 
-    def timeRange(self, start: datetime.time, end: datetime.time,
-            step: float) -> Iterator[datetime.datetime]:
+    @staticmethod
+    def timeRange(start: datetime.time, end: datetime.time,
+                  step: float) -> Iterator[datetime.datetime]:
         """
         Iterator that waits periodically until certain time points are
         reached while yielding those time points.
@@ -348,7 +351,7 @@ class IB:
         return self.run(self.qualifyContractsAsync(*contracts))
 
     def bracketOrder(self, action: str, quantity: float,
-            limitPrice:float, takeProfitPrice: float,
+            limitPrice: float, takeProfitPrice: float,
             stopLossPrice: float) -> BracketOrder:
         """
         Create a limit order that is bracketed by a take-profit order and
@@ -379,8 +382,9 @@ class IB:
                 parentId=parent.orderId)
         return BracketOrder(parent, takeProfit, stopLoss)
 
-    def oneCancelsAll(self, orders: [Order],
-            ocaGroup: str, ocaType: int) -> [Order]:
+    @staticmethod
+    def oneCancelsAll(orders: [Order],
+                      ocaGroup: str, ocaType: int) -> [Order]:
         """
         Place the trades in the same OCA group.
         
@@ -798,7 +802,7 @@ class IB:
     def exerciseOptions(self, contract, exerciseAction, exerciseQuantity,
             account, override):
         """
-        https://interactivebrokers.github.io/tws-api/option_exercising.html
+        https://interactivebrokers.github.io/tws-api/options.html#option_exercising
         """
         self.client.exerciseOptions(contract, exerciseAction, exerciseQuantity,
             account, override)
@@ -910,7 +914,7 @@ class IB:
             futures.append(future)
             self.wrapper.startTicker(reqId, contract)
             self.client.reqMktData(reqId, contract, '',
-                    1, regulatorySnapshot, None)
+                    True, regulatorySnapshot, [])
         await asyncio.gather(*futures)
         return [self.ticker(c) for c in contracts]
 
@@ -1105,12 +1109,11 @@ class IB:
         except:
             _logger.error('requestFAAsync: Timeout')
             return
-        return future.result()
 
 
 if __name__ == '__main__':
-#     import uvloop
-#     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    # import uvloop
+    # asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     from ib_insync.contract import Stock, Forex, Index, Option, Future
     asyncio.get_event_loop().set_debug(True)
     util.logToConsole(logging.INFO)
@@ -1126,6 +1129,7 @@ if __name__ == '__main__':
     spy = Stock('SPY', 'ARCA')
     wrongContract = Forex('lalala')
     option = Option('EOE', '20171215', 490, 'P', 'FTA', multiplier=100)
+    es = Future('ES', '201809', 'GLOBEX')
 
     if 0:
         cds = ib.reqContractDetails(aex)
@@ -1205,7 +1209,7 @@ if __name__ == '__main__':
         ticker = ib.reqMktDepth(eurusd, 5)
         while ib.sleep(5):
             print([d.price for d in ticker.domBids],
-                    [d.price for d in ticker.domAsks])
+                  [d.price for d in ticker.domAsks])
     if 0:
         order = MarketOrder('BUY', 100)
         state = ib.whatIfOrder(amd, order)
