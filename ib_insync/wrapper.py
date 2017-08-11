@@ -27,7 +27,7 @@ class Wrapper(EWrapper):
     def reset(self):
         self.accountValues = {}  # (account, tag, currency) -> AccountValue
         self.acctSummary = {}  # (account, tag, currency) -> AccountValue
-        self.portfolio = defaultdict(dict)  # account -> conId -> PorfolioItem
+        self.portfolio = defaultdict(dict)  # account -> conId -> PortfolioItem
         self.positions = defaultdict(dict)  # account -> conId -> Position
         self.trades = {}  # orderId -> Trade
         self.fills = {}  # execId -> Fill
@@ -214,7 +214,7 @@ class Wrapper(EWrapper):
                 _logger.info(f'openOrder: {trade}')
             results = self._results.get('openOrders')
             if results is not None:
-                # response to reqOpenOdrers
+                # response to reqOpenOrders
                 results.append(trade)
 
     @iswrapper
