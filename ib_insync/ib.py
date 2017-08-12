@@ -1,6 +1,8 @@
 import asyncio
 import logging
 import datetime
+import functools
+
 import time
 from typing import Iterator
 from collections.abc import Awaitable  # @UnusedImport
@@ -22,6 +24,15 @@ _logger = logging.getLogger('ib_insync.ib')
 
 def api(f): return f  # visual marker for API request methods
 
+def rw_mode(f):       # access control
+    @functools.wraps(f)
+    def wrapper(self, *args, **kwds):
+        if self.read_only == True:
+            _logger.warning(f'rw_mode: Attempt to call {f.__qualname__} while in ro mode')
+            pass
+        else:
+            return f(self, *args, **kwds)
+    return wrapper
 
 class IB:
     """
@@ -83,13 +94,14 @@ class IB:
         self.wrapper = Wrapper()
         self.client = Client(self.wrapper)
 
-    def connect(self, host: str, port: int, clientId: int, timeout: float=2):
+    def connect(self, host: str, port: int, clientId: int, timeout: float=2, read_only: bool=False):
         """
         Connect to a TWS or IB gateway application running at host:port.
         After the connect the client is immediately ready to serve requests. 
         
         This method is blocking.
         """
+        self.read_only = read_only
         self.run(self.connectAsync(host, port, clientId, timeout))
 
     def disconnect(self):
@@ -424,6 +436,7 @@ class IB:
             o.ocaType = ocaType
         return orders
 
+    @rw_mode
     def whatIfOrder(self, contract: Contract, order: Order) -> OrderState:
         """
         Retrieve commission and margin impact without actually
@@ -434,6 +447,7 @@ class IB:
         return self.run(self.whatIfOrderAsync(contract, order))
 
     @api
+    @rw_mode
     def placeOrder(self, contract: Contract, order: Order) -> Trade:
         """
         Place a new order or modify an existing order.
@@ -465,6 +479,7 @@ class IB:
         return trade
 
     @api
+    @rw_mode
     def cancelOrder(self, order: Order) -> Trade:
         """
         Cancel the order and return the Trade it belongs to.
@@ -482,6 +497,7 @@ class IB:
         return trade
 
     @api
+    @rw_mode
     def reqGlobalCancel(self) -> None:
         """
         Cancel all active trades including those placed by other
@@ -516,6 +532,7 @@ class IB:
         self.run(self.reqAccountSummaryAsync())
 
     @api
+    @rw_mode
     def reqOpenOrders(self) -> [Order]:
         """
         It is recommended to use :py:meth:`.openTrades` or
@@ -912,10 +929,17 @@ class IB:
     async def connectAsync(self, host, port, clientId, timeout=2):
         self.wrapper.clientId = clientId
         await self.client.connectAsync(host, port, clientId, timeout)
-        await asyncio.gather(
-                self.reqAccountUpdatesAsync(),
-                self.reqPositionsAsync(),
-                self.reqExecutionsAsync())
+        if self.read_only == False:
+            await asyncio.gather(
+                    self.reqOpenOrdersAsync(),
+                    self.reqAccountUpdatesAsync(),
+                    self.reqPositionsAsync(),
+                    self.reqExecutionsAsync())
+        else:
+            await asyncio.gather(
+                    self.reqAccountUpdatesAsync(),
+                    self.reqPositionsAsync(),
+                    self.reqExecutionsAsync())
         _logger.info('Synchronization complete')
 
     async def qualifyContractsAsync(self, *contracts):
