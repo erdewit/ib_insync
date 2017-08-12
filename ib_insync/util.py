@@ -227,6 +227,25 @@ def patchAsyncio():
             asyncio.futures._PyFuture
 
 
+def _loop_asyncio(kernel):
+    '''
+    Start a kernel with asyncio event loop support.
+    '''
+    loop = asyncio.get_event_loop()
+
+    def kernel_handler():
+        kernel.do_one_iteration()
+        loop.call_later(kernel._poll_interval, kernel_handler)
+
+    loop.call_soon(kernel_handler)
+    try:
+        if not loop.is_running():
+            loop.run_forever()
+    finally:
+        loop.run_until_complete(loop.shutdown_asyncgens())
+        loop.close()
+
+
 def startLoop():
     """
     Use asyncio event loop for Jupyter notebooks.
@@ -234,25 +253,7 @@ def startLoop():
     patchAsyncio()
     from ipykernel.eventloops import register_integration, enable_gui
 
-    @register_integration('asyncio')
-    def loop_asyncio(kernel):
-        '''
-        Start a kernel with asyncio event loop support.
-        '''
-        loop = asyncio.get_event_loop()
-
-        def kernel_handler():
-            kernel.do_one_iteration()
-            loop.call_later(kernel._poll_interval, kernel_handler)
-
-        loop.call_soon(kernel_handler)
-        try:
-            if not loop.is_running():
-                loop.run_forever()
-        finally:
-            loop.run_until_complete(loop.shutdown_asyncgens())
-            loop.close()
-
+    register_integration('asyncio')(_loop_asyncio)
     enable_gui('asyncio')
 
 

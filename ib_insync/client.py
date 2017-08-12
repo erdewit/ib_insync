@@ -123,7 +123,6 @@ class Client(EClient):
         Get the list of account names that are under management.
         """
         assert self.isReady(), 'Not connected'
-        assert self._accounts
         return self._accounts
 
     def connect(self, host, port, clientId, timeout=2):
@@ -157,7 +156,6 @@ class Client(EClient):
             if self.apiStart:
                 self.apiStart()
         except Exception as e:
-            print(e)
             self.reset()
             msg = f'API connection failed: {e!r}'
             _logger.error(msg)
@@ -282,7 +280,7 @@ class Client(EClient):
                 result.write(''.join(f'{v.tag}={v.value};' for v in field))
             elif type(field) is bool:
                 result.write('1' if field else '0')
-            elif field in (UNSET_INTEGER, UNSET_DOUBLE):
+            elif field in (None, UNSET_INTEGER, UNSET_DOUBLE):
                 pass
             else:
                 result.write(str(field))
@@ -340,10 +338,11 @@ class Client(EClient):
                 self._readyEvent.set()
 
         # new features not yet in ibapi
+        # https://interactivebrokers.github.io/tws-api/historical_time_and_sales.html
         elif msgId == 96:
-            reqId, nTicks, *fields = fields
+            _, reqId, nTicks, *fields = fields
             ticks = []
-            for _ in range(nTicks):
+            for _ in range(int(nTicks)):
                 time, _, price, size, *fields = fields
                 tick = HistoricalTick(int(time), float(price), int(size))
                 ticks.append(tick)
@@ -351,9 +350,9 @@ class Client(EClient):
             self.wrapper.historicalTicks(int(reqId), ticks, done)
             return
         elif msgId == 97:
-            reqId, nTicks, *fields = fields
+            _, reqId, nTicks, *fields = fields
             ticks = []
-            for _ in range(nTicks):
+            for _ in range(int(nTicks)):
                 time, mask, priceBid, priceAsk, sizeBid, sizeAsk, \
                         *fields = fields
                 tick = HistoricalTickBidAsk(int(time), int(mask),
@@ -364,7 +363,7 @@ class Client(EClient):
             self.wrapper.historicalTicksBidAsk(int(reqId), ticks, done)
             return
         elif msgId == 98:
-            reqId, nTicks, *fields = fields
+            _, reqId, nTicks, *fields = fields
             ticks = []
             for _ in range(int(nTicks)):
                 time, mask, price, size, exchange, \

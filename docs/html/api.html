@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.8.0 documentation</title>
+    <title>API docs &#8212; IB-insync 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.8.0',
+        VERSION:     '0.8.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -91,7 +91,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.8.0.</p>
+<p>Release 0.8.2.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -133,7 +133,7 @@ count towards the user operation time, no matter how long the
 request takes to finish.</p>
 <p>So what is “too long”? That depends on the situation. If, for example,
 the timestamp of tick data is to remain accurate within a millisecond,
-then the user code must not spend longer than a milisecond. If, on
+then the user code must not spend longer than a millisecond. If, on
 the other extreme, there is very little incoming data and there
 is no desire for accurate timestamps, then the user code can block
 for hours.</p>
@@ -220,7 +220,7 @@ The contract object must be the same as used to subscribe with.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.cancelNewsBulletins">
 <code class="descname">cancelNewsBulletins</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelNewsBulletins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelNewsBulletins" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cancel subscribtion to IB news bulletins.</p>
+<dd><p>Cancel subscription to IB news bulletins.</p>
 </dd></dl>
 
 <dl class="method">
@@ -264,13 +264,21 @@ This will clear all session state.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.exerciseOptions">
 <code class="descname">exerciseOptions</code><span class="sig-paren">(</span><em>contract</em>, <em>exerciseAction</em>, <em>exerciseQuantity</em>, <em>account</em>, <em>override</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.exerciseOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.exerciseOptions" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/option_exercising.html">https://interactivebrokers.github.io/tws-api/option_exercising.html</a></p>
+<dd><p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/options.html">https://interactivebrokers.github.io/tws-api/options.html</a></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.fills">
 <code class="descname">fills</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; [&lt;class 'ib_insync.objects.Fill'&gt;]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.fills"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.fills" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of all fills from this session.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.loopUntil">
+<code class="descname">loopUntil</code><span class="sig-paren">(</span><em>condition=None</em>, <em>timeout: float = 0</em><span class="sig-paren">)</span> &#x2192; typing.Iterator<a class="reference internal" href="_modules/ib_insync/ib.html#IB.loopUntil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.loopUntil" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iteratate until condition is met, with optional timeout in seconds.
+The given optional condition is tested after every network packet.
+The yielded value is that of the condition or False when timed out.</p>
 </dd></dl>
 
 <dl class="method">
@@ -509,9 +517,9 @@ field will be a timezone-aware datetime.datetime with UTC timezone.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqHistoricalTicks">
 <code class="descname">reqHistoricalTicks</code><span class="sig-paren">(</span><em>contract</em>, <em>startDateTime</em>, <em>endDateTime</em>, <em>numberOfTicks</em>, <em>whatToShow</em>, <em>useRth</em>, <em>ignoreSize</em>, <em>miscOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqHistoricalTicks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqHistoricalTicks" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Not yet supported</em></p>
-<p>Request historical ticks.</p>
+<dd><p>Request historical ticks.</p>
 <p>This method is blocking.</p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/historical_time_and_sales.html">https://interactivebrokers.github.io/tws-api/historical_time_and_sales.html</a></p>
 </dd></dl>
 
 <dl class="method">
@@ -608,10 +616,10 @@ all messages for the day.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqOpenOrders">
-<code class="descname">reqOpenOrders</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; [&lt;class 'ib_insync.objects.Trade'&gt;]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqOpenOrders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqOpenOrders" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqOpenOrders</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; [&lt;class 'ib_insync.order.Order'&gt;]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqOpenOrders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqOpenOrders" title="Permalink to this definition">¶</a></dt>
 <dd><p>It is recommended to use <a class="reference internal" href="#ib_insync.ib.IB.openTrades" title="ib_insync.ib.IB.openTrades"><code class="xref py py-meth docutils literal"><span class="pre">openTrades()</span></code></a> or
 <a class="reference internal" href="#ib_insync.ib.IB.openOrders" title="ib_insync.ib.IB.openOrders"><code class="xref py py-meth docutils literal"><span class="pre">openOrders()</span></code></a> instead.</p>
-<p>Request and return a list a list of open trades.</p>
+<p>Request and return a list a list of open orders.</p>
 <p>This method is blocking.</p>
 </dd></dl>
 
@@ -709,13 +717,12 @@ The list is returned when all tickers are ready.</p>
 <code class="descname">requestFAAsync</code><span class="sig-paren">(</span><em>faDataType</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.requestFAAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.requestFAAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="ib_insync.ib.IB.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>*awaitables: [&lt;class 'collections.abc.Awaitable'&gt;]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.run" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">run</code><span class="sig-paren">(</span><em>*awaitables: [&lt;class 'collections.abc.Awaitable'&gt;]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>By default run the event loop forever.</p>
-<p>When awaitables (like Tasks, Futures or coroutines) are given
-then run the event loop until each has completed and return
-the list of their results.</p>
+<p>When awaitables (like Tasks, Futures or coroutines) are given then
+run the event loop until each has completed and return their results.</p>
 </dd></dl>
 
 <dl class="method">
@@ -735,9 +742,9 @@ the list of their results.</p>
 <p>Unsetting is done by supplying None as callback.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="ib_insync.ib.IB.sleep">
-<code class="descname">sleep</code><span class="sig-paren">(</span><em>secs: [&lt;class 'float'&gt;] = 0.02</em><span class="sig-paren">)</span> &#x2192; True<a class="reference internal" href="_modules/ib_insync/ib.html#IB.sleep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.sleep" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">sleep</code><span class="sig-paren">(</span><em>secs: [&lt;class 'float'&gt;] = 0.02</em><span class="sig-paren">)</span> &#x2192; True<a class="reference internal" href="_modules/ib_insync/ib.html#IB.sleep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.sleep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait for the given amount of seconds while everything still keeps
 processing in the background. Never use time.sleep().</p>
 </dd></dl>
@@ -756,9 +763,9 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 <dd><p>Get a list of all tickers.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="ib_insync.ib.IB.timeRange">
-<code class="descname">timeRange</code><span class="sig-paren">(</span><em>start: datetime.time</em>, <em>end: datetime.time</em>, <em>step: float</em><span class="sig-paren">)</span> &#x2192; typing.Iterator[datetime.datetime]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.timeRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.timeRange" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">timeRange</code><span class="sig-paren">(</span><em>start: datetime.time</em>, <em>end: datetime.time</em>, <em>step: float</em><span class="sig-paren">)</span> &#x2192; typing.Iterator[datetime.datetime]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.timeRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.timeRange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterator that waits periodically until certain time points are
 reached while yielding those time points.</p>
 <p>The startTime and dateTime parameters can be specified as
@@ -779,9 +786,9 @@ is used as the date.</p>
 <dd><p>Wait on any new update to arrive from the network.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="ib_insync.ib.IB.waitUntil">
-<code class="descname">waitUntil</code><span class="sig-paren">(</span><em>t: datetime.time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.waitUntil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.waitUntil" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">waitUntil</code><span class="sig-paren">(</span><em>t: datetime.time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.waitUntil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.waitUntil" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait until the given time t is reached.</p>
 <p>The time can be specified as datetime.datetime,
 or as datetime.time in which case today is used as the date.</p>
@@ -821,7 +828,7 @@ additional features:</p>
 <li><code class="docutils literal"><span class="pre">client.connect()</span></code> will block until the client is ready to
 serve requests; It is not necessary to wait for <code class="docutils literal"><span class="pre">nextValidId</span></code>
 to start requests as the client has already done that.
-The reqId is directly available  with <a class="reference internal" href="#ib_insync.client.Client.getReqId" title="ib_insync.client.Client.getReqId"><code class="xref py py-meth docutils literal"><span class="pre">getReqId()</span></code></a>.</li>
+The reqId is directly available with <a class="reference internal" href="#ib_insync.client.Client.getReqId" title="ib_insync.client.Client.getReqId"><code class="xref py py-meth docutils literal"><span class="pre">getReqId()</span></code></a>.</li>
 <li><code class="docutils literal"><span class="pre">client.connectAsync()</span></code> is a coroutine for connecting asynchronously.</li>
 <li>When blocking, <code class="docutils literal"><span class="pre">client.connect()</span></code> can be made to time out with
 the timeout parameter (default 2 seconds).</li>
@@ -853,9 +860,9 @@ one batch instead of item by item.</li>
 <dt id="ib_insync.client.Client.connect">
 <code class="descname">connect</code><span class="sig-paren">(</span><em>host</em>, <em>port</em>, <em>clientId</em>, <em>timeout=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to TWS/IBG at given host and port and with a clientId
-that is not in use elsewere.</p>
+that is not in use elsewhere.</p>
 <p>When timeout is not zero, asyncio.TimeoutError
-is raised if the connection is not established within the timout period.</p>
+is raised if the connection is not established within the timeout period.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1058,7 +1065,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139883161631208: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 140472242150760: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1750,7 +1757,8 @@ the <code class="docutils literal"><span class="pre">ticks</span></code> list.</
 <code class="docutils literal"><span class="pre">DOMLevel</span></code> in <code class="docutils literal"><span class="pre">domBids</span></code> and <code class="docutils literal"><span class="pre">domAsks</span></code>.</p>
 <p>For options the <code class="docutils literal"><span class="pre">OptionComputation</span></code> values for the bid, ask, resp.
 last price are stored in the <code class="docutils literal"><span class="pre">bidGreeks</span></code>, <code class="docutils literal"><span class="pre">askGreeks</span></code> resp.
-<code class="docutils literal"><span class="pre">lastGreeks</span></code> attributes.</p>
+<code class="docutils literal"><span class="pre">lastGreeks</span></code> attributes. There is also <code class="docutils literal"><span class="pre">modelGreeks</span></code> that conveys
+the greeks as calculated by Interactive Brokers’ option model.</p>
 <p>Attribute values can be given positionally or as keyword.
 If an attribute is not given it will take its value from the
 ‘defaults’ class member. If an attribute is given both positionally
@@ -1771,6 +1779,11 @@ and as keyword, the keyword wins.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.askYield">
+<code class="descname">askYield</code><a class="headerlink" href="#ib_insync.ticker.Ticker.askYield" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.avVolume">
 <code class="descname">avVolume</code><a class="headerlink" href="#ib_insync.ticker.Ticker.avVolume" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1788,6 +1801,11 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.bidSize">
 <code class="descname">bidSize</code><a class="headerlink" href="#ib_insync.ticker.Ticker.bidSize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.bidYield">
+<code class="descname">bidYield</code><a class="headerlink" href="#ib_insync.ticker.Ticker.bidYield" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1812,7 +1830,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.defaults">
-<code class="descname">defaults</code><em class="property"> = {'contract': None, 'time': nan, 'bid': nan, 'bidSize': nan, 'ask': nan, 'askSize': nan, 'last': nan, 'lastSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'volume': nan, 'open': nan, 'high': nan, 'low': nan, 'close': nan, 'low13week': nan, 'high13week': nan, 'low26week': nan, 'high26week': nan, 'low52week': nan, 'high52week': nan, 'avVolume': nan, 'putOpenInterest': nan, 'callOpenInterest': nan, 'putVolume': nan, 'callVolume': nan, 'futuresOpenInterest': nan, 'ticks': None, 'domBids': None, 'domAsks': None, 'domTicks': None, 'bidGreeks': None, 'askGreeks': None, 'lastGreeks': None, 'modelGreeks': None}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'contract': None, 'time': nan, 'bid': nan, 'bidSize': nan, 'ask': nan, 'askSize': nan, 'last': nan, 'lastSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'volume': nan, 'open': nan, 'high': nan, 'low': nan, 'close': nan, 'low13week': nan, 'high13week': nan, 'low26week': nan, 'high26week': nan, 'low52week': nan, 'high52week': nan, 'bidYield': nan, 'askYield': nan, 'lastYield': nan, 'avVolume': nan, 'putOpenInterest': nan, 'callOpenInterest': nan, 'putVolume': nan, 'callVolume': nan, 'futuresOpenInterest': nan, 'ticks': None, 'domBids': None, 'domAsks': None, 'domTicks': None, 'bidGreeks': None, 'askGreeks': None, 'lastGreeks': None, 'modelGreeks': None}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1868,6 +1886,11 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.lastSize">
 <code class="descname">lastSize</code><a class="headerlink" href="#ib_insync.ticker.Ticker.lastSize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.lastYield">
+<code class="descname">lastYield</code><a class="headerlink" href="#ib_insync.ticker.Ticker.lastYield" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2005,7 +2028,7 @@ and as keyword, the keyword wins.</p>
 <dl class="method">
 <dt id="ib_insync.objects.Object.nonDefaults">
 <code class="descname">nonDefaults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#Object.nonDefaults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.Object.nonDefaults" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a dicionary of all attributes that differ from the default.</p>
+<dd><p>Get a dictionary of all attributes that differ from the default.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2424,8 +2447,8 @@ and as keyword, the keyword wins.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ib_insync.objects.OrderStatus.ApiCanceled">
-<code class="descname">ApiCanceled</code><em class="property"> = 'ApiCanceled'</em><a class="headerlink" href="#ib_insync.objects.OrderStatus.ApiCanceled" title="Permalink to this definition">¶</a></dt>
+<dt id="ib_insync.objects.OrderStatus.ApiCancelled">
+<code class="descname">ApiCancelled</code><em class="property"> = 'ApiCancelled'</em><a class="headerlink" href="#ib_insync.objects.OrderStatus.ApiCancelled" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2450,7 +2473,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.objects.OrderStatus.OrderStates">
-<code class="descname">OrderStates</code><em class="property"> = ('PendingSubmit', 'PendingCancel', 'PreSubmitted', 'Submitted', 'ApiPending', 'ApiCanceled', 'Cancelled', 'Filled', 'Inactive')</em><a class="headerlink" href="#ib_insync.objects.OrderStatus.OrderStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">OrderStates</code><em class="property"> = ('PendingSubmit', 'PendingCancel', 'PreSubmitted', 'Submitted', 'ApiPending', 'ApiCancelled', 'Cancelled', 'Filled', 'Inactive')</em><a class="headerlink" href="#ib_insync.objects.OrderStatus.OrderStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4153,6 +4176,11 @@ reqId associated with the contract. Return the ticker.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.tickSize">
+<code class="descname">tickSize</code><span class="sig-paren">(</span><em>reqId</em>, <em>tickType</em>, <em>size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.tickSize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.tickSize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.tickSnapshotEnd">
 <code class="descname">tickSnapshotEnd</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.tickSnapshotEnd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.tickSnapshotEnd" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4234,7 +4262,7 @@ a DataFrame or as a list of bar objects.</p>
 <dl class="function">
 <dt id="ib_insync.util.formatSI">
 <code class="descclassname">ib_insync.util.</code><code class="descname">formatSI</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#formatSI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.formatSI" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format the integer or float n to 3 signficant digits + SI prefix.</p>
+<dd><p>Format the integer or float n to 3 significant digits + SI prefix.</p>
 </dd></dl>
 
 <dl class="class">
@@ -4246,18 +4274,13 @@ a DataFrame or as a list of bar objects.</p>
 <dl class="function">
 <dt id="ib_insync.util.syncAwait">
 <code class="descclassname">ib_insync.util.</code><code class="descname">syncAwait</code><span class="sig-paren">(</span><em>future</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#syncAwait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.syncAwait" title="Permalink to this definition">¶</a></dt>
-<dd><p>Synchronously wait until future is done, accounting for the possibilty
+<dd><p>Synchronously wait until future is done, accounting for the possibility
 that the event loop is already running.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ib_insync.util.syncAwaitAsyncio">
 <code class="descclassname">ib_insync.util.</code><code class="descname">syncAwaitAsyncio</code><span class="sig-paren">(</span><em>future</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#syncAwaitAsyncio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.syncAwaitAsyncio" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="ib_insync.util.syncAwaitQt">
-<code class="descclassname">ib_insync.util.</code><code class="descname">syncAwaitQt</code><span class="sig-paren">(</span><em>self</em>, <em>future</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#syncAwaitQt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.syncAwaitQt" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -4276,7 +4299,7 @@ to deal with nested event loops in asynAwait.</p>
 <dl class="function">
 <dt id="ib_insync.util.useQt">
 <code class="descclassname">ib_insync.util.</code><code class="descname">useQt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#useQt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.useQt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Let the Qt event loop spin the asycio event loop.</p>
+<dd><p>Let the Qt event loop spin the asyncio event loop.</p>
 </dd></dl>
 
 <dl class="function">
@@ -4288,7 +4311,7 @@ to deal with nested event loops in asynAwait.</p>
 <dl class="function">
 <dt id="ib_insync.util.parseIBDatetime">
 <code class="descclassname">ib_insync.util.</code><code class="descname">parseIBDatetime</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#parseIBDatetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.parseIBDatetime" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse string in IB date or datatime format to datetime.</p>
+<dd><p>Parse string in IB date or datetime format to datetime.</p>
 </dd></dl>
 
 </div>

@@ -27,8 +27,10 @@ Requirements:
 
 * Python_ version 3.6 or higher;
 * The `Interactive Brokers Python API`_ version 9.73.03 or higher;
-* A running TWS or IB gateway application (version 963 or higher) with the 
-  `API port enabled <https://interactivebrokers.github.io/tws-api/initial_setup.html>`_.
+* A running TWS or IB gateway application (version 967 or higher).
+  Make sure the
+  `API port is enabled <https://interactivebrokers.github.io/tws-api/initial_setup.html>`_
+  and 'Download open orders on connection' is checked.
   
 To install packages needed for the examples and notebooks::
 
@@ -84,10 +86,18 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+
+Version 0.8.3
+^^^^^^^^^^^^^
+
+* new IB.reqHistoricalTicks API method
+* new IB.loopUntil method
+* fixed issues #4, #6, #7
+
 Version 0.8.2
 ^^^^^^^^^^^^^
 
-* fixed swappped ticker.putOpenInterest vs ticker.callOpenInterest
+* fixed swapped ticker.putOpenInterest vs ticker.callOpenInterest
 
 Version 0.8.1
 ^^^^^^^^^^^^^

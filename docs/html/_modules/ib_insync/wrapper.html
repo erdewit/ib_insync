@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.wrapper &#8212; IB-insync 0.8.0 documentation</title>
+    <title>ib_insync.wrapper &#8212; IB-insync 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0',
+        VERSION:     '0.8.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -107,7 +107,7 @@
 <div class="viewcode-block" id="Wrapper.reset"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">accountValues</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># (account, tag, currency) -&gt; AccountValue</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">acctSummary</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># (account, tag, currency) -&gt; AccountValue</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">portfolio</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>  <span class="c1"># account -&gt; conId -&gt; PorfolioItem</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">portfolio</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>  <span class="c1"># account -&gt; conId -&gt; PortfolioItem</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>  <span class="c1"># account -&gt; conId -&gt; Position</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trades</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># orderId -&gt; Trade</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fills</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># execId -&gt; Fill</span>
@@ -214,7 +214,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">cb</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">_logger</span><span class="o">.</span><span class="n">execption</span><span class="p">(</span><span class="s1">&#39;Event </span><span class="si">%s</span><span class="s1">(</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">eventName</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Event </span><span class="si">%s</span><span class="s1">(</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">eventName</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Wrapper.managedAccounts"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.managedAccounts">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">managedAccounts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">accountsList</span><span class="p">):</span>
@@ -294,8 +294,8 @@
                 <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;openOrder: </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;openOrders&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">results</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># response to reqOpenOdrers</span>
-                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span></div>
+                <span class="c1"># response to reqOpenOrders</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">order</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.openOrderEnd"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.openOrderEnd">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">openOrderEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -431,49 +431,64 @@
 
 <div class="viewcode-block" id="Wrapper.historicalTicks"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.historicalTicks">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">historicalTicks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">ticks</span><span class="p">,</span> <span class="n">done</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ticks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">HistoricalTick</span><span class="p">(</span>
+                <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">time</span><span class="p">),</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">price</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ticks</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.historicalTicksBidAsk"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.historicalTicksBidAsk">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">historicalTicksBidAsk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">ticks</span><span class="p">,</span> <span class="n">done</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ticks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">HistoricalTickBidAsk</span><span class="p">(</span>
+                <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">time</span><span class="p">),</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">priceBid</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">priceAsk</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">sizeBid</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">sizeAsk</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ticks</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.historicalTicksLast"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.historicalTicksLast">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">historicalTicksLast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">ticks</span><span class="p">,</span> <span class="n">done</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ticks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">HistoricalTickLast</span><span class="p">(</span>
+                <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">time</span><span class="p">),</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">price</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">exchange</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">specialConditions</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ticks</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.priceSizeTick"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.priceSizeTick">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="c1"># additional wrapper method provided by Client</span>
     <span class="k">def</span> <span class="nf">priceSizeTick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
-        <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Ticker</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span>
+        <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Ticker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ticker</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;priceSizeTick: Unknown reqId: </span><span class="si">{reqId}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
         <span class="n">ticker</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span>
         <span class="c1"># https://interactivebrokers.github.io/tws-api/tick_types.html</span>
         <span class="k">if</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">66</span><span class="p">):</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">prevBid</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">bid</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">prevBidSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">bidSize</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">bid</span> <span class="o">=</span> <span class="n">price</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">bidSize</span> <span class="o">=</span> <span class="n">size</span>
+            <span class="k">if</span> <span class="n">price</span> <span class="o">!=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">bid</span><span class="p">:</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">prevBid</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">bid</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">bid</span> <span class="o">=</span> <span class="n">price</span>
+            <span class="k">if</span> <span class="n">size</span> <span class="o">!=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">bidSize</span><span class="p">:</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">prevBidSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">bidSize</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">bidSize</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">67</span><span class="p">):</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">prevAsk</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">ask</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">prevAskSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">askSize</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">ask</span> <span class="o">=</span> <span class="n">price</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">askSize</span> <span class="o">=</span> <span class="n">size</span>
+            <span class="k">if</span> <span class="n">price</span> <span class="o">!=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">ask</span><span class="p">:</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">prevAsk</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">ask</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">ask</span> <span class="o">=</span> <span class="n">price</span>
+            <span class="k">if</span> <span class="n">size</span> <span class="o">!=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">askSize</span><span class="p">:</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">prevAskSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">askSize</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">askSize</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">68</span><span class="p">):</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">prevLast</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">last</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">prevLastSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">last</span> <span class="o">=</span> <span class="n">price</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span> <span class="o">=</span> <span class="n">size</span>
+            <span class="k">if</span> <span class="n">price</span> <span class="o">!=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">last</span><span class="p">:</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">prevLast</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">last</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">last</span> <span class="o">=</span> <span class="n">price</span>
+            <span class="k">if</span> <span class="n">size</span> <span class="o">!=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span><span class="p">:</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">prevLastSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">72</span><span class="p">):</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">high</span> <span class="o">=</span> <span class="n">price</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">73</span><span class="p">):</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">low</span> <span class="o">=</span> <span class="n">price</span>
-        <span class="k">elif</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">74</span><span class="p">):</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">close</span> <span class="o">=</span> <span class="n">price</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
@@ -492,20 +507,55 @@
             <span class="n">ticker</span><span class="o">.</span><span class="n">high52week</span> <span class="o">=</span> <span class="n">price</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">21</span><span class="p">:</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">avVolume</span> <span class="o">=</span> <span class="n">price</span>
+        <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">50</span><span class="p">:</span>
+            <span class="n">ticker</span><span class="o">.</span><span class="n">bidYield</span> <span class="o">=</span> <span class="n">price</span>
+        <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">51</span><span class="p">:</span>
+            <span class="n">ticker</span><span class="o">.</span><span class="n">askYield</span> <span class="o">=</span> <span class="n">price</span>
+        <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">52</span><span class="p">:</span>
+            <span class="n">ticker</span><span class="o">.</span><span class="n">lastYield</span> <span class="o">=</span> <span class="n">price</span>
+        <span class="n">tick</span> <span class="o">=</span> <span class="n">TickData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Wrapper.tickSize"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.tickSize">[docs]</a>    <span class="nd">@iswrapper</span>
+    <span class="k">def</span> <span class="nf">tickSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Ticker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ticker</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;tickSize: Unknown reqId: </span><span class="si">{reqId}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">ticker</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="c1"># https://interactivebrokers.github.io/tws-api/tick_types.html</span>
+        <span class="k">if</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">69</span><span class="p">):</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">bid</span>
+            <span class="k">if</span> <span class="n">size</span> <span class="o">!=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">bidSize</span><span class="p">:</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">prevBidSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">bidSize</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">bidSize</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="k">elif</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">70</span><span class="p">):</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">ask</span>
+            <span class="k">if</span> <span class="n">size</span> <span class="o">!=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">askSize</span><span class="p">:</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">prevAskSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">askSize</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">askSize</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="k">elif</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">71</span><span class="p">):</span>
+            <span class="n">price</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">last</span>
+            <span class="k">if</span> <span class="n">size</span> <span class="o">!=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span><span class="p">:</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">prevLastSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="k">elif</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">74</span><span class="p">):</span>
+            <span class="n">ticker</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">putOpenInterest</span> <span class="o">=</span> <span class="n">size</span>
-        <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">28</span><span class="p">:</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">callOpenInterest</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">28</span><span class="p">:</span>
+            <span class="n">ticker</span><span class="o">.</span><span class="n">putOpenInterest</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">29</span><span class="p">:</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">callVolume</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">putVolume</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">86</span><span class="p">:</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">futuresOpenInterest</span> <span class="o">=</span> <span class="n">size</span>
-        <span class="k">if</span> <span class="n">price</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="ow">and</span> <span class="n">size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">tick</span> <span class="o">=</span> <span class="n">TickData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
-            <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span></div>
+        <span class="n">tick</span> <span class="o">=</span> <span class="n">TickData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.tickSnapshotEnd"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.tickSnapshotEnd">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">tickSnapshotEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>

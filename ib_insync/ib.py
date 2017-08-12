@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import datetime
+import time
 from typing import Iterator
 from collections.abc import Awaitable  # @UnusedImport
 
@@ -82,7 +83,7 @@ class IB:
         self.wrapper = Wrapper()
         self.client = Client(self.wrapper)
 
-    def connect(self, host: str, port: int, clientId: int, timeout: int=2):
+    def connect(self, host: str, port: int, clientId: int, timeout: float=2):
         """
         Connect to a TWS or IB gateway application running at host:port.
         After the connect the client is immediately ready to serve requests. 
@@ -128,12 +129,13 @@ class IB:
             result = util.syncAwait(future)
         return result
 
-    def sleep(self, secs: [float]=0.02) -> True:
+    @staticmethod
+    def sleep(secs: [float]=0.02) -> True:
         """
         Wait for the given amount of seconds while everything still keeps
         processing in the background. Never use time.sleep().
         """
-        self.run(asyncio.sleep(secs))
+        IB.run(asyncio.sleep(secs))
         return True
 
     @staticmethod
@@ -159,11 +161,12 @@ class IB:
         while t < datetime.datetime.now():
             t += delta
         while t <= end:
-            ib.waitUntil(t)
+            IB.waitUntil(t)
             yield t
             t += delta
 
-    def waitUntil(self, t: datetime.time):
+    @staticmethod
+    def waitUntil(t: datetime.time):
         """
         Wait until the given time t is reached.
         
@@ -174,7 +177,7 @@ class IB:
             t = datetime.datetime.combine(datetime.date.today(), t)
         now = datetime.datetime.now(t.tzinfo)
         secs = (t - now).total_seconds()
-        self.run(asyncio.sleep(secs))
+        IB.run(asyncio.sleep(secs))
         return True
 
     def waitOnUpdate(self) -> True:
@@ -183,6 +186,33 @@ class IB:
         """
         self.run(self.wrapper.updateEvent.wait())
         return True
+
+    def loopUntil(self, condition=None, timeout: float=0) -> Iterator:
+        """
+        Iteratate until condition is met, with optional timeout in seconds.
+        The given optional condition is tested after every network packet.
+        The yielded value is that of the condition or False when timed out.
+        """
+        endTime = time.time() + timeout
+        while True:
+            test = condition and condition()
+            if test:
+                yield test
+                return
+            elif timeout and time.time() > endTime:
+                yield False
+                return
+            else:
+                yield test
+            if timeout:
+                try:
+                    self.run(asyncio.wait_for(
+                        self.wrapper.updateEvent.wait(),
+                        endTime - time.time()))
+                except asyncio.TimeoutError:
+                    pass
+            else:
+                self.waitOnUpdate()
 
     def setCallback(self, eventName, callback):
         """
@@ -382,8 +412,7 @@ class IB:
                 parentId=parent.orderId)
         return BracketOrder(parent, takeProfit, stopLoss)
 
-    @staticmethod
-    def oneCancelsAll(orders: [Order],
+    def oneCancelsAll(self, orders: [Order],
                       ocaGroup: str, ocaType: int) -> [Order]:
         """
         Place the trades in the same OCA group.
@@ -487,12 +516,12 @@ class IB:
         self.run(self.reqAccountSummaryAsync())
 
     @api
-    def reqOpenOrders(self) -> [Trade]:
+    def reqOpenOrders(self) -> [Order]:
         """
         It is recommended to use :py:meth:`.openTrades` or
         :py:meth:`.openOrders` instead.
 
-        Request and return a list a list of open trades.
+        Request and return a list a list of open orders.
 
         This method is blocking.
         """
@@ -612,11 +641,11 @@ class IB:
     def reqHistoricalTicks(self, contract, startDateTime, endDateTime,
             numberOfTicks, whatToShow, useRth, ignoreSize, miscOptions):
         """
-        *Not yet supported*
-        
         Request historical ticks.
 
         This method is blocking.
+        
+        https://interactivebrokers.github.io/tws-api/historical_time_and_sales.html
         """
         return self.run(self.reqHistoricalTicksAsync(contract,
             startDateTime, endDateTime, numberOfTicks, whatToShow, useRth,
@@ -802,10 +831,11 @@ class IB:
     def exerciseOptions(self, contract, exerciseAction, exerciseQuantity,
             account, override):
         """
-        https://interactivebrokers.github.io/tws-api/options.html#option_exercising
+        https://interactivebrokers.github.io/tws-api/options.html
         """
-        self.client.exerciseOptions(contract, exerciseAction, exerciseQuantity,
-            account, override)
+        reqId = self.client.getReqId()
+        self.client.exerciseOptions(reqId, contract, exerciseAction,
+                exerciseQuantity, account, override)
 
     @api
     def reqNewsProviders(self) -> [NewsProvider]:
@@ -883,7 +913,6 @@ class IB:
         self.wrapper.clientId = clientId
         await self.client.connectAsync(host, port, clientId, timeout)
         await asyncio.gather(
-                self.reqOpenOrdersAsync(),
                 self.reqAccountUpdatesAsync(),
                 self.reqPositionsAsync(),
                 self.reqExecutionsAsync())
@@ -968,7 +997,7 @@ class IB:
         try:
             await asyncio.wait_for(future, 4)
             return future.result()
-        except:
+        except asyncio.TimeoutError:
             _logger.error('reqMatchingSymbolsAsync: Timeout')
 
     def reqHistoricalDataAsync(self, contract, endDateTime,
@@ -1011,7 +1040,7 @@ class IB:
     def reqHistogramDataAsync(self, contract, useRTH, period):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
-        self.client.reqHistogramData(contract, useRTH, period)
+        self.client.reqHistogramData(reqId, contract, useRTH, period)
         return future
 
     def reqFundamentalDataAsync(self, contract, reportType,
@@ -1046,7 +1075,7 @@ class IB:
         try:
             await asyncio.wait_for(future, 4)
             return future.result()
-        except:
+        except asyncio.TimeoutError:
             _logger.error('calculateImpliedVolatilityAsync: Timeout')
             return
         finally:
@@ -1061,7 +1090,7 @@ class IB:
         try:
             await asyncio.wait_for(future, 4)
             return future.result()
-        except:
+        except asyncio.TimeoutError:
             _logger.error('calculateOptionPriceAsync: Timeout')
             return
         finally:
@@ -1097,7 +1126,7 @@ class IB:
         try:
             await asyncio.wait_for(future, 4)
             return future.result()
-        except:
+        except asyncio.TimeoutError:
             _logger.error('reqHistoricalNewsAsync: Timeout')
 
     async def requestFAAsync(self, faDataType):
@@ -1106,15 +1135,14 @@ class IB:
         try:
             await asyncio.wait_for(future, 4)
             return future.result()
-        except:
+        except asyncio.TimeoutError:
             _logger.error('requestFAAsync: Timeout')
-            return
 
 
 if __name__ == '__main__':
-    # import uvloop
-    # asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    from ib_insync.contract import Stock, Forex, Index, Option, Future
+#     import uvloop
+#     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    from ib_insync.contract import Stock, Forex, Index, Option, Future, CFD
     asyncio.get_event_loop().set_debug(True)
     util.logToConsole(logging.INFO)
     ib = IB()
@@ -1129,7 +1157,6 @@ if __name__ == '__main__':
     spy = Stock('SPY', 'ARCA')
     wrongContract = Forex('lalala')
     option = Option('EOE', '20171215', 490, 'P', 'FTA', multiplier=100)
-    es = Future('ES', '201809', 'GLOBEX')
 
     if 0:
         cds = ib.reqContractDetails(aex)
@@ -1218,12 +1245,15 @@ if __name__ == '__main__':
         start = datetime.datetime(2017, 7, 24, 16, 0, 0)
         end = ''
         ticks = ib.reqHistoricalTicks(
-                aapl, start, end, 100, 'TRADES', True, False, [])
+                eurusd, start, end, 100, 'MIDPOINT', True, False, [])
         print(ticks)
     if 0:
-        start = datetime.time(13, 9, 30)
+        start = datetime.time(10, 10, 10)
         end = datetime.time(14, 13)
         for t in ib.timeRange(start, end, 5):
             print(t)
+    if 0:
+        histo = ib.reqHistogramData(amd, True, '1 week')
+        print(histo)
 
     # ib.disconnect()

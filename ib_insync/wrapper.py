@@ -134,7 +134,7 @@ class Wrapper(EWrapper):
             try:
                 cb(*args)
             except Exception:
-                _logger.execption('Event %s(%s)', eventName, args)
+                _logger.exception('Event %s(%s)', eventName, args)
 
     @iswrapper
     def managedAccounts(self, accountsList):
@@ -215,7 +215,7 @@ class Wrapper(EWrapper):
             results = self._results.get('openOrders')
             if results is not None:
                 # response to reqOpenOrders
-                results.append(trade)
+                results.append(order)
 
     @iswrapper
     def openOrderEnd(self):
@@ -351,19 +351,27 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def historicalTicks(self, reqId, ticks, done):
-        self._results[reqId] += ticks
+        self._results[reqId] += [HistoricalTick(
+                datetime.datetime.fromtimestamp(t.time),
+                t.price, t.size) for t in ticks]
         if done:
             self._endReq(reqId)
 
     @iswrapper
     def historicalTicksBidAsk(self, reqId, ticks, done):
-        self._results[reqId] += ticks
+        self._results[reqId] += [HistoricalTickBidAsk(
+                datetime.datetime.fromtimestamp(t.time),
+                t.mask, t.priceBid, t.priceAsk, t.sizeBid, t.sizeAsk)
+                for t in ticks]
         if done:
             self._endReq(reqId)
 
     @iswrapper
     def historicalTicksLast(self, reqId, ticks, done):
-        self._results[reqId] += ticks
+        self._results[reqId] += [HistoricalTickLast(
+                datetime.datetime.fromtimestamp(t.time),
+                t.mask, t.price, t.size, t.exchange, t.specialConditions)
+                for t in ticks]
         if done:
             self._endReq(reqId)
 
@@ -636,7 +644,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def updateNewsBulletin(self, msgId, msgType, message, origExchange):
         bulletin = NewsBulletin(msgId, msgType, message, origExchange)
-        self.bulletins[msgId] = bulletin
+        self.newsBulletins[msgId] = bulletin
 
     @iswrapper
     def receiveFA(self, _faDataType, faXmlData):
