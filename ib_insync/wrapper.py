@@ -679,7 +679,8 @@ class Wrapper(EWrapper):
                             level = l.pop(position)
                             tick = MktDepthData(self.lastTime, position,
                                     '', 2, side, level.price, 0)
-                            ticker.ticks.append(tick)
+                            ticker.domTicks.append(tick)
+        self._handleEvent('error', errorCode, errorString)
 
     @iswrapper
     # additional wrapper method provided by Client

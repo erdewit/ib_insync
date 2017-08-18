@@ -133,9 +133,7 @@ class Client(EClient):
         When timeout is not zero, asyncio.TimeoutError
         is raised if the connection is not established within the timeout period.
         """
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(
-                self.connectAsync(host, port, clientId, timeout))
+        util.syncAwait(self.connectAsync(host, port, clientId, timeout))
 
     async def connectAsync(self, host, port, clientId, timeout=2):
         _logger.info(

@@ -226,6 +226,7 @@ class IB:
             * updatePortfolio(PortfolioItem)
             * position(Position)
             * tickNews(NewsTick)
+            * error(errorCode, errorString)
             
         Unsetting is done by supplying None as callback.
         """

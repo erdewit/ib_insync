@@ -25,7 +25,7 @@ class Ticker(Object):
     """
     defaults = {
         'contract': None,
-        'time': nan,
+        'time': None,
         'bid': nan,
         'bidSize': nan,
         'ask': nan,
