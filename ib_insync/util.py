@@ -31,7 +31,7 @@ def df(objs, labels=None):
         df = None
     if labels:
         exclude = [label for label in df if label not in labels]
-        df.drop(exclude)
+        df.drop(exclude, axis=1)
     return df
 
 
@@ -96,34 +96,40 @@ def allowCtrlC():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
-def logToFile(path, level=logging.INFO, rootLevel=logging.ERROR):
+def filterRootLog(record):
+    """
+    Filter log records on the root logger.
+    """
+    return record.name != 'root'
+
+
+def logToFile(path, level=logging.INFO):
     """
     Create a log handler that logs to the given file.
     """
-    rootLogger = logging.getLogger()
-    ibLogger = logging.getLogger('ib_insync')
-    rootLogger.setLevel(rootLevel)
-    ibLogger.setLevel(level)
+    logger = logging.getLogger()
+    logger.setLevel(level)
     formatter = logging.Formatter(
             '%(asctime)s %(name)s %(levelname)s %(message)s')
     handler = logging.FileHandler(path)
     handler.setFormatter(formatter)
-    rootLogger.addHandler(handler)
+    handler.addFilter(filterRootLog)
+    handler.addFilter(lambda record: record.name != 'root')
+    logger.addHandler(handler)
 
 
-def logToConsole(level=logging.INFO, rootLevel=logging.ERROR):
+def logToConsole(level=logging.INFO):
     """
     Create a log handler that logs to the console.
     """
-    rootLogger = logging.getLogger()
-    ibLogger = logging.getLogger('ib_insync')
-    rootLogger.setLevel(rootLevel)
-    ibLogger.setLevel(level)
+    logger = logging.getLogger()
+    logger.setLevel(level)
     formatter = logging.Formatter(
             '%(asctime)s %(name)s %(levelname)s %(message)s')
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
-    rootLogger.addHandler(handler)
+    handler.addFilter(lambda record: record.name != 'root')
+    logger.addHandler(handler)
 
 
 def isNan(x: float):

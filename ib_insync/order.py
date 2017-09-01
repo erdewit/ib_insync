@@ -27,6 +27,12 @@ class Order(Object):
 
     __str__ = __repr__
 
+    def __eq__(self, other):
+        return self is other
+
+    def __hash__(self):
+        return id(self)
+
 
 class LimitOrder(Order):
     __slots__ = ()

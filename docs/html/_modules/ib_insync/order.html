@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.order &#8212; IB-insync 0.8.2 documentation</title>
+    <title>ib_insync.order &#8212; IB-insync 0.8.4 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.2',
+        VERSION:     '0.8.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -43,7 +43,7 @@
 
 
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=erdewit&repo=ib_insync&type=watch&count=true&size=large&v=2"
+<iframe src="https://ghbtns.com/github-btn.html?user=erdewit&repo=ib_insync&type=star&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
 
@@ -105,7 +105,13 @@
         <span class="n">kwargs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{k}</span><span class="s1">=</span><span class="si">{v!r}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{clsName}</span><span class="s1">(</span><span class="si">{kwargs}</span><span class="s1">)&#39;</span>
 
-    <span class="fm">__str__</span> <span class="o">=</span> <span class="fm">__repr__</span></div>
+    <span class="fm">__str__</span> <span class="o">=</span> <span class="fm">__repr__</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>
+
+    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LimitOrder"><a class="viewcode-back" href="../../api.html#ib_insync.order.LimitOrder">[docs]</a><span class="k">class</span> <span class="nc">LimitOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>

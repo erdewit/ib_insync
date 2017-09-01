@@ -182,6 +182,7 @@ class Client(EClient):
         self.decoder = ibapi.decoder.Decoder(self.wrapper, None)
 
     def _onSocketHasData(self, data):
+        debug = _logger.isEnabledFor(logging.DEBUG)
         if self._tcpDataArrived:
             self._tcpDataArrived()
 
@@ -202,9 +203,8 @@ class Client(EClient):
             fields.pop()  # pop off last empty element
             self._numMsgRecv += 1
 
-            if _logger.isEnabledFor(logging.DEBUG):
-                _logger.debug(
-                        '<<< %s', ','.join(f.decode() for f in fields))
+            if debug:
+                _logger.debug('<<< %s', ','.join(f.decode() for f in fields))
 
             if not self.serverVersion_ and len(fields) == 2:
                 # this concludes the handshake

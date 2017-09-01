@@ -86,6 +86,13 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.4
+^^^^^^^^^^^^^
+
+* compatibility with upcoming ibapi changes
+* added ``error`` event to ``IB``
+* notebooks updated to use ``loopUntil``
+* small fixes and performance improvements
 
 Version 0.8.3
 ^^^^^^^^^^^^^

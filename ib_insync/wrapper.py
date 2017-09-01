@@ -8,7 +8,7 @@ from ibapi.wrapper import EWrapper, iswrapper
 from ib_insync.contract import Contract
 from ib_insync.ticker import Ticker
 from ib_insync.order import Order
-from ib_insync.objects import *  # @UnusedImport
+from ib_insync.objects import *
 import ib_insync.util as util
 
 __all__ = ['Wrapper']
@@ -114,16 +114,6 @@ class Wrapper(EWrapper):
         self.reqId2Bars.pop(reqId, 0)
         return reqId
 
-    def _clearPendingTickers(self):
-        """
-        Clear both the list of pending tickers and their pending
-        ticks and domTicks.
-        """
-        for ticker in self.pendingTickers:
-            del ticker.ticks[:]
-            del ticker.domTicks[:]
-        self.pendingTickers.clear()
-
     def setCallback(self, eventName, callback):
         self._callbacks[eventName] = callback
 
@@ -223,7 +213,8 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def orderStatus(self, orderId, status, filled, remaining, avgFillPrice,
-            permId, parentId, lastFillPrice, clientId, whyHeld):
+            permId, parentId, lastFillPrice, clientId, whyHeld,
+            mktCapPrice=0.0):
         trade = self.trades.get(orderId)
         if trade:
             statusChanged = trade.orderStatus.status != status
@@ -231,9 +222,17 @@ class Wrapper(EWrapper):
                     remaining=remaining, avgFillPrice=avgFillPrice,
                     permId=permId, parentId=parentId,
                     lastFillPrice=lastFillPrice, clientId=clientId,
-                    whyHeld=whyHeld)
+                    whyHeld=whyHeld, mktCapPrice=mktCapPrice)
             if statusChanged:
-                logEntry = TradeLogEntry(self.lastTime, status, '')
+                msg = ''
+            elif (status == 'Submitted' and trade.log and
+                    trade.log[-1].message == 'Modify'):
+                # order modifications are acknowledged
+                msg = 'Modified'
+            else:
+                msg = None
+            if msg is not None:
+                logEntry = TradeLogEntry(self.lastTime, status, msg)
                 trade.log.append(logEntry)
                 _logger.info(f'orderStatus: {trade}')
                 self._handleEvent('orderStatus', trade)
@@ -257,11 +256,12 @@ class Wrapper(EWrapper):
             # first time we see this execution so add it
             self.fills[execId] = fill
             if trade:
+                becomesFilled = (trade.remaining() <= 0 and
+                        trade.orderStatus.status != OrderStatus.Filled)
                 trade.fills.append(fill)
-                if trade.orderStatus.status != OrderStatus.Filled:
+                if becomesFilled:
                     # orderStatus might not have set status to Filled
-                    if trade.remaining() <= 0:
-                        trade.orderStatus.status = OrderStatus.Filled
+                    trade.orderStatus.status = OrderStatus.Filled
                 logEntry = TradeLogEntry(self.lastTime,
                         trade.orderStatus.status,
                         f'Fill {execution.shares}@{execution.price}')
@@ -269,6 +269,8 @@ class Wrapper(EWrapper):
                 if isLive:
                     self._handleEvent('execDetails', trade, fill)
                     _logger.info(f'execDetails: {fill}')
+                    if becomesFilled:
+                        self.handleEvent('orderStatus', trade)
         if not isLive:
             self._results[reqId].append(fill)
 
@@ -653,7 +655,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def error(self, reqId, errorCode, errorString):
         # https://interactivebrokers.github.io/tws-api/message_codes.html
-        isWarning = errorCode == 202 or 2100 <= errorCode < 2200
+        isWarning = errorCode in (202, 399, 10167) or 2100 <= errorCode < 2200
         msg = (f'{"Warning" if isWarning else "Error"} '
                 f'{errorCode}, reqId {reqId}: {errorString}')
         if isWarning:
@@ -664,12 +666,14 @@ class Wrapper(EWrapper):
                 # the request failed
                 self._endReq(reqId)
             elif reqId in self.trades:
-                # something is wrong with the order
+                # something is wrong with the order, cancel it
                 trade = self.trades[reqId]
-                orderStatus = trade.orderStatus
-                orderStatus.status = OrderStatus.Cancelled
-                logEntry = TradeLogEntry(self.lastTime, orderStatus.status, msg)
-                trade.log.append(logEntry)
+                if trade.isActive():
+                    status = trade.orderStatus.status = OrderStatus.Cancelled
+                    logEntry = TradeLogEntry(self.lastTime, status, msg)
+                    trade.log.append(logEntry)
+                    _logger.warning(f'Canceled order: {trade}')
+                    self._handleEvent('orderStatus', trade)
             elif errorCode == 317:
                 # Market depth data has been RESET
                 ticker = self.reqId2Ticker.get(reqId)
@@ -686,8 +690,11 @@ class Wrapper(EWrapper):
     # additional wrapper method provided by Client
     def tcpDataArrived(self):
         self.lastTime = datetime.datetime.now(datetime.timezone.utc)
-        if self.pendingTickers:
-            self._clearPendingTickers()
+        # clear pending tickers and their ticks
+        for ticker in self.pendingTickers:
+            del ticker.ticks[:]
+            del ticker.domTicks[:]
+        self.pendingTickers.clear()
 
     @iswrapper
     # additional wrapper method provided by Client

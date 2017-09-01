@@ -282,13 +282,13 @@ class IB:
 
     def trades(self) -> [Trade]:
         """
-        List of all order tickets from this session.
+        List of all order trades from this session.
         """
         return list(self.wrapper.trades.values())
 
     def openTrades(self) -> [Trade]:
         """
-        List of all open order tickets.
+        List of all open order trades.
         """
         return [v for v in self.wrapper.trades.values()
                 if v.orderStatus.status in OrderStatus.ActiveStates]
@@ -297,15 +297,15 @@ class IB:
         """
         List of all orders from this session.
         """
-        return list(ticket.order
-                for ticket in self.wrapper.trades.values())
+        return list(trade.order
+                for trade in self.wrapper.trades.values())
 
     def openOrders(self) -> [Order]:
         """
         List of all open orders.
         """
-        return [ticket.order for ticket in self.wrapper.trades.values()
-                if ticket.orderStatus.status in OrderStatus.ActiveStates]
+        return [trade.order for trade in self.wrapper.trades.values()
+                if trade.orderStatus.status in OrderStatus.ActiveStates]
 
     def fills(self) -> [Fill]:
         """
@@ -519,10 +519,12 @@ class IB:
     @api
     def reqOpenOrders(self) -> [Order]:
         """
-        It is recommended to use :py:meth:`.openTrades` or
-        :py:meth:`.openOrders` instead.
-
         Request and return a list a list of open orders.
+        
+        This method can give stale information where a new open order is not
+        reported or an already filled or canceled order is reported as open.
+        It is recommended to use the more reliable and much faster
+        :py:meth:`.openTrades` or :py:meth:`.openOrders` methods instead.
 
         This method is blocking.
         """
@@ -683,7 +685,9 @@ class IB:
                 mktDataOptions=None) -> Ticker:
         """
         Subscribe to tick data or request a snapshot.
-        The results are available from the ticker() method.
+        Returns the Ticker that holds the market data. The ticker will
+        inititially be empty and gradually (after a couple of seconds)
+        be filled.
 
         https://interactivebrokers.github.io/tws-api/md_request.html
         """
@@ -715,7 +719,7 @@ class IB:
         return self.run(self.reqMktDepthExchangesAsync())
 
     @api
-    def reqMktDepth(self, contract: Contract, numRows: int=15,
+    def reqMktDepth(self, contract: Contract, numRows: int=5,
                 mktDepthOptions=None) -> Ticker:
         """
         """
