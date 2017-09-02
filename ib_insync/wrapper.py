@@ -236,6 +236,9 @@ class Wrapper(EWrapper):
                 trade.log.append(logEntry)
                 _logger.info(f'orderStatus: {trade}')
                 self._handleEvent('orderStatus', trade)
+        elif orderId <= 0:
+            # order originates from manual trading or other API client
+            pass
         else:
             _logger.error('orderStatus: No order found for '
                     'orderId %s and clientId %s', orderId, clientId)
