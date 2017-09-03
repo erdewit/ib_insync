@@ -92,6 +92,12 @@ class IB:
     def __exit__(self, *_exc):
         self.disconnect()
 
+    def __repr__(self):
+        conn = (f'connected to {self.client.host}:'
+                f'{self.client.port} clientId={self.client.clientId}' if
+                self.client.isConnected() else 'not connected')
+        return f'<{self.__class__.__name__} {conn}>'
+
     def connect(self, host: str, port: int, clientId: int, timeout: float=2):
         """
         Connect to a TWS or IB gateway application running at host:port.
