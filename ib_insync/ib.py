@@ -83,6 +83,15 @@ class IB:
         self.wrapper = Wrapper()
         self.client = Client(self.wrapper)
 
+    def __del__(self):
+        self.disconnect()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_exc):
+        self.disconnect()
+
     def connect(self, host: str, port: int, clientId: int, timeout: float=2):
         """
         Connect to a TWS or IB gateway application running at host:port.
@@ -91,6 +100,7 @@ class IB:
         This method is blocking.
         """
         self.run(self.connectAsync(host, port, clientId, timeout))
+        return self
 
     def disconnect(self):
         """
