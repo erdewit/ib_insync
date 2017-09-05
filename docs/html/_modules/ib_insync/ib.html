@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ib &#8212; IB-insync 0.8.4 documentation</title>
+    <title>ib_insync.ib &#8212; IB-insync 0.8.5 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.4',
+        VERSION:     '0.8.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -163,6 +163,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span> <span class="o">=</span> <span class="n">Wrapper</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_exc</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="s1">&#39;connected to </span><span class="si">{self.client.host}</span><span class="s1">:&#39;</span>
+                <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.client.port}</span><span class="s1"> clientId=</span><span class="si">{self.client.clientId}</span><span class="s1">&#39;</span> <span class="k">if</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">isConnected</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;not connected&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;&lt;</span><span class="si">{self.__class__.__name__}</span><span class="s1"> </span><span class="si">{conn}</span><span class="s1">&gt;&#39;</span>
+
 <div class="viewcode-block" id="IB.connect"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">clientId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Connect to a TWS or IB gateway application running at host:port.</span>
@@ -170,7 +185,8 @@
 <span class="sd">        </span>
 <span class="sd">        This method is blocking.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="IB.disconnect"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

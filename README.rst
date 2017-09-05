@@ -86,6 +86,12 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.5
+^^^^^^^^^^^^^
+
+* realtimeBar wrapper fix
+* context manager for IB and IB.connect()
+
 Version 0.8.4
 ^^^^^^^^^^^^^
 
