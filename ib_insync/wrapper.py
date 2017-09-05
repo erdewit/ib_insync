@@ -326,7 +326,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def realtimeBar(self, reqId, time, open_, high, low, close, volume,
             wap, count):
-        dt = util.parseIBDatetime(time)
+        dt = datetime.datetime.fromtimestamp(time)
         bar = RealTimeBar(dt, -1, open_, high, low, close, volume, wap, count)
         self.reqId2Bars[reqId].append(bar)
 
