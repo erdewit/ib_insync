@@ -166,8 +166,13 @@ class Bond(Contract):
 class FuturesOption(Contract):
     __slots__ = ()
 
-    def __init__(self, **kwargs):
-        Contract.__init__(self, secType='FOP', **kwargs)
+    def __init__(self, symbol='', lastTradeDateOrContractMonth='',
+            strike='', right='', exchange='', multiplier='',
+            currency='', **kwargs):
+        Contract.__init__(self, secType='FOP', symbol=symbol,
+                lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
+                strike=strike, right=right, exchange=exchange,
+                multiplier=multiplier, currency=currency, **kwargs)
 
 
 class MutualFund(Contract):
