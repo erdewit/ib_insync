@@ -151,7 +151,8 @@ class OrderStatus(Object):
         'lastFillPrice': 0.0,
         'clientId': 0,
         'whyHeld': '',
-        'mktCapPrice': 0.0 }
+        'mktCapPrice': 0.0,
+        'lastLiquidity': 0 }
     __slots__ = defaults.keys()
     __init__ = Object.__init__
     OrderStates = ('PendingSubmit', 'PendingCancel', 'PreSubmitted',

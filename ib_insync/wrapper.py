@@ -214,7 +214,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def orderStatus(self, orderId, status, filled, remaining, avgFillPrice,
             permId, parentId, lastFillPrice, clientId, whyHeld,
-            mktCapPrice=0.0):
+            mktCapPrice=0.0, lastLiquidity=0):
         trade = self.trades.get(orderId)
         if trade:
             statusChanged = trade.orderStatus.status != status
@@ -222,7 +222,8 @@ class Wrapper(EWrapper):
                     remaining=remaining, avgFillPrice=avgFillPrice,
                     permId=permId, parentId=parentId,
                     lastFillPrice=lastFillPrice, clientId=clientId,
-                    whyHeld=whyHeld, mktCapPrice=mktCapPrice)
+                    whyHeld=whyHeld, mktCapPrice=mktCapPrice,
+                    lastLiquidity=lastLiquidity)
             if statusChanged:
                 msg = ''
             elif (status == 'Submitted' and trade.log and
@@ -430,8 +431,6 @@ class Wrapper(EWrapper):
             ticker.low52week = price
         elif tickType == 20:
             ticker.high52week = price
-        elif tickType == 21:
-            ticker.avVolume = price
         elif tickType == 50:
             ticker.bidYield = price
         elif tickType == 51:
@@ -468,6 +467,8 @@ class Wrapper(EWrapper):
                 ticker.lastSize = size
         elif tickType in (8, 74):
             ticker.volume = size
+        elif tickType == 21:
+            ticker.avVolume = size
         elif tickType == 27:
             ticker.callOpenInterest = size
         elif tickType == 28:
