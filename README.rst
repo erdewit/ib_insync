@@ -50,21 +50,24 @@ This is a complete script to download historical data:
     ib = IB()
     ib.connect('127.0.0.1', 7497, clientId=1)
     
-    contract = Stock('AMD', 'SMART', 'USD')
+    contract = Forex('EURUSD')
     bars = ib.reqHistoricalData(contract, endDateTime='', durationStr='30 D',
-            barSizeSetting='1 hour', whatToShow='TRADES', useRTH=True)
+            barSizeSetting='1 hour', whatToShow='MIDPOINT', useRTH=True)
     
     # convert to pandas dataframe:
     df = util.df(bars)
-    print(df)
-    
-Output::
+    print(df[['date', 'open', 'high', 'low', 'close']])
+        
+Output:
 
-                       date   open   high    low  close  volume  barCount  average
-    0   2017-06-23 15:30:00  14.14  14.35  13.90  14.24  190461     31287   14.187
-    1   2017-06-23 16:00:00  14.23  14.65  14.16  14.62  266730     41320   14.461
+.. code-block:: python
+    
+                       date      open      high       low     close
+    0   2017-08-13 23:15:00  1.182850  1.183100  1.182100  1.182400
+    1   2017-08-14 00:00:00  1.182400  1.182450  1.181875  1.182175
+    2   2017-08-14 01:00:00  1.182175  1.182675  1.181900  1.182525
     ...
-    206 2017-08-04 21:00:00  13.13  13.15  13.08  13.12   88656     21886   13.113
+    719 2017-09-22 22:00:00  1.194425  1.195425  1.194225  1.195050
 
 
 Be sure to take a look at the

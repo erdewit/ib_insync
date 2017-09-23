@@ -126,6 +126,12 @@ class IB:
             f'session time {util.formatSI(stats.duration)}s.')
         self.client.disconnect()
 
+    def isConnected(self):
+        """
+        Is there is an API connection to TWS or IB gateway?
+        """
+        return self.client.isConnected()
+
     @staticmethod
     def run(*awaitables: [Awaitable]):
         """
