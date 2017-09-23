@@ -58,9 +58,7 @@ This is a complete script to download historical data:
     df = util.df(bars)
     print(df[['date', 'open', 'high', 'low', 'close']])
         
-Output:
-
-.. code-block:: python
+Output::
     
                        date      open      high       low     close
     0   2017-08-13 23:15:00  1.182850  1.183100  1.182100  1.182400
