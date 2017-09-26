@@ -36,8 +36,6 @@ To install packages needed for the examples and notebooks::
 
     pip3 install -U jupyter numpy pandas
 
-`IB-insync home page. <http://rawgit.com/erdewit/ib_insync/master/docs/html/index.html>`_
-
 Example
 -------
 
@@ -70,6 +68,11 @@ Output::
 
 Be sure to take a look at the
 `example notebooks <http://rawgit.com/erdewit/ib_insync/master/docs/html/notebooks.html>`_ too.
+
+Documentation
+-------------
+
+`API docs <http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html>`_
 
 Discussion
 ----------
