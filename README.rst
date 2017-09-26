@@ -87,6 +87,12 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.6
+^^^^^^^^^^^^^
+
+* ticker.marketPrice adjusted to ignore price of -1
+* ticker.avVolume handling fixed
+
 Version 0.8.5
 ^^^^^^^^^^^^^
 
