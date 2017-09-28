@@ -51,14 +51,14 @@ class Wrapper(EWrapper):
         self.lastTime = None  # datetime (UTC) of last network packet arrival
         self.updateEvent = asyncio.Event()
 
-    def startReq(self, key):
+    def startReq(self, key, container=None):
         """
         Start a new request and return the future that is associated
-        with with the key.
+        with with the key and container. The container is a list by default.
         """
         future = asyncio.Future()
         self._futures[key] = future
-        self._results[key] = []
+        self._results[key] = container if container is not None else []
         return future
 
     def _endReq(self, key, result=None):
@@ -102,11 +102,9 @@ class Wrapper(EWrapper):
         """
         Associate a live bars subscription with the given reqId.
         """
-        bars = []
+        bars = self._results[reqId] if historical else []
         self.reqId2Bars[reqId] = bars
         self.barsIdentity2ReqId[id(bars)] = reqId
-        if historical:
-            self._results[reqId] = bars
         return bars
 
     def endLiveBars(self, bars):
@@ -347,8 +345,11 @@ class Wrapper(EWrapper):
         bar.date = util.parseIBDatetime(bar.date)
         if len(bars) == 0 or bar.date > bars[-1].date:
             bars.append(bar)
-        else:
+            self._handleEvent('barUpdate', bars, True)
+        elif bars[-1] != bar:
             bars[-1] = bar
+            self._handleEvent('barUpdate', bars, False)
+
 
     @iswrapper
     def headTimestamp(self, reqId, headTimestamp):
@@ -602,7 +603,7 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def scannerDataEnd(self, reqId):
-        return self._endReq(reqId)
+        self._endReq(reqId)
 
     @iswrapper
     def histogramData(self, reqId, items):
@@ -636,7 +637,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def newsArticle(self, reqId, articleType, articleText):
         article = NewsArticle(articleType, articleText)
-        return self._endReq(reqId, article)
+        self._endReq(reqId, article)
 
     @iswrapper
     def historicalNews(self, reqId, time, providerCode, articleId, headline):
@@ -645,7 +646,7 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def historicalNewsEnd(self, reqId, _hasMore):
-        return self._endReq(reqId)
+        self._endReq(reqId)
 
     @iswrapper
     def updateNewsBulletin(self, msgId, msgType, message, origExchange):

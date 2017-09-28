@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.wrapper &#8212; IB-insync 0.8.6 documentation</title>
+    <title>ib_insync.wrapper &#8212; IB-insync 0.8.7 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.6',
+        VERSION:     '0.8.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -131,14 +131,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># datetime (UTC) of last network packet arrival</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Wrapper.startReq"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.startReq">[docs]</a>    <span class="k">def</span> <span class="nf">startReq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="Wrapper.startReq"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.startReq">[docs]</a>    <span class="k">def</span> <span class="nf">startReq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">container</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start a new request and return the future that is associated</span>
-<span class="sd">        with with the key.</span>
+<span class="sd">        with with the key and container. The container is a list by default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_futures</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">future</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">container</span> <span class="k">if</span> <span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="k">return</span> <span class="n">future</span></div>
 
     <span class="k">def</span> <span class="nf">_endReq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -182,11 +182,9 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Associate a live bars subscription with the given reqId.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bars</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="k">if</span> <span class="n">historical</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Bars</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">=</span> <span class="n">bars</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">barsIdentity2ReqId</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">bars</span><span class="p">)]</span> <span class="o">=</span> <span class="n">reqId</span>
-        <span class="k">if</span> <span class="n">historical</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">=</span> <span class="n">bars</span>
         <span class="k">return</span> <span class="n">bars</span></div>
 
 <div class="viewcode-block" id="Wrapper.endLiveBars"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.endLiveBars">[docs]</a>    <span class="k">def</span> <span class="nf">endLiveBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bars</span><span class="p">):</span>
@@ -427,8 +425,11 @@
         <span class="n">bar</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">parseIBDatetime</span><span class="p">(</span><span class="n">bar</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bars</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">bar</span><span class="o">.</span><span class="n">date</span> <span class="o">&gt;</span> <span class="n">bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">date</span><span class="p">:</span>
             <span class="n">bars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bar</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;barUpdate&#39;</span><span class="p">,</span> <span class="n">bars</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">bar</span><span class="p">:</span>
+            <span class="n">bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bar</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;barUpdate&#39;</span><span class="p">,</span> <span class="n">bars</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="Wrapper.headTimestamp"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.headTimestamp">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">headTimestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">headTimestamp</span><span class="p">):</span>
@@ -682,7 +683,7 @@
 
 <div class="viewcode-block" id="Wrapper.scannerDataEnd"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.scannerDataEnd">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">scannerDataEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.histogramData"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.histogramData">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">histogramData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
@@ -716,7 +717,7 @@
 <div class="viewcode-block" id="Wrapper.newsArticle"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.newsArticle">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">newsArticle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">articleType</span><span class="p">,</span> <span class="n">articleText</span><span class="p">):</span>
         <span class="n">article</span> <span class="o">=</span> <span class="n">NewsArticle</span><span class="p">(</span><span class="n">articleType</span><span class="p">,</span> <span class="n">articleText</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">article</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">article</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.historicalNews"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.historicalNews">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">historicalNews</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">providerCode</span><span class="p">,</span> <span class="n">articleId</span><span class="p">,</span> <span class="n">headline</span><span class="p">):</span>
@@ -725,7 +726,7 @@
 
 <div class="viewcode-block" id="Wrapper.historicalNewsEnd"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.historicalNewsEnd">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">historicalNewsEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">_hasMore</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.updateNewsBulletin"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.updateNewsBulletin">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">updateNewsBulletin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msgId</span><span class="p">,</span> <span class="n">msgType</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">origExchange</span><span class="p">):</span>

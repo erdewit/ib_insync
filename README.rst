@@ -90,6 +90,13 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.7
+^^^^^^^^^^^^^
+* BarDataList now used with reqHistoricalData; it also stores the request parameters
+* updated the typing annotations
+* added ``barUpdate`` event to ``IB``
+* bar- and tick-data notebooks updated to use callbacks for realtime data
+
 Version 0.8.6
 ^^^^^^^^^^^^^
 

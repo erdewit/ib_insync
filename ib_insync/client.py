@@ -3,6 +3,7 @@ import asyncio
 import logging
 import time
 import io
+from typing import List
 
 import ibapi
 from ibapi.client import EClient
@@ -92,7 +93,7 @@ class Client(EClient):
         loop = asyncio.get_event_loop()
         loop.run_forever()
 
-    def isReady(self):
+    def isReady(self) -> bool:
         """
         Is the API connection up and running?
         """
@@ -118,7 +119,7 @@ class Client(EClient):
         self._reqIdSeq += 1
         return newId
 
-    def getAccounts(self) -> [str]:
+    def getAccounts(self) -> List[str]:
         """
         Get the list of account names that are under management.
         """

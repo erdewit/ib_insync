@@ -14,7 +14,7 @@ __all__ = (
     'ComboLeg UnderComp OrderComboLeg OrderState OrderStatus '
     'ScannerSubscription SoftDollarTier '
     'Execution CommissionReport ExecutionFilter '
-    'BarData RealTimeBar HistogramData '
+    'BarDataList BarData RealTimeBar HistogramData '
     'NewsProvider DepthMktDataDescription '
     'AccountValue RealTimeBar TickData TickAttribute '
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
@@ -213,6 +213,17 @@ class DepthMktDataDescription(Object):
     defaults = ibapi.common.DepthMktDataDescription().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
+
+
+class BarDataList(list):
+    __slots__ = ('contract', 'endDateTime', 'durationStr', 'barSizeSetting',
+            'whatToShow', 'useRTH', 'formatDate', 'keepUpToDate')
+
+    def __eq__(self, other):
+        return self is other
+
+    def __hash__(self):
+        return id(self)
 
 
 class Trade(namedtuple('Trade',
