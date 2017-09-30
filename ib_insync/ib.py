@@ -241,7 +241,7 @@ class IB:
         Set an optional callback to be invoked after an event. Events:
         
         * ``updated()``:
-          Is emitted after a network packet has been handeled;
+          Is emitted after a network packet has been handeled.
         
         * ``pendingTickers(tickers: Set[Ticker])``:
           Emits the set of tickers that have been updated during the last
@@ -253,13 +253,13 @@ class IB:
           bar has changed it is False.
           
         * ``orderStatus(trade: Trade)``:
-          Emits the changed order status of the ongoing trade;
+          Emits the changed order status of the ongoing trade.
            
         * ``execDetails(trade: Trade, fill: Fill)``:
           Emits the fill together with the ongoing trade it belong to.
           
         * ``commissionReport(trade: Trade, fill: Fill, report: CommissionReport)``:
-          The commission report is emitted after the fill that it belongs to;
+          The commission report is emitted after the fill that it belongs to.
           
         * ``updatePortfolio(item: PortfolioItem)``:
           A portfolio item has changed.
@@ -272,7 +272,7 @@ class IB:
           
         * ``error(errorCode: int, errorString: str)``:
           Emits the TWS error code and string (see
-          https://interactivebrokers.github.io/tws-api/message_codes.html)
+          https://interactivebrokers.github.io/tws-api/message_codes.html).
 
         Unsetting is done by supplying None as callback.
         """

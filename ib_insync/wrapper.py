@@ -463,6 +463,8 @@ class Wrapper(EWrapper):
                 ticker.askSize = size
         elif tickType in (5, 71):
             price = ticker.last
+            if util.isNan(price):
+                return
             if size != ticker.lastSize:
                 ticker.prevLastSize = ticker.lastSize
                 ticker.lastSize = size
