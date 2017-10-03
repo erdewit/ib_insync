@@ -238,10 +238,7 @@ def _syncAwaitQt(future):
     future = asyncio.ensure_future(future)
     qApp = qt.QApplication.instance()
     while not future.done():
-        qApp.processEvents()
-        if future.done():
-            break
-        time.sleep(0.005)
+        qApp.processEvents(qt.QEventLoop.WaitForMoreEvents)
     return future.result()
 
 
