@@ -90,6 +90,14 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.8
+^^^^^^^^^^^^^
+
+* ``barUpdate`` event now used also for reqRealTimeBars responses
+* ``reqRealTimeBars`` will return RealTimeBarList instead of list
+* realtime bars example added to bar data notebook
+* fixed event handling bug in Wrapper.execDetails
+
 Version 0.8.7
 ^^^^^^^^^^^^^
 * BarDataList now used with reqHistoricalData; it also stores the request parameters

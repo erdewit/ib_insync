@@ -98,14 +98,12 @@ class Wrapper(EWrapper):
         self.reqId2Ticker.pop(reqId, 0)
         return reqId
 
-    def startLiveBars(self, reqId, historical=False):
+    def startLiveBars(self, reqId, bars):
         """
-        Associate a live bars subscription with the given reqId.
+        Associate the reqId with the given live bars.
         """
-        bars = self._results[reqId] if historical else []
         self.reqId2Bars[reqId] = bars
         self.barsIdentity2ReqId[id(bars)] = reqId
-        return bars
 
     def endLiveBars(self, bars):
         reqId = self.barsIdentity2ReqId.pop(id(bars), 0)
@@ -272,7 +270,7 @@ class Wrapper(EWrapper):
                     self._handleEvent('execDetails', trade, fill)
                     _logger.info(f'execDetails: {fill}')
                     if becomesFilled:
-                        self.handleEvent('orderStatus', trade)
+                        self._handleEvent('orderStatus', trade)
         if not isLive:
             self._results[reqId].append(fill)
 
@@ -327,7 +325,9 @@ class Wrapper(EWrapper):
             wap, count):
         dt = datetime.datetime.fromtimestamp(time)
         bar = RealTimeBar(dt, -1, open_, high, low, close, volume, wap, count)
-        self.reqId2Bars[reqId].append(bar)
+        bars = self.reqId2Bars[reqId]
+        bars.append(bar)
+        self._handleEvent('barUpdate', bars, True)
 
     @iswrapper
     def historicalData(self, reqId , bar):
@@ -349,7 +349,6 @@ class Wrapper(EWrapper):
         elif bars[-1] != bar:
             bars[-1] = bar
             self._handleEvent('barUpdate', bars, False)
-
 
     @iswrapper
     def headTimestamp(self, reqId, headTimestamp):

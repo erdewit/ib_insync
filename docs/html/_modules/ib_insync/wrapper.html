@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.wrapper &#8212; IB-insync 0.8.7 documentation</title>
+    <title>ib_insync.wrapper &#8212; IB-insync 0.8.8 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.7',
+        VERSION:     '0.8.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -178,14 +178,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Ticker</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">reqId</span></div>
 
-<div class="viewcode-block" id="Wrapper.startLiveBars"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.startLiveBars">[docs]</a>    <span class="k">def</span> <span class="nf">startLiveBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">historical</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Wrapper.startLiveBars"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.startLiveBars">[docs]</a>    <span class="k">def</span> <span class="nf">startLiveBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">bars</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Associate a live bars subscription with the given reqId.</span>
+<span class="sd">        Associate the reqId with the given live bars.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="k">if</span> <span class="n">historical</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Bars</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">=</span> <span class="n">bars</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">barsIdentity2ReqId</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">bars</span><span class="p">)]</span> <span class="o">=</span> <span class="n">reqId</span>
-        <span class="k">return</span> <span class="n">bars</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">barsIdentity2ReqId</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">bars</span><span class="p">)]</span> <span class="o">=</span> <span class="n">reqId</span></div>
 
 <div class="viewcode-block" id="Wrapper.endLiveBars"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.endLiveBars">[docs]</a>    <span class="k">def</span> <span class="nf">endLiveBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bars</span><span class="p">):</span>
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">barsIdentity2ReqId</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">bars</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
@@ -352,7 +350,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;execDetails&#39;</span><span class="p">,</span> <span class="n">trade</span><span class="p">,</span> <span class="n">fill</span><span class="p">)</span>
                     <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;execDetails: </span><span class="si">{fill}</span><span class="s1">&#39;</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">becomesFilled</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">(</span><span class="s1">&#39;orderStatus&#39;</span><span class="p">,</span> <span class="n">trade</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;orderStatus&#39;</span><span class="p">,</span> <span class="n">trade</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">isLive</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span></div>
 
@@ -407,7 +405,9 @@
             <span class="n">wap</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
         <span class="n">bar</span> <span class="o">=</span> <span class="n">RealTimeBar</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">open_</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">close</span><span class="p">,</span> <span class="n">volume</span><span class="p">,</span> <span class="n">wap</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Bars</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span></div>
+        <span class="n">bars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Bars</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span>
+        <span class="n">bars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;barUpdate&#39;</span><span class="p">,</span> <span class="n">bars</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.historicalData"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.historicalData">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">historicalData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span> <span class="p">,</span> <span class="n">bar</span><span class="p">):</span>
@@ -429,7 +429,6 @@
         <span class="k">elif</span> <span class="n">bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">bar</span><span class="p">:</span>
             <span class="n">bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bar</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;barUpdate&#39;</span><span class="p">,</span> <span class="n">bars</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="Wrapper.headTimestamp"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.headTimestamp">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">headTimestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">headTimestamp</span><span class="p">):</span>
@@ -543,6 +542,8 @@
                 <span class="n">ticker</span><span class="o">.</span><span class="n">askSize</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">71</span><span class="p">):</span>
             <span class="n">price</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">last</span>
+            <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">isNan</span><span class="p">(</span><span class="n">price</span><span class="p">):</span>
+                <span class="k">return</span>
             <span class="k">if</span> <span class="n">size</span> <span class="o">!=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span><span class="p">:</span>
                 <span class="n">ticker</span><span class="o">.</span><span class="n">prevLastSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span>
                 <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span> <span class="o">=</span> <span class="n">size</span>

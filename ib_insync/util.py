@@ -96,13 +96,6 @@ def allowCtrlC():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
-def filterRootLog(record):
-    """
-    Filter log records on the root logger.
-    """
-    return record.name != 'root'
-
-
 def logToFile(path, level=logging.INFO):
     """
     Create a log handler that logs to the given file.
@@ -113,7 +106,6 @@ def logToFile(path, level=logging.INFO):
             '%(asctime)s %(name)s %(levelname)s %(message)s')
     handler = logging.FileHandler(path)
     handler.setFormatter(formatter)
-    handler.addFilter(filterRootLog)
     handler.addFilter(lambda record: record.name != 'root')
     logger.addHandler(handler)
 

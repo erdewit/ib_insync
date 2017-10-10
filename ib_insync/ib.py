@@ -385,7 +385,7 @@ class IB:
         """
         return list(self.wrapper.pendingTickers)
 
-    def realtimeBars(self) -> List[BarDataList]:
+    def realtimeBars(self) -> BarList:
         """
         Get a list of all live updated bars. These can be 5 second realtime
         bars or live updated historical bars.
@@ -630,20 +630,26 @@ class IB:
 
     @api
     def reqRealTimeBars(self, contract, barSize, whatToShow,
-            useRTH, realTimeBarsOptions=None) -> List[RealTimeBar]:
+            useRTH, realTimeBarsOptions=None) -> RealTimeBarList:
         """
         Request realtime 5 second bars.
         
         https://interactivebrokers.github.io/tws-api/realtime_bars.html
         """
         reqId = self.client.getReqId()
-        bars = self.wrapper.startLiveBars(reqId)
+        bars = RealTimeBarList()
+        bars.contract = contract
+        bars.barSize = barSize
+        bars.whatToShow = whatToShow
+        bars.useRTH = useRTH
+        bars.realTimeBarsOptions = realTimeBarsOptions
+        self.wrapper.startLiveBars(reqId, bars)
         self.client.reqRealTimeBars(reqId, contract, barSize, whatToShow,
                 useRTH, realTimeBarsOptions)
         return bars
 
     @api
-    def cancelRealTimeBars(self, bars) -> None:
+    def cancelRealTimeBars(self, bars: RealTimeBarList) -> None:
         """
         Cancel the realtime bars subscription.
         """
@@ -1066,9 +1072,10 @@ class IB:
         bars.useRTH = useRTH
         bars.formatDate = formatDate
         bars.keepUpToDate = keepUpToDate
+        bars.chartOptions = chartOptions
         future = self.wrapper.startReq(reqId, bars)
         if keepUpToDate:
-            self.wrapper.startLiveBars(reqId, historical=True)
+            self.wrapper.startLiveBars(reqId, bars)
         end = util.formatIBDatetime(endDateTime)
         self.client.reqHistoricalData(reqId, contract, end,
                 durationStr, barSizeSetting, whatToShow,

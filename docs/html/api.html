@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.8.7 documentation</title>
+    <title>API docs &#8212; IB-insync 0.8.8 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.8.7',
+        VERSION:     '0.8.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -91,7 +91,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.8.7.</p>
+<p>Release 0.8.8.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -231,7 +231,7 @@ The contract object must be the same as used to subscribe with.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.cancelRealTimeBars">
-<code class="descname">cancelRealTimeBars</code><span class="sig-paren">(</span><em>bars</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelRealTimeBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelRealTimeBars" title="Permalink to this definition">¶</a></dt>
+<code class="descname">cancelRealTimeBars</code><span class="sig-paren">(</span><em>bars: ib_insync.objects.RealTimeBarList</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelRealTimeBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelRealTimeBars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cancel the realtime bars subscription.</p>
 </dd></dl>
 
@@ -374,7 +374,7 @@ the missing fields in the contract, especially the conId.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.realtimeBars">
-<code class="descname">realtimeBars</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; typing.List[ib_insync.objects.BarDataList]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.realtimeBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.realtimeBars" title="Permalink to this definition">¶</a></dt>
+<code class="descname">realtimeBars</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; ib_insync.objects.BarList<a class="reference internal" href="_modules/ib_insync/ib.html#IB.realtimeBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.realtimeBars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of all live updated bars. These can be 5 second realtime
 bars or live updated historical bars.</p>
 </dd></dl>
@@ -653,7 +653,7 @@ It is recommended to use the more reliable and much faster
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqRealTimeBars">
-<code class="descname">reqRealTimeBars</code><span class="sig-paren">(</span><em>contract</em>, <em>barSize</em>, <em>whatToShow</em>, <em>useRTH</em>, <em>realTimeBarsOptions=None</em><span class="sig-paren">)</span> &#x2192; typing.List[ib_insync.objects.RealTimeBar]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqRealTimeBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqRealTimeBars" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqRealTimeBars</code><span class="sig-paren">(</span><em>contract</em>, <em>barSize</em>, <em>whatToShow</em>, <em>useRTH</em>, <em>realTimeBarsOptions=None</em><span class="sig-paren">)</span> &#x2192; ib_insync.objects.RealTimeBarList<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqRealTimeBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqRealTimeBars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Request realtime 5 second bars.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/realtime_bars.html">https://interactivebrokers.github.io/tws-api/realtime_bars.html</a></p>
 </dd></dl>
@@ -741,7 +741,7 @@ run the event loop until each has completed and return their results.</p>
 <dd><p>Set an optional callback to be invoked after an event. Events:</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">updated()</span></code>:
-Is emitted after a network packet has been handeled;</li>
+Is emitted after a network packet has been handeled.</li>
 <li><code class="docutils literal"><span class="pre">pendingTickers(tickers:</span> <span class="pre">Set[Ticker])</span></code>:
 Emits the set of tickers that have been updated during the last
 update and for which there are new ticks or domTicks.</li>
@@ -750,11 +750,11 @@ Emits the bar list that has been updated in real time.
 If a new bar has been added then hasNewBar is True, when the last
 bar has changed it is False.</li>
 <li><code class="docutils literal"><span class="pre">orderStatus(trade:</span> <span class="pre">Trade)</span></code>:
-Emits the changed order status of the ongoing trade;</li>
+Emits the changed order status of the ongoing trade.</li>
 <li><code class="docutils literal"><span class="pre">execDetails(trade:</span> <span class="pre">Trade,</span> <span class="pre">fill:</span> <span class="pre">Fill)</span></code>:
 Emits the fill together with the ongoing trade it belong to.</li>
 <li><code class="docutils literal"><span class="pre">commissionReport(trade:</span> <span class="pre">Trade,</span> <span class="pre">fill:</span> <span class="pre">Fill,</span> <span class="pre">report:</span> <span class="pre">CommissionReport)</span></code>:
-The commission report is emitted after the fill that it belongs to;</li>
+The commission report is emitted after the fill that it belongs to.</li>
 <li><code class="docutils literal"><span class="pre">updatePortfolio(item:</span> <span class="pre">PortfolioItem)</span></code>:
 A portfolio item has changed.</li>
 <li><code class="docutils literal"><span class="pre">position(position:</span> <span class="pre">Position)</span></code>:
@@ -763,7 +763,7 @@ A position has changed.</li>
 Emit a new news headline.</li>
 <li><code class="docutils literal"><span class="pre">error(errorCode:</span> <span class="pre">int,</span> <span class="pre">errorString:</span> <span class="pre">str)</span></code>:
 Emits the TWS error code and string (see
-<a class="reference external" href="https://interactivebrokers.github.io/tws-api/message_codes.html">https://interactivebrokers.github.io/tws-api/message_codes.html</a>)</li>
+<a class="reference external" href="https://interactivebrokers.github.io/tws-api/message_codes.html">https://interactivebrokers.github.io/tws-api/message_codes.html</a>).</li>
 </ul>
 <p>Unsetting is done by supplying None as callback.</p>
 </dd></dl>
@@ -1091,7 +1091,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139774787862032: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139986187087376: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2930,11 +2930,21 @@ and as keyword, the keyword wins.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="ib_insync.objects.BarList">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">BarList</code><a class="reference internal" href="_modules/ib_insync/objects.html#BarList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.BarList" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
 <dt id="ib_insync.objects.BarDataList">
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">BarDataList</code><a class="reference internal" href="_modules/ib_insync/objects.html#BarDataList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.BarDataList" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="attribute">
 <dt id="ib_insync.objects.BarDataList.barSizeSetting">
 <code class="descname">barSizeSetting</code><a class="headerlink" href="#ib_insync.objects.BarDataList.barSizeSetting" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.BarDataList.chartOptions">
+<code class="descname">chartOptions</code><a class="headerlink" href="#ib_insync.objects.BarDataList.chartOptions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2970,6 +2980,36 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.objects.BarDataList.whatToShow">
 <code class="descname">whatToShow</code><a class="headerlink" href="#ib_insync.objects.BarDataList.whatToShow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.objects.RealTimeBarList">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">RealTimeBarList</code><a class="reference internal" href="_modules/ib_insync/objects.html#RealTimeBarList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.RealTimeBarList" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="ib_insync.objects.RealTimeBarList.barSize">
+<code class="descname">barSize</code><a class="headerlink" href="#ib_insync.objects.RealTimeBarList.barSize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.RealTimeBarList.contract">
+<code class="descname">contract</code><a class="headerlink" href="#ib_insync.objects.RealTimeBarList.contract" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.RealTimeBarList.realTimeBarsOptions">
+<code class="descname">realTimeBarsOptions</code><a class="headerlink" href="#ib_insync.objects.RealTimeBarList.realTimeBarsOptions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.RealTimeBarList.useRTH">
+<code class="descname">useRTH</code><a class="headerlink" href="#ib_insync.objects.RealTimeBarList.useRTH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.RealTimeBarList.whatToShow">
+<code class="descname">whatToShow</code><a class="headerlink" href="#ib_insync.objects.RealTimeBarList.whatToShow" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -4108,8 +4148,8 @@ and as keyword, the keyword wins.</p>
 
 <dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.startLiveBars">
-<code class="descname">startLiveBars</code><span class="sig-paren">(</span><em>reqId</em>, <em>historical=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.startLiveBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.startLiveBars" title="Permalink to this definition">¶</a></dt>
-<dd><p>Associate a live bars subscription with the given reqId.</p>
+<code class="descname">startLiveBars</code><span class="sig-paren">(</span><em>reqId</em>, <em>bars</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.startLiveBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.startLiveBars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Associate the reqId with the given live bars.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4220,12 +4260,6 @@ a DataFrame or as a list of bar objects.</p>
 <dt id="ib_insync.util.allowCtrlC">
 <code class="descclassname">ib_insync.util.</code><code class="descname">allowCtrlC</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#allowCtrlC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.allowCtrlC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allow Control-C to end program.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ib_insync.util.filterRootLog">
-<code class="descclassname">ib_insync.util.</code><code class="descname">filterRootLog</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#filterRootLog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.filterRootLog" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filter log records on the root logger.</p>
 </dd></dl>
 
 <dl class="function">

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ib &#8212; IB-insync 0.8.7 documentation</title>
+    <title>ib_insync.ib &#8212; IB-insync 0.8.8 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.7',
+        VERSION:     '0.8.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -321,7 +321,7 @@
 <span class="sd">        Set an optional callback to be invoked after an event. Events:</span>
 <span class="sd">        </span>
 <span class="sd">        * ``updated()``:</span>
-<span class="sd">          Is emitted after a network packet has been handeled;</span>
+<span class="sd">          Is emitted after a network packet has been handeled.</span>
 <span class="sd">        </span>
 <span class="sd">        * ``pendingTickers(tickers: Set[Ticker])``:</span>
 <span class="sd">          Emits the set of tickers that have been updated during the last</span>
@@ -333,13 +333,13 @@
 <span class="sd">          bar has changed it is False.</span>
 <span class="sd">          </span>
 <span class="sd">        * ``orderStatus(trade: Trade)``:</span>
-<span class="sd">          Emits the changed order status of the ongoing trade;</span>
+<span class="sd">          Emits the changed order status of the ongoing trade.</span>
 <span class="sd">           </span>
 <span class="sd">        * ``execDetails(trade: Trade, fill: Fill)``:</span>
 <span class="sd">          Emits the fill together with the ongoing trade it belong to.</span>
 <span class="sd">          </span>
 <span class="sd">        * ``commissionReport(trade: Trade, fill: Fill, report: CommissionReport)``:</span>
-<span class="sd">          The commission report is emitted after the fill that it belongs to;</span>
+<span class="sd">          The commission report is emitted after the fill that it belongs to.</span>
 <span class="sd">          </span>
 <span class="sd">        * ``updatePortfolio(item: PortfolioItem)``:</span>
 <span class="sd">          A portfolio item has changed.</span>
@@ -352,7 +352,7 @@
 <span class="sd">          </span>
 <span class="sd">        * ``error(errorCode: int, errorString: str)``:</span>
 <span class="sd">          Emits the TWS error code and string (see</span>
-<span class="sd">          https://interactivebrokers.github.io/tws-api/message_codes.html)</span>
+<span class="sd">          https://interactivebrokers.github.io/tws-api/message_codes.html).</span>
 
 <span class="sd">        Unsetting is done by supplying None as callback.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -465,7 +465,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pendingTickers</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.realtimeBars"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.realtimeBars">[docs]</a>    <span class="k">def</span> <span class="nf">realtimeBars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BarDataList</span><span class="p">]:</span>
+<div class="viewcode-block" id="IB.realtimeBars"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.realtimeBars">[docs]</a>    <span class="k">def</span> <span class="nf">realtimeBars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BarList</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a list of all live updated bars. These can be 5 second realtime</span>
 <span class="sd">        bars or live updated historical bars.</span>
@@ -710,20 +710,26 @@
 
 <div class="viewcode-block" id="IB.reqRealTimeBars"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqRealTimeBars">[docs]</a>    <span class="nd">@api</span>
     <span class="k">def</span> <span class="nf">reqRealTimeBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">barSize</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span>
-            <span class="n">useRTH</span><span class="p">,</span> <span class="n">realTimeBarsOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RealTimeBar</span><span class="p">]:</span>
+            <span class="n">useRTH</span><span class="p">,</span> <span class="n">realTimeBarsOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RealTimeBarList</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request realtime 5 second bars.</span>
 <span class="sd">        </span>
 <span class="sd">        https://interactivebrokers.github.io/tws-api/realtime_bars.html</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
-        <span class="n">bars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startLiveBars</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+        <span class="n">bars</span> <span class="o">=</span> <span class="n">RealTimeBarList</span><span class="p">()</span>
+        <span class="n">bars</span><span class="o">.</span><span class="n">contract</span> <span class="o">=</span> <span class="n">contract</span>
+        <span class="n">bars</span><span class="o">.</span><span class="n">barSize</span> <span class="o">=</span> <span class="n">barSize</span>
+        <span class="n">bars</span><span class="o">.</span><span class="n">whatToShow</span> <span class="o">=</span> <span class="n">whatToShow</span>
+        <span class="n">bars</span><span class="o">.</span><span class="n">useRTH</span> <span class="o">=</span> <span class="n">useRTH</span>
+        <span class="n">bars</span><span class="o">.</span><span class="n">realTimeBarsOptions</span> <span class="o">=</span> <span class="n">realTimeBarsOptions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startLiveBars</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">bars</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqRealTimeBars</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">barSize</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span>
                 <span class="n">useRTH</span><span class="p">,</span> <span class="n">realTimeBarsOptions</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">bars</span></div>
 
 <div class="viewcode-block" id="IB.cancelRealTimeBars"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelRealTimeBars">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">cancelRealTimeBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bars</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">cancelRealTimeBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bars</span><span class="p">:</span> <span class="n">RealTimeBarList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel the realtime bars subscription.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1146,9 +1152,10 @@
         <span class="n">bars</span><span class="o">.</span><span class="n">useRTH</span> <span class="o">=</span> <span class="n">useRTH</span>
         <span class="n">bars</span><span class="o">.</span><span class="n">formatDate</span> <span class="o">=</span> <span class="n">formatDate</span>
         <span class="n">bars</span><span class="o">.</span><span class="n">keepUpToDate</span> <span class="o">=</span> <span class="n">keepUpToDate</span>
+        <span class="n">bars</span><span class="o">.</span><span class="n">chartOptions</span> <span class="o">=</span> <span class="n">chartOptions</span>
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">bars</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">keepUpToDate</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startLiveBars</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">historical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startLiveBars</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">bars</span><span class="p">)</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">formatIBDatetime</span><span class="p">(</span><span class="n">endDateTime</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqHistoricalData</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span>
                 <span class="n">durationStr</span><span class="p">,</span> <span class="n">barSizeSetting</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span>

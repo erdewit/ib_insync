@@ -14,8 +14,8 @@ __all__ = (
     'ComboLeg UnderComp OrderComboLeg OrderState OrderStatus '
     'ScannerSubscription SoftDollarTier '
     'Execution CommissionReport ExecutionFilter '
-    'BarDataList BarData RealTimeBar HistogramData '
-    'NewsProvider DepthMktDataDescription '
+    'BarList BarDataList RealTimeBarList BarData RealTimeBar '
+    'HistogramData NewsProvider DepthMktDataDescription '
     'AccountValue RealTimeBar TickData TickAttribute '
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
     'MktDepthData DOMLevel '
@@ -215,15 +215,24 @@ class DepthMktDataDescription(Object):
     __init__ = Object.__init__
 
 
-class BarDataList(list):
-    __slots__ = ('contract', 'endDateTime', 'durationStr', 'barSizeSetting',
-            'whatToShow', 'useRTH', 'formatDate', 'keepUpToDate')
+class BarList(list):
+    __slots__ = ()
 
     def __eq__(self, other):
         return self is other
 
     def __hash__(self):
         return id(self)
+
+
+class BarDataList(BarList):
+    __slots__ = ('contract', 'endDateTime', 'durationStr', 'barSizeSetting',
+            'whatToShow', 'useRTH', 'formatDate', 'keepUpToDate', 'chartOptions')
+
+
+class RealTimeBarList(BarList):
+    __slots__ = ('contract', 'barSize', 'whatToShow', 'useRTH',
+            'realTimeBarsOptions')
 
 
 class Trade(namedtuple('Trade',

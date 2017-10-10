@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.objects &#8212; IB-insync 0.8.7 documentation</title>
+    <title>ib_insync.objects &#8212; IB-insync 0.8.8 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.7',
+        VERSION:     '0.8.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -94,8 +94,8 @@
     <span class="s1">&#39;ComboLeg UnderComp OrderComboLeg OrderState OrderStatus &#39;</span>
     <span class="s1">&#39;ScannerSubscription SoftDollarTier &#39;</span>
     <span class="s1">&#39;Execution CommissionReport ExecutionFilter &#39;</span>
-    <span class="s1">&#39;BarDataList BarData RealTimeBar HistogramData &#39;</span>
-    <span class="s1">&#39;NewsProvider DepthMktDataDescription &#39;</span>
+    <span class="s1">&#39;BarList BarDataList RealTimeBarList BarData RealTimeBar &#39;</span>
+    <span class="s1">&#39;HistogramData NewsProvider DepthMktDataDescription &#39;</span>
     <span class="s1">&#39;AccountValue RealTimeBar TickData TickAttribute &#39;</span>
     <span class="s1">&#39;HistoricalTick HistoricalTickBidAsk HistoricalTickLast &#39;</span>
     <span class="s1">&#39;MktDepthData DOMLevel &#39;</span>
@@ -295,15 +295,24 @@
     <span class="fm">__init__</span> <span class="o">=</span> <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span></div>
 
 
-<div class="viewcode-block" id="BarDataList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarDataList">[docs]</a><span class="k">class</span> <span class="nc">BarDataList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;endDateTime&#39;</span><span class="p">,</span> <span class="s1">&#39;durationStr&#39;</span><span class="p">,</span> <span class="s1">&#39;barSizeSetting&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;whatToShow&#39;</span><span class="p">,</span> <span class="s1">&#39;useRTH&#39;</span><span class="p">,</span> <span class="s1">&#39;formatDate&#39;</span><span class="p">,</span> <span class="s1">&#39;keepUpToDate&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="BarList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarList">[docs]</a><span class="k">class</span> <span class="nc">BarList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>
 
     <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BarDataList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarDataList">[docs]</a><span class="k">class</span> <span class="nc">BarDataList</span><span class="p">(</span><span class="n">BarList</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;endDateTime&#39;</span><span class="p">,</span> <span class="s1">&#39;durationStr&#39;</span><span class="p">,</span> <span class="s1">&#39;barSizeSetting&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;whatToShow&#39;</span><span class="p">,</span> <span class="s1">&#39;useRTH&#39;</span><span class="p">,</span> <span class="s1">&#39;formatDate&#39;</span><span class="p">,</span> <span class="s1">&#39;keepUpToDate&#39;</span><span class="p">,</span> <span class="s1">&#39;chartOptions&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RealTimeBarList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBarList">[docs]</a><span class="k">class</span> <span class="nc">RealTimeBarList</span><span class="p">(</span><span class="n">BarList</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;barSize&#39;</span><span class="p">,</span> <span class="s1">&#39;whatToShow&#39;</span><span class="p">,</span> <span class="s1">&#39;useRTH&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;realTimeBarsOptions&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Trade"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Trade">[docs]</a><span class="k">class</span> <span class="nc">Trade</span><span class="p">(</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Trade&#39;</span><span class="p">,</span>
