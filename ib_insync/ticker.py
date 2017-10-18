@@ -43,6 +43,7 @@ class Ticker(Object):
         'high': nan,
         'low': nan,
         'close': nan,
+        'vwap': nan,
         'low13week': nan,
         'high13week': nan,
         'low26week': nan,

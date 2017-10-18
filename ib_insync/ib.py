@@ -1213,7 +1213,7 @@ if __name__ == '__main__':
 #     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     from ib_insync.contract import Stock, Forex, Index, Option, Future, CFD
     asyncio.get_event_loop().set_debug(True)
-    util.logToConsole(logging.INFO)
+    util.logToConsole(logging.DEBUG)
     ib = IB()
     ib.connect('127.0.0.1', 7497, clientId=21)
 
@@ -1271,8 +1271,10 @@ if __name__ == '__main__':
                 prevBar = currBar
                 print(currBar)
     if 0:
-        ib.reqMktData(tsla, '165,233', False, False, None)
-        ib.sleep(20000)
+        ticker = ib.reqMktData(aapl, '165,233', False, False, None)
+        for i in range(100):
+            ib.sleep(5)
+            print(ticker)
     if 0:
         ib.reqMarketDataType(2)
         print(ib.reqTickers(amd))

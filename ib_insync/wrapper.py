@@ -500,7 +500,7 @@ class Wrapper(EWrapper):
             # example:
             # 701.28;1;1348075471534;67854;701.46918464;true
             try:
-                price, size, _, _, _, _ = value.split(';')
+                price, size, _, _, vwap, _ = value.split(';')
                 if price == '':
                     return
                 price = float(price)
@@ -510,6 +510,8 @@ class Wrapper(EWrapper):
                     ticker.prevLastSize = ticker.lastSize
                     ticker.last = price
                     ticker.lastSize = size
+                    if vwap:
+                        ticker.vwap = float(vwap)
                     tick = TickData(self.lastTime, tickType, price, size)
                     ticker.ticks.append(tick)
                     self.pendingTickers.add(ticker)
