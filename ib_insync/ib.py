@@ -1083,7 +1083,8 @@ class IB:
         return future
 
     def reqHistoricalTicksAsync(self, contract, startDateTime, endDateTime,
-            numberOfTicks, whatToShow, useRth, ignoreSize, miscOptions):
+            numberOfTicks, whatToShow, useRth,
+            ignoreSize=None, miscOptions=None):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         start = util.formatIBDatetime(startDateTime)

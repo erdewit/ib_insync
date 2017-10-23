@@ -280,11 +280,14 @@ def useQt():
 
 def formatIBDatetime(dt):
     """
-    Format date or datetime to what string that IB uses.
+    Format date or datetime to string that IB uses.
     """
     if not dt:
         s = ''
     elif isinstance(dt, datetime.datetime):
+        if dt.tzinfo:
+            # convert to local system timezone
+            dt = dt.astimezone()
         s = dt.strftime('%Y%m%d %H:%M:%S')
     elif isinstance(dt, datetime.date):
         s = dt.strftime('%Y%m%d 23:59:59')
