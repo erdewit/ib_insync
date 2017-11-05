@@ -1,6 +1,6 @@
 .. _api:
 
-.. currentmodule:: ib_insync
+#.. module:: ib_insync
 
 API docs
 =================

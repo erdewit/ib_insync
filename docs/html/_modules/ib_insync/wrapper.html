@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.wrapper &#8212; IB-insync 0.8.8 documentation</title>
+    <title>ib_insync.wrapper &#8212; IB-insync 0.8.9 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.8',
+        VERSION:     '0.8.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -56,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API docs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes.html">Code recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../code.html">Source code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../links.html">Links</a></li>
 </ul>
@@ -109,7 +110,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">acctSummary</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># (account, tag, currency) -&gt; AccountValue</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">portfolio</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>  <span class="c1"># account -&gt; conId -&gt; PortfolioItem</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>  <span class="c1"># account -&gt; conId -&gt; Position</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">trades</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># orderId -&gt; Trade</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trades</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># (client, orderId) -&gt; Trade</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fills</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># execId -&gt; Fill</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">newsTicks</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list of NewsTick</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">newsBulletins</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># msgId -&gt; NewsBulletin</span>
@@ -275,8 +276,9 @@
                 <span class="n">order</span><span class="o">.</span><span class="n">softDollarTier</span> <span class="o">=</span> <span class="n">SoftDollarTier</span><span class="p">(</span>
                         <span class="o">**</span><span class="n">order</span><span class="o">.</span><span class="n">softDollarTier</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
             <span class="n">trade</span> <span class="o">=</span> <span class="n">Trade</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">orderStatus</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
-            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">clientId</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span> <span class="ow">and</span> <span class="n">orderId</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">[</span><span class="n">orderId</span><span class="p">]</span> <span class="o">=</span> <span class="n">trade</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">orderId</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">trade</span>
                 <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;openOrder: </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;openOrders&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">results</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -291,7 +293,8 @@
     <span class="k">def</span> <span class="nf">orderStatus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderId</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">filled</span><span class="p">,</span> <span class="n">remaining</span><span class="p">,</span> <span class="n">avgFillPrice</span><span class="p">,</span>
             <span class="n">permId</span><span class="p">,</span> <span class="n">parentId</span><span class="p">,</span> <span class="n">lastFillPrice</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">whyHeld</span><span class="p">,</span>
             <span class="n">mktCapPrice</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">lastLiquidity</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">orderId</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">clientId</span><span class="p">,</span> <span class="n">orderId</span><span class="p">)</span>
+        <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">trade</span><span class="p">:</span>
             <span class="n">statusChanged</span> <span class="o">=</span> <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="n">status</span>
             <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="n">filled</span><span class="p">,</span>
@@ -323,7 +326,8 @@
 <div class="viewcode-block" id="Wrapper.execDetails"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.execDetails">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">execDetails</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">execution</span><span class="p">):</span>
         <span class="c1"># must handle both live fills and responses to reqExecutions</span>
-        <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">execution</span><span class="o">.</span><span class="n">orderId</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">execution</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">execution</span><span class="o">.</span><span class="n">orderId</span><span class="p">)</span>
+        <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">trade</span><span class="p">:</span>
             <span class="n">contract</span> <span class="o">=</span> <span class="n">trade</span><span class="o">.</span><span class="n">contract</span>
         <span class="k">else</span><span class="p">:</span>
@@ -365,7 +369,8 @@
             <span class="n">report</span> <span class="o">=</span> <span class="n">fill</span><span class="o">.</span><span class="n">commissionReport</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                     <span class="o">**</span><span class="n">commissionReport</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;commissionReport: </span><span class="si">{report}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">fill</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">orderId</span><span class="p">)</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">fill</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">fill</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">orderId</span><span class="p">)</span>
+            <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">trade</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;commissionReport&#39;</span><span class="p">,</span>
                         <span class="n">trade</span><span class="p">,</span> <span class="n">fill</span><span class="p">,</span> <span class="n">report</span><span class="p">)</span>
@@ -580,7 +585,7 @@
             <span class="c1"># example:</span>
             <span class="c1"># 701.28;1;1348075471534;67854;701.46918464;true</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+                <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">vwap</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">price</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
                     <span class="k">return</span>
                 <span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">price</span><span class="p">)</span>
@@ -590,6 +595,8 @@
                     <span class="n">ticker</span><span class="o">.</span><span class="n">prevLastSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span>
                     <span class="n">ticker</span><span class="o">.</span><span class="n">last</span> <span class="o">=</span> <span class="n">price</span>
                     <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span> <span class="o">=</span> <span class="n">size</span>
+                    <span class="k">if</span> <span class="n">vwap</span><span class="p">:</span>
+                        <span class="n">ticker</span><span class="o">.</span><span class="n">vwap</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vwap</span><span class="p">)</span>
                     <span class="n">tick</span> <span class="o">=</span> <span class="n">TickData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
                     <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
@@ -751,9 +758,9 @@
             <span class="k">if</span> <span class="n">reqId</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_futures</span><span class="p">:</span>
                 <span class="c1"># the request failed</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">reqId</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">:</span>
                 <span class="c1"># something is wrong with the order, cancel it</span>
-                <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span>
+                <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)]</span>
                 <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">isActive</span><span class="p">():</span>
                     <span class="n">status</span> <span class="o">=</span> <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">Cancelled</span>
                     <span class="n">logEntry</span> <span class="o">=</span> <span class="n">TradeLogEntry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>

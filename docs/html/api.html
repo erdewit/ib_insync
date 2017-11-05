@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.8.8 documentation</title>
+    <title>API docs &#8212; IB-insync 0.8.9 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.8.8',
+        VERSION:     '0.8.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -68,6 +68,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Code recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code.html">Source code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="links.html">Links</a></li>
 </ul>
@@ -89,9 +90,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="api-docs">
-<span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.8.8.</p>
+  <p id="api">#.. module:: ib_insync</p>
+<div class="section" id="api-docs">
+<h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
+<p>Release 0.8.9.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -530,7 +532,7 @@ field will be a timezone-aware datetime.datetime with UTC timezone.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqHistoricalTicksAsync">
-<code class="descname">reqHistoricalTicksAsync</code><span class="sig-paren">(</span><em>contract</em>, <em>startDateTime</em>, <em>endDateTime</em>, <em>numberOfTicks</em>, <em>whatToShow</em>, <em>useRth</em>, <em>ignoreSize</em>, <em>miscOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqHistoricalTicksAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqHistoricalTicksAsync" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqHistoricalTicksAsync</code><span class="sig-paren">(</span><em>contract</em>, <em>startDateTime</em>, <em>endDateTime</em>, <em>numberOfTicks</em>, <em>whatToShow</em>, <em>useRth</em>, <em>ignoreSize=None</em>, <em>miscOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqHistoricalTicksAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqHistoricalTicksAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1091,7 +1093,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139986187087376: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139959146957344: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1856,7 +1858,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.defaults">
-<code class="descname">defaults</code><em class="property"> = {'contract': None, 'time': None, 'bid': nan, 'bidSize': nan, 'ask': nan, 'askSize': nan, 'last': nan, 'lastSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'volume': nan, 'open': nan, 'high': nan, 'low': nan, 'close': nan, 'low13week': nan, 'high13week': nan, 'low26week': nan, 'high26week': nan, 'low52week': nan, 'high52week': nan, 'bidYield': nan, 'askYield': nan, 'lastYield': nan, 'avVolume': nan, 'putOpenInterest': nan, 'callOpenInterest': nan, 'putVolume': nan, 'callVolume': nan, 'futuresOpenInterest': nan, 'ticks': None, 'domBids': None, 'domAsks': None, 'domTicks': None, 'bidGreeks': None, 'askGreeks': None, 'lastGreeks': None, 'modelGreeks': None}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'contract': None, 'time': None, 'bid': nan, 'bidSize': nan, 'ask': nan, 'askSize': nan, 'last': nan, 'lastSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'volume': nan, 'open': nan, 'high': nan, 'low': nan, 'close': nan, 'vwap': nan, 'low13week': nan, 'high13week': nan, 'low26week': nan, 'high26week': nan, 'low52week': nan, 'high52week': nan, 'bidYield': nan, 'askYield': nan, 'lastYield': nan, 'avVolume': nan, 'putOpenInterest': nan, 'callOpenInterest': nan, 'putVolume': nan, 'callVolume': nan, 'futuresOpenInterest': nan, 'ticks': None, 'domBids': None, 'domAsks': None, 'domTicks': None, 'bidGreeks': None, 'askGreeks': None, 'lastGreeks': None, 'modelGreeks': None}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2015,6 +2017,11 @@ and as keyword, the keyword wins.</p>
 <code class="descname">volume</code><a class="headerlink" href="#ib_insync.ticker.Ticker.volume" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.vwap">
+<code class="descname">vwap</code><a class="headerlink" href="#ib_insync.ticker.Ticker.vwap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -2125,7 +2132,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.objects.ContractDetails.defaults">
-<code class="descname">defaults</code><em class="property"> = {'summary': None, 'marketName': '', 'minTick': 0.0, 'orderTypes': '', 'validExchanges': '', 'priceMagnifier': 0, 'underConId': 0, 'longName': '', 'contractMonth': '', 'industry': '', 'category': '', 'subcategory': '', 'timeZoneId': '', 'tradingHours': '', 'liquidHours': '', 'evRule': '', 'evMultiplier': 0, 'mdSizeMultiplier': 0, 'aggGroup': 0, 'underSymbol': '', 'underSecType': '', 'secIdList': None, 'cusip': '', 'ratings': '', 'descAppend': '', 'bondType': '', 'couponType': '', 'callable': False, 'putable': False, 'coupon': 0, 'convertible': False, 'maturity': '', 'issueDate': '', 'nextOptionDate': '', 'nextOptionType': '', 'nextOptionPartial': False, 'notes': ''}</em><a class="headerlink" href="#ib_insync.objects.ContractDetails.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'summary': None, 'marketName': '', 'minTick': 0.0, 'orderTypes': '', 'validExchanges': '', 'priceMagnifier': 0, 'underConId': 0, 'longName': '', 'contractMonth': '', 'industry': '', 'category': '', 'subcategory': '', 'timeZoneId': '', 'tradingHours': '', 'liquidHours': '', 'evRule': '', 'evMultiplier': 0, 'mdSizeMultiplier': 0, 'aggGroup': 0, 'underSymbol': '', 'underSecType': '', 'marketRuleIds': '', 'secIdList': None, 'realExpirationDate': '', 'cusip': '', 'ratings': '', 'descAppend': '', 'bondType': '', 'couponType': '', 'callable': False, 'putable': False, 'coupon': 0, 'convertible': False, 'maturity': '', 'issueDate': '', 'nextOptionDate': '', 'nextOptionType': '', 'nextOptionPartial': False, 'notes': ''}</em><a class="headerlink" href="#ib_insync.objects.ContractDetails.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2166,6 +2173,11 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.objects.ContractDetails.marketName">
 <code class="descname">marketName</code><a class="headerlink" href="#ib_insync.objects.ContractDetails.marketName" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.ContractDetails.marketRuleIds">
+<code class="descname">marketRuleIds</code><a class="headerlink" href="#ib_insync.objects.ContractDetails.marketRuleIds" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2221,6 +2233,11 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.objects.ContractDetails.ratings">
 <code class="descname">ratings</code><a class="headerlink" href="#ib_insync.objects.ContractDetails.ratings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.ContractDetails.realExpirationDate">
+<code class="descname">realExpirationDate</code><a class="headerlink" href="#ib_insync.objects.ContractDetails.realExpirationDate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2766,7 +2783,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.objects.Execution.defaults">
-<code class="descname">defaults</code><em class="property"> = {'execId': '', 'time': '', 'acctNumber': '', 'exchange': '', 'side': '', 'shares': 0.0, 'price': 0.0, 'permId': 0, 'clientId': 0, 'orderId': 0, 'liquidation': 0, 'cumQty': 0.0, 'avgPrice': 0.0, 'orderRef': '', 'evRule': '', 'evMultiplier': 0.0, 'modelCode': ''}</em><a class="headerlink" href="#ib_insync.objects.Execution.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'execId': '', 'time': '', 'acctNumber': '', 'exchange': '', 'side': '', 'shares': 0.0, 'price': 0.0, 'permId': 0, 'clientId': 0, 'orderId': 0, 'liquidation': 0, 'cumQty': 0.0, 'avgPrice': 0.0, 'orderRef': '', 'evRule': '', 'evMultiplier': 0.0, 'modelCode': '', 'lastLiquidity': 0}</em><a class="headerlink" href="#ib_insync.objects.Execution.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2787,6 +2804,11 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.objects.Execution.execId">
 <code class="descname">execId</code><a class="headerlink" href="#ib_insync.objects.Execution.execId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.Execution.lastLiquidity">
+<code class="descname">lastLiquidity</code><a class="headerlink" href="#ib_insync.objects.Execution.lastLiquidity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4321,7 +4343,7 @@ that the event loop is already running.</p>
 <dl class="function">
 <dt id="ib_insync.util.formatIBDatetime">
 <code class="descclassname">ib_insync.util.</code><code class="descname">formatIBDatetime</code><span class="sig-paren">(</span><em>dt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#formatIBDatetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.formatIBDatetime" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format date or datetime to what string that IB uses.</p>
+<dd><p>Format date or datetime to string that IB uses.</p>
 </dd></dl>
 
 <dl class="function">

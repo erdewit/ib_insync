@@ -29,7 +29,7 @@ class Wrapper(EWrapper):
         self.acctSummary = {}  # (account, tag, currency) -> AccountValue
         self.portfolio = defaultdict(dict)  # account -> conId -> PortfolioItem
         self.positions = defaultdict(dict)  # account -> conId -> Position
-        self.trades = {}  # orderId -> Trade
+        self.trades = {}  # (client, orderId) -> Trade
         self.fills = {}  # execId -> Fill
         self.newsTicks = []  # list of NewsTick
         self.newsBulletins = {}  # msgId -> NewsBulletin
@@ -195,8 +195,9 @@ class Wrapper(EWrapper):
                 order.softDollarTier = SoftDollarTier(
                         **order.softDollarTier.__dict__)
             trade = Trade(contract, order, orderStatus, [], [])
-            if order.clientId == self.clientId and orderId not in self.trades:
-                self.trades[orderId] = trade
+            key = (order.clientId, orderId)
+            if key not in self.trades:
+                self.trades[key] = trade
                 _logger.info(f'openOrder: {trade}')
             results = self._results.get('openOrders')
             if results is not None:
@@ -211,7 +212,8 @@ class Wrapper(EWrapper):
     def orderStatus(self, orderId, status, filled, remaining, avgFillPrice,
             permId, parentId, lastFillPrice, clientId, whyHeld,
             mktCapPrice=0.0, lastLiquidity=0):
-        trade = self.trades.get(orderId)
+        key = (clientId, orderId)
+        trade = self.trades.get(key)
         if trade:
             statusChanged = trade.orderStatus.status != status
             trade.orderStatus.update(status=status, filled=filled,
@@ -243,7 +245,8 @@ class Wrapper(EWrapper):
     @iswrapper
     def execDetails(self, reqId, contract, execution):
         # must handle both live fills and responses to reqExecutions
-        trade = self.trades.get(execution.orderId)
+        key = (execution.clientId, execution.orderId)
+        trade = self.trades.get(key)
         if trade:
             contract = trade.contract
         else:
@@ -285,7 +288,8 @@ class Wrapper(EWrapper):
             report = fill.commissionReport.update(
                     **commissionReport.__dict__)
             _logger.info(f'commissionReport: {report}')
-            trade = self.trades.get(fill.execution.orderId)
+            key = (fill.execution.clientId, fill.execution.orderId)
+            trade = self.trades.get(key)
             if trade:
                 self._handleEvent('commissionReport',
                         trade, fill, report)
@@ -673,9 +677,9 @@ class Wrapper(EWrapper):
             if reqId in self._futures:
                 # the request failed
                 self._endReq(reqId)
-            elif reqId in self.trades:
+            elif (self.clientId, reqId) in self.trades:
                 # something is wrong with the order, cancel it
-                trade = self.trades[reqId]
+                trade = self.trades[(self.clientId, reqId)]
                 if trade.isActive():
                     status = trade.orderStatus.status = OrderStatus.Cancelled
                     logEntry = TradeLogEntry(self.lastTime, status, msg)

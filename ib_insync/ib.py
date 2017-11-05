@@ -492,7 +492,8 @@ class IB:
         now = datetime.datetime.now(datetime.timezone.utc)
         if not isinstance(order, Order):
             order = Order(**order.__dict__)
-        trade = self.wrapper.trades.get(orderId)
+        key = (self.wrapper.clientId, orderId)
+        trade = self.wrapper.trades.get(key)
         if trade:
             # this is a modification of an existing order
             assert trade.orderStatus.status in OrderStatus.ActiveStates
@@ -507,7 +508,7 @@ class IB:
             logEntry = TradeLogEntry(now, orderStatus.status, '')
             trade = Trade(
                     contract, order, orderStatus, [], [logEntry])
-            self.wrapper.trades[orderId] = trade
+            self.wrapper.trades[key] = trade
             _logger.info(f'placeOrder: New order {trade}')
         return trade
 
@@ -518,7 +519,8 @@ class IB:
         """
         self.client.cancelOrder(order.orderId)
         now = datetime.datetime.now(datetime.timezone.utc)
-        trade = self.wrapper.trades.get(order.orderId)
+        key = (self.wrapper.clientId, order.orderId)
+        trade = self.wrapper.trades.get(key)
         if trade:
             if trade.orderStatus.status in OrderStatus.ActiveStates:
                 logEntry = TradeLogEntry(now, OrderStatus.PendingCancel, '')

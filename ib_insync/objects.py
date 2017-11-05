@@ -226,8 +226,9 @@ class BarList(list):
 
 
 class BarDataList(BarList):
-    __slots__ = ('contract', 'endDateTime', 'durationStr', 'barSizeSetting',
-            'whatToShow', 'useRTH', 'formatDate', 'keepUpToDate', 'chartOptions')
+    __slots__ = ('contract', 'endDateTime', 'durationStr',
+            'barSizeSetting', 'whatToShow', 'useRTH', 'formatDate',
+            'keepUpToDate', 'chartOptions')
 
 
 class RealTimeBarList(BarList):
@@ -324,4 +325,3 @@ NewsBulletin = namedtuple('NewsBulletin',
 
 ConnectionStats = namedtuple('ConnectionStats',
     'startTime duration numBytesRecv numBytesSent numMsgRecv numMsgSent')
-

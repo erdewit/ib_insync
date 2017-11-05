@@ -263,27 +263,26 @@ class Client(EClient):
         """
         result = io.StringIO()
         for field in fields:
-            if field is None:
-                pass
+            if field in (None, UNSET_INTEGER, UNSET_DOUBLE):
+                s = ''
             elif isinstance(field, Contract):
                 c = field
-                result.write('\0'.join(str(f) for f in (
+                s = '\0'.join(str(f) for f in (
                         c.conId, c.symbol, c.secType,
                         c.lastTradeDateOrContractMonth, c.strike,
                         c.right, c.multiplier, c.exchange,
                         c.primaryExchange, c.currency,
                         c.localSymbol, c.tradingClass,
-                        1 if c.includeExpired else 0)))
+                        1 if c.includeExpired else 0))
             elif type(field) is list:
                 # list of TagValue
-                result.write(''.join(f'{v.tag}={v.value};' for v in field))
+                s = ''.join(f'{v.tag}={v.value};' for v in field)
             elif type(field) is bool:
-                result.write('1' if field else '0')
-            elif field in (None, UNSET_INTEGER, UNSET_DOUBLE):
-                pass
+                s = '1' if field else '0'
             else:
-                result.write(str(field))
+                s = str(field)
 
+            result.write(s)
             result.write('\0')
         return result.getvalue()
 

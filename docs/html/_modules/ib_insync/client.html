@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.client &#8212; IB-insync 0.8.8 documentation</title>
+    <title>ib_insync.client &#8212; IB-insync 0.8.9 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.8',
+        VERSION:     '0.8.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -56,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API docs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes.html">Code recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../code.html">Source code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../links.html">Links</a></li>
 </ul>
@@ -343,27 +344,26 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">pass</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span><span class="p">,</span> <span class="n">UNSET_DOUBLE</span><span class="p">):</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">Contract</span><span class="p">):</span>
                 <span class="n">c</span> <span class="o">=</span> <span class="n">field</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span>
                         <span class="n">c</span><span class="o">.</span><span class="n">conId</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">secType</span><span class="p">,</span>
                         <span class="n">c</span><span class="o">.</span><span class="n">lastTradeDateOrContractMonth</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">strike</span><span class="p">,</span>
                         <span class="n">c</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">multiplier</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">exchange</span><span class="p">,</span>
                         <span class="n">c</span><span class="o">.</span><span class="n">primaryExchange</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">currency</span><span class="p">,</span>
                         <span class="n">c</span><span class="o">.</span><span class="n">localSymbol</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">tradingClass</span><span class="p">,</span>
-                        <span class="mi">1</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">includeExpired</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)))</span>
+                        <span class="mi">1</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">includeExpired</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
             <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
                 <span class="c1"># list of TagValue</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{v.tag}</span><span class="s1">=</span><span class="si">{v.value}</span><span class="s1">;&#39;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">field</span><span class="p">))</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{v.tag}</span><span class="s1">=</span><span class="si">{v.value}</span><span class="s1">;&#39;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">field</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bool</span><span class="p">:</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;1&#39;</span> <span class="k">if</span> <span class="n">field</span> <span class="k">else</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span><span class="p">,</span> <span class="n">UNSET_DOUBLE</span><span class="p">):</span>
-                <span class="k">pass</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span> <span class="k">if</span> <span class="n">field</span> <span class="k">else</span> <span class="s1">&#39;0&#39;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="p">))</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
 
+            <span class="n">result</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
             <span class="n">result</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
 

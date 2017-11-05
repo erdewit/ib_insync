@@ -6,7 +6,8 @@ Contents
 
    readme
    api
-   notebooks 
+   notebooks
+   recipes
    code
    links
 

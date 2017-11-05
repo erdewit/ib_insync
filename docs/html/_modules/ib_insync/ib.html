@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ib &#8212; IB-insync 0.8.8 documentation</title>
+    <title>ib_insync.ib &#8212; IB-insync 0.8.9 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.8',
+        VERSION:     '0.8.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -56,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API docs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes.html">Code recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../code.html">Source code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../links.html">Links</a></li>
 </ul>
@@ -572,7 +573,8 @@
         <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">Order</span><span class="p">):</span>
             <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="p">(</span><span class="o">**</span><span class="n">order</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
-        <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">orderId</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">orderId</span><span class="p">)</span>
+        <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">trade</span><span class="p">:</span>
             <span class="c1"># this is a modification of an existing order</span>
             <span class="k">assert</span> <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">ActiveStates</span>
@@ -587,7 +589,7 @@
             <span class="n">logEntry</span> <span class="o">=</span> <span class="n">TradeLogEntry</span><span class="p">(</span><span class="n">now</span><span class="p">,</span> <span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
             <span class="n">trade</span> <span class="o">=</span> <span class="n">Trade</span><span class="p">(</span>
                     <span class="n">contract</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">orderStatus</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[</span><span class="n">logEntry</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">trades</span><span class="p">[</span><span class="n">orderId</span><span class="p">]</span> <span class="o">=</span> <span class="n">trade</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">trades</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">trade</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;placeOrder: New order </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">trade</span></div>
 
@@ -598,7 +600,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelOrder</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">orderId</span><span class="p">)</span>
         <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
-        <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">orderId</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">orderId</span><span class="p">)</span>
+        <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">trade</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">ActiveStates</span><span class="p">:</span>
                 <span class="n">logEntry</span> <span class="o">=</span> <span class="n">TradeLogEntry</span><span class="p">(</span><span class="n">now</span><span class="p">,</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">PendingCancel</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
@@ -1163,7 +1166,8 @@
         <span class="k">return</span> <span class="n">future</span></div>
 
 <div class="viewcode-block" id="IB.reqHistoricalTicksAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHistoricalTicksAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistoricalTicksAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">startDateTime</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">,</span>
-            <span class="n">numberOfTicks</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span> <span class="n">useRth</span><span class="p">,</span> <span class="n">ignoreSize</span><span class="p">,</span> <span class="n">miscOptions</span><span class="p">):</span>
+            <span class="n">numberOfTicks</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span> <span class="n">useRth</span><span class="p">,</span>
+            <span class="n">ignoreSize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">miscOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">formatIBDatetime</span><span class="p">(</span><span class="n">startDateTime</span><span class="p">)</span>
@@ -1293,7 +1297,7 @@
 <span class="c1">#     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())</span>
     <span class="kn">from</span> <span class="nn">ib_insync.contract</span> <span class="k">import</span> <span class="n">Stock</span><span class="p">,</span> <span class="n">Forex</span><span class="p">,</span> <span class="n">Index</span><span class="p">,</span> <span class="n">Option</span><span class="p">,</span> <span class="n">Future</span><span class="p">,</span> <span class="n">CFD</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">set_debug</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">util</span><span class="o">.</span><span class="n">logToConsole</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">logToConsole</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
     <span class="n">ib</span> <span class="o">=</span> <span class="n">IB</span><span class="p">()</span>
     <span class="n">ib</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">7497</span><span class="p">,</span> <span class="n">clientId</span><span class="o">=</span><span class="mi">21</span><span class="p">)</span>
 
@@ -1351,8 +1355,10 @@
                 <span class="n">prevBar</span> <span class="o">=</span> <span class="n">currBar</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">currBar</span><span class="p">)</span>
     <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">reqMktData</span><span class="p">(</span><span class="n">tsla</span><span class="p">,</span> <span class="s1">&#39;165,233&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">20000</span><span class="p">)</span>
+        <span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktData</span><span class="p">(</span><span class="n">aapl</span><span class="p">,</span> <span class="s1">&#39;165,233&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+            <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
     <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">ib</span><span class="o">.</span><span class="n">reqMarketDataType</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqTickers</span><span class="p">(</span><span class="n">amd</span><span class="p">))</span>
