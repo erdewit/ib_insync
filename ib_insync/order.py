@@ -1,8 +1,75 @@
+from collections import namedtuple
+
 import ibapi
 
 from ib_insync.objects import Object
 
-__all__ = 'Order LimitOrder MarketOrder StopOrder StopLimitOrder '.split()
+__all__ = ('Trade OrderStatus Order '
+        'LimitOrder MarketOrder StopOrder StopLimitOrder').split()
+
+
+class Trade(namedtuple('Trade',
+        'contract order orderStatus fills log')):
+    """
+    Trade keeps track of an order, its status and all its fills.
+    """
+    __slots__ = ()
+
+    def isActive(self):
+        """
+        True if eliglible for execution, false otherwise.
+        """
+        return self.orderStatus.status in OrderStatus.ActiveStates
+
+    def isDone(self):
+        """
+        True if completely filled or cancelled, false otherwise.
+        """
+        return self.orderStatus.status in (
+                OrderStatus.Filled, OrderStatus.Cancelled)
+
+    def filled(self):
+        """
+        Number of shares filled.
+        """
+        return sum(f.execution.shares for f in self.fills)
+
+    def remaining(self):
+        """
+        Number of shares remaining to be filled.
+        """
+        return self.order.totalQuantity - self.filled()
+
+
+class OrderStatus(Object):
+    defaults = {
+        'orderId': 0,
+        'status': '',
+        'filled': 0,
+        'remaining': 0,
+        'avgFillPrice': 0.0,
+        'permId': 0,
+        'parentId': 0,
+        'lastFillPrice': 0.0,
+        'clientId': 0,
+        'whyHeld': '',
+        'mktCapPrice': 0.0,
+        'lastLiquidity': 0 }
+    __slots__ = defaults.keys()
+    __init__ = Object.__init__
+
+    PendingSubmit = 'PendingSubmit'
+    PendingCancel = 'PendingCancel'
+    PreSubmitted = 'PreSubmitted'
+    Submitted = 'Submitted'
+    ApiPending = 'ApiPending'  # undocumented, can be returned from req(All)OpenOrders
+    ApiCancelled = 'ApiCancelled'
+    Cancelled = 'Cancelled'
+    Filled = 'Filled'
+    Inactive = 'Inactive'
+
+    DoneStates = {'Cancelled', 'Filled', 'ApiCancelled'}
+    ActiveStates = {'PendingSubmit', 'ApiPending', 'PreSubmitted', 'Submitted'}
 
 
 class Order(Object):
@@ -36,6 +103,7 @@ class Order(Object):
 
 class LimitOrder(Order):
     __slots__ = ()
+
     def __init__(self, action, totalQuantity, lmtPrice, **kwargs):
         Order.__init__(self, orderType='LMT', action=action,
                 totalQuantity=totalQuantity, lmtPrice=lmtPrice, **kwargs)
@@ -43,6 +111,7 @@ class LimitOrder(Order):
 
 class MarketOrder(Order):
     __slots__ = ()
+
     def __init__(self, action, totalQuantity, **kwargs):
         Order.__init__(self, orderType='MKT', action=action,
                 totalQuantity=totalQuantity, **kwargs)
@@ -50,6 +119,7 @@ class MarketOrder(Order):
 
 class StopOrder(Order):
     __slots__ = ()
+
     def __init__(self, action, totalQuantity, stopPrice, **kwargs):
         Order.__init__(self, orderType='STP', action=action,
                 totalQuantity=totalQuantity, auxPrice=stopPrice, **kwargs)
@@ -57,6 +127,7 @@ class StopOrder(Order):
 
 class StopLimitOrder(Order):
     __slots__ = ()
+
     def __init__(self, action, totalQuantity, lmtPrice, stopPrice, **kwargs):
         Order.__init__(self, orderType='STP LMT', action=action,
                 totalQuantity=totalQuantity, lmtPrice=lmtPrice,

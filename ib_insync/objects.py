@@ -11,15 +11,14 @@ import ibapi.commission_report
 
 __all__ = (
     'Object ContractDetails ContractDescription '
-    'ComboLeg UnderComp OrderComboLeg OrderState OrderStatus '
+    'ComboLeg UnderComp OrderComboLeg OrderState '
     'ScannerSubscription SoftDollarTier '
     'Execution CommissionReport ExecutionFilter '
     'BarList BarDataList RealTimeBarList BarData RealTimeBar '
     'HistogramData NewsProvider DepthMktDataDescription '
     'AccountValue RealTimeBar TickData TickAttribute '
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
-    'MktDepthData DOMLevel '
-    'BracketOrder Trade TradeLogEntry ScanData TagValue '
+    'MktDepthData DOMLevel BracketOrder TradeLogEntry ScanData TagValue '
     'PortfolioItem Position Fill OptionComputation OptionChain '
     'NewsArticle HistoricalNews NewsTick NewsBulletin '
     'ConnectionStats '
@@ -113,101 +112,91 @@ class ContractDetails(Object):
             ['secIdListCount']  # bug in ibapi decoder
     __init__ = Object.__init__
 
+
 class ContractDescription(Object):
     defaults = ibapi.contract.ContractDescription().__dict__
     defaults['contract'] = None
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 
+
 class ComboLeg(Object):
     defaults = ibapi.contract.ComboLeg().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
+
 
 class UnderComp(Object):
     defaults = ibapi.contract.UnderComp().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 
+
 class OrderComboLeg(Object):
     defaults = ibapi.order.OrderComboLeg().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
+
 
 class OrderState(Object):
     defaults = ibapi.order_state.OrderState().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 
-class OrderStatus(Object):
-    defaults = {
-        'orderId': 0,
-        'status': '',
-        'filled': 0,
-        'remaining': 0,
-        'avgFillPrice': 0.0,
-        'permId': 0,
-        'parentId': 0,
-        'lastFillPrice': 0.0,
-        'clientId': 0,
-        'whyHeld': '',
-        'mktCapPrice': 0.0,
-        'lastLiquidity': 0 }
-    __slots__ = defaults.keys()
-    __init__ = Object.__init__
-    OrderStates = ('PendingSubmit', 'PendingCancel', 'PreSubmitted',
-            'Submitted', 'ApiPending', 'ApiCancelled', 'Cancelled',
-            'Filled', 'Inactive')
-    # ApiPending is undocumented, it can be returned from req(All)OpenOrders
-for k in OrderStatus.OrderStates:
-    setattr(OrderStatus, k, k)
-OrderStatus.ActiveStates = (OrderStatus.PendingSubmit, OrderStatus.ApiPending,
-        OrderStatus.PreSubmitted, OrderStatus.Submitted)
 
 class ScannerSubscription(Object):
     defaults = ibapi.scanner.ScannerSubscription().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 
+
 class SoftDollarTier(Object):
     defaults = ibapi.softdollartier.SoftDollarTier().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
+
 
 class Execution(Object):
     defaults = ibapi.execution.Execution().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 
+
 class CommissionReport(Object):
     defaults = ibapi.commission_report.CommissionReport().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
+
 
 class ExecutionFilter(Object):
     defaults = ibapi.execution.ExecutionFilter().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 
+
 class BarData(Object):
     defaults = ibapi.common.BarData().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
+
 
 class RealTimeBar(Object):
     defaults = ibapi.common.RealTimeBar().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 
+
 class HistogramData(Object):
     defaults = ibapi.common.HistogramData().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 
+
 class NewsProvider(Object):
     defaults = ibapi.common.NewsProvider().__dict__
     __slots__ = defaults.keys()
     __init__ = Object.__init__
+
 
 class DepthMktDataDescription(Object):
     defaults = ibapi.common.DepthMktDataDescription().__dict__
@@ -234,29 +223,6 @@ class BarDataList(BarList):
 class RealTimeBarList(BarList):
     __slots__ = ('contract', 'barSize', 'whatToShow', 'useRTH',
             'realTimeBarsOptions')
-
-
-class Trade(namedtuple('Trade',
-        'contract order orderStatus fills log')):
-    __slots__ = ()
-
-    def isActive(self):
-        """
-        Is this an ongoing trade?
-        """
-        return self.orderStatus.status in OrderStatus.ActiveStates
-
-    def filled(self):
-        """
-        Number of shares filled.
-        """
-        return sum(f.execution.shares for f in self.fills)
-
-    def remaining(self):
-        """
-        Number of shares remaining to be filled.
-        """
-        return self.order.totalQuantity - self.filled()
 
 
 AccountValue = namedtuple('AccountValue',

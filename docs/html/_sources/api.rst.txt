@@ -1,7 +1,5 @@
 .. _api:
 
-#.. module:: ib_insync
-
 API docs
 =================
 

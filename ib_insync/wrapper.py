@@ -7,7 +7,7 @@ from ibapi.wrapper import EWrapper, iswrapper
 
 from ib_insync.contract import Contract
 from ib_insync.ticker import Ticker
-from ib_insync.order import Order
+from ib_insync.order import Order, OrderStatus, Trade
 from ib_insync.objects import *
 import ib_insync.util as util
 
@@ -20,6 +20,7 @@ class Wrapper(EWrapper):
     """
     Wrapper implementation for use with the IB class.
     """
+
     def __init__(self):
         self.reset()
         self._callbacks = {}  # eventName -> callback

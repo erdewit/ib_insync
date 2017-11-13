@@ -11,7 +11,8 @@ from ib_insync.client import Client
 from ib_insync.wrapper import Wrapper
 from ib_insync.contract import Contract
 from ib_insync.ticker import Ticker
-from ib_insync.order import Order, LimitOrder, StopOrder, MarketOrder
+from ib_insync.order import Order, OrderStatus, Trade, \
+        LimitOrder, StopOrder, MarketOrder
 from ib_insync.objects import *
 import ib_insync.util as util
 
@@ -79,6 +80,7 @@ class IB:
     For introducing a delay, never use time.sleep() but use
     :py:meth:`.sleep` instead.
     """
+
     def __init__(self):
         self.wrapper = Wrapper()
         self.client = Client(self.wrapper)
@@ -337,7 +339,7 @@ class IB:
         List of all open order trades.
         """
         return [v for v in self.wrapper.trades.values()
-                if v.orderStatus.status in OrderStatus.ActiveStates]
+                if v.orderStatus.status not in OrderStatus.DoneStates]
 
     def orders(self) -> List[Order]:
         """
@@ -351,7 +353,7 @@ class IB:
         List of all open orders.
         """
         return [trade.order for trade in self.wrapper.trades.values()
-                if trade.orderStatus.status in OrderStatus.ActiveStates]
+                if trade.orderStatus.status not in OrderStatus.DoneStates]
 
     def fills(self) -> List[Fill]:
         """
@@ -496,7 +498,7 @@ class IB:
         trade = self.wrapper.trades.get(key)
         if trade:
             # this is a modification of an existing order
-            assert trade.orderStatus.status in OrderStatus.ActiveStates
+            assert trade.orderStatus.status not in OrderStatus.DoneStates
             logEntry = TradeLogEntry(now,
                     trade.orderStatus.status, 'Modify')
             trade.log.append(logEntry)
@@ -522,7 +524,7 @@ class IB:
         key = (self.wrapper.clientId, order.orderId)
         trade = self.wrapper.trades.get(key)
         if trade:
-            if trade.orderStatus.status in OrderStatus.ActiveStates:
+            if trade.orderStatus.status not in OrderStatus.DoneStates:
                 logEntry = TradeLogEntry(now, OrderStatus.PendingCancel, '')
                 trade.log.append(logEntry)
             _logger.info(f'cancelOrder: {trade}')
