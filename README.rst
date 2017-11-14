@@ -90,6 +90,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.10
+^^^^^^^^^^^^^^
+
+* Fixed issue #22
+
 Version 0.8.9
 ^^^^^^^^^^^^^
 * Ticker.vwap field added (for use with generic tick 233)
