@@ -53,3 +53,8 @@ Utilities
 ---------
 
 .. automodule:: ib_insync.util
+
+FlexReport
+----------
+
+.. automodule:: ib_insync.flexreport

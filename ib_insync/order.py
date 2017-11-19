@@ -2,7 +2,7 @@ from collections import namedtuple
 
 import ibapi
 
-from ib_insync.objects import Object
+from .objects import Object
 
 __all__ = ('Trade OrderStatus Order '
         'LimitOrder MarketOrder StopOrder StopLimitOrder').split()

@@ -17,7 +17,6 @@ except ImportError:
         'The newest version from http://interactivebrokers.github.io is required')
     sys.exit()
 
-
 from .objects import *
 from .contract import *
 from .order import *
@@ -25,9 +24,9 @@ from .ticker import *
 from .ib import *
 from .client import *
 from .wrapper import *
+from .flexreport import *
 from . import util
 
-
 __all__ = ['util']
-for _m in (objects, contract, order, ticker, ib, client, wrapper):
+for _m in (objects, contract, order, ticker, ib, client, wrapper, flexreport):
     __all__ += _m.__all__

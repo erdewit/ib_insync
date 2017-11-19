@@ -6,7 +6,7 @@ import signal
 import asyncio
 import time
 
-from ib_insync.objects import Object
+from ib_insync.objects import Object, DynamicObject
 
 
 def df(objs, labels=None):
@@ -22,6 +22,8 @@ def df(objs, labels=None):
         if isinstance(obj, Object):
             df = pd.DataFrame.from_records(o.tuple() for o in objs)
             df.columns = obj.__class__.defaults
+        elif isinstance(obj, DynamicObject):
+            df = pd.DataFrame.from_records(o.__dict__ for o in objs)
         else:
             df = pd.DataFrame.from_records(objs)
         if isinstance(obj, tuple) and hasattr(obj, '_fields'):
@@ -164,6 +166,7 @@ class timeit:
     """
     Context manager for timing.
     """
+
     def __init__(self, title='Run'):
         self.title = title
 
@@ -183,6 +186,7 @@ def patchAsyncio():
             asyncio.tasks._PyTask
     asyncio.Future = asyncio.futures._CFuture = asyncio.futures.Future = \
             asyncio.futures._PyFuture
+
 
 def syncAwait(future):
     """
@@ -205,6 +209,7 @@ def syncAwait(future):
         result = loop.run_until_complete(future)
     return result
 
+
 def _syncAwaitAsyncio(future):
     assert asyncio.Task is asyncio.tasks._PyTask
     loop = asyncio.get_event_loop()
@@ -223,6 +228,7 @@ def _syncAwaitAsyncio(future):
     else:
         current_tasks.pop(loop, None)
     return future.result()
+
 
 def _syncAwaitQt(future):
     import PyQt5.Qt as qt
@@ -243,6 +249,7 @@ def startLoop():
 
     register_integration('asyncio')(_ipython_loop_asyncio)
     enable_gui('asyncio')
+
 
 def _ipython_loop_asyncio(kernel):
     '''

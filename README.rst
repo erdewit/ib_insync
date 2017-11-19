@@ -90,6 +90,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.11
+^^^^^^^^^^^^^^
+
+* FlexReport added
+
 Version 0.8.10
 ^^^^^^^^^^^^^^
 

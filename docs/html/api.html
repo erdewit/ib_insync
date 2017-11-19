@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.8.10 documentation</title>
+    <title>API docs &#8212; IB-insync 0.8.11 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.8.10',
+        VERSION:     '0.8.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -65,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.objects">Objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.wrapper">Wrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.util">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.flexreport">FlexReport</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks.html">Notebooks</a></li>
@@ -92,7 +93,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.8.10.</p>
+<p>Release 0.8.11.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -986,7 +987,7 @@ If an attribute is not given it will take its value from the
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'PendingSubmit', 'Submitted', 'PreSubmitted', 'ApiPending'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'PreSubmitted', 'ApiPending', 'PendingSubmit', 'Submitted'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1006,7 +1007,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'ApiCancelled', 'Cancelled', 'Filled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'ApiCancelled', 'Filled', 'Cancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1257,7 +1258,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139765980108168: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139869001789848: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4367,6 +4368,70 @@ that the event loop is already running.</p>
 <code class="descclassname">ib_insync.util.</code><code class="descname">parseIBDatetime</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#parseIBDatetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.parseIBDatetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse string in IB date or datetime format to datetime.</p>
 </dd></dl>
+
+</div>
+<div class="section" id="module-ib_insync.flexreport">
+<span id="flexreport"></span><h2>FlexReport<a class="headerlink" href="#module-ib_insync.flexreport" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ib_insync.flexreport.FlexReport">
+<em class="property">class </em><code class="descclassname">ib_insync.flexreport.</code><code class="descname">FlexReport</code><span class="sig-paren">(</span><em>token=None</em>, <em>queryId=None</em>, <em>path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/flexreport.html#FlexReport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.flexreport.FlexReport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download and parse IB account statements via the Flex Web Service.
+<a class="reference external" href="https://www.interactivebrokers.com/en/software/am/am/reports/flex_web_service_version_3.htm">https://www.interactivebrokers.com/en/software/am/am/reports/flex_web_service_version_3.htm</a></p>
+<p>To obtain a <code class="docutils literal"><span class="pre">token</span></code> in account managment, go to
+Reports -&gt; Settings -&gt; Flex Web Service.
+Tip: choose a 1 year expiry.</p>
+<p>To obtain a <code class="docutils literal"><span class="pre">queryId</span></code>: Create and save a query with
+Report -&gt; Activity -&gt; Flex Queries or
+Report -&gt; Trade Confirmations -&gt; Flex Queries.
+Find the query ID (not the query name).</p>
+<p>A large query can take a few minutes. In the weekends the query servers
+can be down.</p>
+<p>Download a report by giving a valid <code class="docutils literal"><span class="pre">token</span></code> and <code class="docutils literal"><span class="pre">queryId</span></code>,
+or load from file by giving a valid <code class="docutils literal"><span class="pre">path</span></code>.</p>
+<dl class="method">
+<dt id="ib_insync.flexreport.FlexReport.df">
+<code class="descname">df</code><span class="sig-paren">(</span><em>topics: str</em>, <em>parseNumbers=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/flexreport.html#FlexReport.df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.flexreport.FlexReport.df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as extract but return the result as a pandas DataFrame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.flexreport.FlexReport.download">
+<code class="descname">download</code><span class="sig-paren">(</span><em>token</em>, <em>queryId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/flexreport.html#FlexReport.download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.flexreport.FlexReport.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download report for the given <code class="docutils literal"><span class="pre">token</span></code> and <code class="docutils literal"><span class="pre">queryId</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.flexreport.FlexReport.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>topic: str</em>, <em>parseNumbers=True</em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="_modules/ib_insync/flexreport.html#FlexReport.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.flexreport.FlexReport.extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract items of given topic and return as list of objects.</p>
+<p>The topic is a string like TradeConfirm, ChangeInDividendAccrual,
+Order, etc.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.flexreport.FlexReport.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/flexreport.html#FlexReport.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.flexreport.FlexReport.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load report from XML file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.flexreport.FlexReport.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/flexreport.html#FlexReport.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.flexreport.FlexReport.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save report to XML file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.flexreport.FlexReport.topics">
+<code class="descname">topics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/flexreport.html#FlexReport.topics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.flexreport.FlexReport.topics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the set of topics that can be extracted from this report.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="ib_insync.flexreport.FlexError">
+<em class="property">exception </em><code class="descclassname">ib_insync.flexreport.</code><code class="descname">FlexError</code><a class="reference internal" href="_modules/ib_insync/flexreport.html#FlexError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.flexreport.FlexError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 </div>
