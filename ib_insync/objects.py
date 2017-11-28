@@ -9,6 +9,11 @@ import ibapi.softdollartier
 import ibapi.execution
 import ibapi.commission_report
 
+# order conditions are imported as-is from ibapi
+from ibapi.order_condition import (OrderCondition, ExecutionCondition,
+        OperatorCondition, MarginCondition, ContractCondition, TimeCondition,
+        PriceCondition, PercentChangeCondition, VolumeCondition)
+
 __all__ = (
     'Object ContractDetails ContractDescription '
     'ComboLeg UnderComp OrderComboLeg OrderState '
@@ -20,8 +25,10 @@ __all__ = (
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
     'MktDepthData DOMLevel BracketOrder TradeLogEntry ScanData TagValue '
     'PortfolioItem Position Fill OptionComputation OptionChain '
-    'NewsArticle HistoricalNews NewsTick NewsBulletin '
-    'ConnectionStats '
+    'NewsArticle HistoricalNews NewsTick NewsBulletin ConnectionStats '
+    'OrderCondition ExecutionCondition OperatorCondition MarginCondition '
+    'ContractCondition TimeCondition PriceCondition PercentChangeCondition '
+    'VolumeCondition'
     ).split()
 
 
