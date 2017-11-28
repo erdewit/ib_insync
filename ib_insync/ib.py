@@ -461,7 +461,8 @@ class IB:
                 parentId=parent.orderId)
         return BracketOrder(parent, takeProfit, stopLoss)
 
-    def oneCancelsAll(self, orders: List[Order],
+    @staticmethod
+    def oneCancelsAll(orders: List[Order],
                       ocaGroup: str, ocaType: int) -> List[Order]:
         """
         Place the trades in the same OCA group.

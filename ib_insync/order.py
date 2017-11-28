@@ -81,7 +81,8 @@ class Order(Object):
     defaults = ibapi.order.Order().__dict__
     __slots__ = list(defaults.keys()) + \
             ['sharesAllocation', 'orderComboLegsCount', 'algoParamsCount',
-                'smartComboRoutingParamsCount', 'conditionsSize']  # bugs in decoder.py
+                'smartComboRoutingParamsCount', 'conditionsSize',
+                'conditionType']  # bugs in decoder.py
     __init__ = Object.__init__
 
     def __repr__(self):
