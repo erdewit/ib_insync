@@ -154,6 +154,20 @@ class IB:
         return result
 
     @staticmethod
+    def schedule(self, time, callback, *args):
+        """
+        Schedule the callback to be run at the given time with
+        the given arguments.
+        """
+        loop = asyncio.get_event_loop()
+        if isinstance(time, datetime.time):
+            dt = datetime.datetime.combine(datetime.date.today(), time)
+        else:
+            dt = time
+        delay = (dt - datetime.datetime.now()).total_seconds()
+        loop.call_later(delay, callback, *args)
+
+    @staticmethod
     def sleep(secs: float=0.02) -> True:
         """
         Wait for the given amount of seconds while everything still keeps

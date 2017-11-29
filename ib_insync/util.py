@@ -232,11 +232,10 @@ def _syncAwaitAsyncio(future):
 
 def _syncAwaitQt(future):
     import PyQt5.Qt as qt
-
     future = asyncio.ensure_future(future)
-    qApp = qt.QApplication.instance()
-    while not future.done():
-        qApp.processEvents(qt.QEventLoop.WaitForMoreEvents)
+    qLoop = qt.QEventLoop()
+    future.add_done_callback(lambda f: qLoop.quit())
+    qLoop.exec_()
     return future.result()
 
 
@@ -272,17 +271,35 @@ def _ipython_loop_asyncio(kernel):
 
 def useQt():
     """
-    Let the Qt event loop spin the asyncio event loop.
+    Integrate asyncio and Qt loops:
+    Let the Qt event loop spin the asyncio event loop
+    (does not work with nested event loops in Windows)
     """
     import PyQt5.Qt as qt
     import quamash
-
     if isinstance(asyncio.get_event_loop(), quamash.QEventLoop):
         return
     if not qt.QApplication.instance():
-        _qApp = qt.QApplication(sys.argv)
+        _ = qt.QApplication(sys.argv)
     loop = quamash.QEventLoop()
     asyncio.set_event_loop(loop)
+
+
+def useQtAlt():
+    """
+    Integrate asyncio and Qt loops:
+    Let the asyncio event loop spin the Qt event loop.
+    """
+    import PyQt5.Qt as qt
+    qapp = qt.QApplication.instance() or qt.QApplication(sys.argv)
+
+    def qstep():
+        qapp.processEvents()
+        qapp.sendPostedEvents()
+        loop = asyncio.get_event_loop()
+        loop.call_later(0.01, qstep)
+
+    qstep()
 
 
 def formatIBDatetime(dt):

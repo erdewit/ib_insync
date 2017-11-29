@@ -90,6 +90,13 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.13
+^^^^^^^^^^^^^^
+
+* Import order conditions into ib_insync namespace
+* util.useQtAlt() added for using nested event loops on Windows with Qt
+* ib.schedule() added
+
 Version 0.8.12
 ^^^^^^^^^^^^^^
 
