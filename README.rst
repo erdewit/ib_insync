@@ -90,6 +90,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.14
+^^^^^^^^^^^^^^
+
+* Fix for ib.schedule()
+
 Version 0.8.13
 ^^^^^^^^^^^^^^
 

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ib &#8212; IB-insync 0.8.12 documentation</title>
+    <title>ib_insync.ib &#8212; IB-insync 0.8.14 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.12',
+        VERSION:     '0.8.14',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -233,6 +233,20 @@
                 <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">awaitables</span><span class="p">)</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">syncAwait</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="IB.schedule"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.schedule">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">schedule</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Schedule the callback to be run at the given time with</span>
+<span class="sd">        the given arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">):</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span> <span class="n">time</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="n">delay</span> <span class="o">=</span> <span class="p">(</span><span class="n">dt</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">call_later</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="IB.sleep"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.sleep">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">secs</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">True</span><span class="p">:</span>

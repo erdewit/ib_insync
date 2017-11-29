@@ -154,7 +154,7 @@ class IB:
         return result
 
     @staticmethod
-    def schedule(self, time, callback, *args):
+    def schedule(time, callback, *args):
         """
         Schedule the callback to be run at the given time with
         the given arguments.

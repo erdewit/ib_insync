@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.util &#8212; IB-insync 0.8.12 documentation</title>
+    <title>ib_insync.util &#8212; IB-insync 0.8.14 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.12',
+        VERSION:     '0.8.14',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -313,11 +313,10 @@
 
 <span class="k">def</span> <span class="nf">_syncAwaitQt</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">PyQt5.Qt</span> <span class="k">as</span> <span class="nn">qt</span>
-
     <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
-    <span class="n">qApp</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
-    <span class="k">while</span> <span class="ow">not</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-        <span class="n">qApp</span><span class="o">.</span><span class="n">processEvents</span><span class="p">(</span><span class="n">qt</span><span class="o">.</span><span class="n">QEventLoop</span><span class="o">.</span><span class="n">WaitForMoreEvents</span><span class="p">)</span>
+    <span class="n">qLoop</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QEventLoop</span><span class="p">()</span>
+    <span class="n">future</span><span class="o">.</span><span class="n">add_done_callback</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">qLoop</span><span class="o">.</span><span class="n">quit</span><span class="p">())</span>
+    <span class="n">qLoop</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
 
 
@@ -353,17 +352,35 @@
 
 <div class="viewcode-block" id="useQt"><a class="viewcode-back" href="../../api.html#ib_insync.util.useQt">[docs]</a><span class="k">def</span> <span class="nf">useQt</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Let the Qt event loop spin the asyncio event loop.</span>
+<span class="sd">    Integrate asyncio and Qt loops:</span>
+<span class="sd">    Let the Qt event loop spin the asyncio event loop</span>
+<span class="sd">    (does not work with nested event loops in Windows)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">PyQt5.Qt</span> <span class="k">as</span> <span class="nn">qt</span>
     <span class="kn">import</span> <span class="nn">quamash</span>
-
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">(),</span> <span class="n">quamash</span><span class="o">.</span><span class="n">QEventLoop</span><span class="p">):</span>
         <span class="k">return</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">():</span>
-        <span class="n">_qApp</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
     <span class="n">loop</span> <span class="o">=</span> <span class="n">quamash</span><span class="o">.</span><span class="n">QEventLoop</span><span class="p">()</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="useQtAlt"><a class="viewcode-back" href="../../api.html#ib_insync.util.useQtAlt">[docs]</a><span class="k">def</span> <span class="nf">useQtAlt</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Integrate asyncio and Qt loops:</span>
+<span class="sd">    Let the asyncio event loop spin the Qt event loop.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">PyQt5.Qt</span> <span class="k">as</span> <span class="nn">qt</span>
+    <span class="n">qapp</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span> <span class="ow">or</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">qstep</span><span class="p">():</span>
+        <span class="n">qapp</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
+        <span class="n">qapp</span><span class="o">.</span><span class="n">sendPostedEvents</span><span class="p">()</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">call_later</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">qstep</span><span class="p">)</span>
+
+    <span class="n">qstep</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="formatIBDatetime"><a class="viewcode-back" href="../../api.html#ib_insync.util.formatIBDatetime">[docs]</a><span class="k">def</span> <span class="nf">formatIBDatetime</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
