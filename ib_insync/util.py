@@ -232,10 +232,13 @@ def _syncAwaitAsyncio(future):
 
 def _syncAwaitQt(future):
     import PyQt5.Qt as qt
-    future = asyncio.ensure_future(future)
+    loop = asyncio.get_event_loop()
+    future = asyncio.ensure_future(future, loop=loop)
     qLoop = qt.QEventLoop()
     future.add_done_callback(lambda f: qLoop.quit())
+    loop._before_run_forever()
     qLoop.exec_()
+    loop._after_run_forever()
     return future.result()
 
 

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.util &#8212; IB-insync 0.8.14 documentation</title>
+    <title>ib_insync.util &#8212; IB-insync 0.8.15 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.14',
+        VERSION:     '0.8.15',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -313,10 +313,13 @@
 
 <span class="k">def</span> <span class="nf">_syncAwaitQt</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">PyQt5.Qt</span> <span class="k">as</span> <span class="nn">qt</span>
-    <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="n">loop</span><span class="p">)</span>
     <span class="n">qLoop</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QEventLoop</span><span class="p">()</span>
     <span class="n">future</span><span class="o">.</span><span class="n">add_done_callback</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">qLoop</span><span class="o">.</span><span class="n">quit</span><span class="p">())</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">_before_run_forever</span><span class="p">()</span>
     <span class="n">qLoop</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">_after_run_forever</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
 
 

@@ -90,6 +90,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.15
+^^^^^^^^^^^^^^
+
+* util.useQt fixed for use with Windows
+
 Version 0.8.14
 ^^^^^^^^^^^^^^
 
