@@ -67,7 +67,10 @@ Output::
 
 
 Be sure to take a look at the
-`example notebooks <http://rawgit.com/erdewit/ib_insync/master/docs/html/notebooks.html>`_ too.
+`notebooks <http://rawgit.com/erdewit/ib_insync/master/docs/html/notebooks.html>`_
+and the
+`recipes <http://rawgit.com/erdewit/ib_insync/master/docs/html/recipes.html>`_
+too.
 
 Documentation
 -------------

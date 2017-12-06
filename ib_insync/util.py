@@ -201,12 +201,12 @@ def syncAwait(future):
     except ImportError:
         isQuamash = False
 
-    if isQuamash:
-        result = _syncAwaitQt(future)
-    elif loop.is_running():
-        result = _syncAwaitAsyncio(future)
-    else:
+    if not loop.is_running():
         result = loop.run_until_complete(future)
+    elif isQuamash:
+        result = _syncAwaitQt(future)
+    else:
+        result = _syncAwaitAsyncio(future)
     return result
 
 
@@ -236,9 +236,7 @@ def _syncAwaitQt(future):
     future = asyncio.ensure_future(future, loop=loop)
     qLoop = qt.QEventLoop()
     future.add_done_callback(lambda f: qLoop.quit())
-    loop._before_run_forever()
     qLoop.exec_()
-    loop._after_run_forever()
     return future.result()
 
 

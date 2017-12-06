@@ -44,5 +44,112 @@ and further back in time until there is no more data returned.
     df = util.df(allBars)
     df.to_csv(contract.symbol + '.csv')
     
+
+Integration with PyQt5
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: images/qt-tickertable.png
+
+Here is an example of a ticker table that shows how to integrate both
+realtime streaming and synchronous API requests in a single-threaded
+Qt application.
+The API request in this example is ``ib.qualifyContracts()``; It is used
+to get the conId of a contract and use that as a unique key.
+
+It is possible
+to have multiple outstanding API requests at the same time.
+
+This example depends on quamash: ``pip3 install -U quamash``.
+
+.. code-block:: python
+
+    import sys
+    import PyQt5.Qt as qt
+    from ib_insync import *
+
+    import traceback
+    sys.excepthook = traceback.print_exception
+    
+    util.useQt()
+    util.allowCtrlC()
+    
+    ib = IB()
+    ib.connect('localhost', 7497, clientId=1)
+    
+    
+    class TickerTable(qt.QTableWidget):
+    
+        headers = ['symbol', 'bidSize', 'bid', 'ask', 'askSize',
+            'last', 'lastSize', 'close']
+    
+        def __init__(self, parent=None):
+            qt.QTableWidget.__init__(self, parent)
+            self.conId2Row = {}
+            self.setColumnCount(len(self.headers))
+            self.setHorizontalHeaderLabels(self.headers)
+            self.setAlternatingRowColors(True)
+    
+        def __contains__(self, contract):
+            assert contract.conId
+            return contract.conId in self.conId2Row
+    
+        def addTicker(self, ticker):
+            row = self.rowCount()
+            self.insertRow(row)
+            self.conId2Row[ticker.contract.conId] = row
+            for col in range(len(self.headers)):
+                item = qt.QTableWidgetItem('-')
+                self.setItem(row, col, item)
+            item = self.item(row, 0)
+            item.setText(ticker.contract.symbol + (ticker.contract.currency
+                    if ticker.contract.secType=='CASH' else ''))
+            self.resizeColumnsToContents()
+    
+        def onPendingTickers(self, tickers):
+            for ticker in tickers:
+                row = self.conId2Row[ticker.contract.conId]
+                for col, header in enumerate(self.headers):
+                    if col == 0:
+                        continue
+                    item = self.item(row, col)
+                    val = getattr(ticker, header)
+                    item.setText(str(val))
+    
+    
+    class Window(qt.QWidget):
+    
+        def __init__(self):
+            qt.QWidget.__init__(self)
+            self.edit = qt.QLineEdit('', self)
+            self.edit.editingFinished.connect(self.add)
+            self.table = TickerTable()
+            layout = qt.QVBoxLayout(self)
+            layout.addWidget(self.edit)
+            layout.addWidget(self.table)
+            ib.setCallback('pendingTickers', self.table.onPendingTickers)
+    
+        def add(self, text=''):
+            text = text or self.edit.text()
+            if text:
+                contract = eval(text)
+                if (contract and ib.qualifyContracts(contract)
+                        and contract not in self.table):
+                    ticker = ib.reqMktData(contract, '', False, False, None)
+                    self.table.addTicker(ticker)
+                self.edit.setText(text)
+    
+    
+    if __name__ == '__main__':
+        app = qt.QApplication(sys.argv)
+        window = Window()
+        window.resize(600, 400)
+        window.show()
+        for symbol in 'EURUSD USDJPY EURGBP USDCAD EURCHF AUDUSD NZDUSD'.split():
+            window.add(f"Forex('{symbol}')")
+        window.add("Stock('TSLA', 'SMART', 'USD')")
+        ib.run()
+
+
+
     
 More to be added...
