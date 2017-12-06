@@ -3,7 +3,6 @@ from ib_insync.util import isNan
 
 __all__ = ['Ticker']
 
-
 nan = float('nan')
 
 
@@ -66,7 +65,8 @@ class Ticker(Object):
         'bidGreeks': None,
         'askGreeks': None,
         'lastGreeks': None,
-        'modelGreeks': None }
+        'modelGreeks': None
+    }
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 
@@ -102,8 +102,8 @@ class Ticker(Object):
         * close price.
         """
         midpoint = (self.bid + self.ask) / 2
-        price = self.last if (isNan(midpoint) or
-                self.bid <= self.last <= self.ask) else nan
+        price = self.last if (isNan(midpoint)
+                              or self.bid <= self.last <= self.ask) else nan
         if isNan(price):
             price = midpoint
         if isNan(price) or price == -1:

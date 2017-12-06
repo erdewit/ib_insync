@@ -5,11 +5,10 @@ import ibapi
 from .objects import Object
 
 __all__ = ('Trade OrderStatus Order '
-        'LimitOrder MarketOrder StopOrder StopLimitOrder').split()
+           'LimitOrder MarketOrder StopOrder StopLimitOrder').split()
 
 
-class Trade(namedtuple('Trade',
-        'contract order orderStatus fills log')):
+class Trade(namedtuple('Trade', 'contract order orderStatus fills log')):
     """
     Trade keeps track of an order, its status and all its fills.
     """
@@ -25,8 +24,8 @@ class Trade(namedtuple('Trade',
         """
         True if completely filled or cancelled, false otherwise.
         """
-        return self.orderStatus.status in (
-                OrderStatus.Filled, OrderStatus.Cancelled)
+        return self.orderStatus.status in (OrderStatus.Filled,
+                                           OrderStatus.Cancelled)
 
     def filled(self):
         """
@@ -54,7 +53,8 @@ class OrderStatus(Object):
         'clientId': 0,
         'whyHeld': '',
         'mktCapPrice': 0.0,
-        'lastLiquidity': 0 }
+        'lastLiquidity': 0
+    }
     __slots__ = defaults.keys()
     __init__ = Object.__init__
 
@@ -106,31 +106,49 @@ class LimitOrder(Order):
     __slots__ = ()
 
     def __init__(self, action, totalQuantity, lmtPrice, **kwargs):
-        Order.__init__(self, orderType='LMT', action=action,
-                totalQuantity=totalQuantity, lmtPrice=lmtPrice, **kwargs)
+        Order.__init__(
+            self,
+            orderType='LMT',
+            action=action,
+            totalQuantity=totalQuantity,
+            lmtPrice=lmtPrice,
+            **kwargs)
 
 
 class MarketOrder(Order):
     __slots__ = ()
 
     def __init__(self, action, totalQuantity, **kwargs):
-        Order.__init__(self, orderType='MKT', action=action,
-                totalQuantity=totalQuantity, **kwargs)
+        Order.__init__(
+            self,
+            orderType='MKT',
+            action=action,
+            totalQuantity=totalQuantity,
+            **kwargs)
 
 
 class StopOrder(Order):
     __slots__ = ()
 
     def __init__(self, action, totalQuantity, stopPrice, **kwargs):
-        Order.__init__(self, orderType='STP', action=action,
-                totalQuantity=totalQuantity, auxPrice=stopPrice, **kwargs)
+        Order.__init__(
+            self,
+            orderType='STP',
+            action=action,
+            totalQuantity=totalQuantity,
+            auxPrice=stopPrice,
+            **kwargs)
 
 
 class StopLimitOrder(Order):
     __slots__ = ()
 
     def __init__(self, action, totalQuantity, lmtPrice, stopPrice, **kwargs):
-        Order.__init__(self, orderType='STP LMT', action=action,
-                totalQuantity=totalQuantity, lmtPrice=lmtPrice,
-                auxPrice=stopPrice, **kwargs)
-
+        Order.__init__(
+            self,
+            orderType='STP LMT',
+            action=action,
+            totalQuantity=totalQuantity,
+            lmtPrice=lmtPrice,
+            auxPrice=stopPrice,
+            **kwargs)

@@ -10,9 +10,10 @@ import ibapi.execution
 import ibapi.commission_report
 
 # order conditions are imported as-is from ibapi
-from ibapi.order_condition import (OrderCondition, ExecutionCondition,
-        OperatorCondition, MarginCondition, ContractCondition, TimeCondition,
-        PriceCondition, PercentChangeCondition, VolumeCondition)
+from ibapi.order_condition import (
+    OrderCondition, ExecutionCondition, OperatorCondition, MarginCondition,
+    ContractCondition, TimeCondition, PriceCondition, PercentChangeCondition,
+    VolumeCondition)
 
 __all__ = (
     'Object ContractDetails ContractDescription '
@@ -28,8 +29,7 @@ __all__ = (
     'NewsArticle HistoricalNews NewsTick NewsBulletin ConnectionStats '
     'OrderCondition ExecutionCondition OperatorCondition MarginCondition '
     'ContractCondition TimeCondition PriceCondition PercentChangeCondition '
-    'VolumeCondition'
-    ).split()
+    'VolumeCondition').split()
 
 
 class Object:
@@ -113,7 +113,6 @@ class Object:
 
 
 class DynamicObject:
-
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -233,79 +232,70 @@ class BarList(list):
 
 
 class BarDataList(BarList):
-    __slots__ = ('contract', 'endDateTime', 'durationStr',
-            'barSizeSetting', 'whatToShow', 'useRTH', 'formatDate',
-            'keepUpToDate', 'chartOptions')
+    __slots__ = ('contract', 'endDateTime', 'durationStr', 'barSizeSetting',
+                 'whatToShow', 'useRTH', 'formatDate', 'keepUpToDate',
+                 'chartOptions')
 
 
 class RealTimeBarList(BarList):
     __slots__ = ('contract', 'barSize', 'whatToShow', 'useRTH',
-            'realTimeBarsOptions')
+                 'realTimeBarsOptions')
 
 
-AccountValue = namedtuple('AccountValue',
-    'account tag value currency')
+AccountValue = namedtuple('AccountValue', 'account tag value currency')
 
-TickData = namedtuple('TickData',
-    'time tickType price size')
+TickData = namedtuple('TickData', 'time tickType price size')
 
-TickAttribute = namedtuple('TickAttribute',
-    'canAutoExecute pastLimit')
+TickAttribute = namedtuple('TickAttribute', 'canAutoExecute pastLimit')
 
-HistoricalTick = namedtuple('HistoricalTick',
-    'time price size')
+HistoricalTick = namedtuple('HistoricalTick', 'time price size')
 
-HistoricalTickBidAsk = namedtuple('HistoricalTickBidAsk',
-    'time mask priceBid priceAsk sizeBid sizeAsk')
+HistoricalTickBidAsk = namedtuple(
+    'HistoricalTickBidAsk', 'time mask priceBid priceAsk sizeBid sizeAsk')
 
-HistoricalTickLast = namedtuple('HistoricalTickLast',
-    'time mask price size exchange specialConditions')
+HistoricalTickLast = namedtuple(
+    'HistoricalTickLast', 'time mask price size exchange specialConditions')
 
-MktDepthData = namedtuple('MktDepthData',
-    'time position marketMaker operation side price size')
+MktDepthData = namedtuple(
+    'MktDepthData', 'time position marketMaker operation side price size')
 
-DOMLevel = namedtuple('DOMLevel',
-    'price size marketMaker')
+DOMLevel = namedtuple('DOMLevel', 'price size marketMaker')
 
-BracketOrder = namedtuple('BracketOrder',
-    'parent takeProfit stopLoss')
+BracketOrder = namedtuple('BracketOrder', 'parent takeProfit stopLoss')
 
-TradeLogEntry = namedtuple('TradeLogEntry',
-    'time status message')
+TradeLogEntry = namedtuple('TradeLogEntry', 'time status message')
 
-ScanData = namedtuple('ScanData',
-    'rank contractDetails distance benchmark projection legsStr')
+ScanData = namedtuple(
+    'ScanData', 'rank contractDetails distance benchmark projection legsStr')
 
-TagValue = namedtuple('TagValue',
-    'tag value')
+TagValue = namedtuple('TagValue', 'tag value')
 
-PortfolioItem = namedtuple('PortfolioItem', (
-    'contract position marketPrice marketValue averageCost '
-    'unrealizedPNL realizedPNL account'))
+PortfolioItem = namedtuple(
+    'PortfolioItem', ('contract position marketPrice marketValue averageCost '
+                      'unrealizedPNL realizedPNL account'))
 
-Position = namedtuple('Position',
-    'account contract position avgCost')
+Position = namedtuple('Position', 'account contract position avgCost')
 
-Fill = namedtuple('Fill',
-    'contract execution commissionReport time')
+Fill = namedtuple('Fill', 'contract execution commissionReport time')
 
-OptionComputation = namedtuple('OptionComputation',
+OptionComputation = namedtuple(
+    'OptionComputation',
     'impliedVol delta optPrice pvDividend gamma vega theta undPrice')
 
-OptionChain = namedtuple('OptionChain',
+OptionChain = namedtuple(
+    'OptionChain',
     'exchange underlyingConId tradingClass multiplier expirations strikes')
 
-NewsArticle = namedtuple('NewsArticle',
-    'articleType articleText')
+NewsArticle = namedtuple('NewsArticle', 'articleType articleText')
 
 HistoricalNews = namedtuple('HistoricalNews',
-    'time providerCode articleId headline')
+                            'time providerCode articleId headline')
 
 NewsTick = namedtuple('NewsTick',
-    'timeStamp providerCode articleId headline extraData')
+                      'timeStamp providerCode articleId headline extraData')
 
-NewsBulletin = namedtuple('NewsBulletin',
-    'msgId msgType message origExchange')
+NewsBulletin = namedtuple('NewsBulletin', 'msgId msgType message origExchange')
 
-ConnectionStats = namedtuple('ConnectionStats',
+ConnectionStats = namedtuple(
+    'ConnectionStats',
     'startTime duration numBytesRecv numBytesSent numMsgRecv numMsgSent')

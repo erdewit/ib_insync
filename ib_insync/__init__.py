@@ -13,8 +13,10 @@ except ImportError:
 try:
     from ibapi.common import RealTimeBar
 except ImportError:
-    print('Old version of ibapi module detected. '
-        'The newest version from http://interactivebrokers.github.io is required')
+    print(
+        'Old version of ibapi module detected. '
+        'The newest version from http://interactivebrokers.github.io is required'
+    )
     sys.exit()
 
 from .objects import *
