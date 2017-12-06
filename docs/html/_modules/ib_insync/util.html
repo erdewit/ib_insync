@@ -282,12 +282,12 @@
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="n">isQuamash</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">if</span> <span class="n">isQuamash</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">_syncAwaitQt</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">loop</span><span class="o">.</span><span class="n">is_running</span><span class="p">():</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">_syncAwaitAsyncio</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">loop</span><span class="o">.</span><span class="n">is_running</span><span class="p">():</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">isQuamash</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_syncAwaitQt</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_syncAwaitAsyncio</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 
@@ -317,9 +317,7 @@
     <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="n">loop</span><span class="p">)</span>
     <span class="n">qLoop</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QEventLoop</span><span class="p">()</span>
     <span class="n">future</span><span class="o">.</span><span class="n">add_done_callback</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">qLoop</span><span class="o">.</span><span class="n">quit</span><span class="p">())</span>
-    <span class="n">loop</span><span class="o">.</span><span class="n">_before_run_forever</span><span class="p">()</span>
     <span class="n">qLoop</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
-    <span class="n">loop</span><span class="o">.</span><span class="n">_after_run_forever</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
 
 
@@ -432,7 +430,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

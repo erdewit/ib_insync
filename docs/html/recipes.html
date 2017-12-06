@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="notebooks.html">Notebooks</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Code recipes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#fetching-consecutive-historical-data">Fetching consecutive historical data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#integration-with-pyqt5">Integration with PyQt5</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="code.html">Source code</a></li>
@@ -121,6 +122,105 @@ and further back in time until there is no more data returned.</p>
 <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">contract</span><span class="o">.</span><span class="n">symbol</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="integration-with-pyqt5">
+<h2>Integration with PyQt5<a class="headerlink" href="#integration-with-pyqt5" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/qt-tickertable.png" src="_images/qt-tickertable.png" />
+<p>Here is an example of a ticker table that shows how to integrate both
+realtime streaming and synchronous API requests in a single-threaded
+Qt application.
+The API request in this example is <code class="docutils literal"><span class="pre">ib.qualifyContracts()</span></code>; It is used
+to get the conId of a contract and use that as a unique key.</p>
+<p>It is possible
+to have multiple outstanding API requests at the same time.</p>
+<p>This example depends on quamash: <code class="docutils literal"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">-U</span> <span class="pre">quamash</span></code>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">PyQt5.Qt</span> <span class="kn">as</span> <span class="nn">qt</span>
+<span class="kn">from</span> <span class="nn">ib_insync</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">excepthook</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">print_exception</span>
+
+<span class="n">util</span><span class="o">.</span><span class="n">useQt</span><span class="p">()</span>
+<span class="n">util</span><span class="o">.</span><span class="n">allowCtrlC</span><span class="p">()</span>
+
+<span class="n">ib</span> <span class="o">=</span> <span class="n">IB</span><span class="p">()</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">7497</span><span class="p">,</span> <span class="n">clientId</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">TickerTable</span><span class="p">(</span><span class="n">qt</span><span class="o">.</span><span class="n">QTableWidget</span><span class="p">):</span>
+
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;bidSize&#39;</span><span class="p">,</span> <span class="s1">&#39;bid&#39;</span><span class="p">,</span> <span class="s1">&#39;ask&#39;</span><span class="p">,</span> <span class="s1">&#39;askSize&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="s1">&#39;lastSize&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">qt</span><span class="o">.</span><span class="n">QTableWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conId2Row</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setHorizontalHeaderLabels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setAlternatingRowColors</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">contract</span><span class="o">.</span><span class="n">conId</span>
+        <span class="k">return</span> <span class="n">contract</span><span class="o">.</span><span class="n">conId</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conId2Row</span>
+
+    <span class="k">def</span> <span class="nf">addTicker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ticker</span><span class="p">):</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insertRow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conId2Row</span><span class="p">[</span><span class="n">ticker</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">conId</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)):</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QTableWidgetItem</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">symbol</span> <span class="o">+</span> <span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">currency</span>
+                <span class="k">if</span> <span class="n">ticker</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">secType</span><span class="o">==</span><span class="s1">&#39;CASH&#39;</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resizeColumnsToContents</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">onPendingTickers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tickers</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conId2Row</span><span class="p">[</span><span class="n">ticker</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">conId</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">header</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">col</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">header</span><span class="p">)</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">Window</span><span class="p">(</span><span class="n">qt</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">qt</span><span class="o">.</span><span class="n">QWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edit</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">TickerTable</span><span class="p">()</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edit</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">)</span>
+        <span class="n">ib</span><span class="o">.</span><span class="n">setCallback</span><span class="p">(</span><span class="s1">&#39;pendingTickers&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">onPendingTickers</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">text</span><span class="p">:</span>
+            <span class="n">contract</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">contract</span> <span class="ow">and</span> <span class="n">ib</span><span class="o">.</span><span class="n">qualifyContracts</span><span class="p">(</span><span class="n">contract</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="n">contract</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">):</span>
+                <span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktData</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">addTicker</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">Window</span><span class="p">()</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="s1">&#39;EURUSD USDJPY EURGBP USDCAD EURCHF AUDUSD NZDUSD&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Forex(&#39;{symbol}&#39;)&quot;</span><span class="p">)</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Stock(&#39;TSLA&#39;, &#39;SMART&#39;, &#39;USD&#39;)&quot;</span><span class="p">)</span>
+    <span class="n">ib</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
 <p>More to be added…</p>
 </div>
 </div>
@@ -136,7 +236,7 @@ and further back in time until there is no more data returned.</p>
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="_sources/recipes.rst.txt"
