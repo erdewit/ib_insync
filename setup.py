@@ -2,9 +2,13 @@ import os
 import sys
 import codecs
 from setuptools import setup
+from warnings import warn
+
+if sys.version_info < (3, 0, 0):
+    raise RuntimeError("ib_insync is for Python 3")
 
 if sys.version_info < (3, 6, 0):
-    raise RuntimeError("ib_insync requires Python 3.6 or higher")
+    warn("ib_insync requires Python 3.6 or higher")
 
 here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
