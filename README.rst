@@ -245,7 +245,7 @@ Good luck and enjoy,
 .. |License| image:: https://img.shields.io/badge/license-BSD-blue.svg
    :alt:
    
- .. |Docs| image:: https://readthedocs.org/projects/ib-insync/badge/?version=latest
+.. |Docs| image:: https://readthedocs.org/projects/ib-insync/badge/?version=latest
    :alt: Documentation Status
    :target: http://ib-insync.readthedocs.io
 
