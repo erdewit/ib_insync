@@ -145,6 +145,12 @@ class IB:
         loop = asyncio.get_event_loop()
         if not awaitables:
             result = loop.run_forever()
+            f = asyncio.gather(*asyncio.Task.all_tasks())
+            f.cancel()
+            try:
+                loop.run_until_complete(f)
+            except asyncio.CancelledError:
+                pass
         else:
             if len(awaitables) == 1:
                 future = awaitables[0]

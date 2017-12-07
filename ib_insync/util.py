@@ -237,7 +237,7 @@ def _syncAwaitQt(future):
     qLoop = qt.QEventLoop()
     future.add_done_callback(lambda f: qLoop.quit())
     qLoop.exec_()
-    return future.result()
+    return future.result() if future.done() else None
 
 
 def startLoop():
