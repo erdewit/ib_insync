@@ -33,7 +33,7 @@ def df(objs, labels=None):
         df = None
     if labels:
         exclude = [label for label in df if label not in labels]
-        df.drop(exclude, axis=1)
+        df = df.drop(exclude, axis=1)
     return df
 
 
