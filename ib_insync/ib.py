@@ -28,24 +28,24 @@ def api(f):
 class IB:
     """
     Provides both a blocking and an asynchronous interface
-    to the IB Python API, using asyncio networking and event loop. 
-    
+    to the IB Python API, using asyncio networking and event loop.
+
     The IB class offers direct access to the current state, such as
     orders, executions, positions, tickers etc. This state is
     automatically kept in sync with the TWS/IBG application.
-      
+
     This class has most request methods of EClient, with the
     same names and parameters (except for the reqId parameter
     which is not needed anymore).
     Request methods that return a result come in two versions:
-      
+
     * Blocking: Will block until complete and return the result.
       The current state will be kept updated while the request is ongoing;
-        
+
     * Asynchronous: All methods that have the "Async" postfix.
       Implemented as coroutines or methods that return a Future and
       intended for advanced users.
-    
+
     **The One Rule:**
 
     While some of the request methods are blocking from the perspective
@@ -55,11 +55,11 @@ class IB:
     the user code spends much time in a calculation, or uses time.sleep()
     with a long delay, the framework will stop spinning, messages
     accumulate and things may go awry.
-    
+
     The one rule when working with the IB class is therefore that
-    
+
     **user code may not block for too long**.
-    
+
     To be clear, the IB request methods are okay to use and do not
     count towards the user operation time, no matter how long the
     request takes to finish.
@@ -70,14 +70,14 @@ class IB:
     the other extreme, there is very little incoming data and there
     is no desire for accurate timestamps, then the user code can block
     for hours.
-    
+
     If a user operation takes a long time then it can be farmed out
-    to a different process. 
+    to a different process.
     Alternatively the operation can be made such that it periodically
     calls IB.sleep(0); This will let the framework handle any pending
     work and return when finished. The operation should be aware
     that the current state may have been updated during the sleep(0) call.
-    
+
     For introducing a delay, never use time.sleep() but use
     :py:meth:`.sleep` instead.
     """
@@ -104,8 +104,8 @@ class IB:
     def connect(self, host: str, port: int, clientId: int, timeout: float=2):
         """
         Connect to a TWS or IB gateway application running at host:port.
-        After the connect the client is immediately ready to serve requests. 
-        
+        After the connect the client is immediately ready to serve requests.
+
         This method is blocking.
         """
         self.run(self.connectAsync(host, port, clientId, timeout))
@@ -114,7 +114,7 @@ class IB:
     def disconnect(self) -> None:
         """
         Disconnect from a TWS or IB gateway application.
-        This will clear all session state.  
+        This will clear all session state.
         """
         self.wrapper.reset()
         if not self.client.isConnected():
@@ -139,7 +139,7 @@ class IB:
     def run(*awaitables: List[Awaitable]):
         """
         By default run the event loop forever.
-        
+
         When awaitables (like Tasks, Futures or coroutines) are given then
         run the event loop until each has completed and return their results.
         """
@@ -189,11 +189,11 @@ class IB:
         """
         Iterator that waits periodically until certain time points are
         reached while yielding those time points.
-        
+
         The startTime and dateTime parameters can be specified as
         datetime.datetime, or as datetime.time in which case today
         is used as the date.
-        
+
         The step parameter is the number of seconds of each period.
         """
         assert step > 0
@@ -214,7 +214,7 @@ class IB:
     def waitUntil(t: datetime.time) -> True:
         """
         Wait until the given time t is reached.
-        
+
         The time can be specified as datetime.datetime,
         or as datetime.time in which case today is used as the date.
         """
@@ -262,37 +262,37 @@ class IB:
     def setCallback(self, eventName: str, callback: Callable) -> None:
         """
         Set an optional callback to be invoked after an event. Events:
-        
+
         * ``updated()``:
           Is emitted after a network packet has been handeled.
-        
+
         * ``pendingTickers(tickers: Set[Ticker])``:
           Emits the set of tickers that have been updated during the last
-          update and for which there are new ticks or domTicks. 
-          
+          update and for which there are new ticks or domTicks.
+
         * ``barUpdate(bars: BarDataList, hasNewBar: bool)``:
           Emits the bar list that has been updated in real time.
           If a new bar has been added then hasNewBar is True, when the last
           bar has changed it is False.
-          
+
         * ``orderStatus(trade: Trade)``:
           Emits the changed order status of the ongoing trade.
-           
+
         * ``execDetails(trade: Trade, fill: Fill)``:
           Emits the fill together with the ongoing trade it belong to.
-          
+
         * ``commissionReport(trade: Trade, fill: Fill, report: CommissionReport)``:
           The commission report is emitted after the fill that it belongs to.
-          
+
         * ``updatePortfolio(item: PortfolioItem)``:
           A portfolio item has changed.
-          
+
         * ``position(position: Position)``:
           A position has changed.
-        
+
         * ``tickNews(news: NewsTick)``:
           Emit a new news headline.
-          
+
         * ``error(errorCode: int, errorString: str)``:
           Emits the TWS error code and string (see
           https://interactivebrokers.github.io/tws-api/message_codes.html).
@@ -321,7 +321,7 @@ class IB:
         """
         List of account values for the given account,
         or of all accounts if account is left blank.
-        
+
         This method is blocking on first run, non-blocking after that.
         """
         if not self.wrapper.acctSummary:
@@ -506,7 +506,7 @@ class IB:
                       ocaType: int) -> List[Order]:
         """
         Place the trades in the same OCA group.
-        
+
         https://interactivebrokers.github.io/tws-api/oca.html
         """
         for o in orders:
@@ -518,7 +518,7 @@ class IB:
         """
         Retrieve commission and margin impact without actually
         placing the order. The given order will not be modified in any way.
-        
+
         This method is blocking.
         """
         return self.run(self.whatIfOrderAsync(contract, order))
@@ -584,7 +584,7 @@ class IB:
     def reqAccountUpdates(self) -> None:
         """
         This is called at startup - no need to call again.
-        
+
         Request account and portfolio values of the default account
         and keep updated. Returns when both account values and portfolio
         are filled.
@@ -609,7 +609,7 @@ class IB:
     def reqOpenOrders(self) -> List[Order]:
         """
         Request and return a list a list of open orders.
-        
+
         This method can give stale information where a new open order is not
         reported or an already filled or canceled order is reported as open.
         It is recommended to use the more reliable and much faster
@@ -648,10 +648,10 @@ class IB:
         Get a list of contract details that match the given contract.
         If the returned list is empty then the contract is not known;
         If the list has multiple values then the contract is ambiguous.
-    
+
         The fully qualified contract is available in the the
         ContractDetails.summary attribute.
-        
+
         This method is blocking.
 
         https://interactivebrokers.github.io/tws-api/contract_details.html
@@ -663,7 +663,7 @@ class IB:
         """
         Request contract descriptions of contracts that match the given
         pattern.
-        
+
         This method is blocking.
 
         https://interactivebrokers.github.io/tws-api/matching_symbols.html
@@ -679,7 +679,7 @@ class IB:
                         realTimeBarsOptions=None) -> RealTimeBarList:
         """
         Request realtime 5 second bars.
-        
+
         https://interactivebrokers.github.io/tws-api/realtime_bars.html
         """
         reqId = self.client.getReqId()
@@ -720,10 +720,10 @@ class IB:
         The endDateTime can be set to '' to indicate the current time,
         or it can be given as a datetime.date or datetime.datetime,
         or it can be given as a string in 'yyyyMMdd HH:mm:ss' format.
-        
+
         If formatDate=2 is used for an intraday request the returned date
         field will be a timezone-aware datetime.datetime with UTC timezone.
-        
+
         This method is blocking.
 
         https://interactivebrokers.github.io/tws-api/historical_bars.html
@@ -758,7 +758,7 @@ class IB:
         Request historical ticks.
 
         This method is blocking.
-        
+
         https://interactivebrokers.github.io/tws-api/historical_time_and_sales.html
         """
         return self.run(
@@ -774,7 +774,7 @@ class IB:
             * 2 = Frozen
             * 3 = Delayed
             * 4 = Delayed frozen
-        
+
         https://interactivebrokers.github.io/tws-api/market_data_type.html
         """
         self.client.reqMarketDataType(marketDataType)
@@ -787,7 +787,7 @@ class IB:
                          formatDate: int=1) -> datetime.datetime:
         """
         Get the datetime of earliest available historical data for the contract.
-        
+
         If formatDate=2 then the result is returned as a
         timezone-aware datetime.datetime with UTC timezone.
         """
@@ -833,7 +833,7 @@ class IB:
     def reqMktDepthExchanges(self) -> List[DepthMktDataDescription]:
         """
         Get those exchanges that have have multiple market makers
-        (and have ticks returned with marketMaker info). 
+        (and have ticks returned with marketMaker info).
         """
         return self.run(self.reqMktDepthExchangesAsync())
 
@@ -868,7 +868,7 @@ class IB:
                          period: str) -> List[HistogramData]:
         """
         Get histogram data of the contract over the period.
-        
+
         This method is blocking.
 
         https://interactivebrokers.github.io/tws-api/histograms.html
@@ -882,7 +882,7 @@ class IB:
                            fundamentalDataOptions=None) -> str:
         """
         Get Reuters' fundamental data of the contract in XML format.
-        
+
         This method is blocking.
 
         https://interactivebrokers.github.io/tws-api/reuters_fundamentals.html
@@ -897,7 +897,7 @@ class IB:
                        scannerSubscriptionOptions=None) -> List[ScanData]:
         """
         Do a market scan.
-        
+
         This method is blocking.
 
         https://interactivebrokers.github.io/tws-api/market_scanners.html
@@ -923,7 +923,7 @@ class IB:
                                    implVolOptions=None) -> OptionComputation:
         """
         Calculate the volatility given the option price.
-        
+
         This method is blocking.
 
         https://interactivebrokers.github.io/tws-api/option_computations.html
@@ -940,7 +940,7 @@ class IB:
                              optPrcOptions=None) -> OptionComputation:
         """
         Calculate the option price given the volatility.
-        
+
         This method is blocking.
 
         https://interactivebrokers.github.io/tws-api/option_computations.html
@@ -957,7 +957,7 @@ class IB:
                            underlyingConId: str) -> List[OptionChain]:
         """
         Get the option chain.
-        
+
         This method is blocking.
 
         https://interactivebrokers.github.io/tws-api/options.html
@@ -1033,13 +1033,13 @@ class IB:
     def requestFA(self, faDataType: int) -> str:
         """
         faDataType:
-        
+
         * 1 = Groups;
         * 2 = Profiles;
         * 3 = Account Aliases.
 
         This method is blocking.
-        
+
         https://interactivebrokers.github.io/tws-api/financial_advisor_methods_and_orders.html
         """
         return self.run(self.requestFAAsync(faDataType))
