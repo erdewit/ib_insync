@@ -48,8 +48,9 @@ def barplot(bars, title='', upColor='blue', downColor='red'):
     from matplotlib.patches import Rectangle
 
     if isinstance(bars, pd.DataFrame):
-        ohlcTups = [tuple(v) for v in
-                bars[['open', 'high', 'low', 'close']].values]
+        ohlcTups = [
+            tuple(v) for v in bars[['open', 'high', 'low', 'close']].values
+        ]
     else:
         ohlcTups = [(b.open, b.high, b.low, b.close) for b in bars]
 
@@ -65,26 +66,19 @@ def barplot(bars, title='', upColor='blue', downColor='red'):
             color = downColor
             bodyHi, bodyLo = open_, close
         line = Line2D(
-                xdata=(n, n),
-                ydata=(low, bodyLo),
-                color=color,
-                linewidth=1)
+            xdata=(n, n), ydata=(low, bodyLo), color=color, linewidth=1)
         ax.add_line(line)
         line = Line2D(
-                xdata=(n, n),
-                ydata=(high, bodyHi),
-                color=color,
-                linewidth=1)
+            xdata=(n, n), ydata=(high, bodyHi), color=color, linewidth=1)
         ax.add_line(line)
         rect = Rectangle(
-                xy=(n - 0.3, bodyLo),
-                width=0.6,
-                height=bodyHi - bodyLo,
-                edgecolor=color,
-                facecolor=color,
-                alpha=0.4,
-                antialiased=True
-        )
+            xy=(n - 0.3, bodyLo),
+            width=0.6,
+            height=bodyHi - bodyLo,
+            edgecolor=color,
+            facecolor=color,
+            alpha=0.4,
+            antialiased=True)
         ax.add_patch(rect)
 
     ax.autoscale_view()
@@ -105,7 +99,7 @@ def logToFile(path, level=logging.INFO):
     logger = logging.getLogger()
     logger.setLevel(level)
     formatter = logging.Formatter(
-            '%(asctime)s %(name)s %(levelname)s %(message)s')
+        '%(asctime)s %(name)s %(levelname)s %(message)s')
     handler = logging.FileHandler(path)
     handler.setFormatter(formatter)
     handler.addFilter(lambda record: record.name != 'root')
@@ -119,7 +113,7 @@ def logToConsole(level=logging.INFO):
     logger = logging.getLogger()
     logger.setLevel(level)
     formatter = logging.Formatter(
-            '%(asctime)s %(name)s %(levelname)s %(message)s')
+        '%(asctime)s %(name)s %(levelname)s %(message)s')
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
     handler.addFilter(lambda record: record.name != 'root')
@@ -151,14 +145,14 @@ def formatSI(n):
         i, j = divmod(log, 3)
         for _try in range(2):
             templ = '%.{}f'.format(2 - j)
-            val = templ % (n * 10 ** (-3 * i))
+            val = templ % (n * 10**(-3 * i))
             if val != '1000':
                 break
             i += 1
             j = 0
         s += val + ' '
         if i != 0:
-            s += 'yzafpnm kMGTPEZY'[i + 7]
+            s += 'yzafpnm kMGTPEZY' [i + 7]
     return s
 
 
@@ -332,8 +326,7 @@ def parseIBDatetime(s):
         d = int(s[6:8])
         dt = datetime.date(y, m, d)
     elif s.isdigit():
-        dt = datetime.datetime.fromtimestamp(
-                int(s), datetime.timezone.utc)
+        dt = datetime.datetime.fromtimestamp(int(s), datetime.timezone.utc)
     else:
         dt = datetime.datetime.strptime(s, '%Y%m%d  %H:%M:%S')
     return dt

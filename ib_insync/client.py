@@ -11,7 +11,7 @@ from ibapi.wrapper import EWrapper, iswrapper
 from ibapi.common import UNSET_INTEGER, UNSET_DOUBLE
 
 from ib_insync.objects import (ConnectionStats, BarData, HistoricalTick,
-        HistoricalTickBidAsk, HistoricalTickLast)
+                               HistoricalTickBidAsk, HistoricalTickLast)
 from ib_insync.contract import Contract
 import ib_insync.util as util
 
@@ -23,43 +23,43 @@ _logger = logging.getLogger('ib_insync.client')
 class Client(EClient):
     """
     Modification of ``ibapi.client.EClient`` that uses asyncio.
-    
+
     The client is fully asynchronous and has its own
     event-driven networking code that replaces the
     networking code of the standard EClient.
     It also replaces the infinite loop of ``EClient.run()``
     with the asyncio event loop. It can be used as a drop-in
     replacement for the standard EClient as provided by IBAPI.
-    
+
     Compared to the standard EClient this client has the following
     additional features:
-    
+
     * ``client.connect()`` will block until the client is ready to
       serve requests; It is not necessary to wait for ``nextValidId``
       to start requests as the client has already done that.
       The reqId is directly available with :py:meth:`.getReqId()`.
-      
+
     * ``client.connectAsync()`` is a coroutine for connecting asynchronously.
-      
+
     * When blocking, ``client.connect()`` can be made to time out with
       the timeout parameter (default 2 seconds).
-    
+
     * Optional ``wrapper.priceSizeTick(reqId, tickType, price, size)`` that
       combines price and size instead of the two wrapper methods
       priceTick and sizeTick.
-    
+
     * Optional ``wrapper.tcpDataArrived()`` method;
       If the wrapper has this method it is invoked directly after
       a network packet has arrived.
       A possible use is to timestamp all data in the packet with
       the exact same time.
-      
+
     * Optional ``wrapper.tcpDataProcessed()`` method;
       If the wrapper has this method it is invoked after the
       network packet's data has been handled.
       A possible use is to write or evaluate the newly arrived data in
       one batch instead of item by item.
-      
+
     * Optional callbacks:
         - apiStart()
         - apiEnd()
@@ -104,11 +104,10 @@ class Client(EClient):
         Get statistics about the connection.
         """
         assert self.isReady(), 'Not connected'
-        return ConnectionStats(
-                self._startTime,
-                time.time() - self._startTime,
-                self._numBytesRecv, self.conn.numBytesSent,
-                self._numMsgRecv, self.conn.numMsgSent)
+        return ConnectionStats(self._startTime,
+                               time.time() - self._startTime,
+                               self._numBytesRecv, self.conn.numBytesSent,
+                               self._numMsgRecv, self.conn.numMsgSent)
 
     def getReqId(self) -> int:
         """
@@ -130,7 +129,7 @@ class Client(EClient):
         """
         Connect to TWS/IBG at given host and port and with a clientId
         that is not in use elsewhere.
-        
+
         When timeout is not zero, asyncio.TimeoutError
         is raised if the connection is not established within the timeout period.
         """
@@ -138,7 +137,7 @@ class Client(EClient):
 
     async def connectAsync(self, host, port, clientId, timeout=2):
         _logger.info(
-                f'Connecting to {host}:{port} with clientId {clientId}...')
+            f'Connecting to {host}:{port} with clientId {clientId}...')
         self.host = host
         self.port = port
         self.clientId = clientId
@@ -149,8 +148,9 @@ class Client(EClient):
         self.conn.disconnected = self._onSocketDisconnected
         self.conn.hasError = self._onSocketHasError
         try:
-            await asyncio.wait_for(asyncio.gather(
-                    self.conn.connect(), self._readyEvent.wait()), timeout)
+            await asyncio.wait_for(
+                asyncio.gather(self.conn.connect(), self._readyEvent.wait()),
+                timeout)
             _logger.info('API connection ready')
             if self.apiStart:
                 self.apiStart()
@@ -176,9 +176,9 @@ class Client(EClient):
         _logger.info('Connected')
         # start handshake
         msg = b'API\0'
-        msg += self._prefix(b'v%d..%d' % (
-                ibapi.server_versions.MIN_CLIENT_VER,
-                ibapi.server_versions.MAX_CLIENT_VER))
+        msg += self._prefix(b'v%d..%d' %
+                            (ibapi.server_versions.MIN_CLIENT_VER,
+                             ibapi.server_versions.MAX_CLIENT_VER))
         self.conn.sendMsg(msg)
         self.decoder = ibapi.decoder.Decoder(self.wrapper, None)
 
@@ -216,7 +216,7 @@ class Client(EClient):
                 self.startApi()
                 self.wrapper.connectAck()
                 _logger.info(
-                        f'Logged on to server version {self.serverVersion_}')
+                    f'Logged on to server version {self.serverVersion_}')
             else:
                 # decode and handle the message
                 try:
@@ -248,12 +248,13 @@ class Client(EClient):
         if self.apiError:
             self.apiError(msg)
 
-    def reqHistoricalTicks(self, reqId, contract, startDateTime,
-            endDateTime, numberOfTicks, whatToShow, useRth,
-            ignoreSize, miscOptions):
+    def reqHistoricalTicks(self, reqId, contract, startDateTime, endDateTime,
+                           numberOfTicks, whatToShow, useRth, ignoreSize,
+                           miscOptions):
         msgId = 96
         msg = self._encode(msgId, reqId, contract, startDateTime, endDateTime,
-                numberOfTicks, whatToShow, useRth, ignoreSize, miscOptions)
+                           numberOfTicks, whatToShow, useRth, ignoreSize,
+                           miscOptions)
         self.sendMsg(msg)
 
     def _encode(self, *fields):
@@ -267,13 +268,13 @@ class Client(EClient):
                 s = ''
             elif isinstance(field, Contract):
                 c = field
-                s = '\0'.join(str(f) for f in (
-                        c.conId, c.symbol, c.secType,
-                        c.lastTradeDateOrContractMonth, c.strike,
-                        c.right, c.multiplier, c.exchange,
-                        c.primaryExchange, c.currency,
-                        c.localSymbol, c.tradingClass,
-                        1 if c.includeExpired else 0))
+                s = '\0'.join(
+                    str(f)
+                    for f in (c.conId, c.symbol, c.secType,
+                              c.lastTradeDateOrContractMonth, c.strike,
+                              c.right, c.multiplier, c.exchange,
+                              c.primaryExchange, c.currency, c.localSymbol,
+                              c.tradingClass, 1 if c.includeExpired else 0))
             elif type(field) is list:
                 # list of TagValue
                 s = ''.join(f'{v.tag}={v.value};' for v in field)
@@ -297,8 +298,8 @@ class Client(EClient):
         if msgId == 1:
             if self._priceSizeTick:
                 _, _, reqId, tickType, price, size, _ = fields
-                self._priceSizeTick(int(reqId), int(tickType),
-                        float(price), int(size))
+                self._priceSizeTick(
+                    int(reqId), int(tickType), float(price), int(size))
                 return
         elif msgId == 2:
             _, _, reqId, tickType, size = fields
@@ -306,8 +307,10 @@ class Client(EClient):
             return
         elif msgId == 12:
             _, _, reqId, position, operation, side, price, size = fields
-            self.wrapper.updateMktDepth(int(reqId), int(position),
-                    int(operation), int(side), float(price), int(size))
+            self.wrapper.updateMktDepth(
+                int(reqId),
+                int(position),
+                int(operation), int(side), float(price), int(size))
             return
         elif msgId == 46:
             _, _, reqId, tickType, value = fields
@@ -316,9 +319,12 @@ class Client(EClient):
         elif msgId == 90:
             _, reqId, barCount, date, open_, close, high, low, \
                     average, volume = fields
-            bar = BarData(date.decode(), float(open_), float(high),
-                    float(low), float(close), float(volume),
-                    int(barCount), float(average))
+            bar = BarData(date.decode(),
+                          float(open_),
+                          float(high),
+                          float(low),
+                          float(close),
+                          float(volume), int(barCount), float(average))
             self.wrapper.historicalDataUpdate(int(reqId), bar)
             return
 
@@ -353,9 +359,11 @@ class Client(EClient):
             for _ in range(int(nTicks)):
                 time, mask, priceBid, priceAsk, sizeBid, sizeAsk, \
                         *fields = fields
-                tick = HistoricalTickBidAsk(int(time), int(mask),
-                        float(priceBid), float(priceAsk),
-                        int(sizeBid), int(sizeAsk))
+                tick = HistoricalTickBidAsk(
+                    int(time),
+                    int(mask),
+                    float(priceBid),
+                    float(priceAsk), int(sizeBid), int(sizeAsk))
                 ticks.append(tick)
             done = fields[0] == b'1'
             self.wrapper.historicalTicksBidAsk(int(reqId), ticks, done)
@@ -366,9 +374,11 @@ class Client(EClient):
             for _ in range(int(nTicks)):
                 time, mask, price, size, exchange, \
                         specialConditions, *fields = fields
-                tick = HistoricalTickLast(int(time), int(mask),
-                        float(price), int(size),
-                        exchange.decode(), specialConditions.decode())
+                tick = HistoricalTickLast(
+                    int(time),
+                    int(mask),
+                    float(price),
+                    int(size), exchange.decode(), specialConditions.decode())
                 ticks.append(tick)
             done = fields[0] == b'1'
             self.wrapper.historicalTicksLast(int(reqId), ticks, done)
@@ -381,6 +391,7 @@ class Connection:
     """
     Replacement for ibapi.connection.Connection that uses asyncio.
     """
+
     def __init__(self, host, port):
         self.host = host
         self.port = port
@@ -401,8 +412,8 @@ class Connection:
 
     def connect(self):
         loop = asyncio.get_event_loop()
-        coro = loop.create_connection(lambda: Socket(self),
-                self.host, self.port)
+        coro = loop.create_connection(lambda: Socket(self), self.host,
+                                      self.port)
         future = asyncio.ensure_future(coro)
         future.add_done_callback(self._onConnectionCreated)
         return future
@@ -420,12 +431,11 @@ class Connection:
         self.numBytesSent += len(msg)
         self.numMsgSent += 1
         if _logger.isEnabledFor(logging.DEBUG):
-            _logger.debug(
-                '>>> %s', ','.join(f.decode() for f in msg[4:].split(b'\0')))
+            _logger.debug('>>> %s', ','.join(f.decode()
+                                             for f in msg[4:].split(b'\0')))
 
 
 class Socket(asyncio.Protocol):
-
     def __init__(self, connection):
         self.transport = None
         self.connection = connection
@@ -447,6 +457,7 @@ class TestClient(Client, EWrapper):
     """
     Test to connect to a running TWS or gateway server.
     """
+
     def __init__(self):
         Client.__init__(self, wrapper=self)
 

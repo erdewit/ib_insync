@@ -11,7 +11,8 @@ __all__ = ('FlexReport', 'FlexError')
 _logger = logging.getLogger('ib_insync.flexreport')
 
 
-class FlexError(Exception): pass
+class FlexError(Exception):
+    pass
 
 
 class FlexReport:
@@ -57,7 +58,7 @@ class FlexReport:
         The topic is a string like TradeConfirm, ChangeInDividendAccrual,
         Order, etc.
         """
-        cls = type(topic, (DynamicObject,), {})
+        cls = type(topic, (DynamicObject, ), {})
         results = [cls(**node.attrib) for node in self.root.iter(topic)]
         if parseNumbers:
             for obj in results:
@@ -83,8 +84,8 @@ class FlexReport:
         Download report for the given ``token`` and ``queryId``.
         """
         url = ('https://gdcdyn.interactivebrokers.com'
-                f'/Universal/servlet/FlexStatementService.SendRequest?'
-                f't={token}&q={queryId}&v=3')
+               f'/Universal/servlet/FlexStatementService.SendRequest?'
+               f't={token}&q={queryId}&v=3')
         resp = urlopen(url)
         data = resp.read()
 
