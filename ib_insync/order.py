@@ -75,7 +75,7 @@ class OrderStatus(Object):
 class Order(Object):
     """
     Order for trading contracts.
-    
+
     https://interactivebrokers.github.io/tws-api/available_orders.html
     """
     defaults = ibapi.order.Order().__dict__

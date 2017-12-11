@@ -35,7 +35,7 @@ __all__ = (
 class Object:
     """
     Base object, with:
-    
+
     * __slots__ to avoid typos;
     * A general constructor;
     * A general string representation;

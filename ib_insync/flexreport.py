@@ -18,16 +18,16 @@ class FlexReport:
     """
     Download and parse IB account statements via the Flex Web Service.
     https://www.interactivebrokers.com/en/software/am/am/reports/flex_web_service_version_3.htm
-    
+
     To obtain a ``token`` in account managment, go to
     Reports -> Settings -> Flex Web Service.
     Tip: choose a 1 year expiry.
-    
+
     To obtain a ``queryId``: Create and save a query with
     Report -> Activity -> Flex Queries or
     Report -> Trade Confirmations -> Flex Queries.
     Find the query ID (not the query name).
-    
+
     A large query can take a few minutes. In the weekends the query servers
     can be down.
     """
@@ -53,7 +53,7 @@ class FlexReport:
     def extract(self, topic: str, parseNumbers=True) -> list:
         """
         Extract items of given topic and return as list of objects.
-        
+
         The topic is a string like TradeConfirm, ChangeInDividendAccrual,
         Order, etc.
         """
