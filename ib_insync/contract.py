@@ -13,7 +13,7 @@ class Contract(Object):
     arguments. To simplify working with contracts, there are also more
     specialized contracts that take optional positional arguments.
     Some examples::
-    
+
         Contract(conId=270639)
         Stock('AMD', 'SMART', 'USD')
         Stock('INTC', 'SMART', 'USD', primaryExchange='NASDAQ')
