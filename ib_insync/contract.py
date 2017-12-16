@@ -26,7 +26,6 @@ class Contract(Object):
     defaults = ibapi.contract.Contract().__dict__
     __slots__ = list(defaults.keys()) + \
             ['comboLegsCount', 'underCompPresent', 'secIdListCount']  # bug in decoder.py
-    __init__ = Object.__init__
 
     @staticmethod
     def create(**kwargs):
@@ -65,9 +64,6 @@ class Contract(Object):
         return f'{clsName}({kwargs})'
 
     __str__ = __repr__
-
-    def __hash__(self):
-        return self.conId
 
 
 class Stock(Contract):
@@ -187,4 +183,3 @@ class Warrant(Contract):
 
     def __init__(self, **kwargs):
         Contract.__init__(self, secType='IOPT', **kwargs)
-

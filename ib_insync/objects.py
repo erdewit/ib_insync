@@ -51,11 +51,9 @@ class Object:
         'defaults' class member. If an attribute is given both positionally
         and as keyword, the keyword wins.
         """
-        for k, v in self.__class__.defaults.items():
-            setattr(self, k, v)
-        for k, v in zip(self.__class__.defaults, args):
-            setattr(self, k, v)
-        for k, v in kwargs.items():
+        defaults = self.__class__.defaults
+        d = {**defaults, **dict(zip(defaults, args)), **kwargs}
+        for k, v in d.items():
             setattr(self, k, v)
 
     def __repr__(self):
@@ -128,98 +126,82 @@ class ContractDetails(Object):
     defaults['summary'] = None
     __slots__ = list(defaults.keys()) + \
             ['secIdListCount']  # bug in ibapi decoder
-    __init__ = Object.__init__
 
 
 class ContractDescription(Object):
     defaults = ibapi.contract.ContractDescription().__dict__
     defaults['contract'] = None
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class ComboLeg(Object):
     defaults = ibapi.contract.ComboLeg().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class UnderComp(Object):
     defaults = ibapi.contract.UnderComp().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class OrderComboLeg(Object):
     defaults = ibapi.order.OrderComboLeg().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class OrderState(Object):
     defaults = ibapi.order_state.OrderState().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class ScannerSubscription(Object):
     defaults = ibapi.scanner.ScannerSubscription().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class SoftDollarTier(Object):
     defaults = ibapi.softdollartier.SoftDollarTier().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class Execution(Object):
     defaults = ibapi.execution.Execution().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class CommissionReport(Object):
     defaults = ibapi.commission_report.CommissionReport().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class ExecutionFilter(Object):
     defaults = ibapi.execution.ExecutionFilter().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class BarData(Object):
     defaults = ibapi.common.BarData().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class RealTimeBar(Object):
     defaults = ibapi.common.RealTimeBar().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class HistogramData(Object):
     defaults = ibapi.common.HistogramData().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class NewsProvider(Object):
     defaults = ibapi.common.NewsProvider().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class DepthMktDataDescription(Object):
     defaults = ibapi.common.DepthMktDataDescription().__dict__
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
 
 class BarList(list):

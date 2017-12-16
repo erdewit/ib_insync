@@ -1,5 +1,3 @@
-from collections import namedtuple
-
 import ibapi
 
 from .objects import Object
@@ -8,12 +6,18 @@ __all__ = ('Trade OrderStatus Order '
         'LimitOrder MarketOrder StopOrder StopLimitOrder').split()
 
 
-class Trade(namedtuple('Trade',
-        'contract order orderStatus fills log')):
+class Trade(Object):
     """
     Trade keeps track of an order, its status and all its fills.
     """
-    __slots__ = ()
+    defaults = dict(
+        contract=None,
+        order=None,
+        orderStatus=None,
+        fills=None,
+        log=None
+    )
+    __slots__ = defaults.keys()
 
     def isActive(self):
         """
@@ -42,21 +46,21 @@ class Trade(namedtuple('Trade',
 
 
 class OrderStatus(Object):
-    defaults = {
-        'orderId': 0,
-        'status': '',
-        'filled': 0,
-        'remaining': 0,
-        'avgFillPrice': 0.0,
-        'permId': 0,
-        'parentId': 0,
-        'lastFillPrice': 0.0,
-        'clientId': 0,
-        'whyHeld': '',
-        'mktCapPrice': 0.0,
-        'lastLiquidity': 0 }
+    defaults = dict(
+        orderId=0,
+        status='',
+        filled=0,
+        remaining=0,
+        avgFillPrice=0.0,
+        permId=0,
+        parentId=0,
+        lastFillPrice=0.0,
+        clientId=0,
+        whyHeld='',
+        mktCapPrice=0.0,
+        lastLiquidity=0
+    )
     __slots__ = defaults.keys()
-    __init__ = Object.__init__
 
     PendingSubmit = 'PendingSubmit'
     PendingCancel = 'PendingCancel'
@@ -79,11 +83,10 @@ class Order(Object):
     https://interactivebrokers.github.io/tws-api/available_orders.html
     """
     defaults = ibapi.order.Order().__dict__
-    __slots__ = list(defaults.keys()) + \
-            ['sharesAllocation', 'orderComboLegsCount', 'algoParamsCount',
-                'smartComboRoutingParamsCount', 'conditionsSize',
-                'conditionType']  # bugs in decoder.py
-    __init__ = Object.__init__
+    __slots__ = list(defaults.keys()) + [
+            'sharesAllocation', 'orderComboLegsCount', 'algoParamsCount',
+            'smartComboRoutingParamsCount', 'conditionsSize',
+            'conditionType']  # bugs in decoder.py
 
     def __repr__(self):
         attrs = self.nonDefaults()

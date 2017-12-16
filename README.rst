@@ -247,5 +247,5 @@ Good luck and enjoy,
    
 .. |Docs| image:: https://readthedocs.org/projects/ib-insync/badge/?version=latest
    :alt: Documentation Status
-   :target: http://ib-insync.readthedocs.io
+   :target: http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html
 
