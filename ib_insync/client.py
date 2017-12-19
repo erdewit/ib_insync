@@ -11,7 +11,7 @@ from ibapi.wrapper import EWrapper, iswrapper
 from ibapi.common import UNSET_INTEGER, UNSET_DOUBLE
 
 from ib_insync.objects import (ConnectionStats, BarData, HistoricalTick,
-        HistoricalTickBidAsk, HistoricalTickLast)
+        HistoricalTickBidAsk, HistoricalTickLast, TickAttrib)
 from ib_insync.contract import Contract
 import ib_insync.util as util
 
@@ -256,6 +256,16 @@ class Client(EClient):
                 numberOfTicks, whatToShow, useRth, ignoreSize, miscOptions)
         self.sendMsg(msg)
 
+    def reqTickByTickData(self, reqId, contract, tickType):
+        msgId = 97
+        msg = self._encode(msgId, reqId, contract, tickType)
+        self.sendMsg(msg)
+
+    def cancelTickByTickData(self, reqId):
+        msgId = 98
+        msg = self._encode(msgId, reqId)
+        self.sendMsg(msg)
+
     def _encode(self, *fields):
         """
         Serialize the given fields to a string conforming to the
@@ -372,6 +382,31 @@ class Client(EClient):
                 ticks.append(tick)
             done = fields[0] == b'1'
             self.wrapper.historicalTicksLast(int(reqId), ticks, done)
+            return
+        elif msgId == 99:
+            _, reqId, tickType, time, *fields = fields
+            if tickType in (1, 2):
+                price, size, mask, exchange, specialConditions = fields
+                mask = int(mask)
+                attribs = TickAttrib(
+                        pastLimit=bool(mask & 1),
+                        unreported=bool(mask & 2))
+                self.wrapper.tickByTickAllLast(int(reqId), int(tickType),
+                        int(time), float(price), int(size), attribs,
+                               exchange, specialConditions.decode())
+            elif tickType == 3:
+                bidPrice, askPrice, bidSize, askSize, mask = fields
+                mask = int(mask)
+                attribs = TickAttrib(
+                        bidPastLow=bool(mask & 1),
+                        askPastHigh=bool(mask & 2))
+                self.wrapper.tickByTickBidAsk(int(reqId), int(time),
+                        float(bidPrice), float(askPrice),
+                        int(bidSize), int(askSize), attribs)
+            elif tickType == 4:
+                midPoint = fields[0]
+                self.wrapper.tickByTickMidPoint(int(reqId), int(time),
+                        float(midPoint))
             return
 
         self.decoder.interpret(fields)

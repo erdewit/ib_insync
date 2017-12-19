@@ -20,8 +20,8 @@ __all__ = (
     'ScannerSubscription SoftDollarTier '
     'Execution CommissionReport ExecutionFilter '
     'BarList BarDataList RealTimeBarList BarData RealTimeBar '
-    'HistogramData NewsProvider DepthMktDataDescription '
-    'AccountValue RealTimeBar TickData TickAttribute '
+    'HistogramData TickAttrib NewsProvider DepthMktDataDescription '
+    'AccountValue RealTimeBar TickData '
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
     'MktDepthData DOMLevel BracketOrder TradeLogEntry ScanData TagValue '
     'PortfolioItem Position Fill OptionComputation OptionChain '
@@ -189,6 +189,11 @@ class RealTimeBar(Object):
     __slots__ = defaults.keys()
 
 
+class TickAttrib(Object):
+    defaults = ibapi.common.TickAttrib().__dict__
+    __slots__ = defaults.keys()
+
+
 class HistogramData(Object):
     defaults = ibapi.common.HistogramData().__dict__
     __slots__ = defaults.keys()
@@ -230,9 +235,6 @@ AccountValue = namedtuple('AccountValue',
 
 TickData = namedtuple('TickData',
     'time tickType price size')
-
-TickAttribute = namedtuple('TickAttribute',
-    'canAutoExecute pastLimit')
 
 HistoricalTick = namedtuple('HistoricalTick',
     'time price size')

@@ -495,6 +495,20 @@ class Wrapper(EWrapper):
         self._endReq(reqId)
 
     @iswrapper
+    def tickByTickAllLast(self, reqId, tickType, time, price, size,
+            attribs, exchange, specialConditions):
+        print('AllLast', tickType, time, price, size, attribs, exchange, specialConditions)
+
+    @iswrapper
+    def tickByTickBidAsk(self, reqId, time, bidPrice, askPrice,
+             bidSize, askSize, attribs):
+        print('BidAsk', time, bidPrice, askPrice, bidSize, askSize, attribs)
+
+    @iswrapper
+    def tickByTickMidPoint(self, reqId, time, midPoint):
+        print('MidPoint', time, midPoint)
+    
+    @iswrapper
     def tickString(self, reqId, tickType, value):
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
@@ -713,7 +727,7 @@ class Wrapper(EWrapper):
     # additional wrapper method provided by Client
     def tcpDataProcessed(self):
         if self.pendingTickers:
-            self._handleEvent('pendingTickers', self.pendingTickers)
+            self._handleEvent('pendingTickers', list(self.pendingTickers))
         self.updateEvent.set()
         self.updateEvent.clear()
         self._handleEvent('updated')

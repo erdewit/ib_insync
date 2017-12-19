@@ -4,6 +4,8 @@ import codecs
 from setuptools import setup
 from warnings import warn
 
+import ib_insync
+
 if sys.version_info < (3, 0, 0):
     raise RuntimeError("ib_insync is for Python 3")
 
@@ -16,7 +18,7 @@ with codecs.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='ib_insync',
-    version='0.8.15',
+    version=ib_insync.__version__,
     description='Python sync/async framework for Interactive Brokers API',
     long_description=long_description,
     url='https://github.com/erdewit/ib_insync',
