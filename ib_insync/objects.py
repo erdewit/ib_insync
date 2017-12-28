@@ -105,7 +105,7 @@ class Object:
         nonDefaults = {}
         for k, d in self.__class__.defaults.items():
             v = getattr(self, k)
-            if v != d:
+            if v != d and (v == v or d == d):  # tests for NaN too
                 nonDefaults[k] = v
         return nonDefaults
 

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ib &#8212; IB-insync 0.8.15 documentation</title>
+    <title>ib_insync.ib &#8212; IB-insync 0.8.16 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.15',
+        VERSION:     '0.8.16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -226,6 +226,12 @@
         <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">awaitables</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="o">.</span><span class="n">all_tasks</span><span class="p">())</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
+                <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">awaitables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">future</span> <span class="o">=</span> <span class="n">awaitables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -340,7 +346,7 @@
 <span class="sd">        * ``updated()``:</span>
 <span class="sd">          Is emitted after a network packet has been handeled.</span>
 <span class="sd">        </span>
-<span class="sd">        * ``pendingTickers(tickers: Set[Ticker])``:</span>
+<span class="sd">        * ``pendingTickers(tickers: List[Ticker])``:</span>
 <span class="sd">          Emits the set of tickers that have been updated during the last</span>
 <span class="sd">          update and for which there are new ticks or domTicks. </span>
 <span class="sd">          </span>
@@ -364,11 +370,17 @@
 <span class="sd">        * ``position(position: Position)``:</span>
 <span class="sd">          A position has changed.</span>
 <span class="sd">        </span>
+<span class="sd">        * ``accountValue(value: AccountValue)``</span>
+<span class="sd">          An account value has changed.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``accountSummary(value: AccountValue)``</span>
+<span class="sd">          An account value has changed.</span>
+<span class="sd">        </span>
 <span class="sd">        * ``tickNews(news: NewsTick)``:</span>
 <span class="sd">          Emit a new news headline.</span>
 <span class="sd">          </span>
-<span class="sd">        * ``error(errorCode: int, errorString: str)``:</span>
-<span class="sd">          Emits the TWS error code and string (see</span>
+<span class="sd">        * ``error(reqId: int, errorCode: int, errorString: str)``:</span>
+<span class="sd">          Emits the reqId/orderId and TWS error code and string (see</span>
 <span class="sd">          https://interactivebrokers.github.io/tws-api/message_codes.html).</span>
 
 <span class="sd">        Unsetting is done by supplying None as callback.</span>

@@ -29,8 +29,7 @@ class Trade(Object):
         """
         True if completely filled or cancelled, false otherwise.
         """
-        return self.orderStatus.status in (
-                OrderStatus.Filled, OrderStatus.Cancelled)
+        return self.orderStatus.status in OrderStatus.DoneStates
 
     def filled(self):
         """
@@ -72,7 +71,7 @@ class OrderStatus(Object):
     Filled = 'Filled'
     Inactive = 'Inactive'
 
-    DoneStates = {'Cancelled', 'Filled', 'ApiCancelled'}
+    DoneStates = {'Cancelled', 'Filled', 'ApiCancelled', 'Inactive'}
     ActiveStates = {'PendingSubmit', 'ApiPending', 'PreSubmitted', 'Submitted'}
 
 

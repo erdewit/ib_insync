@@ -37,6 +37,25 @@ def df(objs, labels=None):
     return df
 
 
+def tree(obj):
+    """
+    Convert object to a tree of lists, dicts and simple values.
+    The result can be serialized to JSON.
+    """
+    if isinstance(obj, (bool, int, float, str, bytes)):
+        return obj
+    elif isinstance(obj, (datetime.date, datetime.time)):
+        return obj.isoformat()
+    elif isinstance(obj, dict):
+        return {k: tree(v) for k, v in obj.items()}
+    elif isinstance(obj, (list, tuple, set)):
+        return [tree(i) for i in obj]
+    elif isinstance(obj, Object):
+        return {obj.__class__.__name__: tree(obj.nonDefaults())}
+    else:
+        return str(obj)
+
+
 def barplot(bars, title='', upColor='blue', downColor='red'):
     """
     Create candlestick plot for the given bars. The bars can be given as

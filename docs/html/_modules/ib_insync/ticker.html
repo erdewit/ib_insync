@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ticker &#8212; IB-insync 0.8.15 documentation</title>
+    <title>ib_insync.ticker &#8212; IB-insync 0.8.16 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.15',
+        VERSION:     '0.8.16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -84,7 +84,6 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Ticker&#39;</span><span class="p">]</span>
 
-
 <span class="n">nan</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
 
 
@@ -104,69 +103,52 @@
 <span class="sd">    ``lastGreeks`` attributes. There is also ``modelGreeks`` that conveys</span>
 <span class="sd">    the greeks as calculated by Interactive Brokers&#39; option model.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;contract&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;bid&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;bidSize&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;ask&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;askSize&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;last&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;lastSize&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;prevBid&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;prevBidSize&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;prevAsk&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;prevAskSize&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;prevLast&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;prevLastSize&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;volume&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;open&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;close&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;vwap&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;low13week&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;high13week&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;low26week&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;high26week&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;low52week&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;high52week&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;bidYield&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;askYield&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;lastYield&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;avVolume&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;putOpenInterest&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;callOpenInterest&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;putVolume&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;callVolume&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;futuresOpenInterest&#39;</span><span class="p">:</span> <span class="n">nan</span><span class="p">,</span>
-        <span class="s1">&#39;ticks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;domBids&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;domAsks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;domTicks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;bidGreeks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;askGreeks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;lastGreeks&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;modelGreeks&#39;</span><span class="p">:</span> <span class="kc">None</span> <span class="p">}</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">contract</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">bid</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">bidSize</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">ask</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">askSize</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">last</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">lastSize</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">prevBid</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">prevBidSize</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">prevAsk</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">prevAskSize</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">prevLast</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">prevLastSize</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">volume</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="nb">open</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">high</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">low</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">close</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">vwap</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">low13week</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">high13week</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">low26week</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">high26week</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">low52week</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">high52week</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">bidYield</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">askYield</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">lastYield</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">avVolume</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">putOpenInterest</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">callOpenInterest</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">putVolume</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">callVolume</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">futuresOpenInterest</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">domBids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">domAsks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">domTicks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">bidGreeks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">askGreeks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">lastGreeks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">modelGreeks</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-    <span class="fm">__init__</span> <span class="o">=</span> <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span>
-
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="n">d</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isNan</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-                <span class="n">attrs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="c1"># ticks can grow too large to display</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;ticks&#39;</span><span class="p">)</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;domTicks&#39;</span><span class="p">)</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;domBids&#39;</span><span class="p">)</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;domAsks&#39;</span><span class="p">)</span>
-        <span class="n">clsName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="n">kwargs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{k}</span><span class="s1">=</span><span class="si">{v!r}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{clsName}</span><span class="s1">(</span><span class="si">{kwargs}</span><span class="s1">)&#39;</span>
-
-    <span class="fm">__str__</span> <span class="o">=</span> <span class="fm">__repr__</span>
 
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>

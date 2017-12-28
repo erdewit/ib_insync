@@ -69,21 +69,6 @@ class Ticker(Object):
     )
     __slots__ = defaults.keys()
 
-    def __repr__(self):
-        attrs = {}
-        for k, d in self.__class__.defaults.items():
-            v = getattr(self, k)
-            if v != d and not isNan(v):
-                attrs[k] = v
-        # ticks can grow too large to display
-        attrs.pop('ticks')
-        attrs.pop('domTicks')
-        attrs.pop('domBids')
-        attrs.pop('domAsks')
-        clsName = self.__class__.__name__
-        kwargs = ', '.join(f'{k}={v!r}' for k, v in attrs.items())
-        return f'{clsName}({kwargs})'
-
     def __eq__(self, other):
         return self is other
 

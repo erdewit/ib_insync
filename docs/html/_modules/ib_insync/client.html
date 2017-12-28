@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.client &#8212; IB-insync 0.8.15 documentation</title>
+    <title>ib_insync.client &#8212; IB-insync 0.8.16 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.15',
+        VERSION:     '0.8.16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -92,7 +92,7 @@
 <span class="kn">from</span> <span class="nn">ibapi.common</span> <span class="k">import</span> <span class="n">UNSET_INTEGER</span><span class="p">,</span> <span class="n">UNSET_DOUBLE</span>
 
 <span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="p">(</span><span class="n">ConnectionStats</span><span class="p">,</span> <span class="n">BarData</span><span class="p">,</span> <span class="n">HistoricalTick</span><span class="p">,</span>
-        <span class="n">HistoricalTickBidAsk</span><span class="p">,</span> <span class="n">HistoricalTickLast</span><span class="p">)</span>
+        <span class="n">HistoricalTickBidAsk</span><span class="p">,</span> <span class="n">HistoricalTickLast</span><span class="p">,</span> <span class="n">TickAttrib</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ib_insync.contract</span> <span class="k">import</span> <span class="n">Contract</span>
 <span class="kn">import</span> <span class="nn">ib_insync.util</span> <span class="k">as</span> <span class="nn">util</span>
 
@@ -337,6 +337,16 @@
                 <span class="n">numberOfTicks</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span> <span class="n">useRth</span><span class="p">,</span> <span class="n">ignoreSize</span><span class="p">,</span> <span class="n">miscOptions</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Client.reqTickByTickData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqTickByTickData">[docs]</a>    <span class="k">def</span> <span class="nf">reqTickByTickData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">tickType</span><span class="p">):</span>
+        <span class="n">msgId</span> <span class="o">=</span> <span class="mi">97</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encode</span><span class="p">(</span><span class="n">msgId</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">tickType</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.cancelTickByTickData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelTickByTickData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelTickByTickData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+        <span class="n">msgId</span> <span class="o">=</span> <span class="mi">98</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encode</span><span class="p">(</span><span class="n">msgId</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
     <span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Serialize the given fields to a string conforming to the</span>
@@ -453,6 +463,31 @@
                 <span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
             <span class="n">done</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;1&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">historicalTicksLast</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="n">ticks</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="n">msgId</span> <span class="o">==</span> <span class="mi">99</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span>
+            <span class="k">if</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">exchange</span><span class="p">,</span> <span class="n">specialConditions</span> <span class="o">=</span> <span class="n">fields</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+                <span class="n">attribs</span> <span class="o">=</span> <span class="n">TickAttrib</span><span class="p">(</span>
+                        <span class="n">pastLimit</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">mask</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">),</span>
+                        <span class="n">unreported</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">mask</span> <span class="o">&amp;</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">tickByTickAllLast</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span>
+                        <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">price</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">),</span> <span class="n">attribs</span><span class="p">,</span>
+                               <span class="n">exchange</span><span class="p">,</span> <span class="n">specialConditions</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">bidPrice</span><span class="p">,</span> <span class="n">askPrice</span><span class="p">,</span> <span class="n">bidSize</span><span class="p">,</span> <span class="n">askSize</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">fields</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+                <span class="n">attribs</span> <span class="o">=</span> <span class="n">TickAttrib</span><span class="p">(</span>
+                        <span class="n">bidPastLow</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">mask</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">),</span>
+                        <span class="n">askPastHigh</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">mask</span> <span class="o">&amp;</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">tickByTickBidAsk</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">),</span>
+                        <span class="nb">float</span><span class="p">(</span><span class="n">bidPrice</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">askPrice</span><span class="p">),</span>
+                        <span class="nb">int</span><span class="p">(</span><span class="n">bidSize</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">askSize</span><span class="p">),</span> <span class="n">attribs</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">midPoint</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">tickByTickMidPoint</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">),</span>
+                        <span class="nb">float</span><span class="p">(</span><span class="n">midPoint</span><span class="p">))</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span></div>

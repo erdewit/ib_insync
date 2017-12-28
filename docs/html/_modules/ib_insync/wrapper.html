@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.wrapper &#8212; IB-insync 0.8.15 documentation</title>
+    <title>ib_insync.wrapper &#8212; IB-insync 0.8.16 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.15',
+        VERSION:     '0.8.16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -193,6 +193,12 @@
         <span class="k">return</span> <span class="n">reqId</span></div>
 
 <div class="viewcode-block" id="Wrapper.setCallback"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.setCallback">[docs]</a>    <span class="k">def</span> <span class="nf">setCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eventName</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;updated&#39;</span><span class="p">,</span> <span class="s1">&#39;pendingTickers&#39;</span><span class="p">,</span> <span class="s1">&#39;barUpdate&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;orderStatus&#39;</span><span class="p">,</span> <span class="s1">&#39;execDetails&#39;</span><span class="p">,</span> <span class="s1">&#39;commissionReport&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;updatePortfolio&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="s1">&#39;accountValue&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;accountSummary&#39;</span><span class="p">,</span> <span class="s1">&#39;tickNews&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">eventName</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;eventName must be one of </span><span class="si">{events}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">[</span><span class="n">eventName</span><span class="p">]</span> <span class="o">=</span> <span class="n">callback</span></div>
 
     <span class="k">def</span> <span class="nf">_handleEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eventName</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -201,7 +207,7 @@
         <span class="k">if</span> <span class="n">cb</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">cb</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">except</span><span class="p">:</span>
                 <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Event </span><span class="si">%s</span><span class="s1">(</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">eventName</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Wrapper.managedAccounts"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.managedAccounts">[docs]</a>    <span class="nd">@iswrapper</span>
@@ -211,8 +217,9 @@
 <div class="viewcode-block" id="Wrapper.updateAccountValue"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.updateAccountValue">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">updateAccountValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">currency</span><span class="p">,</span> <span class="n">account</span><span class="p">):</span>
         <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">currency</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">accountValues</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">AccountValue</span><span class="p">(</span>
-                <span class="n">account</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">currency</span><span class="p">)</span></div>
+        <span class="n">acctVal</span> <span class="o">=</span> <span class="n">AccountValue</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">currency</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accountValues</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">acctVal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;accountValue&#39;</span><span class="p">,</span> <span class="n">acctVal</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.accountDownloadEnd"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.accountDownloadEnd">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">accountDownloadEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_account</span><span class="p">):</span>
@@ -222,8 +229,9 @@
 <div class="viewcode-block" id="Wrapper.accountSummary"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.accountSummary">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">accountSummary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">currency</span><span class="p">):</span>
         <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">currency</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">acctSummary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">AccountValue</span><span class="p">(</span>
-                <span class="n">account</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">currency</span><span class="p">)</span></div>
+        <span class="n">acctVal</span> <span class="o">=</span> <span class="n">AccountValue</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">currency</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acctSummary</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">acctVal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;accountSummary&#39;</span><span class="p">,</span> <span class="n">acctVal</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.accountSummaryEnd"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.accountSummaryEnd">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">accountSummaryEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
@@ -575,6 +583,20 @@
     <span class="k">def</span> <span class="nf">tickSnapshotEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Wrapper.tickByTickAllLast"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.tickByTickAllLast">[docs]</a>    <span class="nd">@iswrapper</span>
+    <span class="k">def</span> <span class="nf">tickByTickAllLast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span>
+            <span class="n">attribs</span><span class="p">,</span> <span class="n">exchange</span><span class="p">,</span> <span class="n">specialConditions</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AllLast&#39;</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">attribs</span><span class="p">,</span> <span class="n">exchange</span><span class="p">,</span> <span class="n">specialConditions</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Wrapper.tickByTickBidAsk"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.tickByTickBidAsk">[docs]</a>    <span class="nd">@iswrapper</span>
+    <span class="k">def</span> <span class="nf">tickByTickBidAsk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">bidPrice</span><span class="p">,</span> <span class="n">askPrice</span><span class="p">,</span>
+             <span class="n">bidSize</span><span class="p">,</span> <span class="n">askSize</span><span class="p">,</span> <span class="n">attribs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;BidAsk&#39;</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">bidPrice</span><span class="p">,</span> <span class="n">askPrice</span><span class="p">,</span> <span class="n">bidSize</span><span class="p">,</span> <span class="n">askSize</span><span class="p">,</span> <span class="n">attribs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Wrapper.tickByTickMidPoint"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.tickByTickMidPoint">[docs]</a>    <span class="nd">@iswrapper</span>
+    <span class="k">def</span> <span class="nf">tickByTickMidPoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">midPoint</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MidPoint&#39;</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">midPoint</span><span class="p">)</span></div>
+    
 <div class="viewcode-block" id="Wrapper.tickString"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.tickString">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">tickString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Ticker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
@@ -762,7 +784,7 @@
             <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">:</span>
                 <span class="c1"># something is wrong with the order, cancel it</span>
                 <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)]</span>
-                <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">isActive</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">trade</span><span class="o">.</span><span class="n">isDone</span><span class="p">():</span>
                     <span class="n">status</span> <span class="o">=</span> <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">Cancelled</span>
                     <span class="n">logEntry</span> <span class="o">=</span> <span class="n">TradeLogEntry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
                     <span class="n">trade</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">logEntry</span><span class="p">)</span>
@@ -778,7 +800,7 @@
                             <span class="n">tick</span> <span class="o">=</span> <span class="n">MktDepthData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span>
                                     <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">level</span><span class="o">.</span><span class="n">price</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
                             <span class="n">ticker</span><span class="o">.</span><span class="n">domTicks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">errorCode</span><span class="p">,</span> <span class="n">errorString</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">errorCode</span><span class="p">,</span> <span class="n">errorString</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.tcpDataArrived"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.tcpDataArrived">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="c1"># additional wrapper method provided by Client</span>
@@ -794,11 +816,10 @@
     <span class="c1"># additional wrapper method provided by Client</span>
     <span class="k">def</span> <span class="nf">tcpDataProcessed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;pendingTickers&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;pendingTickers&#39;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_handleEvent</span><span class="p">(</span><span class="s1">&#39;updated&#39;</span><span class="p">)</span></div></div>
-
 </pre></div>
 
           </div>

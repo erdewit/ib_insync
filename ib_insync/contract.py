@@ -23,7 +23,7 @@ class Contract(Object):
         Option('SPY', '20170721', 240, 'C', 'SMART')
         Bond(secIdType='ISIN', secId='US03076KAA60')
     """
-    defaults = ibapi.contract.Contract().__dict__
+    defaults = {'secType': '', **ibapi.contract.Contract().__dict__}
     __slots__ = list(defaults.keys()) + \
             ['comboLegsCount', 'underCompPresent', 'secIdListCount']  # bug in decoder.py
 
@@ -55,6 +55,9 @@ class Contract(Object):
                 (self.conId == other.conId) or
                 Object.__eq__(self, other))
 
+    def __hash__(self):
+        return self.conId
+
     def __repr__(self):
         attrs = self.nonDefaults()
         if self.__class__ is not Contract:
@@ -80,7 +83,7 @@ class Option(Contract):
     def __init__(self, symbol='', lastTradeDateOrContractMonth='',
             strike='', right='', exchange='', multiplier='',
             currency='', **kwargs):
-        Contract.__init__(self, secType='OPT', symbol=symbol,
+        Contract.__init__(self, 'OPT', symbol=symbol,
                 lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
                 strike=strike, right=right, exchange=exchange,
                 multiplier=multiplier, currency=currency, **kwargs)
@@ -92,7 +95,7 @@ class Future(Contract):
     def __init__(self, symbol='', lastTradeDateOrContractMonth='',
             exchange='', localSymbol='', multiplier='',
             currency='', **kwargs):
-        Contract.__init__(self, secType='FUT', symbol=symbol,
+        Contract.__init__(self, 'FUT', symbol=symbol,
                 lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
                 exchange=exchange, localSymbol=localSymbol,
                 multiplier=multiplier, currency=currency, **kwargs)
@@ -107,7 +110,7 @@ class Forex(Contract):
             assert len(pair) == 6
             symbol = symbol or pair[:3]
             currency = currency or pair[3:]
-        Contract.__init__(self, secType='CASH', symbol=symbol,
+        Contract.__init__(self, 'CASH', symbol=symbol,
                 exchange=exchange, currency=currency, **kwargs)
 
     def __repr__(self):
@@ -132,7 +135,7 @@ class Index(Contract):
     __slots__ = ()
 
     def __init__(self, symbol='', exchange='', currency='', **kwargs):
-        Contract.__init__(self, secType='IND', symbol=symbol,
+        Contract.__init__(self, 'IND', symbol=symbol,
                 exchange=exchange, currency=currency, **kwargs)
 
 
@@ -140,7 +143,7 @@ class CFD(Contract):
     __slots__ = ()
 
     def __init__(self, symbol='', exchange='', currency='', **kwargs):
-        Contract.__init__(self, secType='CFD', symbol=symbol,
+        Contract.__init__(self, 'CFD', symbol=symbol,
                 exchange=exchange, currency=currency, **kwargs)
 
 
@@ -148,7 +151,7 @@ class Commodity(Contract):
     __slots__ = ()
 
     def __init__(self, symbol='', exchange='', currency='', **kwargs):
-        Contract.__init__(self, secType='CMDTY', symbol=symbol,
+        Contract.__init__(self, 'CMDTY', symbol=symbol,
                 exchange=exchange, currency=currency, **kwargs)
 
 
@@ -156,7 +159,7 @@ class Bond(Contract):
     __slots__ = ()
 
     def __init__(self, **kwargs):
-        Contract.__init__(self, secType='BOND', **kwargs)
+        Contract.__init__(self, 'BOND', **kwargs)
 
 
 class FuturesOption(Contract):
@@ -165,7 +168,7 @@ class FuturesOption(Contract):
     def __init__(self, symbol='', lastTradeDateOrContractMonth='',
             strike='', right='', exchange='', multiplier='',
             currency='', **kwargs):
-        Contract.__init__(self, secType='FOP', symbol=symbol,
+        Contract.__init__(self, 'FOP', symbol=symbol,
                 lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
                 strike=strike, right=right, exchange=exchange,
                 multiplier=multiplier, currency=currency, **kwargs)
@@ -175,11 +178,11 @@ class MutualFund(Contract):
     __slots__ = ()
 
     def __init__(self, **kwargs):
-        Contract.__init__(self, secType='FUND', **kwargs)
+        Contract.__init__(self, 'FUND', **kwargs)
 
 
 class Warrant(Contract):
     __slots__ = ()
 
     def __init__(self, **kwargs):
-        Contract.__init__(self, secType='IOPT', **kwargs)
+        Contract.__init__(self, 'IOPT', **kwargs)

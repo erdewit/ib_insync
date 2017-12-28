@@ -6,13 +6,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Index &#8212; IB-insync 0.8.15 documentation</title>
+    <title>Index &#8212; IB-insync 0.8.16 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.8.15',
+        VERSION:     '0.8.16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -205,6 +205,8 @@
 </li>
       <li><a href="api.html#ib_insync.ticker.Ticker.askGreeks">askGreeks (ib_insync.ticker.Ticker attribute)</a>
 </li>
+      <li><a href="api.html#ib_insync.objects.TickAttrib.askPastHigh">askPastHigh (ib_insync.objects.TickAttrib attribute)</a>
+</li>
       <li><a href="api.html#ib_insync.ticker.Ticker.askSize">askSize (ib_insync.ticker.Ticker attribute)</a>
 </li>
       <li><a href="api.html#ib_insync.ticker.Ticker.askYield">askYield (ib_insync.ticker.Ticker attribute)</a>
@@ -253,13 +255,15 @@
 </li>
       <li><a href="api.html#ib_insync.objects.ScannerSubscription.belowPrice">belowPrice (ib_insync.objects.ScannerSubscription attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#ib_insync.objects.ScanData.benchmark">benchmark (ib_insync.objects.ScanData attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#ib_insync.ticker.Ticker.bid">bid (ib_insync.ticker.Ticker attribute)</a>
 </li>
       <li><a href="api.html#ib_insync.ticker.Ticker.bidGreeks">bidGreeks (ib_insync.ticker.Ticker attribute)</a>
+</li>
+      <li><a href="api.html#ib_insync.objects.TickAttrib.bidPastLow">bidPastLow (ib_insync.objects.TickAttrib attribute)</a>
 </li>
       <li><a href="api.html#ib_insync.ticker.Ticker.bidSize">bidSize (ib_insync.ticker.Ticker attribute)</a>
 </li>
@@ -297,7 +301,7 @@
 </li>
       <li><a href="api.html#ib_insync.ticker.Ticker.callVolume">callVolume (ib_insync.ticker.Ticker attribute)</a>
 </li>
-      <li><a href="api.html#ib_insync.objects.TickAttribute.canAutoExecute">canAutoExecute (ib_insync.objects.TickAttribute attribute)</a>
+      <li><a href="api.html#ib_insync.objects.TickAttrib.canAutoExecute">canAutoExecute (ib_insync.objects.TickAttrib attribute)</a>
 </li>
       <li><a href="api.html#ib_insync.ib.IB.cancelHistoricalData">cancelHistoricalData() (ib_insync.ib.IB method)</a>
 </li>
@@ -312,6 +316,8 @@
       <li><a href="api.html#ib_insync.ib.IB.cancelOrder">cancelOrder() (ib_insync.ib.IB method)</a>
 </li>
       <li><a href="api.html#ib_insync.ib.IB.cancelRealTimeBars">cancelRealTimeBars() (ib_insync.ib.IB method)</a>
+</li>
+      <li><a href="api.html#ib_insync.client.Client.cancelTickByTickData">cancelTickByTickData() (ib_insync.client.Client method)</a>
 </li>
       <li><a href="api.html#ib_insync.order.Order.cashQty">cashQty (ib_insync.order.Order attribute)</a>
 </li>
@@ -424,6 +430,8 @@
 </li>
         <li><a href="api.html#ib_insync.objects.RealTimeBarList.contract">(ib_insync.objects.RealTimeBarList attribute)</a>
 </li>
+        <li><a href="api.html#ib_insync.order.Trade.contract">(ib_insync.order.Trade attribute)</a>
+</li>
         <li><a href="api.html#ib_insync.ticker.Ticker.contract">(ib_insync.ticker.Ticker attribute)</a>
 </li>
       </ul></li>
@@ -534,11 +542,15 @@
 </li>
         <li><a href="api.html#ib_insync.objects.SoftDollarTier.defaults">(ib_insync.objects.SoftDollarTier attribute)</a>
 </li>
+        <li><a href="api.html#ib_insync.objects.TickAttrib.defaults">(ib_insync.objects.TickAttrib attribute)</a>
+</li>
         <li><a href="api.html#ib_insync.objects.UnderComp.defaults">(ib_insync.objects.UnderComp attribute)</a>
 </li>
         <li><a href="api.html#ib_insync.order.Order.defaults">(ib_insync.order.Order attribute)</a>
 </li>
         <li><a href="api.html#ib_insync.order.OrderStatus.defaults">(ib_insync.order.OrderStatus attribute)</a>
+</li>
+        <li><a href="api.html#ib_insync.order.Trade.defaults">(ib_insync.order.Trade attribute)</a>
 </li>
         <li><a href="api.html#ib_insync.ticker.Ticker.defaults">(ib_insync.ticker.Ticker attribute)</a>
 </li>
@@ -733,12 +745,14 @@
 </li>
       <li><a href="api.html#ib_insync.order.Trade.filled">filled() (ib_insync.order.Trade method)</a>
 </li>
-      <li><a href="api.html#ib_insync.ib.IB.fills">fills() (ib_insync.ib.IB method)</a>
+      <li><a href="api.html#ib_insync.order.Trade.fills">fills (ib_insync.order.Trade attribute)</a>
 </li>
-      <li><a href="api.html#ib_insync.order.Order.firmQuoteOnly">firmQuoteOnly (ib_insync.order.Order attribute)</a>
+      <li><a href="api.html#ib_insync.ib.IB.fills">fills() (ib_insync.ib.IB method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#ib_insync.order.Order.firmQuoteOnly">firmQuoteOnly (ib_insync.order.Order attribute)</a>
+</li>
       <li><a href="api.html#ib_insync.flexreport.FlexError">FlexError</a>
 </li>
       <li><a href="api.html#ib_insync.flexreport.FlexReport">FlexReport (class in ib_insync.flexreport)</a>
@@ -950,6 +964,8 @@
       <li><a href="api.html#ib_insync.contract.Contract.localSymbol">localSymbol (ib_insync.contract.Contract attribute)</a>
 </li>
       <li><a href="api.html#ib_insync.objects.ScannerSubscription.locationCode">locationCode (ib_insync.objects.ScannerSubscription attribute)</a>
+</li>
+      <li><a href="api.html#ib_insync.order.Trade.log">log (ib_insync.order.Trade attribute)</a>
 </li>
       <li><a href="api.html#ib_insync.util.logToConsole">logToConsole() (in module ib_insync.util)</a>
 </li>
@@ -1199,9 +1215,11 @@
 </li>
       <li><a href="api.html#ib_insync.objects.OrderCondition.Or">Or() (ib_insync.objects.OrderCondition method)</a>
 </li>
+      <li><a href="api.html#ib_insync.order.Order">Order (class in ib_insync.order)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#ib_insync.order.Order">Order (class in ib_insync.order)</a>
+      <li><a href="api.html#ib_insync.order.Trade.order">order (ib_insync.order.Trade attribute)</a>
 </li>
       <li><a href="api.html#ib_insync.objects.OrderComboLeg">OrderComboLeg (class in ib_insync.objects)</a>
 </li>
@@ -1232,6 +1250,8 @@
       <li><a href="api.html#ib_insync.objects.OrderState">OrderState (class in ib_insync.objects)</a>
 </li>
       <li><a href="api.html#ib_insync.order.OrderStatus">OrderStatus (class in ib_insync.order)</a>
+</li>
+      <li><a href="api.html#ib_insync.order.Trade.orderStatus">orderStatus (ib_insync.order.Trade attribute)</a>
 </li>
       <li><a href="api.html#ib_insync.wrapper.Wrapper.orderStatus">orderStatus() (ib_insync.wrapper.Wrapper method)</a>
 </li>
@@ -1265,7 +1285,7 @@
       </ul></li>
       <li><a href="api.html#ib_insync.util.parseIBDatetime">parseIBDatetime() (in module ib_insync.util)</a>
 </li>
-      <li><a href="api.html#ib_insync.objects.TickAttribute.pastLimit">pastLimit (ib_insync.objects.TickAttribute attribute)</a>
+      <li><a href="api.html#ib_insync.objects.TickAttrib.pastLimit">pastLimit (ib_insync.objects.TickAttrib attribute)</a>
 </li>
       <li><a href="api.html#ib_insync.util.patchAsyncio">patchAsyncio() (in module ib_insync.util)</a>
 </li>
@@ -1312,6 +1332,8 @@
       <li><a href="api.html#ib_insync.wrapper.Wrapper.positionEnd">positionEnd() (ib_insync.wrapper.Wrapper method)</a>
 </li>
       <li><a href="api.html#ib_insync.ib.IB.positions">positions() (ib_insync.ib.IB method)</a>
+</li>
+      <li><a href="api.html#ib_insync.objects.TickAttrib.preOpen">preOpen (ib_insync.objects.TickAttrib attribute)</a>
 </li>
       <li><a href="api.html#ib_insync.order.OrderStatus.PreSubmitted">PreSubmitted (ib_insync.order.OrderStatus attribute)</a>
 </li>
@@ -1536,6 +1558,8 @@
       <li><a href="api.html#ib_insync.ib.IB.reqSecDefOptParams">reqSecDefOptParams() (ib_insync.ib.IB method)</a>
 </li>
       <li><a href="api.html#ib_insync.ib.IB.reqSecDefOptParamsAsync">reqSecDefOptParamsAsync() (ib_insync.ib.IB method)</a>
+</li>
+      <li><a href="api.html#ib_insync.client.Client.reqTickByTickData">reqTickByTickData() (ib_insync.client.Client method)</a>
 </li>
       <li><a href="api.html#ib_insync.ib.IB.reqTickers">reqTickers() (ib_insync.ib.IB method)</a>
 </li>
@@ -1791,7 +1815,13 @@
 </li>
       <li><a href="api.html#ib_insync.objects.OptionComputation.theta">theta (ib_insync.objects.OptionComputation attribute)</a>
 </li>
-      <li><a href="api.html#ib_insync.objects.TickAttribute">TickAttribute (class in ib_insync.objects)</a>
+      <li><a href="api.html#ib_insync.objects.TickAttrib">TickAttrib (class in ib_insync.objects)</a>
+</li>
+      <li><a href="api.html#ib_insync.wrapper.Wrapper.tickByTickAllLast">tickByTickAllLast() (ib_insync.wrapper.Wrapper method)</a>
+</li>
+      <li><a href="api.html#ib_insync.wrapper.Wrapper.tickByTickBidAsk">tickByTickBidAsk() (ib_insync.wrapper.Wrapper method)</a>
+</li>
+      <li><a href="api.html#ib_insync.wrapper.Wrapper.tickByTickMidPoint">tickByTickMidPoint() (ib_insync.wrapper.Wrapper method)</a>
 </li>
       <li><a href="api.html#ib_insync.objects.TickData">TickData (class in ib_insync.objects)</a>
 </li>
@@ -1885,6 +1915,8 @@
 </li>
       <li><a href="api.html#ib_insync.order.Order.transmit">transmit (ib_insync.order.Order attribute)</a>
 </li>
+      <li><a href="api.html#ib_insync.util.tree">tree() (in module ib_insync.util)</a>
+</li>
       <li><a href="api.html#ib_insync.order.Order.triggerMethod">triggerMethod (ib_insync.order.Order attribute)</a>
 </li>
       <li><a href="api.html#ib_insync.objects.PriceCondition.TriggerMethodEnum">TriggerMethodEnum (ib_insync.objects.PriceCondition attribute)</a>
@@ -1918,6 +1950,8 @@
       <li><a href="api.html#ib_insync.objects.OptionComputation.undPrice">undPrice (ib_insync.objects.OptionComputation attribute)</a>
 </li>
       <li><a href="api.html#ib_insync.objects.PortfolioItem.unrealizedPNL">unrealizedPNL (ib_insync.objects.PortfolioItem attribute)</a>
+</li>
+      <li><a href="api.html#ib_insync.objects.TickAttrib.unreported">unreported (ib_insync.objects.TickAttrib attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>

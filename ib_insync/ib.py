@@ -265,7 +265,7 @@ class IB:
         * ``updated()``:
           Is emitted after a network packet has been handeled.
         
-        * ``pendingTickers(tickers: Set[Ticker])``:
+        * ``pendingTickers(tickers: List[Ticker])``:
           Emits the set of tickers that have been updated during the last
           update and for which there are new ticks or domTicks. 
           
@@ -289,11 +289,17 @@ class IB:
         * ``position(position: Position)``:
           A position has changed.
         
+        * ``accountValue(value: AccountValue)``
+          An account value has changed.
+        
+        * ``accountSummary(value: AccountValue)``
+          An account value has changed.
+        
         * ``tickNews(news: NewsTick)``:
           Emit a new news headline.
           
-        * ``error(errorCode: int, errorString: str)``:
-          Emits the TWS error code and string (see
+        * ``error(reqId: int, errorCode: int, errorString: str)``:
+          Emits the reqId/orderId and TWS error code and string (see
           https://interactivebrokers.github.io/tws-api/message_codes.html).
 
         Unsetting is done by supplying None as callback.

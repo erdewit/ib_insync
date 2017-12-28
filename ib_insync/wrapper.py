@@ -112,6 +112,12 @@ class Wrapper(EWrapper):
         return reqId
 
     def setCallback(self, eventName, callback):
+        events = ('updated', 'pendingTickers', 'barUpdate',
+                'orderStatus', 'execDetails', 'commissionReport',
+                'updatePortfolio', 'position', 'accountValue',
+                'accountSummary', 'tickNews', 'error')
+        if eventName not in events:
+            raise ValueError(f'eventName must be one of {events}')
         self._callbacks[eventName] = callback
 
     def _handleEvent(self, eventName, *args):
@@ -120,7 +126,7 @@ class Wrapper(EWrapper):
         if cb:
             try:
                 cb(*args)
-            except Exception:
+            except:
                 _logger.exception('Event %s(%s)', eventName, args)
 
     @iswrapper
@@ -130,8 +136,9 @@ class Wrapper(EWrapper):
     @iswrapper
     def updateAccountValue(self, tag, val, currency, account):
         key = (account, tag, currency)
-        self.accountValues[key] = AccountValue(
-                account, tag, val, currency)
+        acctVal = AccountValue(account, tag, val, currency)
+        self.accountValues[key] = acctVal
+        self._handleEvent('accountValue', acctVal)
 
     @iswrapper
     def accountDownloadEnd(self, _account):
@@ -141,8 +148,9 @@ class Wrapper(EWrapper):
     @iswrapper
     def accountSummary(self, _reqId, account, tag, value, currency):
         key = (account, tag, currency)
-        self.acctSummary[key] = AccountValue(
-                account, tag, value, currency)
+        acctVal = AccountValue(account, tag, value, currency)
+        self.acctSummary[key] = acctVal
+        self._handleEvent('accountSummary', acctVal)
 
     @iswrapper
     def accountSummaryEnd(self, reqId):
@@ -695,7 +703,7 @@ class Wrapper(EWrapper):
             elif (self.clientId, reqId) in self.trades:
                 # something is wrong with the order, cancel it
                 trade = self.trades[(self.clientId, reqId)]
-                if trade.isActive():
+                if not trade.isDone():
                     status = trade.orderStatus.status = OrderStatus.Cancelled
                     logEntry = TradeLogEntry(self.lastTime, status, msg)
                     trade.log.append(logEntry)
@@ -711,7 +719,7 @@ class Wrapper(EWrapper):
                             tick = MktDepthData(self.lastTime, position,
                                     '', 2, side, level.price, 0)
                             ticker.domTicks.append(tick)
-        self._handleEvent('error', errorCode, errorString)
+        self._handleEvent('error', reqId, errorCode, errorString)
 
     @iswrapper
     # additional wrapper method provided by Client
@@ -731,4 +739,3 @@ class Wrapper(EWrapper):
         self.updateEvent.set()
         self.updateEvent.clear()
         self._handleEvent('updated')
-

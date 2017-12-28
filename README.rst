@@ -93,6 +93,13 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.16
+^^^^^^^^^^^^^^
+
+* util.tree() method added
+* ``error`` callback signature changed to (reqId, errorCode, errorString)
+* ``accountValue`` and ``accountSummary`` callbacks added
+
 Version 0.8.15
 ^^^^^^^^^^^^^^
 

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.8.15 documentation</title>
+    <title>API docs &#8212; IB-insync 0.8.16 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.8.15',
+        VERSION:     '0.8.16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -93,7 +93,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.8.15.</p>
+<p>Release 0.8.16.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -751,7 +751,7 @@ the given arguments.</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">updated()</span></code>:
 Is emitted after a network packet has been handeled.</li>
-<li><code class="docutils literal"><span class="pre">pendingTickers(tickers:</span> <span class="pre">Set[Ticker])</span></code>:
+<li><code class="docutils literal"><span class="pre">pendingTickers(tickers:</span> <span class="pre">List[Ticker])</span></code>:
 Emits the set of tickers that have been updated during the last
 update and for which there are new ticks or domTicks.</li>
 <li><code class="docutils literal"><span class="pre">barUpdate(bars:</span> <span class="pre">BarDataList,</span> <span class="pre">hasNewBar:</span> <span class="pre">bool)</span></code>:
@@ -768,10 +768,14 @@ The commission report is emitted after the fill that it belongs to.</li>
 A portfolio item has changed.</li>
 <li><code class="docutils literal"><span class="pre">position(position:</span> <span class="pre">Position)</span></code>:
 A position has changed.</li>
+<li><code class="docutils literal"><span class="pre">accountValue(value:</span> <span class="pre">AccountValue)</span></code>
+An account value has changed.</li>
+<li><code class="docutils literal"><span class="pre">accountSummary(value:</span> <span class="pre">AccountValue)</span></code>
+An account value has changed.</li>
 <li><code class="docutils literal"><span class="pre">tickNews(news:</span> <span class="pre">NewsTick)</span></code>:
 Emit a new news headline.</li>
-<li><code class="docutils literal"><span class="pre">error(errorCode:</span> <span class="pre">int,</span> <span class="pre">errorString:</span> <span class="pre">str)</span></code>:
-Emits the TWS error code and string (see
+<li><code class="docutils literal"><span class="pre">error(reqId:</span> <span class="pre">int,</span> <span class="pre">errorCode:</span> <span class="pre">int,</span> <span class="pre">errorString:</span> <span class="pre">str)</span></code>:
+Emits the reqId/orderId and TWS error code and string (see
 <a class="reference external" href="https://interactivebrokers.github.io/tws-api/message_codes.html">https://interactivebrokers.github.io/tws-api/message_codes.html</a>).</li>
 </ul>
 <p>Unsetting is done by supplying None as callback.</p>
@@ -892,6 +896,11 @@ one batch instead of item by item.</li>
 </li>
 </ul>
 <dl class="method">
+<dt id="ib_insync.client.Client.cancelTickByTickData">
+<code class="descname">cancelTickByTickData</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelTickByTickData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelTickByTickData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.client.Client.connect">
 <code class="descname">connect</code><span class="sig-paren">(</span><em>host</em>, <em>port</em>, <em>clientId</em>, <em>timeout=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to TWS/IBG at given host and port and with a clientId
@@ -935,6 +944,11 @@ is raised if the connection is not established within the timeout period.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.client.Client.reqTickByTickData">
+<code class="descname">reqTickByTickData</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>tickType</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqTickByTickData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqTickByTickData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.client.Client.reset">
 <code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reset" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -956,14 +970,32 @@ is raised if the connection is not established within the timeout period.</p>
 <span id="order"></span><h2>Order<a class="headerlink" href="#module-ib_insync.order" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ib_insync.order.Trade">
-<em class="property">class </em><code class="descclassname">ib_insync.order.</code><code class="descname">Trade</code><a class="reference internal" href="_modules/ib_insync/order.html#Trade"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.Trade" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ib_insync.order.</code><code class="descname">Trade</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#Trade"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.Trade" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trade keeps track of an order, its status and all its fills.</p>
-<p>Create new instance of Trade(contract, order, orderStatus, fills, log)</p>
+<p>Attribute values can be given positionally or as keyword.
+If an attribute is not given it will take its value from the
+‘defaults’ class member. If an attribute is given both positionally
+and as keyword, the keyword wins.</p>
+<dl class="attribute">
+<dt id="ib_insync.order.Trade.contract">
+<code class="descname">contract</code><a class="headerlink" href="#ib_insync.order.Trade.contract" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.Trade.defaults">
+<code class="descname">defaults</code><em class="property"> = {'contract': None, 'order': None, 'orderStatus': None, 'fills': None, 'log': None}</em><a class="headerlink" href="#ib_insync.order.Trade.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="ib_insync.order.Trade.filled">
 <code class="descname">filled</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#Trade.filled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.Trade.filled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of shares filled.</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.Trade.fills">
+<code class="descname">fills</code><a class="headerlink" href="#ib_insync.order.Trade.fills" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.order.Trade.isActive">
@@ -976,6 +1008,21 @@ is raised if the connection is not established within the timeout period.</p>
 <code class="descname">isDone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#Trade.isDone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.Trade.isDone" title="Permalink to this definition">¶</a></dt>
 <dd><p>True if completely filled or cancelled, false otherwise.</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.Trade.log">
+<code class="descname">log</code><a class="headerlink" href="#ib_insync.order.Trade.log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.Trade.order">
+<code class="descname">order</code><a class="headerlink" href="#ib_insync.order.Trade.order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.Trade.orderStatus">
+<code class="descname">orderStatus</code><a class="headerlink" href="#ib_insync.order.Trade.orderStatus" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.order.Trade.remaining">
@@ -994,7 +1041,7 @@ If an attribute is not given it will take its value from the
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'Submitted', 'PreSubmitted', 'ApiPending', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'ApiPending', 'PreSubmitted', 'PendingSubmit', 'Submitted'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1014,7 +1061,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'Cancelled', 'Filled', 'ApiCancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'Cancelled', 'ApiCancelled', 'Inactive', 'Filled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1270,7 +1317,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 140341553650992: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 140485188136072: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1808,7 +1855,7 @@ or a general Contract if secType is not given.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.contract.Contract.defaults">
-<code class="descname">defaults</code><em class="property"> = {'conId': 0, 'symbol': '', 'secType': '', 'lastTradeDateOrContractMonth': '', 'strike': 0.0, 'right': '', 'multiplier': '', 'exchange': '', 'primaryExchange': '', 'currency': '', 'localSymbol': '', 'tradingClass': '', 'includeExpired': False, 'secIdType': '', 'secId': '', 'comboLegsDescrip': '', 'comboLegs': None, 'underComp': None}</em><a class="headerlink" href="#ib_insync.contract.Contract.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'secType': '', 'conId': 0, 'symbol': '', 'lastTradeDateOrContractMonth': '', 'strike': 0.0, 'right': '', 'multiplier': '', 'exchange': '', 'primaryExchange': '', 'currency': '', 'localSymbol': '', 'tradingClass': '', 'includeExpired': False, 'secIdType': '', 'secId': '', 'comboLegsDescrip': '', 'comboLegs': None, 'underComp': None}</em><a class="headerlink" href="#ib_insync.contract.Contract.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1974,6 +2021,22 @@ If an attribute is not given it will take its value from the
 ‘defaults’ class member. If an attribute is given both positionally
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.defaults">
+<code class="descname">defaults</code><em class="property"> = {'contract': None, 'time': None, 'bid': nan, 'bidSize': nan, 'ask': nan, 'askSize': nan, 'last': nan, 'lastSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'volume': nan, 'open': nan, 'high': nan, 'low': nan, 'close': nan, 'vwap': nan, 'low13week': nan, 'high13week': nan, 'low26week': nan, 'high26week': nan, 'low52week': nan, 'high52week': nan, 'bidYield': nan, 'askYield': nan, 'lastYield': nan, 'avVolume': nan, 'putOpenInterest': nan, 'callOpenInterest': nan, 'putVolume': nan, 'callVolume': nan, 'futuresOpenInterest': nan, 'ticks': None, 'domBids': None, 'domAsks': None, 'domTicks': None, 'bidGreeks': None, 'askGreeks': None, 'lastGreeks': None, 'modelGreeks': None}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ticker.Ticker.marketPrice">
+<code class="descname">marketPrice</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ticker.html#Ticker.marketPrice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ticker.Ticker.marketPrice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the first available one of</p>
+<ul class="simple">
+<li>last price if within current bid/ask;</li>
+<li>average of bid and ask (midpoint);</li>
+<li>close price.</li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.ask">
 <code class="descname">ask</code><a class="headerlink" href="#ib_insync.ticker.Ticker.ask" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2036,11 +2099,6 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.contract">
 <code class="descname">contract</code><a class="headerlink" href="#ib_insync.ticker.Ticker.contract" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ticker.Ticker.defaults">
-<code class="descname">defaults</code><em class="property"> = {'contract': None, 'time': None, 'bid': nan, 'bidSize': nan, 'ask': nan, 'askSize': nan, 'last': nan, 'lastSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'volume': nan, 'open': nan, 'high': nan, 'low': nan, 'close': nan, 'vwap': nan, 'low13week': nan, 'high13week': nan, 'low26week': nan, 'high26week': nan, 'low52week': nan, 'high52week': nan, 'bidYield': nan, 'askYield': nan, 'lastYield': nan, 'avVolume': nan, 'putOpenInterest': nan, 'callOpenInterest': nan, 'putVolume': nan, 'callVolume': nan, 'futuresOpenInterest': nan, 'ticks': None, 'domBids': None, 'domAsks': None, 'domTicks': None, 'bidGreeks': None, 'askGreeks': None, 'lastGreeks': None, 'modelGreeks': None}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2122,17 +2180,6 @@ and as keyword, the keyword wins.</p>
 <dt id="ib_insync.ticker.Ticker.low52week">
 <code class="descname">low52week</code><a class="headerlink" href="#ib_insync.ticker.Ticker.low52week" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.ticker.Ticker.marketPrice">
-<code class="descname">marketPrice</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ticker.html#Ticker.marketPrice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ticker.Ticker.marketPrice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the first available one of</p>
-<ul class="simple">
-<li>last price if within current bid/ask;</li>
-<li>average of bid and ask (midpoint);</li>
-<li>close price.</li>
-</ul>
-</dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.modelGreeks">
@@ -3227,6 +3274,50 @@ and as keyword, the keyword wins.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="ib_insync.objects.TickAttrib">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">TickAttrib</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#TickAttrib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.TickAttrib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute values can be given positionally or as keyword.
+If an attribute is not given it will take its value from the
+‘defaults’ class member. If an attribute is given both positionally
+and as keyword, the keyword wins.</p>
+<dl class="attribute">
+<dt id="ib_insync.objects.TickAttrib.askPastHigh">
+<code class="descname">askPastHigh</code><a class="headerlink" href="#ib_insync.objects.TickAttrib.askPastHigh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.TickAttrib.bidPastLow">
+<code class="descname">bidPastLow</code><a class="headerlink" href="#ib_insync.objects.TickAttrib.bidPastLow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.TickAttrib.canAutoExecute">
+<code class="descname">canAutoExecute</code><a class="headerlink" href="#ib_insync.objects.TickAttrib.canAutoExecute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.TickAttrib.defaults">
+<code class="descname">defaults</code><em class="property"> = {'canAutoExecute': False, 'pastLimit': False, 'preOpen': False, 'unreported': False, 'bidPastLow': False, 'askPastHigh': False}</em><a class="headerlink" href="#ib_insync.objects.TickAttrib.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.TickAttrib.pastLimit">
+<code class="descname">pastLimit</code><a class="headerlink" href="#ib_insync.objects.TickAttrib.pastLimit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.TickAttrib.preOpen">
+<code class="descname">preOpen</code><a class="headerlink" href="#ib_insync.objects.TickAttrib.preOpen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.TickAttrib.unreported">
+<code class="descname">unreported</code><a class="headerlink" href="#ib_insync.objects.TickAttrib.unreported" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="ib_insync.objects.NewsProvider">
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">NewsProvider</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#NewsProvider"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.NewsProvider" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute values can be given positionally or as keyword.
@@ -3396,22 +3487,6 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.objects.TickData.time">
 <code class="descname">time</code><a class="headerlink" href="#ib_insync.objects.TickData.time" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ib_insync.objects.TickAttribute">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">TickAttribute</code><span class="sig-paren">(</span><em>canAutoExecute</em>, <em>pastLimit</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.TickAttribute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create new instance of TickAttribute(canAutoExecute, pastLimit)</p>
-<dl class="attribute">
-<dt id="ib_insync.objects.TickAttribute.canAutoExecute">
-<code class="descname">canAutoExecute</code><a class="headerlink" href="#ib_insync.objects.TickAttribute.canAutoExecute" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.objects.TickAttribute.pastLimit">
-<code class="descname">pastLimit</code><a class="headerlink" href="#ib_insync.objects.TickAttribute.pastLimit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -4478,6 +4553,21 @@ reqId associated with the contract. Return the ticker.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.tickByTickAllLast">
+<code class="descname">tickByTickAllLast</code><span class="sig-paren">(</span><em>reqId</em>, <em>tickType</em>, <em>time</em>, <em>price</em>, <em>size</em>, <em>attribs</em>, <em>exchange</em>, <em>specialConditions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.tickByTickAllLast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.tickByTickAllLast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.tickByTickBidAsk">
+<code class="descname">tickByTickBidAsk</code><span class="sig-paren">(</span><em>reqId</em>, <em>time</em>, <em>bidPrice</em>, <em>askPrice</em>, <em>bidSize</em>, <em>askSize</em>, <em>attribs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.tickByTickBidAsk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.tickByTickBidAsk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.tickByTickMidPoint">
+<code class="descname">tickByTickMidPoint</code><span class="sig-paren">(</span><em>reqId</em>, <em>time</em>, <em>midPoint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.tickByTickMidPoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.tickByTickMidPoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.tickGeneric">
 <code class="descname">tickGeneric</code><span class="sig-paren">(</span><em>reqId</em>, <em>tickType</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.tickGeneric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.tickGeneric" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4543,6 +4633,13 @@ reqId associated with the contract. Return the ticker.</p>
 <dd><p>Create pandas DataFrame from the sequence of same-type objects.
 When a list of labels is given then only retain those labels and
 drop the rest.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.tree">
+<code class="descclassname">ib_insync.util.</code><code class="descname">tree</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert object to a tree of lists, dicts and simple values.
+The result can be serialized to JSON.</p>
 </dd></dl>
 
 <dl class="function">
