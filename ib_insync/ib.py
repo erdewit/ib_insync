@@ -289,10 +289,10 @@ class IB:
         * ``position(position: Position)``:
           A position has changed.
         
-        * ``accountValue(value: AccountValue)``
+        * ``accountValue(value: AccountValue)``:
           An account value has changed.
         
-        * ``accountSummary(value: AccountValue)``
+        * ``accountSummary(value: AccountValue)``:
           An account value has changed.
         
         * ``tickNews(news: NewsTick)``:
