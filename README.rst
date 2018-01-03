@@ -93,6 +93,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.8.17
+^^^^^^^^^^^^^^
+
+* workaround for IBAPI v9.73.06 for Contract.lastTradeDateOrContractMonth format
+
 Version 0.8.16
 ^^^^^^^^^^^^^^
 

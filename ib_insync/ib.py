@@ -807,6 +807,11 @@ class IB:
     def reqMktDepth(self, contract: Contract, numRows: int=5,
                 mktDepthOptions=None) -> Ticker:
         """
+        Subscribe to market depth data (a.k.a. DOM, L2 or order book).
+        Returns the Ticker that holds the market depth ticks
+        in ticker.domBids and ticker.domAsks.
+        
+        https://interactivebrokers.github.io/tws-api/market_depth.html
         """
         reqId = self.client.getReqId()
         ticker = self.wrapper.startTicker(reqId, contract, isMktDepth=True)
@@ -1021,6 +1026,11 @@ class IB:
                         f'possibles are {possibles}')
             else:
                 details = detailsList[0]
+                expiry = details.summary.lastTradeDateOrContractMonth
+                if expiry:
+                    # remove time and timezone part as it will cause problems
+                    expiry = expiry.split()[0]
+                    details.summary.lastTradeDateOrContractMonth = expiry
                 contract.update(**details.summary.dict())
                 result.append(contract)
         return result
