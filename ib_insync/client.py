@@ -5,6 +5,8 @@ import time
 import io
 from typing import List
 
+from ratelimit import rate_limited
+
 import ibapi
 from ibapi.client import EClient
 from ibapi.wrapper import EWrapper, iswrapper
@@ -450,6 +452,7 @@ class Connection:
     def isConnected(self):
         return self.socket is not None
 
+    @rate_limited(50)
     def sendMsg(self, msg):
         self.socket.transport.write(msg)
         self.numBytesSent += len(msg)
