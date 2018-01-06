@@ -256,7 +256,10 @@ class Wrapper(EWrapper):
         # must handle both live fills and responses to reqExecutions
         key = (execution.clientId, execution.orderId)
         trade = self.trades.get(key)
-        contract = Contract(**contract.__dict__)
+        if trade and contract.conId == trade.contract.conId:
+            contract = trade.contract
+        else:
+            contract = Contract(**contract.__dict__)
         execId = execution.execId
         execution = Execution(**execution.__dict__)
         fill = Fill(contract, execution, CommissionReport(), self.lastTime)
