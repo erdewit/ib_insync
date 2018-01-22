@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.util &#8212; IB-insync 0.8.17 documentation</title>
+    <title>ib_insync.util &#8212; IB-insync 0.9.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.17',
+        VERSION:     '0.9.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -198,28 +198,13 @@
     <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="setIBAPILogLevel"><a class="viewcode-back" href="../../api.html#ib_insync.util.setIBAPILogLevel">[docs]</a><span class="k">def</span> <span class="nf">setIBAPILogLevel</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The IBAPI uses excessive debug logging on the root logger.</span>
-<span class="sd">    This function patches IBAPI to give it its own private logger</span>
-<span class="sd">    Setting a sticter log level will then cut the amount of logging.</span>
-<span class="sd">    &quot;&quot;&quot;</span> 
-    <span class="kn">from</span> <span class="nn">ibapi</span> <span class="k">import</span> <span class="n">client</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span> <span class="n">reader</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ibapi&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">getLogger</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">logger</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">INFO</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">logging</span> <span class="o">=</span> <span class="n">decoder</span><span class="o">.</span><span class="n">logging</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">logging</span> <span class="o">=</span> <span class="n">logger</span></div>
-
-
-<div class="viewcode-block" id="logToFile"><a class="viewcode-back" href="../../api.html#ib_insync.util.logToFile">[docs]</a><span class="k">def</span> <span class="nf">logToFile</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
+<div class="viewcode-block" id="logToFile"><a class="viewcode-back" href="../../api.html#ib_insync.util.logToFile">[docs]</a><span class="k">def</span> <span class="nf">logToFile</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">ibapiLevel</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a log handler that logs to the given file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">setIBAPILogLevel</span><span class="p">(</span><span class="n">ibapiLevel</span><span class="p">)</span>
     <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
             <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(name)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
@@ -227,19 +212,32 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="logToConsole"><a class="viewcode-back" href="../../api.html#ib_insync.util.logToConsole">[docs]</a><span class="k">def</span> <span class="nf">logToConsole</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
+<div class="viewcode-block" id="logToConsole"><a class="viewcode-back" href="../../api.html#ib_insync.util.logToConsole">[docs]</a><span class="k">def</span> <span class="nf">logToConsole</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">ibapiLevel</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a log handler that logs to the console.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">setIBAPILogLevel</span><span class="p">(</span><span class="n">ibapiLevel</span><span class="p">)</span>
     <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
             <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(name)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
     <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="setIBAPILogLevel"><a class="viewcode-back" href="../../api.html#ib_insync.util.setIBAPILogLevel">[docs]</a><span class="k">def</span> <span class="nf">setIBAPILogLevel</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The IBAPI uses excessive debug logging on the root logger.</span>
+<span class="sd">    This function patches IBAPI to give it its own private logger.</span>
+<span class="sd">    Setting a sticter log level will then cut the amount of logging.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">ibapi</span> <span class="k">import</span> <span class="n">client</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span> <span class="n">reader</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ibapi&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">getLogger</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">logger</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">INFO</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">logging</span> <span class="o">=</span> <span class="n">decoder</span><span class="o">.</span><span class="n">logging</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">logging</span> <span class="o">=</span> <span class="n">logger</span></div>
 
 
 <div class="viewcode-block" id="isNan"><a class="viewcode-back" href="../../api.html#ib_insync.util.isNan">[docs]</a><span class="k">def</span> <span class="nf">isNan</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -402,23 +400,6 @@
     <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="useQtAlt"><a class="viewcode-back" href="../../api.html#ib_insync.util.useQtAlt">[docs]</a><span class="k">def</span> <span class="nf">useQtAlt</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Integrate asyncio and Qt loops:</span>
-<span class="sd">    Let the asyncio event loop spin the Qt event loop.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">PyQt5.Qt</span> <span class="k">as</span> <span class="nn">qt</span>
-    <span class="n">qapp</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span> <span class="ow">or</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">qstep</span><span class="p">():</span>
-        <span class="n">qapp</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
-        <span class="n">qapp</span><span class="o">.</span><span class="n">sendPostedEvents</span><span class="p">()</span>
-        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-        <span class="n">loop</span><span class="o">.</span><span class="n">call_later</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">qstep</span><span class="p">)</span>
-
-    <span class="n">qstep</span><span class="p">()</span></div>
-
-
 <div class="viewcode-block" id="formatIBDatetime"><a class="viewcode-back" href="../../api.html#ib_insync.util.formatIBDatetime">[docs]</a><span class="k">def</span> <span class="nf">formatIBDatetime</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Format date or datetime to string that IB uses.</span>
@@ -461,7 +442,7 @@
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2017, Ewald de Wit.
+      &copy;2018, Ewald de Wit.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>

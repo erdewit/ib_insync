@@ -1,6 +1,6 @@
 import sys
 
-__version__ = '0.8.17'
+__version__ = '0.9.0'
 
 if sys.version_info < (3, 6, 0):
     print("Python 3.6.0 or higher is required")
@@ -12,11 +12,10 @@ except ImportError:
     print('IB API from http://interactivebrokers.github.io is required')
     sys.exit()
 
-try:
-    from ibapi.common import RealTimeBar
-except ImportError:
+if tuple(int(i) for i in ibapi.__version__.split('.')) < (9, 73, 6):
     print('Old version of ibapi module detected. '
-        'The newest version from http://interactivebrokers.github.io is required')
+        'The newest version from http://interactivebrokers.github.io '
+        'is required')
     sys.exit()
 
 from .objects import *

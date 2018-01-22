@@ -22,6 +22,7 @@ __all__ = (
     'BarList BarDataList RealTimeBarList BarData RealTimeBar '
     'HistogramData TickAttrib NewsProvider DepthMktDataDescription '
     'AccountValue RealTimeBar TickData '
+    'TickByTickAllLast TickByTickBidAsk TickByTickMidPoint '
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
     'MktDepthData DOMLevel BracketOrder TradeLogEntry ScanData TagValue '
     'PortfolioItem Position Fill OptionComputation OptionChain '
@@ -124,8 +125,18 @@ class DynamicObject:
 class ContractDetails(Object):
     defaults = ibapi.contract.ContractDetails().__dict__
     defaults['summary'] = None
+    defaults.pop('contract', None)
     __slots__ = list(defaults.keys()) + \
             ['secIdListCount']  # bug in ibapi decoder
+
+    # forward compatibility with ibapi v9.73.07
+    @property
+    def contract(self):
+        return self.summary
+
+    @contract.setter
+    def contract(self, c):
+        self.summary = c
 
 
 class ContractDescription(Object):
@@ -220,18 +231,18 @@ class BarList(list):
 
 
 class BarDataList(BarList):
-    __slots__ = ('contract', 'endDateTime', 'durationStr',
+    __slots__ = ('reqId', 'contract', 'endDateTime', 'durationStr',
             'barSizeSetting', 'whatToShow', 'useRTH', 'formatDate',
             'keepUpToDate', 'chartOptions')
 
 
 class RealTimeBarList(BarList):
-    __slots__ = ('contract', 'barSize', 'whatToShow', 'useRTH',
+    __slots__ = ('reqId', 'contract', 'barSize', 'whatToShow', 'useRTH',
             'realTimeBarsOptions')
 
 
 AccountValue = namedtuple('AccountValue',
-    'account tag value currency')
+    'account tag value currency modelCode')
 
 TickData = namedtuple('TickData',
     'time tickType price size')
@@ -244,6 +255,15 @@ HistoricalTickBidAsk = namedtuple('HistoricalTickBidAsk',
 
 HistoricalTickLast = namedtuple('HistoricalTickLast',
     'time mask price size exchange specialConditions')
+
+TickByTickAllLast = namedtuple('TickByTickAllLast',
+    'tickType time price size attribs exchange specialConditions')
+
+TickByTickBidAsk = namedtuple('TickByTickBidAsk',
+    'time bidPrice askPrice bidSize askSize attribs')
+
+TickByTickMidPoint = namedtuple('TickByTickMidPoint',
+    'time midPoint')
 
 MktDepthData = namedtuple('MktDepthData',
     'time position marketMaker operation side price size')

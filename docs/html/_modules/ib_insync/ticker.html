@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ticker &#8212; IB-insync 0.8.17 documentation</title>
+    <title>ib_insync.ticker &#8212; IB-insync 0.9.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.17',
+        VERSION:     '0.9.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -98,6 +98,8 @@
 <span class="sd">    ``domTicks`` list. The order book (DOM) is available as lists of</span>
 <span class="sd">    ``DOMLevel`` in ``domBids`` and ``domAsks``.</span>
 <span class="sd">    </span>
+<span class="sd">    Streaming tick-by-tick ticks are stored in ``tickByTicks``.</span>
+<span class="sd">    </span>
 <span class="sd">    For options the ``OptionComputation`` values for the bid, ask, resp.</span>
 <span class="sd">    last price are stored in the ``bidGreeks``, ``askGreeks`` resp.</span>
 <span class="sd">    ``lastGreeks`` attributes. There is also ``modelGreeks`` that conveys</span>
@@ -133,6 +135,7 @@
         <span class="n">bidYield</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
         <span class="n">askYield</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
         <span class="n">lastYield</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">rtVolume</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
         <span class="n">avVolume</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
         <span class="n">putOpenInterest</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
         <span class="n">callOpenInterest</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
@@ -140,6 +143,7 @@
         <span class="n">callVolume</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
         <span class="n">futuresOpenInterest</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
         <span class="n">ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">tickByTicks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">domBids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">domAsks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">domTicks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -180,7 +184,7 @@
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2017, Ewald de Wit.
+      &copy;2018, Ewald de Wit.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>

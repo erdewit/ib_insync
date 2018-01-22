@@ -17,6 +17,8 @@ class Ticker(Object):
     ``domTicks`` list. The order book (DOM) is available as lists of
     ``DOMLevel`` in ``domBids`` and ``domAsks``.
     
+    Streaming tick-by-tick ticks are stored in ``tickByTicks``.
+    
     For options the ``OptionComputation`` values for the bid, ask, resp.
     last price are stored in the ``bidGreeks``, ``askGreeks`` resp.
     ``lastGreeks`` attributes. There is also ``modelGreeks`` that conveys
@@ -52,6 +54,7 @@ class Ticker(Object):
         bidYield=nan,
         askYield=nan,
         lastYield=nan,
+        rtVolume=nan,
         avVolume=nan,
         putOpenInterest=nan,
         callOpenInterest=nan,
@@ -59,6 +62,7 @@ class Ticker(Object):
         callVolume=nan,
         futuresOpenInterest=nan,
         ticks=None,
+        tickByTicks=None,
         domBids=None,
         domAsks=None,
         domTicks=None,

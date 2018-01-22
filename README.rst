@@ -26,8 +26,8 @@ Installation
 Requirements:
 
 * Python_ version 3.6 or higher;
-* The `Interactive Brokers Python API`_ version 9.73.03 or higher;
-* A running TWS or IB gateway application (version 967 or higher).
+* The `Interactive Brokers Python API`_ version 9.73.06 or higher;
+* A running TWS or IB gateway application (version 969 or higher).
   Make sure the
   `API port is enabled <https://interactivebrokers.github.io/tws-api/initial_setup.html>`_
   and 'Download open orders on connection' is checked.
@@ -92,6 +92,16 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 
 Changelog
 ---------
+
+Version 0.9.0
+^^^^^^^^^^^^^
+
+* minimum API version is v9.73.06
+* tickByTick support
+* automatic request throttling
+* ib.accountValues() now works for multiple accounts
+* AccountValue.modelCode added
+* Ticker.rtVolume added
 
 Version 0.8.17
 ^^^^^^^^^^^^^^

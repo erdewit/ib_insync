@@ -117,32 +117,46 @@ def allowCtrlC():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
-def logToFile(path, level=logging.INFO):
+def logToFile(path, level=logging.INFO, ibapiLevel=logging.ERROR):
     """
     Create a log handler that logs to the given file.
     """
     logger = logging.getLogger()
     logger.setLevel(level)
+    setIBAPILogLevel(ibapiLevel)
     formatter = logging.Formatter(
             '%(asctime)s %(name)s %(levelname)s %(message)s')
     handler = logging.FileHandler(path)
     handler.setFormatter(formatter)
-    handler.addFilter(lambda record: record.name != 'root')
     logger.addHandler(handler)
 
 
-def logToConsole(level=logging.INFO):
+def logToConsole(level=logging.INFO, ibapiLevel=logging.ERROR):
     """
     Create a log handler that logs to the console.
     """
     logger = logging.getLogger()
     logger.setLevel(level)
+    setIBAPILogLevel(ibapiLevel)
     formatter = logging.Formatter(
             '%(asctime)s %(name)s %(levelname)s %(message)s')
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
-    handler.addFilter(lambda record: record.name != 'root')
     logger.addHandler(handler)
+
+
+def setIBAPILogLevel(level=logging.ERROR):
+    """
+    The IBAPI uses excessive debug logging on the root logger.
+    This function patches IBAPI to give it its own private logger.
+    Setting a sticter log level will then cut the amount of logging.
+    """
+    from ibapi import client, decoder, reader
+    logger = logging.getLogger('ibapi')
+    logger.getLogger = lambda: logger
+    logger.INFO = logging.INFO
+    logger.setLevel(level)
+    client.logging = decoder.logging = reader.logging = logger
 
 
 def isNan(x: float):
@@ -303,23 +317,6 @@ def useQt():
         _ = qt.QApplication(sys.argv)
     loop = quamash.QEventLoop()
     asyncio.set_event_loop(loop)
-
-
-def useQtAlt():
-    """
-    Integrate asyncio and Qt loops:
-    Let the asyncio event loop spin the Qt event loop.
-    """
-    import PyQt5.Qt as qt
-    qapp = qt.QApplication.instance() or qt.QApplication(sys.argv)
-
-    def qstep():
-        qapp.processEvents()
-        qapp.sendPostedEvents()
-        loop = asyncio.get_event_loop()
-        loop.call_later(0.01, qstep)
-
-    qstep()
 
 
 def formatIBDatetime(dt):

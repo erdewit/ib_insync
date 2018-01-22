@@ -3,6 +3,7 @@ import asyncio
 import logging
 import time
 import io
+from collections import deque
 from typing import List
 
 import ibapi
@@ -10,14 +11,11 @@ from ibapi.client import EClient
 from ibapi.wrapper import EWrapper, iswrapper
 from ibapi.common import UNSET_INTEGER, UNSET_DOUBLE
 
-from ib_insync.objects import (ConnectionStats, BarData, HistoricalTick,
-        HistoricalTickBidAsk, HistoricalTickLast, TickAttrib)
+from ib_insync.objects import ConnectionStats
 from ib_insync.contract import Contract
 import ib_insync.util as util
 
 __all__ = ['Client']
-
-_logger = logging.getLogger('ib_insync.client')
 
 
 class Client(EClient):
@@ -66,8 +64,12 @@ class Client(EClient):
         - apiError(errorMsg)
     """
 
+    # throttle number of requests to MaxRequests per RequestsInterval seconds
+    MaxRequests, RequestsInterval = 250, 5
+
     def __init__(self, wrapper):
         EClient.__init__(self, wrapper)
+        self._logger = logging.getLogger('ib_insync.client')
 
         # extra optional wrapper methods
         self._priceSizeTick = getattr(wrapper, 'priceSizeTick', None)
@@ -88,6 +90,9 @@ class Client(EClient):
         self._startTime = time.time()
         self._numBytesRecv = 0
         self._numMsgRecv = 0
+        self._isThrottling = False
+        self._msgQ = deque()
+        self._timeQ = deque()
 
     def run(self):
         loop = asyncio.get_event_loop()
@@ -137,7 +142,7 @@ class Client(EClient):
         util.syncAwait(self.connectAsync(host, port, clientId, timeout))
 
     async def connectAsync(self, host, port, clientId, timeout=2):
-        _logger.info(
+        self._logger.info(
                 f'Connecting to {host}:{port} with clientId {clientId}...')
         self.host = host
         self.port = port
@@ -151,29 +156,49 @@ class Client(EClient):
         try:
             await asyncio.wait_for(asyncio.gather(
                     self.conn.connect(), self._readyEvent.wait()), timeout)
-            _logger.info('API connection ready')
+            self._logger.info('API connection ready')
             if self.apiStart:
                 self.apiStart()
         except Exception as e:
             self.reset()
             msg = f'API connection failed: {e!r}'
-            _logger.error(msg)
+            self._logger.error(msg)
             if self.apiError:
                 self.apiError(msg)
             if isinstance(e, ConnectionRefusedError):
                 msg = 'Make sure API port on TWS/IBG is open'
-                _logger.error(msg)
+                self._logger.error(msg)
             raise
 
     def sendMsg(self, msg):
-        self.conn.sendMsg(self._prefix(msg.encode()))
+        loop = asyncio.get_event_loop()
+        t = loop.time()
+        times = self._timeQ
+        msgs = self._msgQ
+        while times and t - times[0] > Client.RequestsInterval:
+            times.popleft()
+        if msg:
+            msgs.append(msg)
+        while msgs and len(times) < Client.MaxRequests:
+            msg = msgs.popleft()
+            self.conn.sendMsg(self._prefix(msg.encode()))
+            times.append(t)
+        if msgs:
+            if not self._isThrottling:
+                self._isThrottling = True
+                self._logger.warn('Started to throttle requests')
+            loop.call_at(times[0] + 5, self.sendMsg, None)
+        else:
+            if self._isThrottling:
+                self._isThrottling = False
+                self._logger.warn('Stopped to throttle requests')
 
     def _prefix(self, msg):
         # prefix a message with its length
         return struct.pack('>I', len(msg)) + msg
 
     def _onSocketConnected(self):
-        _logger.info('Connected')
+        self._logger.info('Connected')
         # start handshake
         msg = b'API\0'
         msg += self._prefix(b'v%d..%d' % (
@@ -183,7 +208,7 @@ class Client(EClient):
         self.decoder = ibapi.decoder.Decoder(self.wrapper, None)
 
     def _onSocketHasData(self, data):
-        debug = _logger.isEnabledFor(logging.DEBUG)
+        debug = self._logger.isEnabledFor(logging.DEBUG)
         if self._tcpDataArrived:
             self._tcpDataArrived()
 
@@ -205,7 +230,7 @@ class Client(EClient):
             self._numMsgRecv += 1
 
             if debug:
-                _logger.debug('<<< %s', ','.join(f.decode() for f in fields))
+                self._logger.debug('<<< %s', ','.join(f.decode() for f in fields))
 
             if not self.serverVersion_ and len(fields) == 2:
                 # this concludes the handshake
@@ -215,14 +240,14 @@ class Client(EClient):
                 self.setConnState(EClient.CONNECTED)
                 self.startApi()
                 self.wrapper.connectAck()
-                _logger.info(
+                self._logger.info(
                         f'Logged on to server version {self.serverVersion_}')
             else:
                 # decode and handle the message
                 try:
                     self._decode(fields)
                 except:
-                    _logger.exception('Decode failed')
+                    self._logger.exception('Decode failed')
 
         if self._tcpDataProcessed:
             self._tcpDataProcessed()
@@ -230,41 +255,23 @@ class Client(EClient):
     def _onSocketDisconnected(self):
         if self.isConnected():
             msg = f'Peer closed connection'
-            _logger.error(msg)
+            self._logger.error(msg)
             if self.apiError:
                 self.apiError(msg)
             if not self.isReady():
                 msg = f'clientId {self.clientId} already in use?'
-                _logger.error(msg)
+                self._logger.error(msg)
         else:
-            _logger.info('Disconnected')
+            self._logger.info('Disconnected')
         self.reset()
         if self.apiEnd:
             self.apiEnd()
 
     def _onSocketHasError(self, msg):
-        _logger.error(msg)
+        self._logger.error(msg)
         self.reset()
         if self.apiError:
             self.apiError(msg)
-
-    def reqHistoricalTicks(self, reqId, contract, startDateTime,
-            endDateTime, numberOfTicks, whatToShow, useRth,
-            ignoreSize, miscOptions):
-        msgId = 96
-        msg = self._encode(msgId, reqId, contract, startDateTime, endDateTime,
-                numberOfTicks, whatToShow, useRth, ignoreSize, miscOptions)
-        self.sendMsg(msg)
-
-    def reqTickByTickData(self, reqId, contract, tickType):
-        msgId = 97
-        msg = self._encode(msgId, reqId, contract, tickType)
-        self.sendMsg(msg)
-
-    def cancelTickByTickData(self, reqId):
-        msgId = 98
-        msg = self._encode(msgId, reqId)
-        self.sendMsg(msg)
 
     def _encode(self, *fields):
         """
@@ -323,14 +330,6 @@ class Client(EClient):
             _, _, reqId, tickType, value = fields
             self.wrapper.tickString(int(reqId), int(tickType), value.decode())
             return
-        elif msgId == 90:
-            _, reqId, barCount, date, open_, close, high, low, \
-                    average, volume = fields
-            bar = BarData(date.decode(), float(open_), float(high),
-                    float(low), float(close), float(volume),
-                    int(barCount), float(average))
-            self.wrapper.historicalDataUpdate(int(reqId), bar)
-            return
 
         # snoop for nextValidId and managedAccounts response,
         # when both are in then the client is ready
@@ -345,70 +344,6 @@ class Client(EClient):
             if self._reqIdSeq:
                 self._readyEvent.set()
 
-        # new features not yet in ibapi
-        # https://interactivebrokers.github.io/tws-api/historical_time_and_sales.html
-        elif msgId == 96:
-            _, reqId, nTicks, *fields = fields
-            ticks = []
-            for _ in range(int(nTicks)):
-                time, _, price, size, *fields = fields
-                tick = HistoricalTick(int(time), float(price), int(size))
-                ticks.append(tick)
-            done = fields[0] == b'1'
-            self.wrapper.historicalTicks(int(reqId), ticks, done)
-            return
-        elif msgId == 97:
-            _, reqId, nTicks, *fields = fields
-            ticks = []
-            for _ in range(int(nTicks)):
-                time, mask, priceBid, priceAsk, sizeBid, sizeAsk, \
-                        *fields = fields
-                tick = HistoricalTickBidAsk(int(time), int(mask),
-                        float(priceBid), float(priceAsk),
-                        int(sizeBid), int(sizeAsk))
-                ticks.append(tick)
-            done = fields[0] == b'1'
-            self.wrapper.historicalTicksBidAsk(int(reqId), ticks, done)
-            return
-        elif msgId == 98:
-            _, reqId, nTicks, *fields = fields
-            ticks = []
-            for _ in range(int(nTicks)):
-                time, mask, price, size, exchange, \
-                        specialConditions, *fields = fields
-                tick = HistoricalTickLast(int(time), int(mask),
-                        float(price), int(size),
-                        exchange.decode(), specialConditions.decode())
-                ticks.append(tick)
-            done = fields[0] == b'1'
-            self.wrapper.historicalTicksLast(int(reqId), ticks, done)
-            return
-        elif msgId == 99:
-            _, reqId, tickType, time, *fields = fields
-            if tickType in (1, 2):
-                price, size, mask, exchange, specialConditions = fields
-                mask = int(mask)
-                attribs = TickAttrib(
-                        pastLimit=bool(mask & 1),
-                        unreported=bool(mask & 2))
-                self.wrapper.tickByTickAllLast(int(reqId), int(tickType),
-                        int(time), float(price), int(size), attribs,
-                               exchange, specialConditions.decode())
-            elif tickType == 3:
-                bidPrice, askPrice, bidSize, askSize, mask = fields
-                mask = int(mask)
-                attribs = TickAttrib(
-                        bidPastLow=bool(mask & 1),
-                        askPastHigh=bool(mask & 2))
-                self.wrapper.tickByTickBidAsk(int(reqId), int(time),
-                        float(bidPrice), float(askPrice),
-                        int(bidSize), int(askSize), attribs)
-            elif tickType == 4:
-                midPoint = fields[0]
-                self.wrapper.tickByTickMidPoint(int(reqId), int(time),
-                        float(midPoint))
-            return
-
         self.decoder.interpret(fields)
 
 
@@ -422,6 +357,7 @@ class Connection:
         self.socket = None
         self.numBytesSent = 0
         self.numMsgSent = 0
+        self._logger = logging.getLogger('ib_insync.connection')
 
         # the following are callbacks for socket events
         self.connected = None
@@ -454,8 +390,8 @@ class Connection:
         self.socket.transport.write(msg)
         self.numBytesSent += len(msg)
         self.numMsgSent += 1
-        if _logger.isEnabledFor(logging.DEBUG):
-            _logger.debug(
+        if self._logger.isEnabledFor(logging.DEBUG):
+            self._logger.debug(
                 '>>> %s', ','.join(f.decode() for f in msg[4:].split(b'\0')))
 
 

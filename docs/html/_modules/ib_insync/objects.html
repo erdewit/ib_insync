@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.objects &#8212; IB-insync 0.8.17 documentation</title>
+    <title>ib_insync.objects &#8212; IB-insync 0.9.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.17',
+        VERSION:     '0.9.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -103,6 +103,7 @@
     <span class="s1">&#39;BarList BarDataList RealTimeBarList BarData RealTimeBar &#39;</span>
     <span class="s1">&#39;HistogramData TickAttrib NewsProvider DepthMktDataDescription &#39;</span>
     <span class="s1">&#39;AccountValue RealTimeBar TickData &#39;</span>
+    <span class="s1">&#39;TickByTickAllLast TickByTickBidAsk TickByTickMidPoint &#39;</span>
     <span class="s1">&#39;HistoricalTick HistoricalTickBidAsk HistoricalTickLast &#39;</span>
     <span class="s1">&#39;MktDepthData DOMLevel BracketOrder TradeLogEntry ScanData TagValue &#39;</span>
     <span class="s1">&#39;PortfolioItem Position Fill OptionComputation OptionChain &#39;</span>
@@ -205,8 +206,18 @@
 <div class="viewcode-block" id="ContractDetails"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ContractDetails">[docs]</a><span class="k">class</span> <span class="nc">ContractDetails</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">ContractDetails</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
     <span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">defaults</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> \
-            <span class="p">[</span><span class="s1">&#39;secIdListCount&#39;</span><span class="p">]</span>  <span class="c1"># bug in ibapi decoder</span></div>
+            <span class="p">[</span><span class="s1">&#39;secIdListCount&#39;</span><span class="p">]</span>  <span class="c1"># bug in ibapi decoder</span>
+
+    <span class="c1"># forward compatibility with ibapi v9.73.07</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">contract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span>
+
+    <span class="nd">@contract</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">contract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="n">c</span></div>
 
 
 <div class="viewcode-block" id="ContractDescription"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ContractDescription">[docs]</a><span class="k">class</span> <span class="nc">ContractDescription</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
@@ -301,18 +312,18 @@
 
 
 <div class="viewcode-block" id="BarDataList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarDataList">[docs]</a><span class="k">class</span> <span class="nc">BarDataList</span><span class="p">(</span><span class="n">BarList</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;endDateTime&#39;</span><span class="p">,</span> <span class="s1">&#39;durationStr&#39;</span><span class="p">,</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;reqId&#39;</span><span class="p">,</span> <span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;endDateTime&#39;</span><span class="p">,</span> <span class="s1">&#39;durationStr&#39;</span><span class="p">,</span>
             <span class="s1">&#39;barSizeSetting&#39;</span><span class="p">,</span> <span class="s1">&#39;whatToShow&#39;</span><span class="p">,</span> <span class="s1">&#39;useRTH&#39;</span><span class="p">,</span> <span class="s1">&#39;formatDate&#39;</span><span class="p">,</span>
             <span class="s1">&#39;keepUpToDate&#39;</span><span class="p">,</span> <span class="s1">&#39;chartOptions&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RealTimeBarList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBarList">[docs]</a><span class="k">class</span> <span class="nc">RealTimeBarList</span><span class="p">(</span><span class="n">BarList</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;barSize&#39;</span><span class="p">,</span> <span class="s1">&#39;whatToShow&#39;</span><span class="p">,</span> <span class="s1">&#39;useRTH&#39;</span><span class="p">,</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;reqId&#39;</span><span class="p">,</span> <span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;barSize&#39;</span><span class="p">,</span> <span class="s1">&#39;whatToShow&#39;</span><span class="p">,</span> <span class="s1">&#39;useRTH&#39;</span><span class="p">,</span>
             <span class="s1">&#39;realTimeBarsOptions&#39;</span><span class="p">)</span></div>
 
 
 <span class="n">AccountValue</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;AccountValue&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;account tag value currency&#39;</span><span class="p">)</span>
+    <span class="s1">&#39;account tag value currency modelCode&#39;</span><span class="p">)</span>
 
 <span class="n">TickData</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;TickData&#39;</span><span class="p">,</span>
     <span class="s1">&#39;time tickType price size&#39;</span><span class="p">)</span>
@@ -325,6 +336,15 @@
 
 <span class="n">HistoricalTickLast</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;HistoricalTickLast&#39;</span><span class="p">,</span>
     <span class="s1">&#39;time mask price size exchange specialConditions&#39;</span><span class="p">)</span>
+
+<span class="n">TickByTickAllLast</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;TickByTickAllLast&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;tickType time price size attribs exchange specialConditions&#39;</span><span class="p">)</span>
+
+<span class="n">TickByTickBidAsk</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;TickByTickBidAsk&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;time bidPrice askPrice bidSize askSize attribs&#39;</span><span class="p">)</span>
+
+<span class="n">TickByTickMidPoint</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;TickByTickMidPoint&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;time midPoint&#39;</span><span class="p">)</span>
 
 <span class="n">MktDepthData</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;MktDepthData&#39;</span><span class="p">,</span>
     <span class="s1">&#39;time position marketMaker operation side price size&#39;</span><span class="p">)</span>
@@ -382,7 +402,7 @@
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2017, Ewald de Wit.
+      &copy;2018, Ewald de Wit.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
