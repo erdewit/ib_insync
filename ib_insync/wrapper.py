@@ -90,7 +90,7 @@ class Wrapper(EWrapper):
         return reqId
 
     def setCallback(self, eventName, callback):
-        events = ('updated', 'pendingTickers', 'barUpdate',
+        events = ('updated', 'pendingTickers', 'barUpdate', 'openOrder',
                 'orderStatus', 'execDetails', 'commissionReport',
                 'updatePortfolio', 'position', 'accountValue',
                 'accountSummary', 'tickNews', 'error')
@@ -197,7 +197,8 @@ class Wrapper(EWrapper):
             key = (order.clientId, orderId)
             if key not in self.trades:
                 self.trades[key] = trade
-                self._logger.info(f'openOrder: {trade}')
+            self._logger.info(f'openOrder: {trade}')
+            self._handleEvent('openOrder', trade)
             results = self._results.get('openOrders')
             if results is not None:
                 # response to reqOpenOrders

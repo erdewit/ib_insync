@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.client &#8212; IB-insync 0.9.0 documentation</title>
+    <title>ib_insync.client &#8212; IB-insync 0.9.1 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.0',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -268,7 +268,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Started to throttle requests&#39;</span><span class="p">)</span>
-            <span class="n">loop</span><span class="o">.</span><span class="n">call_at</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">loop</span><span class="o">.</span><span class="n">call_at</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">Client</span><span class="o">.</span><span class="n">RequestsInterval</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span> <span class="o">=</span> <span class="kc">False</span>

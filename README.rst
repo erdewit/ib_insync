@@ -93,6 +93,13 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.1
+^^^^^^^^^^^^^
+
+* IBController added
+* openOrder callback added
+* default arguments for ib.connect() and ib.reqMktData()
+
 Version 0.9.0
 ^^^^^^^^^^^^^
 

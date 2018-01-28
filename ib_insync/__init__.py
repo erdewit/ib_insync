@@ -1,6 +1,6 @@
 import sys
 
-__version__ = '0.9.0'
+__version__ = '0.9.1'
 
 if sys.version_info < (3, 6, 0):
     print("Python 3.6.0 or higher is required")
@@ -26,8 +26,10 @@ from .ib import *
 from .client import *
 from .wrapper import *
 from .flexreport import *
+from .ibcontroller import *
 from . import util
 
 __all__ = ['util']
-for _m in (objects, contract, order, ticker, ib, client, wrapper, flexreport):
+for _m in (objects, contract, order, ticker, ib, client, wrapper,
+        flexreport, ibcontroller):
     __all__ += _m.__all__

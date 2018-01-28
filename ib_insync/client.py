@@ -187,7 +187,7 @@ class Client(EClient):
             if not self._isThrottling:
                 self._isThrottling = True
                 self._logger.warn('Started to throttle requests')
-            loop.call_at(times[0] + 5, self.sendMsg, None)
+            loop.call_at(times[0] + Client.RequestsInterval, self.sendMsg, None)
         else:
             if self._isThrottling:
                 self._isThrottling = False

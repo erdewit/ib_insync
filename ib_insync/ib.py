@@ -99,7 +99,8 @@ class IB:
                 self.client.isConnected() else 'not connected')
         return f'<{self.__class__.__name__} {conn}>'
 
-    def connect(self, host: str, port: int, clientId: int, timeout: float=2):
+    def connect(self, host: str='127.0.0.1', port: int='7497',
+            clientId: int=1, timeout: float=2):
         """
         Connect to a TWS or IB gateway application running at host:port.
         After the connect the client is immediately ready to serve requests. 
@@ -272,6 +273,9 @@ class IB:
           Emits the bar list that has been updated in real time.
           If a new bar has been added then hasNewBar is True, when the last
           bar has changed it is False.
+          
+        * ``openOrder(trade: Trade)``:
+          Emits the trade with open order.
           
         * ``orderStatus(trade: Trade)``:
           Emits the changed order status of the ongoing trade.
@@ -773,8 +777,8 @@ class IB:
                 useRTH, formatDate))
 
     @api
-    def reqMktData(self, contract: Contract, genericTickList: str,
-                snapshot: bool, regulatorySnapshot: bool,
+    def reqMktData(self, contract: Contract, genericTickList: str='',
+                snapshot: bool=False, regulatorySnapshot: bool=False,
                 mktDataOptions: List[TagValue]=None) -> Ticker:
         """
         Subscribe to tick data or request a snapshot.

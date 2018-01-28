@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.9.0 documentation</title>
+    <title>API docs &#8212; IB-insync 0.9.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.0',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -66,6 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.wrapper">Wrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.util">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.flexreport">FlexReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.ibcontroller">IBController</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks.html">Notebooks</a></li>
@@ -93,7 +94,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.0.</p>
+<p>Release 0.9.1.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -247,7 +248,7 @@ The contract object must be the same as used to subscribe with.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.connect">
-<code class="descname">connect</code><span class="sig-paren">(</span><em>host: str</em>, <em>port: int</em>, <em>clientId: int</em>, <em>timeout: float = 2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.connect" title="Permalink to this definition">¶</a></dt>
+<code class="descname">connect</code><span class="sig-paren">(</span><em>host: str = '127.0.0.1'</em>, <em>port: int = '7497'</em>, <em>clientId: int = 1</em>, <em>timeout: float = 2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to a TWS or IB gateway application running at host:port.
 After the connect the client is immediately ready to serve requests.</p>
 <p>This method is blocking.</p>
@@ -588,7 +589,7 @@ pattern.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqMktData">
-<code class="descname">reqMktData</code><span class="sig-paren">(</span><em>contract: ib_insync.contract.Contract</em>, <em>genericTickList: str</em>, <em>snapshot: bool</em>, <em>regulatorySnapshot: bool</em>, <em>mktDataOptions: typing.List[ib_insync.objects.TagValue] = None</em><span class="sig-paren">)</span> &#x2192; ib_insync.ticker.Ticker<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqMktData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqMktData" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqMktData</code><span class="sig-paren">(</span><em>contract: ib_insync.contract.Contract</em>, <em>genericTickList: str = ''</em>, <em>snapshot: bool = False</em>, <em>regulatorySnapshot: bool = False</em>, <em>mktDataOptions: typing.List[ib_insync.objects.TagValue] = None</em><span class="sig-paren">)</span> &#x2192; ib_insync.ticker.Ticker<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqMktData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqMktData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscribe to tick data or request a snapshot.
 Returns the Ticker that holds the market data. The ticker will
 inititially be empty and gradually (after a couple of seconds)
@@ -791,6 +792,8 @@ update and for which there are new ticks or domTicks.</li>
 Emits the bar list that has been updated in real time.
 If a new bar has been added then hasNewBar is True, when the last
 bar has changed it is False.</li>
+<li><code class="docutils literal"><span class="pre">openOrder(trade:</span> <span class="pre">Trade)</span></code>:
+Emits the trade with open order.</li>
 <li><code class="docutils literal"><span class="pre">orderStatus(trade:</span> <span class="pre">Trade)</span></code>:
 Emits the changed order status of the ongoing trade.</li>
 <li><code class="docutils literal"><span class="pre">execDetails(trade:</span> <span class="pre">Trade,</span> <span class="pre">fill:</span> <span class="pre">Fill)</span></code>:
@@ -1069,7 +1072,7 @@ If an attribute is not given it will take its value from the
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'ApiPending', 'PreSubmitted', 'Submitted', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'PendingSubmit', 'Submitted', 'PreSubmitted', 'ApiPending'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1089,7 +1092,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'Filled', 'Inactive', 'Cancelled', 'ApiCancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'ApiCancelled', 'Cancelled', 'Inactive', 'Filled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1345,7 +1348,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 140371501016344: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': ''}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139826910492936: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': ''}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4967,6 +4970,91 @@ Order, etc.</p>
 <dt id="ib_insync.flexreport.FlexError">
 <em class="property">exception </em><code class="descclassname">ib_insync.flexreport.</code><code class="descname">FlexError</code><a class="reference internal" href="_modules/ib_insync/flexreport.html#FlexError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.flexreport.FlexError" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</div>
+<div class="section" id="module-ib_insync.ibcontroller">
+<span id="ibcontroller"></span><h2>IBController<a class="headerlink" href="#module-ib_insync.ibcontroller" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ib_insync.ibcontroller.IBController">
+<em class="property">class </em><code class="descclassname">ib_insync.ibcontroller.</code><code class="descname">IBController</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBController" title="Permalink to this definition">¶</a></dt>
+<dd><p>Programmatic control over starting and stopping TWS/Gateway
+using IBController (<a class="reference external" href="https://github.com/ib-controller/ib-controller">https://github.com/ib-controller/ib-controller</a>).</p>
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBController.APP">
+<code class="descname">APP</code><a class="headerlink" href="#ib_insync.ibcontroller.IBController.APP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBController.IBC_INI">
+<code class="descname">IBC_INI</code><a class="headerlink" href="#ib_insync.ibcontroller.IBController.IBC_INI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBController.IBC_PATH">
+<code class="descname">IBC_PATH</code><a class="headerlink" href="#ib_insync.ibcontroller.IBController.IBC_PATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBController.JAVA_PATH">
+<code class="descname">JAVA_PATH</code><a class="headerlink" href="#ib_insync.ibcontroller.IBController.JAVA_PATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBController.LOG_PATH">
+<code class="descname">LOG_PATH</code><a class="headerlink" href="#ib_insync.ibcontroller.IBController.LOG_PATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBController.TRADING_MODE">
+<code class="descname">TRADING_MODE</code><a class="headerlink" href="#ib_insync.ibcontroller.IBController.TRADING_MODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBController.TWSPASSWORD">
+<code class="descname">TWSPASSWORD</code><a class="headerlink" href="#ib_insync.ibcontroller.IBController.TWSPASSWORD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBController.TWSUSERID">
+<code class="descname">TWSUSERID</code><a class="headerlink" href="#ib_insync.ibcontroller.IBController.TWSUSERID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBController.TWS_CONFIG_PATH">
+<code class="descname">TWS_CONFIG_PATH</code><a class="headerlink" href="#ib_insync.ibcontroller.IBController.TWS_CONFIG_PATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBController.TWS_MAJOR_VRSN">
+<code class="descname">TWS_MAJOR_VRSN</code><a class="headerlink" href="#ib_insync.ibcontroller.IBController.TWS_MAJOR_VRSN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBController.TWS_PATH">
+<code class="descname">TWS_PATH</code><a class="headerlink" href="#ib_insync.ibcontroller.IBController.TWS_PATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBController.defaults">
+<code class="descname">defaults</code><em class="property"> = {'APP': 'TWS', 'TWS_MAJOR_VRSN': '969', 'TRADING_MODE': 'live', 'IBC_INI': '~/IBController/IBController.ini', 'IBC_PATH': '~/IBController', 'TWS_PATH': '~/Jts', 'LOG_PATH': '~/IBController/Logs', 'TWSUSERID': '', 'TWSPASSWORD': '', 'JAVA_PATH': '', 'TWS_CONFIG_PATH': ''}</em><a class="headerlink" href="#ib_insync.ibcontroller.IBController.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.IBController.monitor">
+<code class="descname">monitor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBController.monitor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBController.monitor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.IBController.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBController.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBController.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.IBController.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBController.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBController.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 </div>
 </div>
