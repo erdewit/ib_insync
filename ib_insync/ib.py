@@ -739,7 +739,7 @@ class IB:
     def reqHistoricalTicks(self, contract: Contract,
             startDateTime: str, endDateTime: str,
             numberOfTicks: int, whatToShow: str, useRth: bool,
-            ignoreSize: bool=None, miscOptions: List[TagValue]=None):
+            ignoreSize: bool=False, miscOptions: List[TagValue]=None):
         """
         Request historical ticks.
 
@@ -1175,14 +1175,14 @@ class IB:
 
     def reqHistoricalTicksAsync(self, contract, startDateTime, endDateTime,
             numberOfTicks, whatToShow, useRth,
-            ignoreSize=None, miscOptions=None):
+            ignoreSize=False, miscOptions=None):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         start = util.formatIBDatetime(startDateTime)
         end = util.formatIBDatetime(endDateTime)
         self.client.reqHistoricalTicks(reqId, contract, start, end,
                 numberOfTicks, whatToShow, useRth,
-                ignoreSize, miscOptions)
+                ignoreSize, miscOptions or [])
         return future
 
     def reqHeadTimeStampAsync(self, contract, whatToShow,

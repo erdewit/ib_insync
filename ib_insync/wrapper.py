@@ -327,7 +327,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def realtimeBar(self, reqId, time, open_, high, low, close, volume,
             wap, count):
-        dt = datetime.datetime.fromtimestamp(time)
+        dt = datetime.datetime.fromtimestamp(time, datetime.timezone.utc)
         bar = RealTimeBar(dt, -1, open_, high, low, close, volume, wap, count)
         bars = self.reqId2Bars[reqId]
         bars.append(bar)
@@ -362,7 +362,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def historicalTicks(self, reqId, ticks, done):
         self._results[reqId] += [HistoricalTick(
-                datetime.datetime.fromtimestamp(t.time),
+                datetime.datetime.fromtimestamp(t.time, datetime.timezone.utc),
                 t.price, t.size) for t in ticks]
         if done:
             self._endReq(reqId)
@@ -370,7 +370,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def historicalTicksBidAsk(self, reqId, ticks, done):
         self._results[reqId] += [HistoricalTickBidAsk(
-                datetime.datetime.fromtimestamp(t.time),
+                datetime.datetime.fromtimestamp(t.time, datetime.timezone.utc),
                 t.mask, t.priceBid, t.priceAsk, t.sizeBid, t.sizeAsk)
                 for t in ticks]
         if done:
@@ -379,7 +379,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def historicalTicksLast(self, reqId, ticks, done):
         self._results[reqId] += [HistoricalTickLast(
-                datetime.datetime.fromtimestamp(t.time),
+                datetime.datetime.fromtimestamp(t.time, datetime.timezone.utc),
                 t.mask, t.price, t.size, t.exchange, t.specialConditions)
                 for t in ticks]
         if done:

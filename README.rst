@@ -93,6 +93,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.2
+^^^^^^^^^^^^^
+
+* historical ticks and realtime bars now return time in UTC
+
 Version 0.9.1
 ^^^^^^^^^^^^^
 

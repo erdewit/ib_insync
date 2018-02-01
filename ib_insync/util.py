@@ -244,7 +244,8 @@ def syncAwait(future):
 
 
 def _syncAwaitAsyncio(future):
-    assert asyncio.Task is asyncio.tasks._PyTask
+    assert asyncio.Task is asyncio.tasks._PyTask, \
+            'To allow nested event loops, use util.patchAsyncio()'
     loop = asyncio.get_event_loop()
     preserved_ready = list(loop._ready)
     loop._ready.clear()
