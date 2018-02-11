@@ -48,6 +48,8 @@ class Wrapper(EWrapper):
         self.clientId = -1
         self.lastTime = None  # datetime (UTC) of last network packet arrival
         self.updateEvent = asyncio.Event()
+        self._timeout = 0
+        self._timeoutHandle = None
 
     def startReq(self, key, container=None):
         """
@@ -93,7 +95,7 @@ class Wrapper(EWrapper):
         events = ('updated', 'pendingTickers', 'barUpdate', 'openOrder',
                 'orderStatus', 'execDetails', 'commissionReport',
                 'updatePortfolio', 'position', 'accountValue',
-                'accountSummary', 'tickNews', 'error')
+                'accountSummary', 'tickNews', 'error', 'timeout')
         if eventName not in events:
             raise ValueError(f'eventName must be one of {events}')
         self._callbacks[eventName] = callback
@@ -106,6 +108,24 @@ class Wrapper(EWrapper):
                 cb(*args)
             except:
                 self._logger.exception('Event %s(%s)', eventName, args)
+
+    def setTimeout(self, timeout: float=60):
+        if self._timeoutHandle:
+            self._timeoutHandle.cancel()
+        self._timeout = timeout
+        if timeout:
+            self._setTimer()
+
+    def _setTimer(self):
+        now = datetime.datetime.now(datetime.timezone.utc)
+        secs = (now - self.lastTime).total_seconds()
+        if secs >= self._timeout:
+            self._logger.warning('Timeout')
+            self._handleEvent('timeout')
+        else:
+            loop = asyncio.get_event_loop()
+            self._timeoutHandle = loop.call_later(
+                    self._timeout - secs, self._setTimer)
 
     @iswrapper
     def managedAccounts(self, accountsList):
@@ -363,7 +383,7 @@ class Wrapper(EWrapper):
     def historicalTicks(self, reqId, ticks, done):
         self._results[reqId] += [HistoricalTick(
                 datetime.datetime.fromtimestamp(t.time, datetime.timezone.utc),
-                t.price, t.size) for t in ticks]
+                t.price, t.size) for t in ticks if t.size]
         if done:
             self._endReq(reqId)
 
@@ -381,13 +401,15 @@ class Wrapper(EWrapper):
         self._results[reqId] += [HistoricalTickLast(
                 datetime.datetime.fromtimestamp(t.time, datetime.timezone.utc),
                 t.mask, t.price, t.size, t.exchange, t.specialConditions)
-                for t in ticks]
+                for t in ticks if t.size]
         if done:
             self._endReq(reqId)
 
     @iswrapper
     # additional wrapper method provided by Client
     def priceSizeTick(self, reqId, tickType, price, size):
+        if not size:
+            return
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
             self._logger.error(f'priceSizeTick: Unknown reqId: {reqId}')
@@ -447,6 +469,8 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def tickSize(self, reqId, tickType, size):
+        if not size:
+            return
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
             self._logger.error(f'tickSize: Unknown reqId: {reqId}')

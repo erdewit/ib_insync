@@ -304,10 +304,22 @@ class IB:
         * ``error(reqId: int, errorCode: int, errorString: str)``:
           Emits the reqId/orderId and TWS error code and string (see
           https://interactivebrokers.github.io/tws-api/message_codes.html).
+          
+        * ``timeout()``:
+          Is emitted if no data is received for longer than the timeout period
+          specified with ``setTimeout``.
 
         Unsetting is done by supplying None as callback.
         """
         self.wrapper.setCallback(eventName, callback)
+
+    def setTimeout(self, timeout: float=60):
+        """
+        Set timeout in seconds for receiving messages from TWS/IBG.
+        This will emit the ``timeout`` callback if there is no new data
+        for too long.
+        """
+        self.wrapper.setTimeout(timeout)
 
     def managedAccounts(self) -> List[str]:
         """
@@ -1419,4 +1431,4 @@ if __name__ == '__main__':
         histo = ib.reqHistogramData(amd, True, '1 week')
         print(histo)
 
-    # ib.disconnect()
+    ib.disconnect()
