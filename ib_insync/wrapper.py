@@ -110,6 +110,7 @@ class Wrapper(EWrapper):
                 self._logger.exception('Event %s(%s)', eventName, args)
 
     def setTimeout(self, timeout: float=60):
+        self.lastTime = datetime.datetime.now(datetime.timezone.utc)
         if self._timeoutHandle:
             self._timeoutHandle.cancel()
         self._timeout = timeout
