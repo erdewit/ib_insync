@@ -409,8 +409,6 @@ class Wrapper(EWrapper):
     @iswrapper
     # additional wrapper method provided by Client
     def priceSizeTick(self, reqId, tickType, price, size):
-        if not size:
-            return
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
             self._logger.error(f'priceSizeTick: Unknown reqId: {reqId}')
@@ -464,14 +462,13 @@ class Wrapper(EWrapper):
             ticker.askYield = price
         elif tickType == 52:
             ticker.lastYield = price
-        tick = TickData(self.lastTime, tickType, price, size)
-        ticker.ticks.append(tick)
-        self.pendingTickers.add(ticker)
+        if price or size:
+            tick = TickData(self.lastTime, tickType, price, size)
+            ticker.ticks.append(tick)
+            self.pendingTickers.add(ticker)
 
     @iswrapper
     def tickSize(self, reqId, tickType, size):
-        if not size:
-            return
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
             self._logger.error(f'tickSize: Unknown reqId: {reqId}')
@@ -510,9 +507,10 @@ class Wrapper(EWrapper):
             ticker.putVolume = size
         elif tickType == 86:
             ticker.futuresOpenInterest = size
-        tick = TickData(self.lastTime, tickType, price, size)
-        ticker.ticks.append(tick)
-        self.pendingTickers.add(ticker)
+        if price or size:
+            tick = TickData(self.lastTime, tickType, price, size)
+            ticker.ticks.append(tick)
+            self.pendingTickers.add(ticker)
 
     @iswrapper
     def tickSnapshotEnd(self, reqId):
