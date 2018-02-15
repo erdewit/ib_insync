@@ -61,7 +61,7 @@ class Wrapper(EWrapper):
         self._results[key] = container if container is not None else []
         return future
 
-    def _endReq(self, key, result=None):
+    def _endReq(self, key, result=None, success=True):
         """
         Finish the future of corresponding key with the given result.
         If no result is given then it will be popped of the general results.
@@ -71,7 +71,10 @@ class Wrapper(EWrapper):
             if result is None:
                 result = self._results.pop(key, [])
             if not future.done():
-                future.set_result(result)
+                if success:
+                    future.set_result(result)
+                else:
+                    future.set_exception(result)
 
     def startTicker(self, reqId, contract, tickType):
         """
@@ -377,8 +380,11 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def headTimestamp(self, reqId, headTimestamp):
-        dt = util.parseIBDatetime(headTimestamp)
-        self._endReq(reqId, dt)
+        try:
+            dt = util.parseIBDatetime(headTimestamp)
+            self._endReq(reqId, dt)
+        except ValueError as exc:
+            self._endReq(reqId, exc, False)
 
     @iswrapper
     def historicalTicks(self, reqId, ticks, done):
