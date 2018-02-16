@@ -121,6 +121,8 @@ class Wrapper(EWrapper):
             self._setTimer()
 
     def _setTimer(self):
+        if not self.lastTime:
+            return
         now = datetime.datetime.now(datetime.timezone.utc)
         secs = (now - self.lastTime).total_seconds()
         if secs >= self._timeout:

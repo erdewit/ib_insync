@@ -2,6 +2,7 @@ import os
 import asyncio
 import logging
 import configparser
+from contextlib import suppress
 
 from .objects import Object
 import ib_insync.util as util
@@ -13,6 +14,14 @@ class IBController(Object):
     """
     Programmatic control over starting and stopping TWS/Gateway
     using IBController (https://github.com/ib-controller/ib-controller).
+    
+    On Windows the the proactor event loop must have been set:
+    
+    .. code-block:: python
+        
+        import asyncio
+        asyncio.set_event_loop(asyncio.ProactorEventLoop())
+
     """
     defaults = dict(
         APP='TWS',  # 'TWS' or 'GATEWAY'
@@ -26,11 +35,12 @@ class IBController(Object):
         TWSPASSWORD='',
         JAVA_PATH='',
         TWS_CONFIG_PATH='')
-    __slots__ = list(defaults) + ['_proc', '_logger', '_controllerPort']
+    __slots__ = list(defaults) + ['_proc', '_logger', '_monitor']
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
         self._proc = None
+        self._monitor = None
         self._logger = logging.getLogger('ib_insync.IBController')
         self.start()
 
@@ -56,9 +66,7 @@ class IBController(Object):
         """
         Terminate TWS/IBG.
         """
-        self._logger.info('Terminating')
-        self._proc.terminate()
-        self._proc = None
+        util.syncAwait(self.terminateAsync())
 
     async def startAsync(self):
         self._logger.info('Starting')
@@ -70,12 +78,7 @@ class IBController(Object):
                 d[k] = os.path.expanduser(v)
         if not d['TWS_CONFIG_PATH']:
             d['TWS_CONFIG_PATH'] = d['TWS_PATH']
-
-        # read ibcontroller ini file to get controller port
-        txt = '[section]' + open(d['IBC_INI']).read()
-        config = configparser.ConfigParser()
-        config.read_string(txt)
-        self._controllerPort = config.getint('section', 'IbControllerPort')
+        self.update(**d)
 
         # run shell command
         ext = 'bat' if os.sys.platform == 'win32' else 'sh'
@@ -83,16 +86,34 @@ class IBController(Object):
         env = {**os.environ, **d}
         self._proc = await asyncio.create_subprocess_shell(cmd, env=env,
                 stdout=asyncio.subprocess.PIPE)
-        asyncio.ensure_future(self.monitorAsync())
+        self._monitor = asyncio.ensure_future(self.monitorAsync())
 
     async def stopAsync(self):
         self._logger.info('Stopping')
-        _reader, writer = await asyncio.open_connection(
-                '127.0.0.1', self._controllerPort)
+
+        # read ibcontroller ini file to get controller port
+        txt = '[section]' + open(self.IBC_INI).read()
+        config = configparser.ConfigParser()
+        config.read_string(txt)
+        contrPort = config.getint('section', 'IbControllerPort')
+
+        _reader, writer = await asyncio.open_connection('127.0.0.1', contrPort)
         writer.write(b'STOP')
         await writer.drain()
         writer.close()
+        await self._proc.wait()
         self._proc = None
+        self._monitor.cancel()
+        self._monitor = None
+
+    async def terminateAsync(self):
+        self._logger.info('Terminating')
+        with suppress(ProcessLookupError):
+            self._proc.terminate()
+            await self._proc.wait()
+        self._proc = None
+        self._monitor.cancel()
+        self._monitor = None
 
     async def monitorAsync(self):
         while self._proc:
