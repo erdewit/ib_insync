@@ -318,6 +318,9 @@ class IB:
         Set timeout in seconds for receiving messages from TWS/IBG.
         This will emit the ``timeout`` callback if there is no new data
         for too long.
+        
+        The timeout fires once per connected session but can be set again
+        after firing or after a reconnect.
         """
         self.wrapper.setTimeout(timeout)
 

@@ -256,11 +256,11 @@ class Client(EClient):
         if self.isConnected():
             msg = f'Peer closed connection'
             self._logger.error(msg)
-            if self.apiError:
-                self.apiError(msg)
             if not self.isReady():
                 msg = f'clientId {self.clientId} already in use?'
                 self._logger.error(msg)
+            if self.apiError:
+                self.apiError(msg)
         else:
             self._logger.info('Disconnected')
         self.reset()

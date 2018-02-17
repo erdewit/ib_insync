@@ -20,9 +20,10 @@ class Wrapper(EWrapper):
     """
 
     def __init__(self):
-        self.reset()
         self._callbacks = {}  # eventName -> callback
         self._logger = logging.getLogger('ib_insync.wrapper')
+        self._timeoutHandle = None
+        self.reset()
 
     def reset(self):
         self.accountValues = {}  # (account, tag, currency, modelCode) -> AccountValue
@@ -49,7 +50,9 @@ class Wrapper(EWrapper):
         self.lastTime = None  # datetime (UTC) of last network packet arrival
         self.updateEvent = asyncio.Event()
         self._timeout = 0
-        self._timeoutHandle = None
+        if self._timeoutHandle:
+            self._timeoutHandle.cancel()
+            self._timeoutHandle = None
 
     def startReq(self, key, container=None):
         """
@@ -118,20 +121,22 @@ class Wrapper(EWrapper):
             self._timeoutHandle.cancel()
         self._timeout = timeout
         if timeout:
-            self._setTimer()
+            self._setTimer(timeout)
 
-    def _setTimer(self):
+    def _setTimer(self, delay=0):
         if not self.lastTime:
             return
-        now = datetime.datetime.now(datetime.timezone.utc)
-        secs = (now - self.lastTime).total_seconds()
-        if secs >= self._timeout:
+        if not delay:
+            now = datetime.datetime.now(datetime.timezone.utc)
+            delay = self._timeout - (now - self.lastTime).total_seconds()
+        if delay > 0:
+            loop = asyncio.get_event_loop()
+            self._timeoutHandle = loop.call_later(delay, self._setTimer)
+        else:
             self._logger.warning('Timeout')
             self._handleEvent('timeout')
-        else:
-            loop = asyncio.get_event_loop()
-            self._timeoutHandle = loop.call_later(
-                    self._timeout - secs, self._setTimer)
+            self._timeout = 0
+            self._timeoutHandle = None
 
     @iswrapper
     def managedAccounts(self, accountsList):

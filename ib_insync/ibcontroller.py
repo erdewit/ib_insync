@@ -69,6 +69,8 @@ class IBController(Object):
         util.syncAwait(self.terminateAsync())
 
     async def startAsync(self):
+        if self._proc:
+            return
         self._logger.info('Starting')
 
         # expand paths
@@ -89,6 +91,8 @@ class IBController(Object):
         self._monitor = asyncio.ensure_future(self.monitorAsync())
 
     async def stopAsync(self):
+        if not self._proc:
+            return
         self._logger.info('Stopping')
 
         # read ibcontroller ini file to get controller port
@@ -107,6 +111,8 @@ class IBController(Object):
         self._monitor = None
 
     async def terminateAsync(self):
+        if not self._proc:
+            return
         self._logger.info('Terminating')
         with suppress(ProcessLookupError):
             self._proc.terminate()
