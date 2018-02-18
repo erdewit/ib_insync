@@ -134,7 +134,7 @@ class Wrapper(EWrapper):
             loop = asyncio.get_event_loop()
             self._timeoutHandle = loop.call_later(delay, self._setTimer)
         else:
-            self._logger.warning('Timeout')
+            self._logger.debug('Timeout')
             self._handleEvent('timeout', diff)
             self._timeout = 0
             self._timeoutHandle = None
