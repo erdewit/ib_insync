@@ -126,15 +126,16 @@ class Wrapper(EWrapper):
     def _setTimer(self, delay=0):
         if not self.lastTime:
             return
+        now = datetime.datetime.now(datetime.timezone.utc)
+        diff = (now - self.lastTime).total_seconds()
         if not delay:
-            now = datetime.datetime.now(datetime.timezone.utc)
-            delay = self._timeout - (now - self.lastTime).total_seconds()
+            delay = self._timeout - diff
         if delay > 0:
             loop = asyncio.get_event_loop()
             self._timeoutHandle = loop.call_later(delay, self._setTimer)
         else:
             self._logger.warning('Timeout')
-            self._handleEvent('timeout')
+            self._handleEvent('timeout', diff)
             self._timeout = 0
             self._timeoutHandle = None
 

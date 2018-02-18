@@ -305,9 +305,10 @@ class IB:
           Emits the reqId/orderId and TWS error code and string (see
           https://interactivebrokers.github.io/tws-api/message_codes.html).
           
-        * ``timeout()``:
+        * ``timeout(idlePeriod: float)``:
           Is emitted if no data is received for longer than the timeout period
-          specified with ``setTimeout``.
+          specified with ``setTimeout``. The value emitted is the period in
+          seconds since the last update.
 
         Unsetting is done by supplying None as callback.
         """

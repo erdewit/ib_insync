@@ -247,6 +247,8 @@ def _syncAwaitAsyncio(future):
     assert asyncio.Task is asyncio.tasks._PyTask, \
             'To allow nested event loops, use util.patchAsyncio()'
     loop = asyncio.get_event_loop()
+    preserved_ready = list(loop._ready)
+    loop._ready.clear()
     future = asyncio.ensure_future(future)
     current_tasks = asyncio.Task._current_tasks
     preserved_task = current_tasks.get(loop)
@@ -254,6 +256,7 @@ def _syncAwaitAsyncio(future):
         loop._run_once()
         if loop._stopping:
             break
+    loop._ready.extendleft(preserved_ready)
     if preserved_task is not None:
         current_tasks[loop] = preserved_task
     else:
