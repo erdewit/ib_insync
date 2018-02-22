@@ -163,11 +163,11 @@ class Client(EClient):
             self.reset()
             msg = f'API connection failed: {e!r}'
             self._logger.error(msg)
-            if self.apiError:
-                self.apiError(msg)
             if isinstance(e, ConnectionRefusedError):
                 msg = 'Make sure API port on TWS/IBG is open'
                 self._logger.error(msg)
+            if self.apiError:
+                self.apiError(msg)
             raise
 
     def sendMsg(self, msg):

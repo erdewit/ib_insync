@@ -20,6 +20,8 @@ class Wrapper(EWrapper):
     """
 
     def __init__(self):
+        self.updateEvent = asyncio.Event()
+        self.timeoutEvent = asyncio.Event()
         self._callbacks = {}  # eventName -> callback
         self._logger = logging.getLogger('ib_insync.wrapper')
         self._timeoutHandle = None
@@ -48,7 +50,6 @@ class Wrapper(EWrapper):
         self.accounts = []
         self.clientId = -1
         self.lastTime = None  # datetime (UTC) of last network packet arrival
-        self.updateEvent = asyncio.Event()
         self._timeout = 0
         if self._timeoutHandle:
             self._timeoutHandle.cancel()
@@ -115,7 +116,7 @@ class Wrapper(EWrapper):
             except:
                 self._logger.exception('Event %s(%s)', eventName, args)
 
-    def setTimeout(self, timeout: float=60):
+    def setTimeout(self, timeout):
         self.lastTime = datetime.datetime.now(datetime.timezone.utc)
         if self._timeoutHandle:
             self._timeoutHandle.cancel()
@@ -136,6 +137,8 @@ class Wrapper(EWrapper):
         else:
             self._logger.debug('Timeout')
             self._handleEvent('timeout', diff)
+            self.timeoutEvent.set()
+            self.timeoutEvent.clear()
             self._timeout = 0
             self._timeoutHandle = None
 
@@ -742,7 +745,8 @@ class Wrapper(EWrapper):
     @iswrapper
     def error(self, reqId, errorCode, errorString):
         # https://interactivebrokers.github.io/tws-api/message_codes.html
-        isWarning = errorCode in (202, 399, 10167) or 2100 <= errorCode < 2200
+        warningCodes = {165, 202, 399, 10167}
+        isWarning = errorCode in warningCodes or 2100 <= errorCode < 2200
         msg = (f'{"Warning" if isWarning else "Error"} '
                 f'{errorCode}, reqId {reqId}: {errorString}')
         if isWarning:

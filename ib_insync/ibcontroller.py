@@ -4,10 +4,12 @@ import logging
 import configparser
 from contextlib import suppress
 
-from .objects import Object
+from ib_insync.objects import Object
+from ib_insync.contract import Forex
+from ib_insync.ib import IB
 import ib_insync.util as util
 
-__all__ = ['IBController']
+__all__ = ['IBController', 'Watchdog']
 
 
 class IBController(Object):
@@ -42,13 +44,13 @@ class IBController(Object):
         self._proc = None
         self._monitor = None
         self._logger = logging.getLogger('ib_insync.IBController')
-        self.start()
 
     def __enter__(self):
+        self.start()
         return self
 
     def __exit__(self, *_exc):
-        self.stop()
+        self.terminate()
 
     def start(self):
         """
@@ -127,3 +129,109 @@ class IBController(Object):
             if not line:
                 break
             self._logger.info(line.strip().decode())
+
+
+class Watchdog(Object):
+    """
+    Start, connect and watch over the TWS or gateway app to keep it running
+    in the face of crashes, freezes and network outages.
+    
+    The idea is to wait until there is no traffic coming from the app for
+    a certain amount of time (the ``appTimeout`` parameter). This triggers
+    a historical request to be placed just to see if the app is still alive
+    and well. If yes, then continue, if no then restart the whole app
+    and reconnect.
+    
+    Parameters:
+    
+    * ``controller``: IBController instance;
+    * ``host``, ``port``, ``clientId`` and ``connectTimeout``: Used for
+      connecting to the app;
+    * ``appStartupTime``: Time (in seconds) that the app is given to start up.
+      Make sure that it is given ample time;
+    * ``appTimeout``: Timeout (in seconds) for network traffic idle time;
+    * ``retryDelay``: Time (in seconds) to restart app after a previous failure.
+    
+    Note: ``util.patchAsyncio()`` must be evoked.
+    """
+    defaults = dict(
+        controller=None,
+        host='127.0.0.1',
+        port='7497',
+        clientId=1,
+        connectTimeout=2,
+        ib=None,
+        appStartupTime=30,
+        appTimeout=60,
+        retryDelay=1)
+    __slots__ = list(defaults.keys()) + ['_watcher', '_logger']
+
+    def __init__(self, *args, **kwargs):
+        Object.__init__(self, *args, **kwargs)
+        assert self.controller
+        assert self.retryDelay > 0
+        self.ib = IB()
+        self.ib.client.apiError = self.onApiError
+        self.ib.setCallback('error', self.onError)
+        self._watcher = asyncio.ensure_future(self.watchAsync())
+        self._logger = logging.getLogger('ib_insync.Watchdog')
+
+    def start(self):
+        self._logger.info('Starting')
+        self.controller.start()
+        IB.sleep(self.appStartupTime)
+        try:
+            self.ib.connect(self.host, self.port, self.clientId,
+                    self.connectTimeout)
+            self.ib.setTimeout(self.appTimeout)
+        except:
+            # a connection failure will be handled by the apiError callback
+            pass
+
+    def stop(self):
+        self._logger.info('Stopping')
+        self.ib.disconnect()
+        self.controller.terminate()
+
+    def scheduleRestart(self):
+        self._logger.info(f'Schedule restart in {self.retryDelay}s')
+        loop = asyncio.get_event_loop()
+        loop.call_later(self.retryDelay, self.start)
+
+    def onApiError(self, msg):
+        self.stop()
+        self.scheduleRestart()
+
+    def onError(self, reqId, errorCode, errorString):
+        if errorCode == 1100:
+            self._logger.info(f'Error 1100: {errorString}')
+            self.stop()
+            self.scheduleRestart()
+
+    async def watchAsync(self):
+        while True:
+            await self.ib.wrapper.timeoutEvent.wait()
+            # soft timeout, probe the app with a historical request
+            contract = Forex('EURUSD')
+            probe = self.ib.reqHistoricalDataAsync(
+                    contract, '', '30 S', '5 secs', 'MIDPOINT', False)
+            try:
+                bars = await asyncio.wait_for(probe, 4)
+                if not bars:
+                    raise Exception()
+                self.ib.setTimeout(self.appTimeout)
+            except:
+                # hard timeout, flush everything and start anew
+                self._logger.error('Hard timeout')
+                self.stop()
+                self.scheduleRestart()
+
+
+if __name__ == '__main__':
+    util.logToConsole()
+    util.patchAsyncio()
+    controller = IBController('GATEWAY', '969', 'paper')
+#             TWSUSERID='edemo', TWSPASSWORD='demouser')
+    app = Watchdog(controller, port=4002)
+    app.start()
+    IB.run()
