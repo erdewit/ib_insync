@@ -170,7 +170,8 @@ class Watchdog(Object):
         Object.__init__(self, *args, **kwargs)
         assert self.controller
         assert self.retryDelay > 0
-        self.ib = IB()
+        if self.ib is None:
+            self.ib = IB()
         self.ib.client.apiError = self.onApiError
         self.ib.setCallback('error', self.onError)
         self._watcher = asyncio.ensure_future(self.watchAsync())
