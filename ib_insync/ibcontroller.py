@@ -140,7 +140,7 @@ class Watchdog(Object):
     a certain amount of time (the ``appTimeout`` parameter). This triggers
     a historical request to be placed just to see if the app is still alive
     and well. If yes, then continue, if no then restart the whole app
-    and reconnect.
+    and reconnect. Restarting will also occur directly on error 1100.
     
     Parameters:
     
@@ -152,7 +152,7 @@ class Watchdog(Object):
     * ``appTimeout``: Timeout (in seconds) for network traffic idle time;
     * ``retryDelay``: Time (in seconds) to restart app after a previous failure.
     
-    Note: ``util.patchAsyncio()`` must be evoked.
+    Note: ``util.patchAsyncio()`` must have been called before.
     """
     defaults = dict(
         controller=None,
@@ -162,13 +162,14 @@ class Watchdog(Object):
         connectTimeout=2,
         ib=None,
         appStartupTime=30,
-        appTimeout=60,
+        appTimeout=20,
         retryDelay=1)
     __slots__ = list(defaults.keys()) + ['_watcher', '_logger']
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
         assert self.controller
+        assert 0 < self.appTimeout < 60
         assert self.retryDelay > 0
         if self.ib is None:
             self.ib = IB()
