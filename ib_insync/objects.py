@@ -25,7 +25,7 @@ __all__ = (
     'TickByTickAllLast TickByTickBidAsk TickByTickMidPoint '
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
     'MktDepthData DOMLevel BracketOrder TradeLogEntry ScanData TagValue '
-    'PortfolioItem Position Fill OptionComputation OptionChain '
+    'PortfolioItem Position Fill OptionComputation OptionChain Dividends '
     'NewsArticle HistoricalNews NewsTick NewsBulletin ConnectionStats '
     'OrderCondition ExecutionCondition OperatorCondition MarginCondition '
     'ContractCondition TimeCondition PriceCondition PercentChangeCondition '
@@ -298,6 +298,9 @@ OptionComputation = namedtuple('OptionComputation',
 
 OptionChain = namedtuple('OptionChain',
     'exchange underlyingConId tradingClass multiplier expirations strikes')
+
+Dividends = namedtuple('Dividends',
+    'past12Months next12Months nextDate nextAmount')
 
 NewsArticle = namedtuple('NewsArticle',
     'articleType articleText')

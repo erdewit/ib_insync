@@ -108,7 +108,8 @@ class Client(EClient):
         """
         Get statistics about the connection.
         """
-        assert self.isReady(), 'Not connected'
+        if not self.isReady():
+            raise ConnectionError('Not connected')
         return ConnectionStats(
                 self._startTime,
                 time.time() - self._startTime,
@@ -119,7 +120,8 @@ class Client(EClient):
         """
         Get new request ID.
         """
-        assert self.isReady(), 'Not connected'
+        if not self.isReady():
+            raise ConnectionError('Not connected')
         newId = self._reqIdSeq
         self._reqIdSeq += 1
         return newId
@@ -128,7 +130,8 @@ class Client(EClient):
         """
         Get the list of account names that are under management.
         """
-        assert self.isReady(), 'Not connected'
+        if not self.isReady():
+            raise ConnectionError('Not connected')
         return self._accounts
 
     def connect(self, host, port, clientId, timeout=2):

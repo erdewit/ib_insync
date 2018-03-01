@@ -574,12 +574,12 @@ class Wrapper(EWrapper):
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
             return
-        if tickType == 48:
+        try:
+            if tickType == 48:
             # RTVolume string format:
             # price;size;time in ms since epoch;total volume;VWAP;single trade
             # example:
             # 701.28;1;1348075471534;67854;701.46918464;true
-            try:
                 price, size, _, rtVolume, vwap, _ = value.split(';')
                 if rtVolume:
                     ticker.rtVolume = int(rtVolume)
@@ -597,8 +597,16 @@ class Wrapper(EWrapper):
                     tick = TickData(self.lastTime, tickType, price, size)
                     ticker.ticks.append(tick)
                     self.pendingTickers.add(ticker)
-            except ValueError:
-                self._logger.error(f'tickString: malformed value: {value!r}')
+            elif tickType == 59:
+                # https://interactivebrokers.github.io/tws-api/tick_types.html#ib_dividends
+                # dividend example:
+                # 0.83,0.92,20130219,0.23
+                past12, next12, date, amount = value.split(',')
+                ticker.dividends = Dividends(float(past12), float(next12),
+                        util.parseIBDatetime(date), float(amount))
+        except ValueError:
+            self._logger.error(f'tickString with tickType {tickType}: '
+                    f'malformed value: {value!r}')
 
     @iswrapper
     def tickGeneric(self, reqId, tickType, value):
