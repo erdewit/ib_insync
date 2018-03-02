@@ -61,4 +61,9 @@ FlexReport
 
 IBController
 ------------
-.. automodule:: ib_insync.ibcontroller
+.. autoclass:: ib_insync.ibcontroller.IBController
+
+Watchdog
+--------
+.. autoclass:: ib_insync.ibcontroller.Watchdog
+

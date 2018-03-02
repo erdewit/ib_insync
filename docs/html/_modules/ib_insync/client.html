@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.client &#8212; IB-insync 0.9.2 documentation</title>
+    <title>ib_insync.client &#8212; IB-insync 0.9.3 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.2',
+        VERSION:     '0.9.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -189,7 +189,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get statistics about the connection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">(),</span> <span class="s1">&#39;Not connected&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s1">&#39;Not connected&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ConnectionStats</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span><span class="p">,</span>
                 <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span><span class="p">,</span>
@@ -200,7 +201,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get new request ID.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">(),</span> <span class="s1">&#39;Not connected&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s1">&#39;Not connected&#39;</span><span class="p">)</span>
         <span class="n">newId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">newId</span></div>
@@ -209,7 +211,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the list of account names that are under management.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">(),</span> <span class="s1">&#39;Not connected&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s1">&#39;Not connected&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accounts</span></div>
 
 <div class="viewcode-block" id="Client.connect"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
@@ -244,11 +247,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;API connection failed: </span><span class="si">{e!r}</span><span class="s1">&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="ne">ConnectionRefusedError</span><span class="p">):</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Make sure API port on TWS/IBG is open&#39;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">raise</span></div>
 
 <div class="viewcode-block" id="Client.sendMsg"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.sendMsg">[docs]</a>    <span class="k">def</span> <span class="nf">sendMsg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
@@ -337,11 +340,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isConnected</span><span class="p">():</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;Peer closed connection&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;clientId </span><span class="si">{self.clientId}</span><span class="s1"> already in use?&#39;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Disconnected&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>

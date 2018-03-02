@@ -301,8 +301,7 @@ class IB:
         * ``tickNews(news: NewsTick)``:
           Emit a new news headline.
           
-        * ``error(reqId: int, errorCode: int, errorString: str,
-                contract: Contract)``:
+        * ``error(reqId: int, errorCode: int, errorString: str, contract: Contract)``:
           Emits the reqId/orderId and TWS error code and string (see
           https://interactivebrokers.github.io/tws-api/message_codes.html)
           together with the contract the error applies to (or None if no

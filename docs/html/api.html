@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.9.2 documentation</title>
+    <title>API docs &#8212; IB-insync 0.9.3 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.2',
+        VERSION:     '0.9.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -66,7 +66,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.wrapper">Wrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.util">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.flexreport">FlexReport</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.ibcontroller">IBController</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ibcontroller">IBController</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#watchdog">Watchdog</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks.html">Notebooks</a></li>
@@ -94,7 +95,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.2.</p>
+<p>Release 0.9.3.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -810,11 +811,27 @@ An account value has changed.</li>
 An account value has changed.</li>
 <li><code class="docutils literal"><span class="pre">tickNews(news:</span> <span class="pre">NewsTick)</span></code>:
 Emit a new news headline.</li>
-<li><code class="docutils literal"><span class="pre">error(reqId:</span> <span class="pre">int,</span> <span class="pre">errorCode:</span> <span class="pre">int,</span> <span class="pre">errorString:</span> <span class="pre">str)</span></code>:
+<li><code class="docutils literal"><span class="pre">error(reqId:</span> <span class="pre">int,</span> <span class="pre">errorCode:</span> <span class="pre">int,</span> <span class="pre">errorString:</span> <span class="pre">str,</span> <span class="pre">contract:</span> <span class="pre">Contract)</span></code>:
 Emits the reqId/orderId and TWS error code and string (see
-<a class="reference external" href="https://interactivebrokers.github.io/tws-api/message_codes.html">https://interactivebrokers.github.io/tws-api/message_codes.html</a>).</li>
+<a class="reference external" href="https://interactivebrokers.github.io/tws-api/message_codes.html">https://interactivebrokers.github.io/tws-api/message_codes.html</a>)
+together with the contract the error applies to (or None if no
+contract applies).</li>
+<li><code class="docutils literal"><span class="pre">timeout(idlePeriod:</span> <span class="pre">float)</span></code>:
+Is emitted if no data is received for longer than the timeout period
+specified with <code class="docutils literal"><span class="pre">setTimeout</span></code>. The value emitted is the period in
+seconds since the last update.</li>
 </ul>
 <p>Unsetting is done by supplying None as callback.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.setTimeout">
+<code class="descname">setTimeout</code><span class="sig-paren">(</span><em>timeout: float = 60</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.setTimeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.setTimeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set timeout in seconds for receiving messages from TWS/IBG.
+This will emit the <code class="docutils literal"><span class="pre">timeout</span></code> callback if there is no new data
+for too long.</p>
+<p>The timeout fires once per connected session but can be set again
+after firing or after a reconnect.</p>
 </dd></dl>
 
 <dl class="staticmethod">
@@ -1072,7 +1089,7 @@ If an attribute is not given it will take its value from the
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'PreSubmitted', 'Submitted', 'ApiPending', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'PreSubmitted', 'ApiPending', 'Submitted', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1092,7 +1109,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'Inactive', 'Cancelled', 'Filled', 'ApiCancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'ApiCancelled', 'Inactive', 'Cancelled', 'Filled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1348,7 +1365,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 140532435396200: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': ''}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139985528051920: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': ''}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2074,7 +2091,7 @@ If an attribute is not given it will take its value from the
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.defaults">
-<code class="descname">defaults</code><em class="property"> = {'contract': None, 'time': None, 'bid': nan, 'bidSize': nan, 'ask': nan, 'askSize': nan, 'last': nan, 'lastSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'volume': nan, 'open': nan, 'high': nan, 'low': nan, 'close': nan, 'vwap': nan, 'low13week': nan, 'high13week': nan, 'low26week': nan, 'high26week': nan, 'low52week': nan, 'high52week': nan, 'bidYield': nan, 'askYield': nan, 'lastYield': nan, 'rtVolume': nan, 'avVolume': nan, 'putOpenInterest': nan, 'callOpenInterest': nan, 'putVolume': nan, 'callVolume': nan, 'futuresOpenInterest': nan, 'ticks': None, 'tickByTicks': None, 'domBids': None, 'domAsks': None, 'domTicks': None, 'bidGreeks': None, 'askGreeks': None, 'lastGreeks': None, 'modelGreeks': None}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'contract': None, 'time': None, 'bid': nan, 'bidSize': nan, 'ask': nan, 'askSize': nan, 'last': nan, 'lastSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'volume': nan, 'open': nan, 'high': nan, 'low': nan, 'close': nan, 'vwap': nan, 'low13week': nan, 'high13week': nan, 'low26week': nan, 'high26week': nan, 'low52week': nan, 'high52week': nan, 'bidYield': nan, 'askYield': nan, 'lastYield': nan, 'rtVolume': nan, 'avVolume': nan, 'putOpenInterest': nan, 'callOpenInterest': nan, 'putVolume': nan, 'callVolume': nan, 'futuresOpenInterest': nan, 'dividends': None, 'ticks': None, 'tickByTicks': None, 'domBids': None, 'domAsks': None, 'domTicks': None, 'bidGreeks': None, 'askGreeks': None, 'lastGreeks': None, 'modelGreeks': None}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2151,6 +2168,11 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.contract">
 <code class="descname">contract</code><a class="headerlink" href="#ib_insync.ticker.Ticker.contract" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.dividends">
+<code class="descname">dividends</code><a class="headerlink" href="#ib_insync.ticker.Ticker.dividends" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4101,6 +4123,32 @@ and as keyword, the keyword wins.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="ib_insync.objects.Dividends">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">Dividends</code><span class="sig-paren">(</span><em>past12Months</em>, <em>next12Months</em>, <em>nextDate</em>, <em>nextAmount</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.Dividends" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of Dividends(past12Months, next12Months, nextDate, nextAmount)</p>
+<dl class="attribute">
+<dt id="ib_insync.objects.Dividends.next12Months">
+<code class="descname">next12Months</code><a class="headerlink" href="#ib_insync.objects.Dividends.next12Months" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.Dividends.nextAmount">
+<code class="descname">nextAmount</code><a class="headerlink" href="#ib_insync.objects.Dividends.nextAmount" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.Dividends.nextDate">
+<code class="descname">nextDate</code><a class="headerlink" href="#ib_insync.objects.Dividends.nextDate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.Dividends.past12Months">
+<code class="descname">past12Months</code><a class="headerlink" href="#ib_insync.objects.Dividends.past12Months" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="ib_insync.objects.NewsArticle">
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">NewsArticle</code><span class="sig-paren">(</span><em>articleType</em>, <em>articleText</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.NewsArticle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of NewsArticle(articleType, articleText)</p>
@@ -4533,6 +4581,11 @@ and as keyword, the keyword wins.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.endBars">
+<code class="descname">endBars</code><span class="sig-paren">(</span><em>bars</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.endBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.endBars" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.endTicker">
 <code class="descname">endTicker</code><span class="sig-paren">(</span><em>ticker</em>, <em>tickType</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.endTicker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.endTicker" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4703,8 +4756,18 @@ and as keyword, the keyword wins.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.setTimeout">
+<code class="descname">setTimeout</code><span class="sig-paren">(</span><em>timeout</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.setTimeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.setTimeout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.startBars">
+<code class="descname">startBars</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>bars</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.startBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.startBars" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.startReq">
-<code class="descname">startReq</code><span class="sig-paren">(</span><em>key</em>, <em>container=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.startReq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.startReq" title="Permalink to this definition">¶</a></dt>
+<code class="descname">startReq</code><span class="sig-paren">(</span><em>key</em>, <em>contract=None</em>, <em>container=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.startReq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.startReq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start a new request and return the future that is associated
 with with the key and container. The container is a list by default.</p>
 </dd></dl>
@@ -4977,13 +5040,18 @@ Order, etc.</p>
 <dd></dd></dl>
 
 </div>
-<div class="section" id="module-ib_insync.ibcontroller">
-<span id="ibcontroller"></span><h2>IBController<a class="headerlink" href="#module-ib_insync.ibcontroller" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="ibcontroller">
+<h2>IBController<a class="headerlink" href="#ibcontroller" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ib_insync.ibcontroller.IBController">
 <em class="property">class </em><code class="descclassname">ib_insync.ibcontroller.</code><code class="descname">IBController</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBController" title="Permalink to this definition">¶</a></dt>
 <dd><p>Programmatic control over starting and stopping TWS/Gateway
 using IBController (<a class="reference external" href="https://github.com/ib-controller/ib-controller">https://github.com/ib-controller/ib-controller</a>).</p>
+<p>On Windows the the proactor event loop must have been set:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">ProactorEventLoop</span><span class="p">())</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="ib_insync.ibcontroller.IBController.APP">
 <code class="descname">APP</code><a class="headerlink" href="#ib_insync.ibcontroller.IBController.APP" title="Permalink to this definition">¶</a></dt>
@@ -5076,6 +5144,117 @@ using IBController (<a class="reference external" href="https://github.com/ib-co
 <code class="descname">terminate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBController.terminate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBController.terminate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Terminate TWS/IBG.</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.IBController.terminateAsync">
+<code class="descname">terminateAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBController.terminateAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBController.terminateAsync" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="watchdog">
+<h2>Watchdog<a class="headerlink" href="#watchdog" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ib_insync.ibcontroller.Watchdog">
+<em class="property">class </em><code class="descclassname">ib_insync.ibcontroller.</code><code class="descname">Watchdog</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#Watchdog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start, connect and watch over the TWS or gateway app to keep it running
+in the face of crashes, freezes and network outages.</p>
+<p>The idea is to wait until there is no traffic coming from the app for
+a certain amount of time (the <code class="docutils literal"><span class="pre">appTimeout</span></code> parameter). This triggers
+a historical request to be placed just to see if the app is still alive
+and well. If yes, then continue, if no then restart the whole app
+and reconnect. Restarting will also occur directly on error 1100.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">controller</span></code>: IBController instance;</li>
+<li><code class="docutils literal"><span class="pre">host</span></code>, <code class="docutils literal"><span class="pre">port</span></code>, <code class="docutils literal"><span class="pre">clientId</span></code> and <code class="docutils literal"><span class="pre">connectTimeout</span></code>: Used for
+connecting to the app;</li>
+<li><code class="docutils literal"><span class="pre">appStartupTime</span></code>: Time (in seconds) that the app is given to start up.
+Make sure that it is given ample time;</li>
+<li><code class="docutils literal"><span class="pre">appTimeout</span></code>: Timeout (in seconds) for network traffic idle time;</li>
+<li><code class="docutils literal"><span class="pre">retryDelay</span></code>: Time (in seconds) to restart app after a previous failure.</li>
+</ul>
+<p>Note: <code class="docutils literal"><span class="pre">util.patchAsyncio()</span></code> must have been called before.</p>
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.Watchdog.appStartupTime">
+<code class="descname">appStartupTime</code><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.appStartupTime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.Watchdog.appTimeout">
+<code class="descname">appTimeout</code><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.appTimeout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.Watchdog.clientId">
+<code class="descname">clientId</code><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.clientId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.Watchdog.connectTimeout">
+<code class="descname">connectTimeout</code><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.connectTimeout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.Watchdog.controller">
+<code class="descname">controller</code><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.controller" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.Watchdog.defaults">
+<code class="descname">defaults</code><em class="property"> = {'controller': None, 'host': '127.0.0.1', 'port': '7497', 'clientId': 1, 'connectTimeout': 2, 'ib': None, 'appStartupTime': 30, 'appTimeout': 20, 'retryDelay': 1}</em><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.Watchdog.host">
+<code class="descname">host</code><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.host" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.Watchdog.ib">
+<code class="descname">ib</code><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.ib" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.Watchdog.onApiError">
+<code class="descname">onApiError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#Watchdog.onApiError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.onApiError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.Watchdog.onError">
+<code class="descname">onError</code><span class="sig-paren">(</span><em>reqId</em>, <em>errorCode</em>, <em>errorString</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#Watchdog.onError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.onError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.Watchdog.port">
+<code class="descname">port</code><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.port" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.Watchdog.retryDelay">
+<code class="descname">retryDelay</code><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.retryDelay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.Watchdog.scheduleRestart">
+<code class="descname">scheduleRestart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#Watchdog.scheduleRestart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.scheduleRestart" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.Watchdog.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#Watchdog.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.Watchdog.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#Watchdog.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.Watchdog.watchAsync">
+<code class="descname">watchAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#Watchdog.watchAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.watchAsync" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

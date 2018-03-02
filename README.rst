@@ -93,6 +93,16 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.3
+^^^^^^^^^^^^^
+
+* Watchdog class added
+* ib.setTimeout() added
+* Ticker.dividends added for use with genericTickList 456
+* Errors and warnings will now log the contract they apply to
+* IB error() callback signature changed to include contract
+* Fix for issue #44
+
 Version 0.9.2
 ^^^^^^^^^^^^^
 
