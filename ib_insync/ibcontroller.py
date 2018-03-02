@@ -204,7 +204,7 @@ class Watchdog(Object):
         self.stop()
         self.scheduleRestart()
 
-    def onError(self, reqId, errorCode, errorString):
+    def onError(self, reqId, errorCode, errorString, contract):
         if errorCode == 1100:
             self._logger.info(f'Error 1100: {errorString}')
             self.stop()
