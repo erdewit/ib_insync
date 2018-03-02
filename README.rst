@@ -96,7 +96,7 @@ Changelog
 Version 0.9.4
 ^^^^^^^^^^^^^
 
-* Fixed issue #48
+* Fixed issue #49
 
 Version 0.9.3
 ^^^^^^^^^^^^^
