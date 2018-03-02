@@ -46,6 +46,7 @@ class Wrapper(EWrapper):
 
         self._futures = {}  # futures and results are linked by key
         self._results = {}
+        self._reqId2Contract = {}
 
         self.accounts = []
         self.clientId = -1
@@ -55,7 +56,7 @@ class Wrapper(EWrapper):
             self._timeoutHandle.cancel()
             self._timeoutHandle = None
 
-    def startReq(self, key, container=None):
+    def startReq(self, key, contract=None, container=None):
         """
         Start a new request and return the future that is associated
         with with the key and container. The container is a list by default.
@@ -63,6 +64,8 @@ class Wrapper(EWrapper):
         future = asyncio.Future()
         self._futures[key] = future
         self._results[key] = container if container is not None else []
+        if contract:
+            self._reqId2Contract[key] = contract
         return future
 
     def _endReq(self, key, result=None, success=True):
@@ -71,6 +74,7 @@ class Wrapper(EWrapper):
         If no result is given then it will be popped of the general results.
         """
         future = self._futures.pop(key, None)
+        self._reqId2Contract.pop(key, None)
         if future:
             if result is None:
                 result = self._results.pop(key, [])
@@ -91,12 +95,22 @@ class Wrapper(EWrapper):
                     domBids=[], domAsks=[], domTicks=[])
             self.tickers[id(contract)] = ticker
         self.reqId2Ticker[reqId] = ticker
+        self._reqId2Contract[reqId] = contract
         self.ticker2ReqId[tickType][ticker] = reqId
         return ticker
 
     def endTicker(self, ticker, tickType):
+        self._reqId2Contract.pop(ticker.contract)
         reqId = self.ticker2ReqId[tickType].pop(ticker, 0)
         return reqId
+
+    def startBars(self, reqId, contract, bars):
+        self._reqId2Contract[reqId] = contract
+        self.reqId2Bars[reqId] = bars
+
+    def endBars(self, bars):
+        self._reqId2Contract.pop(bars.contract)
+        self.reqId2Bars.pop(bars.reqId, None)
 
     def setCallback(self, eventName, callback):
         events = ('updated', 'pendingTickers', 'barUpdate', 'openOrder',
@@ -757,6 +771,10 @@ class Wrapper(EWrapper):
         isWarning = errorCode in warningCodes or 2100 <= errorCode < 2200
         msg = (f'{"Warning" if isWarning else "Error"} '
                 f'{errorCode}, reqId {reqId}: {errorString}')
+        contract = self._reqId2Contract.get(reqId)
+        if contract:
+            msg += f', contract: {contract}'
+
         if isWarning:
             self._logger.info(msg)
         else:
@@ -783,7 +801,8 @@ class Wrapper(EWrapper):
                             tick = MktDepthData(self.lastTime, position,
                                     '', 2, side, level.price, 0)
                             ticker.domTicks.append(tick)
-        self._handleEvent('error', reqId, errorCode, errorString)
+
+        self._handleEvent('error', reqId, errorCode, errorString, contract)
 
     @iswrapper
     # additional wrapper method provided by Client

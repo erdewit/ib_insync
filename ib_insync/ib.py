@@ -301,9 +301,12 @@ class IB:
         * ``tickNews(news: NewsTick)``:
           Emit a new news headline.
           
-        * ``error(reqId: int, errorCode: int, errorString: str)``:
+        * ``error(reqId: int, errorCode: int, errorString: str,
+                contract: Contract)``:
           Emits the reqId/orderId and TWS error code and string (see
-          https://interactivebrokers.github.io/tws-api/message_codes.html).
+          https://interactivebrokers.github.io/tws-api/message_codes.html)
+          together with the contract the error applies to (or None if no
+          contract applies).
           
         * ``timeout(idlePeriod: float)``:
           Is emitted if no data is received for longer than the timeout period
@@ -708,7 +711,7 @@ class IB:
         bars.whatToShow = whatToShow
         bars.useRTH = useRTH
         bars.realTimeBarsOptions = realTimeBarsOptions
-        self.wrapper.reqId2Bars[reqId] = bars
+        self.wrapper.startBars(reqId, contract, bars)
         self.client.reqRealTimeBars(reqId, contract, barSize, whatToShow,
                 useRTH, realTimeBarsOptions)
         return bars
@@ -719,7 +722,7 @@ class IB:
         Cancel the realtime bars subscription.
         """
         self.client.cancelRealTimeBars(bars.reqId)
-        self.wrapper.reqId2Bars.pop(bars.reqId, None)
+        self.wrapper.endBars(bars)
 
     @api
     def reqHistoricalData(self, contract: Contract, endDateTime: object,
@@ -749,7 +752,7 @@ class IB:
         Cancel the update subscription for the historical bars.
         """
         self.client.cancelHistoricalData(bars.reqId)
-        self.wrapper.reqId2Bars.pop(bars.reqId, None)
+        self.wrapper.endBars(bars)
 
     @api
     def reqHistoricalTicks(self, contract: Contract,
@@ -1095,7 +1098,7 @@ class IB:
         tickers = []
         for contract in contracts:
             reqId = self.client.getReqId()
-            future = self.wrapper.startReq(reqId)
+            future = self.wrapper.startReq(reqId, contract)
             futures.append(future)
             ticker = self.wrapper.startTicker(reqId, contract, 'snapshot')
             tickers.append(ticker)
@@ -1109,7 +1112,7 @@ class IB:
     def whatIfOrderAsync(self, contract, order):
         whatIfOrder = Order(**order.dict()).update(whatIf=True)
         reqId = self.client.getReqId()
-        future = self.wrapper.startReq(reqId)
+        future = self.wrapper.startReq(reqId, contract)
         self.client.placeOrder(reqId, contract, whatIfOrder)
         return future
 
@@ -1151,7 +1154,7 @@ class IB:
 
     def reqContractDetailsAsync(self, contract):
         reqId = self.client.getReqId()
-        future = self.wrapper.startReq(reqId)
+        future = self.wrapper.startReq(reqId, contract)
         self.client.reqContractDetails(reqId, contract)
         return future
 
@@ -1180,9 +1183,9 @@ class IB:
         bars.formatDate = formatDate
         bars.keepUpToDate = keepUpToDate
         bars.chartOptions = chartOptions
-        future = self.wrapper.startReq(reqId, bars)
+        future = self.wrapper.startReq(reqId, contract, container=bars)
         if keepUpToDate:
-            self.wrapper.reqId2Bars[reqId] = bars
+            self.wrapper.startBars(reqId, contract, bars)
         end = util.formatIBDatetime(endDateTime)
         self.client.reqHistoricalData(reqId, contract, end,
                 durationStr, barSizeSetting, whatToShow,
@@ -1193,7 +1196,7 @@ class IB:
             numberOfTicks, whatToShow, useRth,
             ignoreSize=False, miscOptions=None):
         reqId = self.client.getReqId()
-        future = self.wrapper.startReq(reqId)
+        future = self.wrapper.startReq(reqId, contract)
         start = util.formatIBDatetime(startDateTime)
         end = util.formatIBDatetime(endDateTime)
         self.client.reqHistoricalTicks(reqId, contract, start, end,
@@ -1204,7 +1207,7 @@ class IB:
     def reqHeadTimeStampAsync(self, contract, whatToShow,
             useRTH, formatDate):
         reqId = self.client.getReqId()
-        future = self.wrapper.startReq(reqId)
+        future = self.wrapper.startReq(reqId, contract)
         self.client.reqHeadTimeStamp(reqId, contract, whatToShow,
             useRTH, formatDate)
         return future
@@ -1216,14 +1219,14 @@ class IB:
 
     def reqHistogramDataAsync(self, contract, useRTH, period):
         reqId = self.client.getReqId()
-        future = self.wrapper.startReq(reqId)
+        future = self.wrapper.startReq(reqId, contract)
         self.client.reqHistogramData(reqId, contract, useRTH, period)
         return future
 
     def reqFundamentalDataAsync(self, contract, reportType,
             fundamentalDataOptions=None):
         reqId = self.client.getReqId()
-        future = self.wrapper.startReq(reqId)
+        future = self.wrapper.startReq(reqId, contract)
         self.client.reqFundamentalData(reqId, contract, reportType,
                 fundamentalDataOptions)
         return future
@@ -1246,7 +1249,7 @@ class IB:
     async def calculateImpliedVolatilityAsync(self, contract, optionPrice,
             underPrice, implVolOptions):
         reqId = self.client.getReqId()
-        future = self.wrapper.startReq(reqId)
+        future = self.wrapper.startReq(reqId, contract)
         self.client.calculateImpliedVolatility(reqId, contract, optionPrice,
                 underPrice, implVolOptions)
         try:
@@ -1261,7 +1264,7 @@ class IB:
     async def calculateOptionPriceAsync(self, contract, volatility,
             underPrice, optPrcOptions):
         reqId = self.client.getReqId()
-        future = self.wrapper.startReq(reqId)
+        future = self.wrapper.startReq(reqId, contract)
         self.client.calculateOptionPrice(reqId, contract, volatility,
                 underPrice, optPrcOptions)
         try:
