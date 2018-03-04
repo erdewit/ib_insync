@@ -93,6 +93,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.5
+^^^^^^^^^^^^^
+
+* Fixed canceling bar and tick subscriptions
+
 Version 0.9.4
 ^^^^^^^^^^^^^
 

@@ -100,8 +100,8 @@ class Wrapper(EWrapper):
         return ticker
 
     def endTicker(self, ticker, tickType):
-        self._reqId2Contract.pop(ticker.contract)
         reqId = self.ticker2ReqId[tickType].pop(ticker, 0)
+        self._reqId2Contract.pop(reqId, None)
         return reqId
 
     def startBars(self, reqId, contract, bars):
@@ -109,7 +109,7 @@ class Wrapper(EWrapper):
         self.reqId2Bars[reqId] = bars
 
     def endBars(self, bars):
-        self._reqId2Contract.pop(bars.contract)
+        self._reqId2Contract.pop(bars.reqId, None)
         self.reqId2Bars.pop(bars.reqId, None)
 
     def setCallback(self, eventName, callback):

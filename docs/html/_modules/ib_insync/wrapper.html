@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.wrapper &#8212; IB-insync 0.9.4 documentation</title>
+    <title>ib_insync.wrapper &#8212; IB-insync 0.9.5 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.4',
+        VERSION:     '0.9.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -181,8 +181,8 @@
         <span class="k">return</span> <span class="n">ticker</span></div>
 
 <div class="viewcode-block" id="Wrapper.endTicker"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.endTicker">[docs]</a>    <span class="k">def</span> <span class="nf">endTicker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ticker</span><span class="p">,</span> <span class="n">tickType</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reqId2Contract</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">contract</span><span class="p">)</span>
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ticker2ReqId</span><span class="p">[</span><span class="n">tickType</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reqId2Contract</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">reqId</span></div>
 
 <div class="viewcode-block" id="Wrapper.startBars"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.startBars">[docs]</a>    <span class="k">def</span> <span class="nf">startBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">bars</span><span class="p">):</span>
@@ -190,7 +190,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Bars</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">=</span> <span class="n">bars</span></div>
 
 <div class="viewcode-block" id="Wrapper.endBars"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.endBars">[docs]</a>    <span class="k">def</span> <span class="nf">endBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bars</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reqId2Contract</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">bars</span><span class="o">.</span><span class="n">contract</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reqId2Contract</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">bars</span><span class="o">.</span><span class="n">reqId</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Bars</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">bars</span><span class="o">.</span><span class="n">reqId</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.setCallback"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.setCallback">[docs]</a>    <span class="k">def</span> <span class="nf">setCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eventName</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
