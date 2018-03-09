@@ -677,13 +677,14 @@ class Wrapper(EWrapper):
         ticker = self.reqId2Ticker.get(reqId)
         if ticker:
             # reply from reqMktData
-            if tickType == 10:
+            # https://interactivebrokers.github.io/tws-api/tick_types.html
+            if tickType in (10, 80):
                 ticker.bidGreeks = comp
-            elif tickType == 11:
+            elif tickType in (11, 81):
                 ticker.askGreeks = comp
-            elif tickType == 12:
+            elif tickType in (12, 82):
                 ticker.lastGreeks = comp
-            elif tickType == 13:
+            elif tickType in (13, 83):
                 ticker.modelGreeks = comp
         elif reqId in self._futures:
             # reply from calculateImpliedVolatility or calculateOptionPrice
