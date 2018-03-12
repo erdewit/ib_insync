@@ -262,12 +262,15 @@ class IB:
         """
         Set an optional callback to be invoked after an event. Events:
         
+        * ``connected()``:
+          Is emitted after connecting and synchronzing with TWS/gateway.
+
         * ``updated()``:
           Is emitted after a network packet has been handeled.
         
         * ``pendingTickers(tickers: List[Ticker])``:
           Emits the set of tickers that have been updated during the last
-          update and for which there are new ticks or domTicks. 
+          update and for which there are new ticks, tickByTicks or domTicks. 
           
         * ``barUpdate(bars: BarDataList, hasNewBar: bool)``:
           Emits the bar list that has been updated in real time.
@@ -1069,6 +1072,7 @@ class IB:
                 self.reqPositionsAsync(),
                 self.reqExecutionsAsync())
         self._logger.info('Synchronization complete')
+        self.wrapper.handleEvent('connected')
 
     async def qualifyContractsAsync(self, *contracts):
         detailsLists = await asyncio.gather(

@@ -237,7 +237,7 @@ class Client(EClient):
 
             if not self.serverVersion_ and len(fields) == 2:
                 # this concludes the handshake
-                version, self.connTime = fields
+                version, _connTime = fields
                 self.serverVersion_ = int(version)
                 self.decoder.serverVersion = self.serverVersion_
                 self.setConnState(EClient.CONNECTED)
