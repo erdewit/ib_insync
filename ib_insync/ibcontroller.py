@@ -9,11 +9,177 @@ from ib_insync.contract import Forex
 from ib_insync.ib import IB
 import ib_insync.util as util
 
-__all__ = ['IBController', 'Watchdog']
+__all__ = ['IBC', 'IBController', 'Watchdog']
+
+
+class IBC(Object):
+    """
+    Programmatic control over starting and stopping TWS/Gateway
+    using IBC (https://https://github.com/IbcAlpha/IBC).
+    
+    Arguments:
+    
+    * ``twsVersion`` (required): The major version number for TWS or gateway.
+    * ``tradingMode``: 'live' or 'paper'.
+    * ``userid``: IB account username. It is recommended to set the real
+      username/password in a secured IBC config file.
+    * ``password``: IB account password.
+    * ``twsPath``: Path to the TWS installation folder.
+    
+      =======  ==============
+      Default
+      =======================
+      Linux    ~/Jts
+      OS X     ~/Applications
+      Windows  C:\\\\Jts
+      =======  ==============
+      
+    * ``twsSettingsPath``: Path to the TWS settings folder.
+    
+      ========  =============
+      Default
+      =======================
+      Linux     ~/Jts
+      OS X      ~/Jts
+      Windows   Not available
+      ========  =============
+      
+    * ``ibcPath``: Path to the IBC installation folder.
+    
+      ========  =============
+      Default
+      =======================
+      Linux     /opt/ibc
+      OS X      /opt/ibc
+      Windows   C:\\\\IBC
+      ========  =============
+      
+    * ``ibcIni``: Path to the IBC configuration file.
+    
+      ========  =============
+      Default
+      =======================
+      Linux     ~/ibc/config.ini
+      OS X      ~/ibc/config.ini
+      Windows   %%HOMEPATH%%\\\\Documents\\\\IBC\\\\config.ini
+      ========  =============
+      
+    * ``javaPath``: Path to Java executable.
+      Default is to use the Java VM included with TWS/gateway.
+    * ``fixuserid``: FIX account user id (gateway only).
+    * ``fixpassword``: FIX account password (gateway only).
+    
+    To use IBC on Windows, the the proactor event loop must have been set:
+    
+    .. code-block:: python
+        
+        import asyncio
+        asyncio.set_event_loop(asyncio.ProactorEventLoop())
+    
+    Example usage:
+    
+    .. code-block:: python
+    
+        ibc = IBC(969, gateway=True, tradingMode='live',
+                userid='edemo', password='demouser')
+        ibc.start()
+        IB.run()
+    """
+
+    _Args = dict(
+        # key=(Default, UnixArg, WindowsArg)
+        twsVersion=(None, '', ''),
+        gateway=(None, '--gateway', '/Gateway'),
+        tradingMode=(None, '--mode=', '/Mode:'),
+        twsPath=(None, '--tws-path=', '/TwsPath:'),
+        twsSettingsPath=(None, '--tws-settings-path=', ''),
+        ibcPath=(None, '--ibc-path=', '/IbcPath:'),
+        ibcIni=(None, '--ibc-ini=', '/Config:'),
+        javaPath=(None, '--java-path=', '/JavaPath:'),
+        userid=(None, '--user=', '/User:'),
+        password=(None, '--pw=', '/PW:'),
+        fixuserid=(None, '--fix-user=', '/FIXUser:'),
+        fixpassword=(None, '--fix-pw=', '/FIXPW:'))
+
+    defaults = {k: v[0] for k, v in _Args.items()}
+    __slots__ = list(defaults) + ['_proc', '_logger', '_monitor']
+
+    def __init__(self, *args, **kwargs):
+        Object.__init__(self, *args, **kwargs)
+        if not self.ibcPath:
+            self.ibcPath = '/opt/ibc' if os.sys.platform != 'win32' \
+                    else 'C:\\IBC'
+        self._proc = None
+        self._monitor = None
+        self._logger = logging.getLogger('ib_insync.IBC')
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, *_exc):
+        self.terminate()
+
+    def start(self):
+        """
+        Launch TWS/IBG.
+        """
+        util.syncAwait(self.startAsync())
+
+    def terminate(self):
+        """
+        Terminate TWS/IBG.
+        """
+        util.syncAwait(self.terminateAsync())
+
+    async def startAsync(self):
+        if self._proc:
+            return
+        self._logger.info('Starting')
+
+        # create shell command
+        win32 = os.sys.platform == 'win32'
+        l = [f'{self.ibcPath}\\scripts\\StartIBC.bat' if win32 else
+            f'{self.ibcPath}/scripts/ibcstart.sh']
+        for k, v in self.dict().items():
+            arg = IBC._Args[k][2 if win32 else 1]
+            if v:
+                if arg.endswith('=') or arg.endswith(':'):
+                    l.append(f'{arg}{v}')
+                elif arg:
+                    l.append(arg)
+                else:
+                    l.append(str(v))
+        cmd = ' '.join(l)
+
+        # run shell command
+        self._proc = await asyncio.create_subprocess_shell(cmd,
+                stdout=asyncio.subprocess.PIPE)
+        self._monitor = asyncio.ensure_future(self.monitorAsync())
+
+    async def terminateAsync(self):
+        if not self._proc:
+            return
+        self._logger.info('Terminating')
+        with suppress(ProcessLookupError):
+            self._proc.terminate()
+            await self._proc.wait()
+        self._proc = None
+        self._monitor.cancel()
+        self._monitor = None
+
+    async def monitorAsync(self):
+        while self._proc:
+            line = await self._proc.stdout.readline()
+            if not line:
+                break
+            self._logger.info(line.strip().decode())
 
 
 class IBController(Object):
     """
+    For new installations it is recommended to use IBC instead.
+    
     Programmatic control over starting and stopping TWS/Gateway
     using IBController (https://github.com/ib-controller/ib-controller).
     
@@ -142,9 +308,9 @@ class Watchdog(Object):
     and well. If yes, then continue, if no then restart the whole app
     and reconnect. Restarting will also occur directly on error 1100.
     
-    Parameters:
+    Arguments:
     
-    * ``controller``: IBController instance;
+    * ``controller``: IBC or IBController instance;
     * ``host``, ``port``, ``clientId`` and ``connectTimeout``: Used for
       connecting to the app;
     * ``appStartupTime``: Time (in seconds) that the app is given to start up.
@@ -153,6 +319,18 @@ class Watchdog(Object):
     * ``retryDelay``: Time (in seconds) to restart app after a previous failure.
     
     Note: ``util.patchAsyncio()`` must have been called before.
+    
+    Example usage:
+    
+    .. code-block:: python
+    
+        util.patchAsyncio()
+
+        ibc = IBC(969, gateway=True, tradingMode='paper')
+        app = Watchdog(ibc, port=4002)
+        app.start()
+        IB.run()
+        
     """
     defaults = dict(
         controller=None,
@@ -232,8 +410,8 @@ class Watchdog(Object):
 if __name__ == '__main__':
     util.logToConsole()
     util.patchAsyncio()
-    controller = IBController('GATEWAY', '969', 'paper')
-#             TWSUSERID='edemo', TWSPASSWORD='demouser')
-    app = Watchdog(controller, port=4002)
+    ibc = IBC(969, gateway=True, tradingMode='live')
+#             userid='edemo', password='demouser')
+    app = Watchdog(ibc, port=4002)
     app.start()
     IB.run()

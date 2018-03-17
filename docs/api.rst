@@ -59,6 +59,10 @@ FlexReport
 
 .. automodule:: ib_insync.flexreport
 
+IBC
+---
+.. autoclass:: ib_insync.ibcontroller.IBC
+
 IBController
 ------------
 .. autoclass:: ib_insync.ibcontroller.IBController

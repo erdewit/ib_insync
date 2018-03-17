@@ -93,6 +93,13 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.6
+^^^^^^^^^^^^^
+
+* IBC added
+* PR #53 (delayed greeks) merged
+* Ticker.futuresOpenInterest field removed
+
 Version 0.9.5
 ^^^^^^^^^^^^^
 

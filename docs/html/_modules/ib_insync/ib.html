@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ib &#8212; IB-insync 0.9.5 documentation</title>
+    <title>ib_insync.ib &#8212; IB-insync 0.9.6 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.5',
+        VERSION:     '0.9.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -343,12 +343,15 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set an optional callback to be invoked after an event. Events:</span>
 <span class="sd">        </span>
+<span class="sd">        * ``connected()``:</span>
+<span class="sd">          Is emitted after connecting and synchronzing with TWS/gateway.</span>
+
 <span class="sd">        * ``updated()``:</span>
 <span class="sd">          Is emitted after a network packet has been handeled.</span>
 <span class="sd">        </span>
 <span class="sd">        * ``pendingTickers(tickers: List[Ticker])``:</span>
 <span class="sd">          Emits the set of tickers that have been updated during the last</span>
-<span class="sd">          update and for which there are new ticks or domTicks. </span>
+<span class="sd">          update and for which there are new ticks, tickByTicks or domTicks. </span>
 <span class="sd">          </span>
 <span class="sd">        * ``barUpdate(bars: BarDataList, hasNewBar: bool)``:</span>
 <span class="sd">          Emits the bar list that has been updated in real time.</span>
@@ -1149,7 +1152,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">reqAccountUpdatesMultiAsync</span><span class="p">(),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">reqPositionsAsync</span><span class="p">(),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">reqExecutionsAsync</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Synchronization complete&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Synchronization complete&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">(</span><span class="s1">&#39;connected&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="IB.qualifyContractsAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.qualifyContractsAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">qualifyContractsAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">contracts</span><span class="p">):</span>
         <span class="n">detailsLists</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>

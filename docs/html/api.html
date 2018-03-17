@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.9.5 documentation</title>
+    <title>API docs &#8212; IB-insync 0.9.6 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.5',
+        VERSION:     '0.9.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -66,6 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.wrapper">Wrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.util">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.flexreport">FlexReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ibc">IBC</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ibcontroller">IBController</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#watchdog">Watchdog</a></li>
 </ul>
@@ -95,7 +96,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.5.</p>
+<p>Release 0.9.6.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -784,11 +785,13 @@ the given arguments.</p>
 <code class="descname">setCallback</code><span class="sig-paren">(</span><em>eventName: str</em>, <em>callback: typing.Callable</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/ib_insync/ib.html#IB.setCallback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.setCallback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set an optional callback to be invoked after an event. Events:</p>
 <ul class="simple">
+<li><code class="docutils literal"><span class="pre">connected()</span></code>:
+Is emitted after connecting and synchronzing with TWS/gateway.</li>
 <li><code class="docutils literal"><span class="pre">updated()</span></code>:
 Is emitted after a network packet has been handeled.</li>
 <li><code class="docutils literal"><span class="pre">pendingTickers(tickers:</span> <span class="pre">List[Ticker])</span></code>:
 Emits the set of tickers that have been updated during the last
-update and for which there are new ticks or domTicks.</li>
+update and for which there are new ticks, tickByTicks or domTicks.</li>
 <li><code class="docutils literal"><span class="pre">barUpdate(bars:</span> <span class="pre">BarDataList,</span> <span class="pre">hasNewBar:</span> <span class="pre">bool)</span></code>:
 Emits the bar list that has been updated in real time.
 If a new bar has been added then hasNewBar is True, when the last
@@ -1089,7 +1092,7 @@ If an attribute is not given it will take its value from the
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'PreSubmitted', 'ApiPending', 'PendingSubmit', 'Submitted'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'ApiPending', 'Submitted', 'PreSubmitted', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1109,7 +1112,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'Cancelled', 'Inactive', 'Filled', 'ApiCancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'Filled', 'Inactive', 'Cancelled', 'ApiCancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1365,7 +1368,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 140494506633424: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': ''}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139863755671312: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': ''}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2091,7 +2094,7 @@ If an attribute is not given it will take its value from the
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.defaults">
-<code class="descname">defaults</code><em class="property"> = {'contract': None, 'time': None, 'bid': nan, 'bidSize': nan, 'ask': nan, 'askSize': nan, 'last': nan, 'lastSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'volume': nan, 'open': nan, 'high': nan, 'low': nan, 'close': nan, 'vwap': nan, 'low13week': nan, 'high13week': nan, 'low26week': nan, 'high26week': nan, 'low52week': nan, 'high52week': nan, 'bidYield': nan, 'askYield': nan, 'lastYield': nan, 'rtVolume': nan, 'avVolume': nan, 'putOpenInterest': nan, 'callOpenInterest': nan, 'putVolume': nan, 'callVolume': nan, 'futuresOpenInterest': nan, 'dividends': None, 'ticks': None, 'tickByTicks': None, 'domBids': None, 'domAsks': None, 'domTicks': None, 'bidGreeks': None, 'askGreeks': None, 'lastGreeks': None, 'modelGreeks': None}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'contract': None, 'time': None, 'bid': nan, 'bidSize': nan, 'ask': nan, 'askSize': nan, 'last': nan, 'lastSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'volume': nan, 'open': nan, 'high': nan, 'low': nan, 'close': nan, 'vwap': nan, 'low13week': nan, 'high13week': nan, 'low26week': nan, 'high26week': nan, 'low52week': nan, 'high52week': nan, 'bidYield': nan, 'askYield': nan, 'lastYield': nan, 'rtVolume': nan, 'avVolume': nan, 'putOpenInterest': nan, 'callOpenInterest': nan, 'putVolume': nan, 'callVolume': nan, 'dividends': None, 'ticks': None, 'tickByTicks': None, 'domBids': None, 'domAsks': None, 'domTicks': None, 'bidGreeks': None, 'askGreeks': None, 'lastGreeks': None, 'modelGreeks': None}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2188,11 +2191,6 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.domTicks">
 <code class="descname">domTicks</code><a class="headerlink" href="#ib_insync.ticker.Ticker.domTicks" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ticker.Ticker.futuresOpenInterest">
-<code class="descname">futuresOpenInterest</code><a class="headerlink" href="#ib_insync.ticker.Ticker.futuresOpenInterest" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4611,6 +4609,11 @@ and as keyword, the keyword wins.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.handleEvent">
+<code class="descname">handleEvent</code><span class="sig-paren">(</span><em>eventName</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.handleEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.handleEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.headTimestamp">
 <code class="descname">headTimestamp</code><span class="sig-paren">(</span><em>reqId</em>, <em>headTimestamp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.headTimestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.headTimestamp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -5040,12 +5043,238 @@ Order, etc.</p>
 <dd></dd></dl>
 
 </div>
+<div class="section" id="ibc">
+<h2>IBC<a class="headerlink" href="#ibc" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ib_insync.ibcontroller.IBC">
+<em class="property">class </em><code class="descclassname">ib_insync.ibcontroller.</code><code class="descname">IBC</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Programmatic control over starting and stopping TWS/Gateway
+using IBC (<a class="reference external" href="https://https://github.com/IbcAlpha/IBC">https://https://github.com/IbcAlpha/IBC</a>).</p>
+<p>Arguments:</p>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">twsVersion</span></code> (required): The major version number for TWS or gateway.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">tradingMode</span></code>: ‘live’ or ‘paper’.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">userid</span></code>: IB account username. It is recommended to set the real
+username/password in a secured IBC config file.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">password</span></code>: IB account password.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">twsPath</span></code>: Path to the TWS installation folder.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Linux</td>
+<td>~/Jts</td>
+</tr>
+<tr class="row-odd"><td>OS X</td>
+<td>~/Applications</td>
+</tr>
+<tr class="row-even"><td>Windows</td>
+<td>C:\Jts</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">twsSettingsPath</span></code>: Path to the TWS settings folder.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Linux</td>
+<td>~/Jts</td>
+</tr>
+<tr class="row-odd"><td>OS X</td>
+<td>~/Jts</td>
+</tr>
+<tr class="row-even"><td>Windows</td>
+<td>Not available</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">ibcPath</span></code>: Path to the IBC installation folder.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Linux</td>
+<td>/opt/ibc</td>
+</tr>
+<tr class="row-odd"><td>OS X</td>
+<td>/opt/ibc</td>
+</tr>
+<tr class="row-even"><td>Windows</td>
+<td>C:\IBC</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">ibcIni</span></code>: Path to the IBC configuration file.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2">Default</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Linux</td>
+<td>~/ibc/config.ini</td>
+</tr>
+<tr class="row-odd"><td>OS X</td>
+<td>~/ibc/config.ini</td>
+</tr>
+<tr class="row-even"><td>Windows</td>
+<td>%%HOMEPATH%%\Documents\IBC\config.ini</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">javaPath</span></code>: Path to Java executable.
+Default is to use the Java VM included with TWS/gateway.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">fixuserid</span></code>: FIX account user id (gateway only).</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">fixpassword</span></code>: FIX account password (gateway only).</p>
+</li>
+</ul>
+<p>To use IBC on Windows, the the proactor event loop must have been set:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">ProactorEventLoop</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">ibc</span> <span class="o">=</span> <span class="n">IBC</span><span class="p">(</span><span class="mi">969</span><span class="p">,</span> <span class="n">gateway</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">tradingMode</span><span class="o">=</span><span class="s1">&#39;live&#39;</span><span class="p">,</span>
+        <span class="n">userid</span><span class="o">=</span><span class="s1">&#39;edemo&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demouser&#39;</span><span class="p">)</span>
+<span class="n">ibc</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="n">IB</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.defaults">
+<code class="descname">defaults</code><em class="property"> = {'twsVersion': None, 'gateway': None, 'tradingMode': None, 'twsPath': None, 'twsSettingsPath': None, 'ibcPath': None, 'ibcIni': None, 'javaPath': None, 'userid': None, 'password': None, 'fixuserid': None, 'fixpassword': None}</em><a class="headerlink" href="#ib_insync.ibcontroller.IBC.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.fixpassword">
+<code class="descname">fixpassword</code><a class="headerlink" href="#ib_insync.ibcontroller.IBC.fixpassword" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.fixuserid">
+<code class="descname">fixuserid</code><a class="headerlink" href="#ib_insync.ibcontroller.IBC.fixuserid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.gateway">
+<code class="descname">gateway</code><a class="headerlink" href="#ib_insync.ibcontroller.IBC.gateway" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.ibcIni">
+<code class="descname">ibcIni</code><a class="headerlink" href="#ib_insync.ibcontroller.IBC.ibcIni" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.ibcPath">
+<code class="descname">ibcPath</code><a class="headerlink" href="#ib_insync.ibcontroller.IBC.ibcPath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.javaPath">
+<code class="descname">javaPath</code><a class="headerlink" href="#ib_insync.ibcontroller.IBC.javaPath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.IBC.monitorAsync">
+<code class="descname">monitorAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBC.monitorAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBC.monitorAsync" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.password">
+<code class="descname">password</code><a class="headerlink" href="#ib_insync.ibcontroller.IBC.password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.IBC.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBC.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBC.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch TWS/IBG.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.IBC.startAsync">
+<code class="descname">startAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBC.startAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBC.startAsync" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.IBC.terminate">
+<code class="descname">terminate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBC.terminate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBC.terminate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminate TWS/IBG.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.IBC.terminateAsync">
+<code class="descname">terminateAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBC.terminateAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBC.terminateAsync" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.tradingMode">
+<code class="descname">tradingMode</code><a class="headerlink" href="#ib_insync.ibcontroller.IBC.tradingMode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.twsPath">
+<code class="descname">twsPath</code><a class="headerlink" href="#ib_insync.ibcontroller.IBC.twsPath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.twsSettingsPath">
+<code class="descname">twsSettingsPath</code><a class="headerlink" href="#ib_insync.ibcontroller.IBC.twsSettingsPath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.twsVersion">
+<code class="descname">twsVersion</code><a class="headerlink" href="#ib_insync.ibcontroller.IBC.twsVersion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.IBC.userid">
+<code class="descname">userid</code><a class="headerlink" href="#ib_insync.ibcontroller.IBC.userid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="ibcontroller">
 <h2>IBController<a class="headerlink" href="#ibcontroller" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ib_insync.ibcontroller.IBController">
 <em class="property">class </em><code class="descclassname">ib_insync.ibcontroller.</code><code class="descname">IBController</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBController" title="Permalink to this definition">¶</a></dt>
-<dd><p>Programmatic control over starting and stopping TWS/Gateway
+<dd><p>For new installations it is recommended to use IBC instead.</p>
+<p>Programmatic control over starting and stopping TWS/Gateway
 using IBController (<a class="reference external" href="https://github.com/ib-controller/ib-controller">https://github.com/ib-controller/ib-controller</a>).</p>
 <p>On Windows the the proactor event loop must have been set:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
@@ -5165,9 +5394,9 @@ a certain amount of time (the <code class="docutils literal"><span class="pre">a
 a historical request to be placed just to see if the app is still alive
 and well. If yes, then continue, if no then restart the whole app
 and reconnect. Restarting will also occur directly on error 1100.</p>
-<p>Parameters:</p>
+<p>Arguments:</p>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">controller</span></code>: IBController instance;</li>
+<li><code class="docutils literal"><span class="pre">controller</span></code>: IBC or IBController instance;</li>
 <li><code class="docutils literal"><span class="pre">host</span></code>, <code class="docutils literal"><span class="pre">port</span></code>, <code class="docutils literal"><span class="pre">clientId</span></code> and <code class="docutils literal"><span class="pre">connectTimeout</span></code>: Used for
 connecting to the app;</li>
 <li><code class="docutils literal"><span class="pre">appStartupTime</span></code>: Time (in seconds) that the app is given to start up.
@@ -5176,6 +5405,15 @@ Make sure that it is given ample time;</li>
 <li><code class="docutils literal"><span class="pre">retryDelay</span></code>: Time (in seconds) to restart app after a previous failure.</li>
 </ul>
 <p>Note: <code class="docutils literal"><span class="pre">util.patchAsyncio()</span></code> must have been called before.</p>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">util</span><span class="o">.</span><span class="n">patchAsyncio</span><span class="p">()</span>
+
+<span class="n">ibc</span> <span class="o">=</span> <span class="n">IBC</span><span class="p">(</span><span class="mi">969</span><span class="p">,</span> <span class="n">gateway</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">tradingMode</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">)</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Watchdog</span><span class="p">(</span><span class="n">ibc</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">4002</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="n">IB</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="ib_insync.ibcontroller.Watchdog.appStartupTime">
 <code class="descname">appStartupTime</code><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.appStartupTime" title="Permalink to this definition">¶</a></dt>
