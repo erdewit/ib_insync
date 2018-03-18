@@ -96,7 +96,7 @@
 <div class="viewcode-block" id="IBC"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC">[docs]</a><span class="k">class</span> <span class="nc">IBC</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Programmatic control over starting and stopping TWS/Gateway</span>
-<span class="sd">    using IBC (https://https://github.com/IbcAlpha/IBC).</span>
+<span class="sd">    using IBC (https://github.com/IbcAlpha/IBC).</span>
 <span class="sd">    </span>
 <span class="sd">    Arguments:</span>
 <span class="sd">    </span>
@@ -166,6 +166,8 @@
 <span class="sd">        ibc.start()</span>
 <span class="sd">        IB.run()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">IbcLogLevel</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
 
     <span class="n">_Args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
         <span class="c1"># key=(Default, UnixArg, WindowsArg)</span>
@@ -254,7 +256,7 @@
             <span class="n">line</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
                 <span class="k">break</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">IBC</span><span class="o">.</span><span class="n">IbcLogLevel</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span></div></div>
 
 
 <div class="viewcode-block" id="IBController"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBController">[docs]</a><span class="k">class</span> <span class="nc">IBController</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
@@ -491,7 +493,7 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">util</span><span class="o">.</span><span class="n">logToConsole</span><span class="p">()</span>
     <span class="n">util</span><span class="o">.</span><span class="n">patchAsyncio</span><span class="p">()</span>
-    <span class="n">ibc</span> <span class="o">=</span> <span class="n">IBC</span><span class="p">(</span><span class="mi">969</span><span class="p">,</span> <span class="n">gateway</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tradingMode</span><span class="o">=</span><span class="s1">&#39;live&#39;</span><span class="p">)</span>
+    <span class="n">ibc</span> <span class="o">=</span> <span class="n">IBC</span><span class="p">(</span><span class="mi">969</span><span class="p">,</span> <span class="n">gateway</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tradingMode</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">)</span>
 <span class="c1">#             userid=&#39;edemo&#39;, password=&#39;demouser&#39;)</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">Watchdog</span><span class="p">(</span><span class="n">ibc</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">4002</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>

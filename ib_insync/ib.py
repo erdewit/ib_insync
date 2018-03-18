@@ -540,7 +540,7 @@ class IB:
     def placeOrder(self, contract: Contract, order: Order) -> Trade:
         """
         Place a new order or modify an existing order.
-        Returns an Trade that is kept live updated with
+        Returns a Trade that is kept live updated with
         status changes, fills, etc.
         """
         orderId = order.orderId or self.client.getReqId()

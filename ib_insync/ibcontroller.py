@@ -15,7 +15,7 @@ __all__ = ['IBC', 'IBController', 'Watchdog']
 class IBC(Object):
     """
     Programmatic control over starting and stopping TWS/Gateway
-    using IBC (https://https://github.com/IbcAlpha/IBC).
+    using IBC (https://github.com/IbcAlpha/IBC).
     
     Arguments:
     
@@ -85,6 +85,8 @@ class IBC(Object):
         ibc.start()
         IB.run()
     """
+
+    IbcLogLevel = logging.DEBUG
 
     _Args = dict(
         # key=(Default, UnixArg, WindowsArg)
@@ -173,7 +175,7 @@ class IBC(Object):
             line = await self._proc.stdout.readline()
             if not line:
                 break
-            self._logger.info(line.strip().decode())
+            self._logger.log(IBC.IbcLogLevel, line.strip().decode())
 
 
 class IBController(Object):
@@ -410,7 +412,7 @@ class Watchdog(Object):
 if __name__ == '__main__':
     util.logToConsole()
     util.patchAsyncio()
-    ibc = IBC(969, gateway=True, tradingMode='live')
+    ibc = IBC(969, gateway=True, tradingMode='paper')
 #             userid='edemo', password='demouser')
     app = Watchdog(ibc, port=4002)
     app.start()
