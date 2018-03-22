@@ -44,6 +44,11 @@ class Wrapper(EWrapper):
 
         self.reqId2Bars = {}  # realtime bars + keepUpToDate historical bars
 
+        self.pnls = {}  # reqId -> PnL
+        self.pnlSingles = {}  # reqId -> PnLSingle
+        self.pnlKey2ReqId = {}  # (account, modelCode) -> reqId
+        self.pnlSingleKey2ReqId = {}  # (account, modelCode, conId) -> reqId
+
         self._futures = {}  # futures and results are linked by key
         self._results = {}
         self._reqId2Contract = {}
@@ -115,8 +120,8 @@ class Wrapper(EWrapper):
     def setCallback(self, eventName, callback):
         events = ('connected', 'updated', 'pendingTickers', 'barUpdate',
                 'openOrder', 'orderStatus', 'execDetails', 'commissionReport',
-                'updatePortfolio', 'position', 'accountValue',
-                'accountSummary', 'tickNews', 'error', 'timeout')
+                'updatePortfolio', 'position', 'accountValue', 'accountSummary',
+                'pnl', 'pnlSingle', 'tickNews', 'error', 'timeout')
         if eventName not in events:
             raise ValueError(f'eventName must be one of {events}')
         self._callbacks[eventName] = callback
@@ -228,6 +233,29 @@ class Wrapper(EWrapper):
     @iswrapper
     def positionEnd(self):
         self._endReq('positions')
+
+    @iswrapper
+    def pnl(self, reqId, dailyPnL, unrealizedPnL, realizedPnL):
+        pnl = self.pnls.get(reqId)
+        if not pnl:
+            return
+        pnl.dailyPnL = dailyPnL
+        pnl.unrealizedPnL = unrealizedPnL
+        pnl.realizedPnL = realizedPnL
+        self.handleEvent('pnl', pnl)
+
+    @iswrapper
+    def pnlSingle(self, reqId, pos, dailyPnL,
+            unrealizedPnL, realizedPnL, value):
+        pnlSingle = self.pnlSingles.get(reqId)
+        if not pnlSingle:
+            return
+        pnlSingle.pos = pos
+        pnlSingle.dailyPnL = dailyPnL
+        pnlSingle.unrealizedPnL = unrealizedPnL
+        pnlSingle.realizedPnL = realizedPnL
+        pnlSingle.value = value
+        self.handleEvent('pnlSingle', pnlSingle)
 
     @iswrapper
     def openOrder(self, orderId, contract, order, orderState):

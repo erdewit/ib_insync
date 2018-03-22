@@ -93,6 +93,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.7
+^^^^^^^^^^^^^
+
+* Profit and Loss (PnL) funcionality added
+
 Version 0.9.6
 ^^^^^^^^^^^^^
 

@@ -301,6 +301,12 @@ class IB:
         * ``accountSummary(value: AccountValue)``:
           An account value has changed.
         
+        * ``pnl(entry: PnL)``:
+          A profit- and loss entry is updated.
+        
+        * ``pnlSingle(entry: PnLSingle)``:
+          A profit- and loss entry for a single position is updated.
+        
         * ``tickNews(news: NewsTick)``:
           Emit a new news headline.
           
@@ -380,6 +386,30 @@ class IB:
         else:
             return [v for d in self.wrapper.positions.values()
                     for v in d.values()]
+
+    def pnl(self, account='', modelCode='') -> List[PnL]:
+        """
+        List of subscribed ``PnL`` objects (profit and loss),
+        optionally filtered by account and/or modelCode.
+        
+        The ``PnL`` objects are kept live updated.
+        """
+        return [v for v in self.wrapper.pnls.values() if
+                (not account or v.account == account) and
+                (not modelCode or v.modelCode == modelCode)]
+
+    def pnlSingle(self, account='', modelCode='', conId='') -> List[PnLSingle]:
+        """
+        List of subscribed ``PnLSingle`` objects (profit and loss for
+        single positions), optionally filtered by account, modelCode
+        and/or conId.
+        
+        The ``PnLSingle`` objects are kept live updated
+        """
+        return [v for v in self.wrapper.pnlSingles.values() if
+                (not account or v.account == account) and
+                (not modelCode or v.modelCode == modelCode) and
+                (not conId or v.conId == conId)]
 
     def trades(self) -> List[Trade]:
         """
@@ -668,6 +698,75 @@ class IB:
         This method is blocking.
         """
         return self.run(self.reqPositionsAsync())
+
+    @api
+    def reqPnL(self, account: str, modelCode: str='') -> PnL:
+        """
+        Start a subscription for profit and loss events for the given 
+        account and optional modelCode.
+        
+        Returns a ``PnL`` object that is kept live updated.
+        The result can also be queried from :py:meth:`.pnl`.
+        
+        https://interactivebrokers.github.io/tws-api/pnl.html
+        """
+        key = (account, modelCode)
+        assert key not in self.wrapper.pnlKey2ReqId
+        reqId = self.client.getReqId()
+        self.wrapper.pnlKey2ReqId[key] = reqId
+        pnl = PnL(account, modelCode)
+        self.wrapper.pnls[reqId] = pnl
+        self.client.reqPnL(reqId, account, modelCode)
+        return pnl
+
+    @api
+    def cancelPnL(self, account, modelCode: str=''):
+        """
+        Cancel PnL subscription for the given account and modelCode.
+        """
+        key = (account, modelCode)
+        reqId = self.wrapper.pnlKey2ReqId.pop(key, None)
+        if reqId:
+            self.client.cancelPnL(reqId)
+            self.wrapper.pnls.pop(reqId, None)
+        else:
+            self._logger.error('cancelPnL: No subscription for '
+                    f'account {account}, modelCode {modelCode}')
+
+    @api
+    def reqPnLSingle(self, account: str, modelCode: str,
+            conId: int) -> PnLSingle:
+        """
+        Start a subscription for profit and loss events for single positions.
+        
+        Returns a ``PnLSingle`` object that is kept live updated.
+        The result can also be queried from :py:meth:`.pnlSingle`.
+        
+        https://interactivebrokers.github.io/tws-api/pnl.html
+        """
+        key = (account, modelCode, conId)
+        assert key not in self.wrapper.pnlSingleKey2ReqId
+        reqId = self.client.getReqId()
+        self.wrapper.pnlSingleKey2ReqId[key] = reqId
+        pnlSingle = PnLSingle(account, modelCode, conId)
+        self.wrapper.pnlSingles[reqId] = pnlSingle
+        self.client.reqPnLSingle(reqId, account, modelCode, conId)
+        return pnlSingle
+
+    @api
+    def cancelPnLSingle(self, account: str, modelCode: str, conId: int):
+        """
+        Cancel PnLSingle subscription for the given account, modelCode
+        and conId.
+        """
+        key = (account, modelCode, conId)
+        reqId = self.wrapper.pnlSingleKey2ReqId.pop(key, None)
+        if reqId:
+            self.client.cancelPnLSingle(reqId)
+            self.wrapper.pnlSingles.pop(reqId, None)
+        else:
+            self._logger.error('cancelPnLSingle: No subscription for '
+                    f'account {account}, modelCode {modelCode}, conId {conId}')
 
     @api
     def reqContractDetails(self, contract: Contract) -> List[ContractDetails]:
@@ -1440,5 +1539,16 @@ if __name__ == '__main__':
     if 0:
         histo = ib.reqHistogramData(amd, True, '1 week')
         print(histo)
+    if 0:
+        ib.qualifyContracts(eurusd)
+        account = ib.managedAccounts()[0]
+        ib.reqPnL(account, '')
+        ib.reqPnLSingle(account, '', eurusd.conId)
+        IB.sleep(8)
+        print(ib.pnl())
+        print(ib.pnlSingle())
+        ib.cancelPnL(account, '')
+        ib.cancelPnLSingle(account, '', eurusd.conId)
+        IB.sleep(1)
 
     ib.disconnect()

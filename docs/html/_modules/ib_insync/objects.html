@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.objects &#8212; IB-insync 0.9.6 documentation</title>
+    <title>ib_insync.objects &#8212; IB-insync 0.9.7 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.6',
+        VERSION:     '0.9.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -102,7 +102,7 @@
     <span class="s1">&#39;Execution CommissionReport ExecutionFilter &#39;</span>
     <span class="s1">&#39;BarList BarDataList RealTimeBarList BarData RealTimeBar &#39;</span>
     <span class="s1">&#39;HistogramData TickAttrib NewsProvider DepthMktDataDescription &#39;</span>
-    <span class="s1">&#39;AccountValue RealTimeBar TickData &#39;</span>
+    <span class="s1">&#39;PnL PnLSingle AccountValue RealTimeBar TickData &#39;</span>
     <span class="s1">&#39;TickByTickAllLast TickByTickBidAsk TickByTickMidPoint &#39;</span>
     <span class="s1">&#39;HistoricalTick HistoricalTickBidAsk HistoricalTickLast &#39;</span>
     <span class="s1">&#39;MktDepthData DOMLevel BracketOrder TradeLogEntry ScanData TagValue &#39;</span>
@@ -112,6 +112,8 @@
     <span class="s1">&#39;ContractCondition TimeCondition PriceCondition PercentChangeCondition &#39;</span>
     <span class="s1">&#39;VolumeCondition&#39;</span>
     <span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="n">nan</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Object"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Object">[docs]</a><span class="k">class</span> <span class="nc">Object</span><span class="p">:</span>
@@ -298,6 +300,29 @@
 
 <div class="viewcode-block" id="DepthMktDataDescription"><a class="viewcode-back" href="../../api.html#ib_insync.objects.DepthMktDataDescription">[docs]</a><span class="k">class</span> <span class="nc">DepthMktDataDescription</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">DepthMktDataDescription</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="PnL"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PnL">[docs]</a><span class="k">class</span> <span class="nc">PnL</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">account</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">modelCode</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">dailyPnL</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">unrealizedPnL</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">realizedPnL</span><span class="o">=</span><span class="n">nan</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="PnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PnLSingle">[docs]</a><span class="k">class</span> <span class="nc">PnLSingle</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">account</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">modelCode</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">conId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">dailyPnL</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">unrealizedPnL</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">realizedPnL</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">position</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">nan</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 

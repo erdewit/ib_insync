@@ -21,7 +21,7 @@ __all__ = (
     'Execution CommissionReport ExecutionFilter '
     'BarList BarDataList RealTimeBarList BarData RealTimeBar '
     'HistogramData TickAttrib NewsProvider DepthMktDataDescription '
-    'AccountValue RealTimeBar TickData '
+    'PnL PnLSingle AccountValue RealTimeBar TickData '
     'TickByTickAllLast TickByTickBidAsk TickByTickMidPoint '
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
     'MktDepthData DOMLevel BracketOrder TradeLogEntry ScanData TagValue '
@@ -31,6 +31,8 @@ __all__ = (
     'ContractCondition TimeCondition PriceCondition PercentChangeCondition '
     'VolumeCondition'
     ).split()
+
+nan = float('nan')
 
 
 class Object:
@@ -217,6 +219,29 @@ class NewsProvider(Object):
 
 class DepthMktDataDescription(Object):
     defaults = ibapi.common.DepthMktDataDescription().__dict__
+    __slots__ = defaults.keys()
+
+
+class PnL(Object):
+    defaults = dict(
+        account='',
+        modelCode='',
+        dailyPnL=nan,
+        unrealizedPnL=nan,
+        realizedPnL=nan)
+    __slots__ = defaults.keys()
+
+
+class PnLSingle(Object):
+    defaults = dict(
+        account='',
+        modelCode='',
+        conId=0,
+        dailyPnL=nan,
+        unrealizedPnL=nan,
+        realizedPnL=nan,
+        position=0,
+        value=nan)
     __slots__ = defaults.keys()
 
 

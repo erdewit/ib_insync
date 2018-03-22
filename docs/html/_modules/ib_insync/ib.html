@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ib &#8212; IB-insync 0.9.6 documentation</title>
+    <title>ib_insync.ib &#8212; IB-insync 0.9.7 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.6',
+        VERSION:     '0.9.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -382,6 +382,12 @@
 <span class="sd">        * ``accountSummary(value: AccountValue)``:</span>
 <span class="sd">          An account value has changed.</span>
 <span class="sd">        </span>
+<span class="sd">        * ``pnl(entry: PnL)``:</span>
+<span class="sd">          A profit- and loss entry is updated.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``pnlSingle(entry: PnLSingle)``:</span>
+<span class="sd">          A profit- and loss entry for a single position is updated.</span>
+<span class="sd">        </span>
 <span class="sd">        * ``tickNews(news: NewsTick)``:</span>
 <span class="sd">          Emit a new news headline.</span>
 <span class="sd">          </span>
@@ -461,6 +467,30 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
                     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="IB.pnl"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.pnl">[docs]</a>    <span class="k">def</span> <span class="nf">pnl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">modelCode</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PnL</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of subscribed ``PnL`` objects (profit and loss),</span>
+<span class="sd">        optionally filtered by account and/or modelCode.</span>
+<span class="sd">        </span>
+<span class="sd">        The ``PnL`` objects are kept live updated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnls</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span>
+                <span class="p">(</span><span class="ow">not</span> <span class="n">account</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">account</span> <span class="o">==</span> <span class="n">account</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="p">(</span><span class="ow">not</span> <span class="n">modelCode</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">modelCode</span> <span class="o">==</span> <span class="n">modelCode</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="IB.pnlSingle"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.pnlSingle">[docs]</a>    <span class="k">def</span> <span class="nf">pnlSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">modelCode</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">conId</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PnLSingle</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of subscribed ``PnLSingle`` objects (profit and loss for</span>
+<span class="sd">        single positions), optionally filtered by account, modelCode</span>
+<span class="sd">        and/or conId.</span>
+<span class="sd">        </span>
+<span class="sd">        The ``PnLSingle`` objects are kept live updated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnlSingles</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span>
+                <span class="p">(</span><span class="ow">not</span> <span class="n">account</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">account</span> <span class="o">==</span> <span class="n">account</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="p">(</span><span class="ow">not</span> <span class="n">modelCode</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">modelCode</span> <span class="o">==</span> <span class="n">modelCode</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="p">(</span><span class="ow">not</span> <span class="n">conId</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">conId</span> <span class="o">==</span> <span class="n">conId</span><span class="p">)]</span></div>
 
 <div class="viewcode-block" id="IB.trades"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.trades">[docs]</a>    <span class="k">def</span> <span class="nf">trades</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Trade</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -749,6 +779,75 @@
 <span class="sd">        This method is blocking.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqPositionsAsync</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="IB.reqPnL"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqPnL">[docs]</a>    <span class="nd">@api</span>
+    <span class="k">def</span> <span class="nf">reqPnL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PnL</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start a subscription for profit and loss events for the given </span>
+<span class="sd">        account and optional modelCode.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a ``PnL`` object that is kept live updated.</span>
+<span class="sd">        The result can also be queried from :py:meth:`.pnl`.</span>
+<span class="sd">        </span>
+<span class="sd">        https://interactivebrokers.github.io/tws-api/pnl.html</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnlKey2ReqId</span>
+        <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnlKey2ReqId</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">reqId</span>
+        <span class="n">pnl</span> <span class="o">=</span> <span class="n">PnL</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnls</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">=</span> <span class="n">pnl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqPnL</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pnl</span></div>
+
+<div class="viewcode-block" id="IB.cancelPnL"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelPnL">[docs]</a>    <span class="nd">@api</span>
+    <span class="k">def</span> <span class="nf">cancelPnL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cancel PnL subscription for the given account and modelCode.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">)</span>
+        <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnlKey2ReqId</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reqId</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelPnL</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnls</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;cancelPnL: No subscription for &#39;</span>
+                    <span class="n">f</span><span class="s1">&#39;account </span><span class="si">{account}</span><span class="s1">, modelCode </span><span class="si">{modelCode}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IB.reqPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqPnLSingle">[docs]</a>    <span class="nd">@api</span>
+    <span class="k">def</span> <span class="nf">reqPnLSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">conId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PnLSingle</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start a subscription for profit and loss events for single positions.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a ``PnLSingle`` object that is kept live updated.</span>
+<span class="sd">        The result can also be queried from :py:meth:`.pnlSingle`.</span>
+<span class="sd">        </span>
+<span class="sd">        https://interactivebrokers.github.io/tws-api/pnl.html</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">conId</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnlSingleKey2ReqId</span>
+        <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnlSingleKey2ReqId</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">reqId</span>
+        <span class="n">pnlSingle</span> <span class="o">=</span> <span class="n">PnLSingle</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">conId</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnlSingles</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">=</span> <span class="n">pnlSingle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqPnLSingle</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">conId</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pnlSingle</span></div>
+
+<div class="viewcode-block" id="IB.cancelPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelPnLSingle">[docs]</a>    <span class="nd">@api</span>
+    <span class="k">def</span> <span class="nf">cancelPnLSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">conId</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cancel PnLSingle subscription for the given account, modelCode</span>
+<span class="sd">        and conId.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">conId</span><span class="p">)</span>
+        <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnlSingleKey2ReqId</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reqId</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelPnLSingle</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnlSingles</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;cancelPnLSingle: No subscription for &#39;</span>
+                    <span class="n">f</span><span class="s1">&#39;account </span><span class="si">{account}</span><span class="s1">, modelCode </span><span class="si">{modelCode}</span><span class="s1">, conId </span><span class="si">{conId}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="IB.reqContractDetails"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqContractDetails">[docs]</a>    <span class="nd">@api</span>
     <span class="k">def</span> <span class="nf">reqContractDetails</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ContractDetails</span><span class="p">]:</span>
@@ -1521,6 +1620,17 @@
     <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">histo</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqHistogramData</span><span class="p">(</span><span class="n">amd</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;1 week&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">histo</span><span class="p">)</span>
+    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ib</span><span class="o">.</span><span class="n">qualifyContracts</span><span class="p">(</span><span class="n">eurusd</span><span class="p">)</span>
+        <span class="n">account</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">managedAccounts</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ib</span><span class="o">.</span><span class="n">reqPnL</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">ib</span><span class="o">.</span><span class="n">reqPnLSingle</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">eurusd</span><span class="o">.</span><span class="n">conId</span><span class="p">)</span>
+        <span class="n">IB</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">pnl</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">pnlSingle</span><span class="p">())</span>
+        <span class="n">ib</span><span class="o">.</span><span class="n">cancelPnL</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">ib</span><span class="o">.</span><span class="n">cancelPnLSingle</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">eurusd</span><span class="o">.</span><span class="n">conId</span><span class="p">)</span>
+        <span class="n">IB</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="n">ib</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 </pre></div>

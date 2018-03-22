@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.wrapper &#8212; IB-insync 0.9.6 documentation</title>
+    <title>ib_insync.wrapper &#8212; IB-insync 0.9.7 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.6',
+        VERSION:     '0.9.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -125,6 +125,11 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Bars</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># realtime bars + keepUpToDate historical bars</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">pnls</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># reqId -&gt; PnL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pnlSingles</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># reqId -&gt; PnLSingle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pnlKey2ReqId</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># (account, modelCode) -&gt; reqId</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pnlSingleKey2ReqId</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># (account, modelCode, conId) -&gt; reqId</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_futures</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># futures and results are linked by key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reqId2Contract</span> <span class="o">=</span> <span class="p">{}</span>
@@ -196,8 +201,8 @@
 <div class="viewcode-block" id="Wrapper.setCallback"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.setCallback">[docs]</a>    <span class="k">def</span> <span class="nf">setCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eventName</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
         <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;connected&#39;</span><span class="p">,</span> <span class="s1">&#39;updated&#39;</span><span class="p">,</span> <span class="s1">&#39;pendingTickers&#39;</span><span class="p">,</span> <span class="s1">&#39;barUpdate&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;openOrder&#39;</span><span class="p">,</span> <span class="s1">&#39;orderStatus&#39;</span><span class="p">,</span> <span class="s1">&#39;execDetails&#39;</span><span class="p">,</span> <span class="s1">&#39;commissionReport&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;updatePortfolio&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="s1">&#39;accountValue&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;accountSummary&#39;</span><span class="p">,</span> <span class="s1">&#39;tickNews&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;timeout&#39;</span><span class="p">)</span>
+                <span class="s1">&#39;updatePortfolio&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="s1">&#39;accountValue&#39;</span><span class="p">,</span> <span class="s1">&#39;accountSummary&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;pnl&#39;</span><span class="p">,</span> <span class="s1">&#39;pnlSingle&#39;</span><span class="p">,</span> <span class="s1">&#39;tickNews&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;timeout&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">eventName</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;eventName must be one of </span><span class="si">{events}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">[</span><span class="n">eventName</span><span class="p">]</span> <span class="o">=</span> <span class="n">callback</span></div>
@@ -309,6 +314,29 @@
 <div class="viewcode-block" id="Wrapper.positionEnd"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.positionEnd">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">positionEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="s1">&#39;positions&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Wrapper.pnl"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.pnl">[docs]</a>    <span class="nd">@iswrapper</span>
+    <span class="k">def</span> <span class="nf">pnl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">dailyPnL</span><span class="p">,</span> <span class="n">unrealizedPnL</span><span class="p">,</span> <span class="n">realizedPnL</span><span class="p">):</span>
+        <span class="n">pnl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pnls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pnl</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">pnl</span><span class="o">.</span><span class="n">dailyPnL</span> <span class="o">=</span> <span class="n">dailyPnL</span>
+        <span class="n">pnl</span><span class="o">.</span><span class="n">unrealizedPnL</span> <span class="o">=</span> <span class="n">unrealizedPnL</span>
+        <span class="n">pnl</span><span class="o">.</span><span class="n">realizedPnL</span> <span class="o">=</span> <span class="n">realizedPnL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">(</span><span class="s1">&#39;pnl&#39;</span><span class="p">,</span> <span class="n">pnl</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Wrapper.pnlSingle"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.pnlSingle">[docs]</a>    <span class="nd">@iswrapper</span>
+    <span class="k">def</span> <span class="nf">pnlSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">dailyPnL</span><span class="p">,</span>
+            <span class="n">unrealizedPnL</span><span class="p">,</span> <span class="n">realizedPnL</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">pnlSingle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pnlSingles</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pnlSingle</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">pnlSingle</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span>
+        <span class="n">pnlSingle</span><span class="o">.</span><span class="n">dailyPnL</span> <span class="o">=</span> <span class="n">dailyPnL</span>
+        <span class="n">pnlSingle</span><span class="o">.</span><span class="n">unrealizedPnL</span> <span class="o">=</span> <span class="n">unrealizedPnL</span>
+        <span class="n">pnlSingle</span><span class="o">.</span><span class="n">realizedPnL</span> <span class="o">=</span> <span class="n">realizedPnL</span>
+        <span class="n">pnlSingle</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">(</span><span class="s1">&#39;pnlSingle&#39;</span><span class="p">,</span> <span class="n">pnlSingle</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.openOrder"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.openOrder">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">openOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">orderState</span><span class="p">):</span>

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.9.6 documentation</title>
+    <title>API docs &#8212; IB-insync 0.9.7 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.6',
+        VERSION:     '0.9.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -96,7 +96,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.6.</p>
+<p>Release 0.9.7.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -236,6 +236,19 @@ The contract object must be the same as used to subscribe with.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.ib.IB.cancelPnL">
+<code class="descname">cancelPnL</code><span class="sig-paren">(</span><em>account</em>, <em>modelCode: str = ''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelPnL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelPnL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel PnL subscription for the given account and modelCode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.cancelPnLSingle">
+<code class="descname">cancelPnLSingle</code><span class="sig-paren">(</span><em>account: str</em>, <em>modelCode: str</em>, <em>conId: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelPnLSingle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelPnLSingle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel PnLSingle subscription for the given account, modelCode
+and conId.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.ib.IB.cancelRealTimeBars">
 <code class="descname">cancelRealTimeBars</code><span class="sig-paren">(</span><em>bars: ib_insync.objects.RealTimeBarList</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelRealTimeBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelRealTimeBars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cancel the realtime bars subscription.</p>
@@ -356,6 +369,23 @@ The article itself can be retrieved with <a class="reference internal" href="#ib
 <dd><p>Place a new order or modify an existing order.
 Returns a Trade that is kept live updated with
 status changes, fills, etc.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.pnl">
+<code class="descname">pnl</code><span class="sig-paren">(</span><em>account=''</em>, <em>modelCode=''</em><span class="sig-paren">)</span> &#x2192; typing.List[ib_insync.objects.PnL]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.pnl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.pnl" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of subscribed <code class="docutils literal"><span class="pre">PnL</span></code> objects (profit and loss),
+optionally filtered by account and/or modelCode.</p>
+<p>The <code class="docutils literal"><span class="pre">PnL</span></code> objects are kept live updated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.pnlSingle">
+<code class="descname">pnlSingle</code><span class="sig-paren">(</span><em>account=''</em>, <em>modelCode=''</em>, <em>conId=''</em><span class="sig-paren">)</span> &#x2192; typing.List[ib_insync.objects.PnLSingle]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.pnlSingle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.pnlSingle" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of subscribed <code class="docutils literal"><span class="pre">PnLSingle</span></code> objects (profit and loss for
+single positions), optionally filtered by account, modelCode
+and/or conId.</p>
+<p>The <code class="docutils literal"><span class="pre">PnLSingle</span></code> objects are kept live updated</p>
 </dd></dl>
 
 <dl class="method">
@@ -669,6 +699,25 @@ It is recommended to use the more reliable and much faster
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.ib.IB.reqPnL">
+<code class="descname">reqPnL</code><span class="sig-paren">(</span><em>account: str</em>, <em>modelCode: str = ''</em><span class="sig-paren">)</span> &#x2192; ib_insync.objects.PnL<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqPnL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqPnL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a subscription for profit and loss events for the given 
+account and optional modelCode.</p>
+<p>Returns a <code class="docutils literal"><span class="pre">PnL</span></code> object that is kept live updated.
+The result can also be queried from <a class="reference internal" href="#ib_insync.ib.IB.pnl" title="ib_insync.ib.IB.pnl"><code class="xref py py-meth docutils literal"><span class="pre">pnl()</span></code></a>.</p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/pnl.html">https://interactivebrokers.github.io/tws-api/pnl.html</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.reqPnLSingle">
+<code class="descname">reqPnLSingle</code><span class="sig-paren">(</span><em>account: str</em>, <em>modelCode: str</em>, <em>conId: int</em><span class="sig-paren">)</span> &#x2192; ib_insync.objects.PnLSingle<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqPnLSingle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqPnLSingle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a subscription for profit and loss events for single positions.</p>
+<p>Returns a <code class="docutils literal"><span class="pre">PnLSingle</span></code> object that is kept live updated.
+The result can also be queried from <a class="reference internal" href="#ib_insync.ib.IB.pnlSingle" title="ib_insync.ib.IB.pnlSingle"><code class="xref py py-meth docutils literal"><span class="pre">pnlSingle()</span></code></a>.</p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/pnl.html">https://interactivebrokers.github.io/tws-api/pnl.html</a></p>
+</dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.ib.IB.reqPositions">
 <code class="descname">reqPositions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; typing.List[ib_insync.objects.Position]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqPositions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqPositions" title="Permalink to this definition">¶</a></dt>
 <dd><p>It is recommended to use <a class="reference internal" href="#ib_insync.ib.IB.positions" title="ib_insync.ib.IB.positions"><code class="xref py py-meth docutils literal"><span class="pre">positions()</span></code></a> instead.</p>
@@ -812,6 +861,10 @@ A position has changed.</li>
 An account value has changed.</li>
 <li><code class="docutils literal"><span class="pre">accountSummary(value:</span> <span class="pre">AccountValue)</span></code>:
 An account value has changed.</li>
+<li><code class="docutils literal"><span class="pre">pnl(entry:</span> <span class="pre">PnL)</span></code>:
+A profit- and loss entry is updated.</li>
+<li><code class="docutils literal"><span class="pre">pnlSingle(entry:</span> <span class="pre">PnLSingle)</span></code>:
+A profit- and loss entry for a single position is updated.</li>
 <li><code class="docutils literal"><span class="pre">tickNews(news:</span> <span class="pre">NewsTick)</span></code>:
 Emit a new news headline.</li>
 <li><code class="docutils literal"><span class="pre">error(reqId:</span> <span class="pre">int,</span> <span class="pre">errorCode:</span> <span class="pre">int,</span> <span class="pre">errorString:</span> <span class="pre">str,</span> <span class="pre">contract:</span> <span class="pre">Contract)</span></code>:
@@ -1092,7 +1145,7 @@ If an attribute is not given it will take its value from the
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'Submitted', 'ApiPending', 'PreSubmitted', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'PreSubmitted', 'Submitted', 'ApiPending', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1112,7 +1165,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'Filled', 'Inactive', 'ApiCancelled', 'Cancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'Inactive', 'ApiCancelled', 'Cancelled', 'Filled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1368,7 +1421,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 140362489722640: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': ''}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139939467147472: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': ''}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -3483,6 +3536,99 @@ and as keyword, the keyword wins.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="ib_insync.objects.PnL">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">PnL</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#PnL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.PnL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute values can be given positionally or as keyword.
+If an attribute is not given it will take its value from the
+‘defaults’ class member. If an attribute is given both positionally
+and as keyword, the keyword wins.</p>
+<dl class="attribute">
+<dt id="ib_insync.objects.PnL.account">
+<code class="descname">account</code><a class="headerlink" href="#ib_insync.objects.PnL.account" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnL.dailyPnL">
+<code class="descname">dailyPnL</code><a class="headerlink" href="#ib_insync.objects.PnL.dailyPnL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnL.defaults">
+<code class="descname">defaults</code><em class="property"> = {'account': '', 'modelCode': '', 'dailyPnL': nan, 'unrealizedPnL': nan, 'realizedPnL': nan}</em><a class="headerlink" href="#ib_insync.objects.PnL.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnL.modelCode">
+<code class="descname">modelCode</code><a class="headerlink" href="#ib_insync.objects.PnL.modelCode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnL.realizedPnL">
+<code class="descname">realizedPnL</code><a class="headerlink" href="#ib_insync.objects.PnL.realizedPnL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnL.unrealizedPnL">
+<code class="descname">unrealizedPnL</code><a class="headerlink" href="#ib_insync.objects.PnL.unrealizedPnL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.objects.PnLSingle">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">PnLSingle</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#PnLSingle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.PnLSingle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute values can be given positionally or as keyword.
+If an attribute is not given it will take its value from the
+‘defaults’ class member. If an attribute is given both positionally
+and as keyword, the keyword wins.</p>
+<dl class="attribute">
+<dt id="ib_insync.objects.PnLSingle.account">
+<code class="descname">account</code><a class="headerlink" href="#ib_insync.objects.PnLSingle.account" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnLSingle.conId">
+<code class="descname">conId</code><a class="headerlink" href="#ib_insync.objects.PnLSingle.conId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnLSingle.dailyPnL">
+<code class="descname">dailyPnL</code><a class="headerlink" href="#ib_insync.objects.PnLSingle.dailyPnL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnLSingle.defaults">
+<code class="descname">defaults</code><em class="property"> = {'account': '', 'modelCode': '', 'conId': 0, 'dailyPnL': nan, 'unrealizedPnL': nan, 'realizedPnL': nan, 'position': 0, 'value': nan}</em><a class="headerlink" href="#ib_insync.objects.PnLSingle.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnLSingle.modelCode">
+<code class="descname">modelCode</code><a class="headerlink" href="#ib_insync.objects.PnLSingle.modelCode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnLSingle.position">
+<code class="descname">position</code><a class="headerlink" href="#ib_insync.objects.PnLSingle.position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnLSingle.realizedPnL">
+<code class="descname">realizedPnL</code><a class="headerlink" href="#ib_insync.objects.PnLSingle.realizedPnL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnLSingle.unrealizedPnL">
+<code class="descname">unrealizedPnL</code><a class="headerlink" href="#ib_insync.objects.PnLSingle.unrealizedPnL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.PnLSingle.value">
+<code class="descname">value</code><a class="headerlink" href="#ib_insync.objects.PnLSingle.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="ib_insync.objects.AccountValue">
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">AccountValue</code><span class="sig-paren">(</span><em>account</em>, <em>tag</em>, <em>value</em>, <em>currency</em>, <em>modelCode</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.AccountValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of AccountValue(account, tag, value, currency, modelCode)</p>
@@ -4696,6 +4842,16 @@ and as keyword, the keyword wins.</p>
 <dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.orderStatus">
 <code class="descname">orderStatus</code><span class="sig-paren">(</span><em>orderId</em>, <em>status</em>, <em>filled</em>, <em>remaining</em>, <em>avgFillPrice</em>, <em>permId</em>, <em>parentId</em>, <em>lastFillPrice</em>, <em>clientId</em>, <em>whyHeld</em>, <em>mktCapPrice=0.0</em>, <em>lastLiquidity=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.orderStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.orderStatus" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.pnl">
+<code class="descname">pnl</code><span class="sig-paren">(</span><em>reqId</em>, <em>dailyPnL</em>, <em>unrealizedPnL</em>, <em>realizedPnL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.pnl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.pnl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.pnlSingle">
+<code class="descname">pnlSingle</code><span class="sig-paren">(</span><em>reqId</em>, <em>pos</em>, <em>dailyPnL</em>, <em>unrealizedPnL</em>, <em>realizedPnL</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.pnlSingle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.pnlSingle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
