@@ -250,7 +250,7 @@ class Wrapper(EWrapper):
         pnlSingle = self.pnlSingles.get(reqId)
         if not pnlSingle:
             return
-        pnlSingle.pos = pos
+        pnlSingle.position = pos
         pnlSingle.dailyPnL = dailyPnL
         pnlSingle.unrealizedPnL = unrealizedPnL
         pnlSingle.realizedPnL = realizedPnL

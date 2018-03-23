@@ -93,6 +93,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.8
+^^^^^^^^^^^^^
+
+* Fix for ib.reqPnLSingle
+
 Version 0.9.7
 ^^^^^^^^^^^^^
 
