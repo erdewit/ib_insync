@@ -93,6 +93,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.9
+^^^^^^^^^^^^^
+
+* Fixed issue #57
+
 Version 0.9.8
 ^^^^^^^^^^^^^
 

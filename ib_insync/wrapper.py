@@ -422,6 +422,7 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def historicalDataUpdate(self, reqId, bar):
+        bar = BarData(**bar.__dict__)
         bars = self.reqId2Bars.get(reqId)
         if not bars:
             return
