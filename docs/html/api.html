@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.9.9 documentation</title>
+    <title>API docs &#8212; IB-insync 0.9.10 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.9',
+        VERSION:     '0.9.10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -96,7 +96,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.9.</p>
+<p>Release 0.9.10.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -444,9 +444,9 @@ Returns when account summary is filled.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqAccountUpdates">
-<code class="descname">reqAccountUpdates</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqAccountUpdates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqAccountUpdates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqAccountUpdates</code><span class="sig-paren">(</span><em>account: str = ''</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqAccountUpdates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqAccountUpdates" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is called at startup - no need to call again.</p>
-<p>Request account and portfolio values of the default account
+<p>Request account and portfolio values of the account
 and keep updated. Returns when both account values and portfolio
 are filled.</p>
 <p>This method is blocking.</p>
@@ -454,12 +454,12 @@ are filled.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqAccountUpdatesAsync">
-<code class="descname">reqAccountUpdatesAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqAccountUpdatesAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqAccountUpdatesAsync" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqAccountUpdatesAsync</code><span class="sig-paren">(</span><em>account</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqAccountUpdatesAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqAccountUpdatesAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqAccountUpdatesMulti">
-<code class="descname">reqAccountUpdatesMulti</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqAccountUpdatesMulti"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqAccountUpdatesMulti" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqAccountUpdatesMulti</code><span class="sig-paren">(</span><em>account: str = ''</em>, <em>modelCode: str = ''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqAccountUpdatesMulti"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqAccountUpdatesMulti" title="Permalink to this definition">¶</a></dt>
 <dd><p>It is recommended to use <a class="reference internal" href="#ib_insync.ib.IB.accountValues" title="ib_insync.ib.IB.accountValues"><code class="xref py py-meth docutils literal"><span class="pre">accountValues()</span></code></a> instead.</p>
 <p>Request account values of multiple accounts and keep updated.</p>
 <p>This method is blocking.</p>
@@ -467,7 +467,7 @@ are filled.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqAccountUpdatesMultiAsync">
-<code class="descname">reqAccountUpdatesMultiAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqAccountUpdatesMultiAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqAccountUpdatesMultiAsync" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqAccountUpdatesMultiAsync</code><span class="sig-paren">(</span><em>account</em>, <em>modelCode=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqAccountUpdatesMultiAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqAccountUpdatesMultiAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1145,7 +1145,7 @@ If an attribute is not given it will take its value from the
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'Submitted', 'PreSubmitted', 'ApiPending', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'PendingSubmit', 'Submitted', 'ApiPending', 'PreSubmitted'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1165,7 +1165,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'Filled', 'ApiCancelled', 'Cancelled', 'Inactive'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'Filled', 'ApiCancelled', 'Inactive', 'Cancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1421,7 +1421,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139719820597456: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': ''}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 140525240731856: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': ''}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">

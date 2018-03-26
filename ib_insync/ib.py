@@ -626,20 +626,20 @@ class IB:
         self._logger.info(f'reqGlobalCancel')
 
     @api
-    def reqAccountUpdates(self) -> None:
+    def reqAccountUpdates(self, account: str='') -> None:
         """
         This is called at startup - no need to call again.
         
-        Request account and portfolio values of the default account
+        Request account and portfolio values of the account
         and keep updated. Returns when both account values and portfolio
         are filled.
 
         This method is blocking.
         """
-        self.run(self.reqAccountUpdatesAsync())
+        self.run(self.reqAccountUpdatesAsync(account))
 
     @api
-    def reqAccountUpdatesMulti(self):
+    def reqAccountUpdatesMulti(self, account: str='', modelCode: str=''):
         """
         It is recommended to use :py:meth:`.accountValues` instead.
 
@@ -647,7 +647,7 @@ class IB:
 
         This method is blocking.
         """
-        self.run(self.reqAccountUpdatesMultiAsync())
+        self.run(self.reqAccountUpdatesMultiAsync(account, modelCode))
 
     @api
     def reqAccountSummary(self) -> None:
@@ -1165,9 +1165,10 @@ class IB:
     async def connectAsync(self, host, port, clientId, timeout=2):
         self.wrapper.clientId = clientId
         await self.client.connectAsync(host, port, clientId, timeout)
+        accounts = self.client.getAccounts()
         await asyncio.gather(
-                self.reqAccountUpdatesAsync(),
-                self.reqAccountUpdatesMultiAsync(),
+                self.reqAccountUpdatesAsync(accounts[0]),
+                *(self.reqAccountUpdatesMultiAsync(a) for a in accounts),
                 self.reqPositionsAsync(),
                 self.reqExecutionsAsync())
         self._logger.info('Synchronization complete')
@@ -1218,16 +1219,15 @@ class IB:
         self.client.placeOrder(reqId, contract, whatIfOrder)
         return future
 
-    def reqAccountUpdatesAsync(self):
-        defaultAccount = self.client.getAccounts()[0]
+    def reqAccountUpdatesAsync(self, account):
         future = self.wrapper.startReq('accountValues')
-        self.client.reqAccountUpdates(True, defaultAccount)
+        self.client.reqAccountUpdates(True, account)
         return future
 
-    def reqAccountUpdatesMultiAsync(self):
+    def reqAccountUpdatesMultiAsync(self, account, modelCode=''):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
-        self.client.reqAccountUpdatesMulti(reqId, '', '', False)
+        self.client.reqAccountUpdatesMulti(reqId, account, modelCode, False)
         return future
 
     def reqAccountSummaryAsync(self):

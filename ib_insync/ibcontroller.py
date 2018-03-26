@@ -156,7 +156,6 @@ class IBC(Object):
 
         # run shell command
         self._proc = await asyncio.create_subprocess_shell(cmd,
-                env=os.environ,
                 stdout=asyncio.subprocess.PIPE)
         self._monitor = asyncio.ensure_future(self.monitorAsync())
 

@@ -93,6 +93,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.10
+^^^^^^^^^^^^^^
+
+* ib.accountValues() fixed for use with multiple accounts
+
 Version 0.9.9
 ^^^^^^^^^^^^^
 
