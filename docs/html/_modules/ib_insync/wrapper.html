@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.wrapper &#8212; IB-insync 0.9.10 documentation</title>
+    <title>ib_insync.wrapper &#8212; IB-insync 0.9.11 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.10',
+        VERSION:     '0.9.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -137,6 +137,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># datetime (UTC) of last network packet arrival</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">autoclearTickers</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeoutHandle</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_timeoutHandle</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
@@ -242,9 +243,21 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_timeoutHandle</span> <span class="o">=</span> <span class="kc">None</span>
 
+<div class="viewcode-block" id="Wrapper.connectAck"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.connectAck">[docs]</a>    <span class="nd">@iswrapper</span>
+    <span class="k">def</span> <span class="nf">connectAck</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Wrapper.nextValidId"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.nextValidId">[docs]</a>    <span class="nd">@iswrapper</span>
+    <span class="k">def</span> <span class="nf">nextValidId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
 <div class="viewcode-block" id="Wrapper.managedAccounts"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.managedAccounts">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">managedAccounts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">accountsList</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span> <span class="o">=</span> <span class="n">accountsList</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Wrapper.updateAccountTime"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.updateAccountTime">[docs]</a>    <span class="nd">@iswrapper</span>
+    <span class="k">def</span> <span class="nf">updateAccountTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">):</span>
+        <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Wrapper.updateAccountValue"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.updateAccountValue">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">updateAccountValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">currency</span><span class="p">,</span> <span class="n">account</span><span class="p">):</span>
@@ -744,7 +757,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;genericTick: malformed value: </span><span class="si">{value!r}</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
+            
+<div class="viewcode-block" id="Wrapper.tickReqParams"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.tickReqParams">[docs]</a>    <span class="nd">@iswrapper</span>
+    <span class="k">def</span> <span class="nf">tickReqParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">minTick</span><span class="p">,</span> <span class="n">bboExchange</span><span class="p">,</span> <span class="n">snapshotPermissions</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+        
 <div class="viewcode-block" id="Wrapper.mktDepthExchanges"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.mktDepthExchanges">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">mktDepthExchanges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depthMktDataDescriptions</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">DepthMktDataDescription</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
@@ -919,12 +936,8 @@
     <span class="c1"># additional wrapper method provided by Client</span>
     <span class="k">def</span> <span class="nf">tcpDataArrived</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
-        <span class="c1"># clear pending tickers and their ticks</span>
-        <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="p">[:]</span>
-            <span class="k">del</span> <span class="n">ticker</span><span class="o">.</span><span class="n">tickByTicks</span><span class="p">[:]</span>
-            <span class="k">del</span> <span class="n">ticker</span><span class="o">.</span><span class="n">domTicks</span><span class="p">[:]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">autoclearTickers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clearPendingTickers</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Wrapper.tcpDataProcessed"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.tcpDataProcessed">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="c1"># additional wrapper method provided by Client</span>
@@ -933,7 +946,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">(</span><span class="s1">&#39;pendingTickers&#39;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">(</span><span class="s1">&#39;updated&#39;</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">(</span><span class="s1">&#39;updated&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Wrapper.clearPendingTickers"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.clearPendingTickers">[docs]</a>    <span class="k">def</span> <span class="nf">clearPendingTickers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear pending tickers and their ticks</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="p">[:]</span>
+            <span class="k">del</span> <span class="n">ticker</span><span class="o">.</span><span class="n">tickByTicks</span><span class="p">[:]</span>
+            <span class="k">del</span> <span class="n">ticker</span><span class="o">.</span><span class="n">domTicks</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div></div>
+
 </pre></div>
 
           </div>

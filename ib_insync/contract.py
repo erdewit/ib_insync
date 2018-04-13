@@ -3,7 +3,7 @@ import  ibapi.contract
 from ib_insync.objects import Object
 
 __all__ = (
-    'Contract Stock Option Future Forex Index CFD '
+    'Contract Stock Option Future ContFuture Forex Index CFD '
     'Commodity Bond FuturesOption MutualFund Warrant').split()
 
 
@@ -97,6 +97,16 @@ class Future(Contract):
             currency='', **kwargs):
         Contract.__init__(self, 'FUT', symbol=symbol,
                 lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
+                exchange=exchange, localSymbol=localSymbol,
+                multiplier=multiplier, currency=currency, **kwargs)
+
+
+class ContFuture(Contract):
+    __slots__ = ()
+
+    def __init__(self, symbol='', exchange='', localSymbol='', multiplier='',
+            currency='', **kwargs):
+        Contract.__init__(self, 'CONTFUT', symbol=symbol,
                 exchange=exchange, localSymbol=localSymbol,
                 multiplier=multiplier, currency=currency, **kwargs)
 

@@ -56,6 +56,7 @@ class Wrapper(EWrapper):
         self.accounts = []
         self.clientId = -1
         self.lastTime = None  # datetime (UTC) of last network packet arrival
+        self.autoclearTickers = True
         self._timeout = 0
         if self._timeoutHandle:
             self._timeoutHandle.cancel()
@@ -162,8 +163,20 @@ class Wrapper(EWrapper):
             self._timeoutHandle = None
 
     @iswrapper
+    def connectAck(self):
+        pass
+
+    @iswrapper
+    def nextValidId(self, reqId):
+        pass
+
+    @iswrapper
     def managedAccounts(self, accountsList):
         self.accounts = accountsList.split(',')
+
+    @iswrapper
+    def updateAccountTime(self, timestamp):
+        pass
 
     @iswrapper
     def updateAccountValue(self, tag, val, currency, account):
@@ -663,7 +676,11 @@ class Wrapper(EWrapper):
             self.pendingTickers.add(ticker)
         except ValueError:
             self._logger.error(f'genericTick: malformed value: {value!r}')
-
+            
+    @iswrapper
+    def tickReqParams(self, reqId, minTick, bboExchange, snapshotPermissions):
+        pass
+        
     @iswrapper
     def mktDepthExchanges(self, depthMktDataDescriptions):
         result = [DepthMktDataDescription(**d.__dict__)
@@ -838,12 +855,8 @@ class Wrapper(EWrapper):
     # additional wrapper method provided by Client
     def tcpDataArrived(self):
         self.lastTime = datetime.datetime.now(datetime.timezone.utc)
-        # clear pending tickers and their ticks
-        for ticker in self.pendingTickers:
-            del ticker.ticks[:]
-            del ticker.tickByTicks[:]
-            del ticker.domTicks[:]
-        self.pendingTickers.clear()
+        if self.autoclearTickers:
+            self.clearPendingTickers()
 
     @iswrapper
     # additional wrapper method provided by Client
@@ -853,3 +866,14 @@ class Wrapper(EWrapper):
         self.updateEvent.set()
         self.updateEvent.clear()
         self.handleEvent('updated')
+
+    def clearPendingTickers(self):
+        """
+        Clear pending tickers and their ticks
+        """
+        for ticker in self.pendingTickers:
+            del ticker.ticks[:]
+            del ticker.tickByTicks[:]
+            del ticker.domTicks[:]
+        self.pendingTickers.clear()
+

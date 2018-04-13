@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.contract &#8212; IB-insync 0.9.10 documentation</title>
+    <title>ib_insync.contract &#8212; IB-insync 0.9.11 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.10',
+        VERSION:     '0.9.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -84,7 +84,7 @@
 <span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="n">Object</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s1">&#39;Contract Stock Option Future Forex Index CFD &#39;</span>
+    <span class="s1">&#39;Contract Stock Option Future ContFuture Forex Index CFD &#39;</span>
     <span class="s1">&#39;Commodity Bond FuturesOption MutualFund Warrant&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
 
@@ -178,6 +178,16 @@
             <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;FUT&#39;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span>
                 <span class="n">lastTradeDateOrContractMonth</span><span class="o">=</span><span class="n">lastTradeDateOrContractMonth</span><span class="p">,</span>
+                <span class="n">exchange</span><span class="o">=</span><span class="n">exchange</span><span class="p">,</span> <span class="n">localSymbol</span><span class="o">=</span><span class="n">localSymbol</span><span class="p">,</span>
+                <span class="n">multiplier</span><span class="o">=</span><span class="n">multiplier</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="n">currency</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ContFuture"><a class="viewcode-back" href="../../api.html#ib_insync.contract.ContFuture">[docs]</a><span class="k">class</span> <span class="nc">ContFuture</span><span class="p">(</span><span class="n">Contract</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">localSymbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">multiplier</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;CONTFUT&#39;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span>
                 <span class="n">exchange</span><span class="o">=</span><span class="n">exchange</span><span class="p">,</span> <span class="n">localSymbol</span><span class="o">=</span><span class="n">localSymbol</span><span class="p">,</span>
                 <span class="n">multiplier</span><span class="o">=</span><span class="n">multiplier</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="n">currency</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 

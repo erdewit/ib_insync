@@ -79,6 +79,12 @@ class Ticker(Object):
     def __hash__(self):
         return id(self)
 
+    def midpoint(self):
+        """
+        Return average of bid and ask.
+        """
+        return (self.bid + self.ask) / 2
+
     def marketPrice(self):
         """
         Return the first available one of
@@ -87,7 +93,7 @@ class Ticker(Object):
         * average of bid and ask (midpoint);
         * close price.
         """
-        midpoint = (self.bid + self.ask) / 2
+        midpoint = self.midpoint()
         price = self.last if (isNan(midpoint) or
                 self.bid <= self.last <= self.ask) else nan
         if isNan(price):

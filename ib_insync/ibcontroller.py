@@ -69,7 +69,8 @@ class IBC(Object):
     * ``fixuserid``: FIX account user id (gateway only).
     * ``fixpassword``: FIX account password (gateway only).
     
-    To use IBC on Windows, the the proactor event loop must have been set:
+    To use IBC on Windows, the the proactor (or quamash) event loop
+    must have been set:
     
     .. code-block:: python
         
@@ -154,6 +155,8 @@ class IBC(Object):
                     l.append(str(v))
         cmd = ' '.join(l)
 
+        print(cmd)
+
         # run shell command
         self._proc = await asyncio.create_subprocess_shell(cmd,
                 stdout=asyncio.subprocess.PIPE)
@@ -185,7 +188,7 @@ class IBController(Object):
     Programmatic control over starting and stopping TWS/Gateway
     using IBController (https://github.com/ib-controller/ib-controller).
     
-    On Windows the the proactor event loop must have been set:
+    On Windows the the proactor (or quamash) event loop must have been set:
     
     .. code-block:: python
         

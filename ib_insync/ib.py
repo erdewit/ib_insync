@@ -228,7 +228,10 @@ class IB:
         """
         Wait on any new update to arrive from the network.
         """
+        self.wrapper.clearPendingTickers()
+        self.wrapper.autoclearTickers = False
         self.run(self.wrapper.updateEvent.wait())
+        self.wrapper.autoclearTickers = True
         return True
 
     def loopUntil(self, condition=None, timeout: float=0) -> Iterator:

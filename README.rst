@@ -93,6 +93,13 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.11
+^^^^^^^^^^^^^^
+
+* Fixed bug when collecting ticks using ib.waitOnUpdate()
+* Added ContFuture class (continuous futures)
+* Added Ticker.midpoint() 
+
 Version 0.9.10
 ^^^^^^^^^^^^^^
 

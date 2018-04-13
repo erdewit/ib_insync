@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ibcontroller &#8212; IB-insync 0.9.10 documentation</title>
+    <title>ib_insync.ibcontroller &#8212; IB-insync 0.9.11 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.10',
+        VERSION:     '0.9.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -150,7 +150,8 @@
 <span class="sd">    * ``fixuserid``: FIX account user id (gateway only).</span>
 <span class="sd">    * ``fixpassword``: FIX account password (gateway only).</span>
 <span class="sd">    </span>
-<span class="sd">    To use IBC on Windows, the the proactor event loop must have been set:</span>
+<span class="sd">    To use IBC on Windows, the the proactor (or quamash) event loop</span>
+<span class="sd">    must have been set:</span>
 <span class="sd">    </span>
 <span class="sd">    .. code-block:: python</span>
 <span class="sd">        </span>
@@ -235,6 +236,8 @@
                     <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
         <span class="c1"># run shell command</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_subprocess_shell</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span>
                 <span class="n">stdout</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
@@ -266,7 +269,7 @@
 <span class="sd">    Programmatic control over starting and stopping TWS/Gateway</span>
 <span class="sd">    using IBController (https://github.com/ib-controller/ib-controller).</span>
 <span class="sd">    </span>
-<span class="sd">    On Windows the the proactor event loop must have been set:</span>
+<span class="sd">    On Windows the the proactor (or quamash) event loop must have been set:</span>
 <span class="sd">    </span>
 <span class="sd">    .. code-block:: python</span>
 <span class="sd">        </span>
