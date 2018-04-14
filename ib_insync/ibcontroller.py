@@ -155,8 +155,6 @@ class IBC(Object):
                     l.append(str(v))
         cmd = ' '.join(l)
 
-        print(cmd)
-
         # run shell command
         self._proc = await asyncio.create_subprocess_shell(cmd,
                 stdout=asyncio.subprocess.PIPE)
