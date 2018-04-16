@@ -316,10 +316,13 @@ class Watchdog(Object):
     * ``controller``: IBC or IBController instance;
     * ``host``, ``port``, ``clientId`` and ``connectTimeout``: Used for
       connecting to the app;
-    * ``appStartupTime``: Time (in seconds) that the app is given to start up.
+    * ``appStartupTime``: Time (in seconds) that the app is given to start up;
       Make sure that it is given ample time;
     * ``appTimeout``: Timeout (in seconds) for network traffic idle time;
-    * ``retryDelay``: Time (in seconds) to restart app after a previous failure.
+    * ``retryDelay``: Time (in seconds) to restart app after a previous failure;
+    * ``ib``: The (optional) IB instance to be used. Do no connect this
+      instance as Watchdog takes care of that.
+      If left empty then Watchdog creates the IB instance.
     
     Note: ``util.patchAsyncio()`` must have been called before.
     
@@ -332,6 +335,7 @@ class Watchdog(Object):
         ibc = IBC(969, gateway=True, tradingMode='paper')
         app = Watchdog(ibc, port=4002)
         app.start()
+        print(app.ib.accountValues())
         IB.run()
         
     """
