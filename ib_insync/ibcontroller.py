@@ -142,21 +142,20 @@ class IBC(Object):
 
         # create shell command
         win32 = os.sys.platform == 'win32'
-        l = [f'{self.ibcPath}\\scripts\\StartIBC.bat' if win32 else
+        cmd = [f'{self.ibcPath}\\scripts\\StartIBC.bat' if win32 else
             f'{self.ibcPath}/scripts/ibcstart.sh']
         for k, v in self.dict().items():
             arg = IBC._Args[k][2 if win32 else 1]
             if v:
                 if arg.endswith('=') or arg.endswith(':'):
-                    l.append(f'{arg}{v}')
+                    cmd.append(f'{arg}{v}')
                 elif arg:
-                    l.append(arg)
+                    cmd.append(arg)
                 else:
-                    l.append(str(v))
-        cmd = ' '.join(l)
+                    cmd.append(str(v))
 
         # run shell command
-        self._proc = await asyncio.create_subprocess_shell(cmd,
+        self._proc = await asyncio.create_subprocess_exec(*cmd,
                 stdout=asyncio.subprocess.PIPE)
         self._monitor = asyncio.ensure_future(self.monitorAsync())
 
@@ -257,7 +256,7 @@ class IBController(Object):
         ext = 'bat' if os.sys.platform == 'win32' else 'sh'
         cmd = f'{d["IBC_PATH"]}/Scripts/DisplayBannerAndLaunch.{ext}'
         env = {**os.environ, **d}
-        self._proc = await asyncio.create_subprocess_shell(cmd, env=env,
+        self._proc = await asyncio.create_subprocess_exec(cmd, env=env,
                 stdout=asyncio.subprocess.PIPE)
         self._monitor = asyncio.ensure_future(self.monitorAsync())
 
@@ -348,7 +347,7 @@ class Watchdog(Object):
         ib=None,
         appStartupTime=30,
         appTimeout=20,
-        retryDelay=1)
+        retryDelay=2)
     __slots__ = list(defaults.keys()) + ['_watcher', '_logger']
 
     def __init__(self, *args, **kwargs):

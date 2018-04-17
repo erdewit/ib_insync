@@ -93,6 +93,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.12
+^^^^^^^^^^^^^^
+
+* Run IBC and IBController directly instead of via shell
+
 Version 0.9.11
 ^^^^^^^^^^^^^^
 
