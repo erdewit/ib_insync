@@ -25,7 +25,8 @@ class Contract(Object):
     """
     defaults = {'secType': '', **ibapi.contract.Contract().__dict__}
     __slots__ = list(defaults.keys()) + \
-            ['comboLegsCount', 'underCompPresent', 'secIdListCount']  # bug in decoder.py
+            ['comboLegsCount', 'underCompPresent', 'deltaNeutralContractPresent',
+                'secIdListCount']  # bug in decoder.py
 
     @staticmethod
     def create(**kwargs):
