@@ -16,7 +16,7 @@ from ibapi.order_condition import (OrderCondition, ExecutionCondition,
 
 __all__ = (
     'Object ContractDetails ContractDescription '
-    'ComboLeg UnderComp OrderComboLeg OrderState '
+    'ComboLeg UnderComp DeltaNeutralContract OrderComboLeg OrderState '
     'ScannerSubscription SoftDollarTier '
     'Execution CommissionReport ExecutionFilter '
     'BarList BarDataList RealTimeBarList BarData RealTimeBar '
@@ -131,7 +131,7 @@ class ContractDetails(Object):
     __slots__ = list(defaults.keys()) + \
             ['secIdListCount']  # bug in ibapi decoder
 
-    # forward compatibility with ibapi v9.73.07
+    # summary is renamed to contract in ibapi v9.73.07
     @property
     def contract(self):
         return self.summary
@@ -153,8 +153,13 @@ class ComboLeg(Object):
 
 
 class UnderComp(Object):
-    defaults = ibapi.contract.UnderComp().__dict__
+    defaults = dict(
+       conId=0,
+       delta=0.0,
+       price=0.0)
     __slots__ = defaults.keys()
+# UnderComp is renamed to DeltaNeutralContract in ibapi v9.73.07
+DeltaNeutralContract = UnderComp
 
 
 class OrderComboLeg(Object):
