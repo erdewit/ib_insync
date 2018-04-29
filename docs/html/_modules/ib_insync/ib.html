@@ -184,7 +184,9 @@
             <span class="n">clientId</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Connect to a TWS or IB gateway application running at host:port.</span>
-<span class="sd">        After the connect the client is immediately ready to serve requests. </span>
+<span class="sd">        After the connect the client is immediately ready to serve requests.</span>
+<span class="sd">        </span>
+<span class="sd">        Setting clientId=0 will merge manual TWS trading with this client.</span>
 <span class="sd">        </span>
 <span class="sd">        This method is blocking.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -662,7 +664,7 @@
         <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">Order</span><span class="p">):</span>
             <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="p">(</span><span class="o">**</span><span class="n">order</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">orderId</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">orderKey</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">orderId</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">permId</span><span class="p">)</span>
         <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">trade</span><span class="p">:</span>
             <span class="c1"># this is a modification of an existing order</span>
@@ -689,7 +691,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelOrder</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">orderId</span><span class="p">)</span>
         <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">orderId</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">orderKey</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">orderId</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">permId</span><span class="p">)</span>
         <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">trade</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">DoneStates</span><span class="p">:</span>
@@ -744,6 +746,18 @@
 <span class="sd">        This method is blocking.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqAccountSummaryAsync</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="IB.reqAutoOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAutoOpenOrders">[docs]</a>    <span class="nd">@api</span>
+    <span class="k">def</span> <span class="nf">reqAutoOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">autoBind</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bind manual TWS orders so that they can be managed from this client.</span>
+<span class="sd">        The clientId must be 0 and the TWS API setting &quot;Use negative numbers</span>
+<span class="sd">        to bind automatic orders&quot; must be checked.</span>
+<span class="sd">        </span>
+<span class="sd">        https://interactivebrokers.github.io/tws-api/open_orders.html</span>
+<span class="sd">        https://interactivebrokers.github.io/tws-api/modifying_orders.html</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqAutoOpenOrders</span><span class="p">(</span><span class="n">autoBind</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="IB.reqOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqOpenOrders">[docs]</a>    <span class="nd">@api</span>
     <span class="k">def</span> <span class="nf">reqOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]:</span>
@@ -1255,6 +1269,9 @@
                 <span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqAccountUpdatesMultiAsync</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">accounts</span><span class="p">),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">reqPositionsAsync</span><span class="p">(),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">reqExecutionsAsync</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">clientId</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># autobind orders</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reqAutoOpenOrders</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Synchronization complete&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">(</span><span class="s1">&#39;connected&#39;</span><span class="p">)</span></div>
 

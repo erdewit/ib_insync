@@ -282,10 +282,10 @@ class Wrapper(EWrapper):
     def openOrder(self, orderId, contract, order, orderState):
         """
         This wrapper is called to:
-        - feed in open orders at startup;
-        - feed in open orders or order updates from other clients and TWS
-          if clientId=master id;
-        - feed in manual orders and order updates from TWS if clientId=0.
+        * feed in open orders at startup;
+        * feed in open orders or order updates from other clients and TWS
+        if clientId=master id;
+        * feed in manual orders and order updates from TWS if clientId=0.
         
         It is *not* called as a response to placeOrder from the current client.
         """

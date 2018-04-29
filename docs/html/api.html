@@ -266,6 +266,7 @@ The contract object must be the same as used to subscribe with.</p>
 <code class="descname">connect</code><span class="sig-paren">(</span><em>host: str = '127.0.0.1'</em>, <em>port: int = '7497'</em>, <em>clientId: int = 1</em>, <em>timeout: float = 2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to a TWS or IB gateway application running at host:port.
 After the connect the client is immediately ready to serve requests.</p>
+<p>Setting clientId=0 will merge manual TWS trading with this client.</p>
 <p>This method is blocking.</p>
 </dd></dl>
 
@@ -469,6 +470,16 @@ are filled.</p>
 <dt id="ib_insync.ib.IB.reqAccountUpdatesMultiAsync">
 <code class="descname">reqAccountUpdatesMultiAsync</code><span class="sig-paren">(</span><em>account</em>, <em>modelCode=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqAccountUpdatesMultiAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqAccountUpdatesMultiAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.reqAutoOpenOrders">
+<code class="descname">reqAutoOpenOrders</code><span class="sig-paren">(</span><em>autoBind: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqAutoOpenOrders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqAutoOpenOrders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bind manual TWS orders so that they can be managed from this client.
+The clientId must be 0 and the TWS API setting “Use negative numbers
+to bind automatic orders” must be checked.</p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/open_orders.html">https://interactivebrokers.github.io/tws-api/open_orders.html</a>
+<a class="reference external" href="https://interactivebrokers.github.io/tws-api/modifying_orders.html">https://interactivebrokers.github.io/tws-api/modifying_orders.html</a></p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqContractDetails">
@@ -1145,7 +1156,7 @@ If an attribute is not given it will take its value from the
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'ApiPending', 'Submitted', 'PreSubmitted', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'PendingSubmit', 'PreSubmitted', 'ApiPending', 'Submitted'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1165,7 +1176,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'ApiCancelled', 'Filled', 'Cancelled', 'Inactive'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'Inactive', 'Filled', 'ApiCancelled', 'Cancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1421,7 +1432,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 140244807983456: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': ''}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 140092091334952: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': '', 'dontUseAutoPriceForHedge': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1492,6 +1503,11 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.displaySize">
 <code class="descname">displaySize</code><a class="headerlink" href="#ib_insync.order.Order.displaySize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.Order.dontUseAutoPriceForHedge">
+<code class="descname">dontUseAutoPriceForHedge</code><a class="headerlink" href="#ib_insync.order.Order.dontUseAutoPriceForHedge" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1979,7 +1995,17 @@ or a general Contract if secType is not given.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.contract.Contract.defaults">
-<code class="descname">defaults</code><em class="property"> = {'secType': '', 'conId': 0, 'symbol': '', 'lastTradeDateOrContractMonth': '', 'strike': 0.0, 'right': '', 'multiplier': '', 'exchange': '', 'primaryExchange': '', 'currency': '', 'localSymbol': '', 'tradingClass': '', 'includeExpired': False, 'secIdType': '', 'secId': '', 'comboLegsDescrip': '', 'comboLegs': None, 'underComp': None}</em><a class="headerlink" href="#ib_insync.contract.Contract.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'secType': '', 'conId': 0, 'symbol': '', 'lastTradeDateOrContractMonth': '', 'strike': 0.0, 'right': '', 'multiplier': '', 'exchange': '', 'primaryExchange': '', 'currency': '', 'localSymbol': '', 'tradingClass': '', 'includeExpired': False, 'secIdType': '', 'secId': '', 'comboLegsDescrip': '', 'comboLegs': None, 'deltaNeutralContract': None}</em><a class="headerlink" href="#ib_insync.contract.Contract.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.contract.Contract.deltaNeutralContract">
+<code class="descname">deltaNeutralContract</code><a class="headerlink" href="#ib_insync.contract.Contract.deltaNeutralContract" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.contract.Contract.deltaNeutralContractPresent">
+<code class="descname">deltaNeutralContractPresent</code><a class="headerlink" href="#ib_insync.contract.Contract.deltaNeutralContractPresent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2050,11 +2076,6 @@ or a general Contract if secType is not given.</p>
 <dl class="attribute">
 <dt id="ib_insync.contract.Contract.tradingClass">
 <code class="descname">tradingClass</code><a class="headerlink" href="#ib_insync.contract.Contract.tradingClass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.contract.Contract.underComp">
-<code class="descname">underComp</code><a class="headerlink" href="#ib_insync.contract.Contract.underComp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2512,7 +2533,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.objects.ContractDetails.defaults">
-<code class="descname">defaults</code><em class="property"> = {'summary': None, 'marketName': '', 'minTick': 0.0, 'orderTypes': '', 'validExchanges': '', 'priceMagnifier': 0, 'underConId': 0, 'longName': '', 'contractMonth': '', 'industry': '', 'category': '', 'subcategory': '', 'timeZoneId': '', 'tradingHours': '', 'liquidHours': '', 'evRule': '', 'evMultiplier': 0, 'mdSizeMultiplier': 0, 'aggGroup': 0, 'underSymbol': '', 'underSecType': '', 'marketRuleIds': '', 'secIdList': None, 'realExpirationDate': '', 'cusip': '', 'ratings': '', 'descAppend': '', 'bondType': '', 'couponType': '', 'callable': False, 'putable': False, 'coupon': 0, 'convertible': False, 'maturity': '', 'issueDate': '', 'nextOptionDate': '', 'nextOptionType': '', 'nextOptionPartial': False, 'notes': ''}</em><a class="headerlink" href="#ib_insync.objects.ContractDetails.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'marketName': '', 'minTick': 0.0, 'orderTypes': '', 'validExchanges': '', 'priceMagnifier': 0, 'underConId': 0, 'longName': '', 'contractMonth': '', 'industry': '', 'category': '', 'subcategory': '', 'timeZoneId': '', 'tradingHours': '', 'liquidHours': '', 'evRule': '', 'evMultiplier': 0, 'mdSizeMultiplier': 0, 'aggGroup': 0, 'underSymbol': '', 'underSecType': '', 'marketRuleIds': '', 'secIdList': None, 'realExpirationDate': '', 'lastTradeTime': '', 'cusip': '', 'ratings': '', 'descAppend': '', 'bondType': '', 'couponType': '', 'callable': False, 'putable': False, 'coupon': 0, 'convertible': False, 'maturity': '', 'issueDate': '', 'nextOptionDate': '', 'nextOptionType': '', 'nextOptionPartial': False, 'notes': '', 'summary': None}</em><a class="headerlink" href="#ib_insync.objects.ContractDetails.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2538,6 +2559,11 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.objects.ContractDetails.issueDate">
 <code class="descname">issueDate</code><a class="headerlink" href="#ib_insync.objects.ContractDetails.issueDate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.ContractDetails.lastTradeTime">
+<code class="descname">lastTradeTime</code><a class="headerlink" href="#ib_insync.objects.ContractDetails.lastTradeTime" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2779,6 +2805,12 @@ and as keyword, the keyword wins.</p>
 
 </dd></dl>
 
+<dl class="attribute">
+<dt id="ib_insync.objects.DeltaNeutralContract">
+<code class="descclassname">ib_insync.objects.</code><code class="descname">DeltaNeutralContract</code><a class="headerlink" href="#ib_insync.objects.DeltaNeutralContract" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#ib_insync.objects.UnderComp" title="ib_insync.objects.UnderComp"><code class="xref py py-class docutils literal"><span class="pre">UnderComp</span></code></a></p>
+</dd></dl>
+
 <dl class="class">
 <dt id="ib_insync.objects.OrderComboLeg">
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">OrderComboLeg</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#OrderComboLeg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.OrderComboLeg" title="Permalink to this definition">¶</a></dt>
@@ -2817,22 +2849,52 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.objects.OrderState.defaults">
-<code class="descname">defaults</code><em class="property"> = {'status': '', 'initMargin': '', 'maintMargin': '', 'equityWithLoan': '', 'commission': 1.7976931348623157e+308, 'minCommission': 1.7976931348623157e+308, 'maxCommission': 1.7976931348623157e+308, 'commissionCurrency': '', 'warningText': ''}</em><a class="headerlink" href="#ib_insync.objects.OrderState.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'status': '', 'initMarginBefore': '', 'maintMarginBefore': '', 'equityWithLoanBefore': '', 'initMarginChange': '', 'maintMarginChange': '', 'equityWithLoanChange': '', 'initMarginAfter': '', 'maintMarginAfter': '', 'equityWithLoanAfter': '', 'commission': 1.7976931348623157e+308, 'minCommission': 1.7976931348623157e+308, 'maxCommission': 1.7976931348623157e+308, 'commissionCurrency': '', 'warningText': ''}</em><a class="headerlink" href="#ib_insync.objects.OrderState.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ib_insync.objects.OrderState.equityWithLoan">
-<code class="descname">equityWithLoan</code><a class="headerlink" href="#ib_insync.objects.OrderState.equityWithLoan" title="Permalink to this definition">¶</a></dt>
+<dt id="ib_insync.objects.OrderState.equityWithLoanAfter">
+<code class="descname">equityWithLoanAfter</code><a class="headerlink" href="#ib_insync.objects.OrderState.equityWithLoanAfter" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ib_insync.objects.OrderState.initMargin">
-<code class="descname">initMargin</code><a class="headerlink" href="#ib_insync.objects.OrderState.initMargin" title="Permalink to this definition">¶</a></dt>
+<dt id="ib_insync.objects.OrderState.equityWithLoanBefore">
+<code class="descname">equityWithLoanBefore</code><a class="headerlink" href="#ib_insync.objects.OrderState.equityWithLoanBefore" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ib_insync.objects.OrderState.maintMargin">
-<code class="descname">maintMargin</code><a class="headerlink" href="#ib_insync.objects.OrderState.maintMargin" title="Permalink to this definition">¶</a></dt>
+<dt id="ib_insync.objects.OrderState.equityWithLoanChange">
+<code class="descname">equityWithLoanChange</code><a class="headerlink" href="#ib_insync.objects.OrderState.equityWithLoanChange" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.OrderState.initMarginAfter">
+<code class="descname">initMarginAfter</code><a class="headerlink" href="#ib_insync.objects.OrderState.initMarginAfter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.OrderState.initMarginBefore">
+<code class="descname">initMarginBefore</code><a class="headerlink" href="#ib_insync.objects.OrderState.initMarginBefore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.OrderState.initMarginChange">
+<code class="descname">initMarginChange</code><a class="headerlink" href="#ib_insync.objects.OrderState.initMarginChange" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.OrderState.maintMarginAfter">
+<code class="descname">maintMarginAfter</code><a class="headerlink" href="#ib_insync.objects.OrderState.maintMarginAfter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.OrderState.maintMarginBefore">
+<code class="descname">maintMarginBefore</code><a class="headerlink" href="#ib_insync.objects.OrderState.maintMarginBefore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.OrderState.maintMarginChange">
+<code class="descname">maintMarginChange</code><a class="headerlink" href="#ib_insync.objects.OrderState.maintMarginChange" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4759,7 +4821,8 @@ and as keyword, the keyword wins.</p>
 <dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.execDetails">
 <code class="descname">execDetails</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>execution</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.execDetails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.execDetails" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This wrapper handles both live fills and responses to reqExecutions.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.execDetailsEnd">
@@ -4854,11 +4917,22 @@ and as keyword, the keyword wins.</p>
 <dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.openOrder">
 <code class="descname">openOrder</code><span class="sig-paren">(</span><em>orderId</em>, <em>contract</em>, <em>order</em>, <em>orderState</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.openOrder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.openOrder" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This wrapper is called to:
+* feed in open orders at startup;
+* feed in open orders or order updates from other clients and TWS
+if clientId=master id;
+* feed in manual orders and order updates from TWS if clientId=0.</p>
+<p>It is <em>not</em> called as a response to placeOrder from the current client.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.wrapper.Wrapper.openOrderEnd">
 <code class="descname">openOrderEnd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.openOrderEnd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.openOrderEnd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.wrapper.Wrapper.orderKey">
+<code class="descname">orderKey</code><span class="sig-paren">(</span><em>clientId</em>, <em>orderId</em>, <em>permId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.orderKey"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.orderKey" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -5100,12 +5174,14 @@ a DataFrame or as a list of bar objects.</p>
 <dd><p>Create a log handler that logs to the console.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="ib_insync.util.setIBAPILogLevel">
-<code class="descclassname">ib_insync.util.</code><code class="descname">setIBAPILogLevel</code><span class="sig-paren">(</span><em>level=40</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#setIBAPILogLevel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.setIBAPILogLevel" title="Permalink to this definition">¶</a></dt>
-<dd><p>The IBAPI uses excessive debug logging on the root logger.
-This function patches IBAPI to give it its own private logger.
-Setting a sticter log level will then cut the amount of logging.</p>
+<dl class="class">
+<dt id="ib_insync.util.RootLogFilter">
+<em class="property">class </em><code class="descclassname">ib_insync.util.</code><code class="descname">RootLogFilter</code><span class="sig-paren">(</span><em>ibapiLevel=40</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#RootLogFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.RootLogFilter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="ib_insync.util.RootLogFilter.filter">
+<code class="descname">filter</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#RootLogFilter.filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.RootLogFilter.filter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="function">

@@ -93,6 +93,14 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.13
+^^^^^^^^^^^^^^
+
+* Log handling improvements
+* Client with clientId=0 can now manage manual TWS orders
+* Client with master clientId can now monitor manual TWS orders
+
+
 Version 0.9.12
 ^^^^^^^^^^^^^^
 
