@@ -122,8 +122,9 @@ def logToFile(path, level=logging.INFO, ibapiLevel=logging.ERROR):
     Create a log handler that logs to the given file.
     """
     logger = logging.getLogger()
+    f = RootLogFilter(ibapiLevel)
+    logger.addFilter(f)
     logger.setLevel(level)
-    setIBAPILogLevel(ibapiLevel)
     formatter = logging.Formatter(
             '%(asctime)s %(name)s %(levelname)s %(message)s')
     handler = logging.FileHandler(path)
@@ -136,27 +137,29 @@ def logToConsole(level=logging.INFO, ibapiLevel=logging.ERROR):
     Create a log handler that logs to the console.
     """
     logger = logging.getLogger()
+    f = RootLogFilter(ibapiLevel)
+    logger.addFilter(f)
     logger.setLevel(level)
-    setIBAPILogLevel(ibapiLevel)
     formatter = logging.Formatter(
             '%(asctime)s %(name)s %(levelname)s %(message)s')
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
+    logger.handlers = [h for h in logger.handlers
+            if type(h) is not logging.StreamHandler]
     logger.addHandler(handler)
 
 
-def setIBAPILogLevel(level=logging.ERROR):
-    """
-    The IBAPI uses excessive debug logging on the root logger.
-    This function patches IBAPI to give it its own private logger.
-    Setting a sticter log level will then cut the amount of logging.
-    """
-    from ibapi import client, decoder, reader
-    logger = logging.getLogger('ibapi')
-    logger.getLogger = lambda: logger
-    logger.INFO = logging.INFO
-    logger.setLevel(level)
-    client.logging = decoder.logging = reader.logging = logger
+class RootLogFilter:
+
+    def __init__(self, ibapiLevel=logging.ERROR):
+        self.ibapiLevel = ibapiLevel
+
+    def filter(self, record):
+        # if it's logged on the root logger assume it's from ibapi
+        if record.name == 'root' and record.levelno < self.ibapiLevel:
+            return False
+        else:
+            return True
 
 
 def isNan(x: float):
