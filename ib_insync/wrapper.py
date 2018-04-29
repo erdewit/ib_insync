@@ -32,7 +32,7 @@ class Wrapper(EWrapper):
         self.acctSummary = {}  # (account, tag, currency) -> AccountValue
         self.portfolio = defaultdict(dict)  # account -> conId -> PortfolioItem
         self.positions = defaultdict(dict)  # account -> conId -> Position
-        self.trades = {}  # (client, orderId) -> Trade
+        self.trades = {}  # (client, orderId) or permidId -> Trade
         self.fills = {}  # execId -> Fill
         self.newsTicks = []  # list of NewsTick
         self.newsBulletins = {}  # msgId -> NewsBulletin
@@ -117,6 +117,14 @@ class Wrapper(EWrapper):
     def endBars(self, bars):
         self._reqId2Contract.pop(bars.reqId, None)
         self.reqId2Bars.pop(bars.reqId, None)
+
+    def orderKey(self, clientId, orderId, permId):
+        if orderId <= 0:
+            # order is placed manually from TWS
+            key = permId
+        else:
+            key = (clientId, orderId)
+        return key
 
     def setCallback(self, eventName, callback):
         events = ('connected', 'updated', 'pendingTickers', 'barUpdate',
@@ -272,20 +280,33 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def openOrder(self, orderId, contract, order, orderState):
+        """
+        This wrapper is called to:
+        - feed in open orders at startup;
+        - feed in open orders or order updates from other clients and TWS
+          if clientId=master id;
+        - feed in manual orders and order updates from TWS if clientId=0.
+        
+        It is *not* called as a response to placeOrder from the current client.
+        """
         if order.whatIf:
             # response to whatIfOrder
             orderState = OrderState(**orderState.__dict__)
-            self._endReq(orderId, orderState)
+            self._endReq(order.orderId, orderState)
         else:
-            contract = Contract(**contract.__dict__)
-            order = Order(**order.__dict__)
-            orderStatus = OrderStatus(status=orderState.status)
             if order.softDollarTier:
                 order.softDollarTier = SoftDollarTier(
                         **order.softDollarTier.__dict__)
-            trade = Trade(contract, order, orderStatus, [], [])
-            key = (order.clientId, orderId)
-            if key not in self.trades:
+            key = self.orderKey(order.clientId, order.orderId, order.permId)
+            trade = self.trades.get(key)
+            if trade:
+                trade.order.update(**order.__dict__)
+                trade.orderStatus.update(status=orderState.status)
+            else:
+                contract = Contract(**contract.__dict__)
+                order = Order(**order.__dict__)
+                orderStatus = OrderStatus(status=orderState.status)
+                trade = Trade(contract, order, orderStatus, [], [])
                 self.trades[key] = trade
             self._logger.info(f'openOrder: {trade}')
             self.handleEvent('openOrder', trade)
@@ -302,7 +323,7 @@ class Wrapper(EWrapper):
     def orderStatus(self, orderId, status, filled, remaining, avgFillPrice,
             permId, parentId, lastFillPrice, clientId, whyHeld,
             mktCapPrice=0.0, lastLiquidity=0):
-        key = (clientId, orderId)
+        key = self.orderKey(clientId, orderId, permId)
         trade = self.trades.get(key)
         if trade:
             statusChanged = trade.orderStatus.status != status
@@ -325,17 +346,20 @@ class Wrapper(EWrapper):
                 trade.log.append(logEntry)
                 self._logger.info(f'orderStatus: {trade}')
                 self.handleEvent('orderStatus', trade)
-        elif orderId <= 0:
-            # order originates from manual trading or other API client
-            pass
         else:
             self._logger.error('orderStatus: No order found for '
                     'orderId %s and clientId %s', orderId, clientId)
 
     @iswrapper
     def execDetails(self, reqId, contract, execution):
-        # must handle both live fills and responses to reqExecutions
-        key = (execution.clientId, execution.orderId)
+        """
+        This wrapper handles both live fills and responses to reqExecutions.
+        """
+        if execution.orderId == 2147483647:
+            # bug in TWS: executions of manual orders have orderId=2**31 - 1
+            execution.orderId = 0
+        key = self.orderKey(
+                execution.clientId, execution.orderId, execution.permId)
         trade = self.trades.get(key)
         if trade and contract.conId == trade.contract.conId:
             contract = trade.contract
@@ -378,7 +402,8 @@ class Wrapper(EWrapper):
             report = fill.commissionReport.update(
                     **commissionReport.__dict__)
             self._logger.info(f'commissionReport: {report}')
-            key = (fill.execution.clientId, fill.execution.orderId)
+            key = self.orderKey(fill.execution.clientId,
+                    fill.execution.orderId, fill.execution.permId)
             trade = self.trades.get(key)
             if trade:
                 self.handleEvent('commissionReport',

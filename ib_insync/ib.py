@@ -103,7 +103,9 @@ class IB:
             clientId: int=1, timeout: float=2):
         """
         Connect to a TWS or IB gateway application running at host:port.
-        After the connect the client is immediately ready to serve requests. 
+        After the connect the client is immediately ready to serve requests.
+        
+        Setting clientId=0 will merge manual TWS trading with this client.
         
         This method is blocking.
         """
@@ -581,7 +583,7 @@ class IB:
         now = datetime.datetime.now(datetime.timezone.utc)
         if not isinstance(order, Order):
             order = Order(**order.__dict__)
-        key = (self.wrapper.clientId, orderId)
+        key = self.wrapper.orderKey(order.clientId, orderId, order.permId)
         trade = self.wrapper.trades.get(key)
         if trade:
             # this is a modification of an existing order
@@ -608,7 +610,7 @@ class IB:
         """
         self.client.cancelOrder(order.orderId)
         now = datetime.datetime.now(datetime.timezone.utc)
-        key = (self.wrapper.clientId, order.orderId)
+        key = self.wrapper.orderKey(order.clientId, order.orderId, order.permId)
         trade = self.wrapper.trades.get(key)
         if trade:
             if trade.orderStatus.status not in OrderStatus.DoneStates:
@@ -663,6 +665,18 @@ class IB:
         This method is blocking.
         """
         self.run(self.reqAccountSummaryAsync())
+
+    @api
+    def reqAutoOpenOrders(self, autoBind: bool=True):
+        """
+        Bind manual TWS orders so that they can be managed from this client.
+        The clientId must be 0 and the TWS API setting "Use negative numbers
+        to bind automatic orders" must be checked.
+        
+        https://interactivebrokers.github.io/tws-api/open_orders.html
+        https://interactivebrokers.github.io/tws-api/modifying_orders.html
+        """
+        self.client.reqAutoOpenOrders(autoBind)
 
     @api
     def reqOpenOrders(self) -> List[Order]:
@@ -1174,6 +1188,9 @@ class IB:
                 *(self.reqAccountUpdatesMultiAsync(a) for a in accounts),
                 self.reqPositionsAsync(),
                 self.reqExecutionsAsync())
+        if clientId == 0:
+            # autobind orders
+            self.reqAutoOpenOrders(True)
         self._logger.info('Synchronization complete')
         self.wrapper.handleEvent('connected')
 
