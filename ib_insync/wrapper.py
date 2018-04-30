@@ -286,8 +286,6 @@ class Wrapper(EWrapper):
         * feed in open orders or order updates from other clients and TWS
         if clientId=master id;
         * feed in manual orders and order updates from TWS if clientId=0.
-        
-        It is *not* called as a response to placeOrder from the current client.
         """
         if order.whatIf:
             # response to whatIfOrder
@@ -301,17 +299,17 @@ class Wrapper(EWrapper):
             trade = self.trades.get(key)
             if trade:
                 trade.order.update(**order.__dict__)
-                trade.orderStatus.update(status=orderState.status)
             else:
                 contract = Contract(**contract.__dict__)
                 order = Order(**order.__dict__)
                 orderStatus = OrderStatus(status=orderState.status)
                 trade = Trade(contract, order, orderStatus, [], [])
                 self.trades[key] = trade
-            self._logger.info(f'openOrder: {trade}')
-            self.handleEvent('openOrder', trade)
+                self._logger.info(f'openOrder: {trade}')
             results = self._results.get('openOrders')
-            if results is not None:
+            if results is None:
+                self.handleEvent('openOrder', trade)
+            else:
                 # response to reqOpenOrders
                 results.append(order)
 
@@ -326,14 +324,16 @@ class Wrapper(EWrapper):
         key = self.orderKey(clientId, orderId, permId)
         trade = self.trades.get(key)
         if trade:
-            statusChanged = trade.orderStatus.status != status
-            trade.orderStatus.update(status=status, filled=filled,
+            new = dict(status=status, filled=filled,
                     remaining=remaining, avgFillPrice=avgFillPrice,
                     permId=permId, parentId=parentId,
                     lastFillPrice=lastFillPrice, clientId=clientId,
                     whyHeld=whyHeld, mktCapPrice=mktCapPrice,
                     lastLiquidity=lastLiquidity)
-            if statusChanged:
+            curr = trade.orderStatus.dict()
+            isChanged = curr != {**curr, **new}
+            if isChanged:
+                trade.orderStatus.update(**new)
                 msg = ''
             elif (status == 'Submitted' and trade.log and
                     trade.log[-1].message == 'Modify'):
@@ -341,6 +341,7 @@ class Wrapper(EWrapper):
                 msg = 'Modified'
             else:
                 msg = None
+
             if msg is not None:
                 logEntry = TradeLogEntry(self.lastTime, status, msg)
                 trade.log.append(logEntry)
@@ -373,12 +374,7 @@ class Wrapper(EWrapper):
             # first time we see this execution so add it
             self.fills[execId] = fill
             if trade:
-                becomesFilled = (trade.remaining() <= 0 and
-                        trade.orderStatus.status != OrderStatus.Filled)
                 trade.fills.append(fill)
-                if becomesFilled:
-                    # orderStatus might not have set status to Filled
-                    trade.orderStatus.status = OrderStatus.Filled
                 logEntry = TradeLogEntry(self.lastTime,
                         trade.orderStatus.status,
                         f'Fill {execution.shares}@{execution.price}')
@@ -386,8 +382,6 @@ class Wrapper(EWrapper):
                 if isLive:
                     self.handleEvent('execDetails', trade, fill)
                     self._logger.info(f'execDetails: {fill}')
-                    if becomesFilled:
-                        self.handleEvent('orderStatus', trade)
         if not isLive:
             self._results[reqId].append(fill)
 
