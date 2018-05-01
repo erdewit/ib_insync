@@ -88,8 +88,9 @@ class Order(Object):
             'conditionType']  # bugs in decoder.py
 
     def __init__(self, *args, **kwargs):
-        self.conditions = []
         Object.__init__(self, *args, **kwargs)
+        if not self.conditions:
+            self.conditions = []
 
     def __repr__(self):
         attrs = self.nonDefaults()
