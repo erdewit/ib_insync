@@ -93,6 +93,12 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.15
+^^^^^^^^^^^^^^
+
+* Fixed bug in default order conditions
+* Fixed regression from v0.9.13 in ``placeOrder``
+
 Version 0.9.14
 ^^^^^^^^^^^^^^
 

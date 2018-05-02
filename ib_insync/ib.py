@@ -583,7 +583,8 @@ class IB:
         now = datetime.datetime.now(datetime.timezone.utc)
         if not isinstance(order, Order):
             order = Order(**order.__dict__)
-        key = self.wrapper.orderKey(order.clientId, orderId, order.permId)
+        key = self.wrapper.orderKey(
+                self.wrapper.clientId, orderId, order.permId)
         trade = self.wrapper.trades.get(key)
         if trade:
             # this is a modification of an existing order
