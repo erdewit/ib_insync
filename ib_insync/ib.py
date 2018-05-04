@@ -519,7 +519,7 @@ class IB:
 
     def bracketOrder(self, action: str, quantity: float,
             limitPrice: float, takeProfitPrice: float,
-            stopLossPrice: float) -> BracketOrder:
+            stopLossPrice: float, **kwargs) -> BracketOrder:
         """
         Create a limit order that is bracketed by a take-profit order and
         a stop-loss order. Submit the bracket like:
@@ -536,17 +536,20 @@ class IB:
         parent = LimitOrder(
                 action, quantity, limitPrice,
                 orderId=self.client.getReqId(),
-                transmit=False)
+                transmit=False,
+                **kwargs)
         takeProfit = LimitOrder(
                 reverseAction, quantity, takeProfitPrice,
                 orderId=self.client.getReqId(),
                 transmit=False,
-                parentId=parent.orderId)
+                parentId=parent.orderId,
+                **kwargs)
         stopLoss = StopOrder(
                 reverseAction, quantity, stopLossPrice,
                 orderId=self.client.getReqId(),
                 transmit=True,
-                parentId=parent.orderId)
+                parentId=parent.orderId,
+                **kwargs)
         return BracketOrder(parent, takeProfit, stopLoss)
 
     @staticmethod
