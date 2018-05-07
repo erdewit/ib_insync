@@ -1,6 +1,6 @@
 import sys
 
-__version__ = '0.9.15'
+__version__ = '0.9.16'
 
 if sys.version_info < (3, 6, 0):
     print("Python 3.6.0 or higher is required")
@@ -19,6 +19,7 @@ if tuple(int(i) for i in ibapi.__version__.split('.')) < (9, 73, 6):
     sys.exit()
 
 from .objects import *
+from .event import *
 from .contract import *
 from .order import *
 from .ticker import *
@@ -30,6 +31,6 @@ from .ibcontroller import *
 from . import util
 
 __all__ = ['util']
-for _m in (objects, contract, order, ticker, ib, client, wrapper,
+for _m in (objects, event, contract, order, ticker, ib, client, wrapper,
         flexreport, ibcontroller):
     __all__ += _m.__all__

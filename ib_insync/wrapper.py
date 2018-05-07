@@ -19,9 +19,10 @@ class Wrapper(EWrapper):
     Wrapper implementation for use with the IB class.
     """
 
-    def __init__(self):
+    def __init__(self, ib):
         self.updateEvent = asyncio.Event()
         self.timeoutEvent = asyncio.Event()
+        self._ib = ib
         self._callbacks = {}  # eventName -> callback
         self._logger = logging.getLogger('ib_insync.wrapper')
         self._timeoutHandle = None
@@ -127,22 +128,22 @@ class Wrapper(EWrapper):
         return key
 
     def setCallback(self, eventName, callback):
-        events = ('connected', 'updated', 'pendingTickers', 'barUpdate',
-                'openOrder', 'orderStatus', 'execDetails', 'commissionReport',
-                'updatePortfolio', 'position', 'accountValue', 'accountSummary',
-                'pnl', 'pnlSingle', 'tickNews', 'error', 'timeout')
+        print('setCallback will be depreciated, use events instead')
+        events = [e.replace('Event', '') for e in self._ib.events]
         if eventName not in events:
             raise ValueError(f'eventName must be one of {events}')
-        self._callbacks[eventName] = callback
+        self._callbacks[eventName + 'Event'] = callback
 
     def handleEvent(self, eventName, *args):
-        # invoke optional callback
+        # emit event and optional callback
+        event = getattr(self._ib, eventName)
         cb = self._callbacks.get(eventName)
-        if cb:
-            try:
+        try:
+            event.emit(*args)
+            if cb:
                 cb(*args)
-            except:
-                self._logger.exception('Event %s(%s)', eventName, args)
+        except:
+            self._logger.exception('Event %s(%s)', eventName, args)
 
     def setTimeout(self, timeout):
         self.lastTime = datetime.datetime.now(datetime.timezone.utc)
@@ -164,7 +165,7 @@ class Wrapper(EWrapper):
             self._timeoutHandle = loop.call_later(delay, self._setTimer)
         else:
             self._logger.debug('Timeout')
-            self.handleEvent('timeout', diff)
+            self.handleEvent('timeoutEvent', diff)
             self.timeoutEvent.set()
             self.timeoutEvent.clear()
             self._timeout = 0
@@ -191,7 +192,7 @@ class Wrapper(EWrapper):
         key = (account, tag, currency, '')
         acctVal = AccountValue(account, tag, val, currency, '')
         self.accountValues[key] = acctVal
-        self.handleEvent('accountValue', acctVal)
+        self.handleEvent('accountValueEvent', acctVal)
 
     @iswrapper
     def accountDownloadEnd(self, _account):
@@ -204,7 +205,7 @@ class Wrapper(EWrapper):
         key = (account, tag, currency, modelCode)
         acctVal = AccountValue(account, tag, val, currency, modelCode)
         self.accountValues[key] = acctVal
-        self.handleEvent('accountValue', acctVal)
+        self.handleEvent('accountValueEvent', acctVal)
     
     @iswrapper
     def accountUpdateMultiEnd(self, reqId):
@@ -215,7 +216,7 @@ class Wrapper(EWrapper):
         key = (account, tag, currency)
         acctVal = AccountValue(account, tag, value, currency, '')
         self.acctSummary[key] = acctVal
-        self.handleEvent('accountSummary', acctVal)
+        self.handleEvent('accountSummaryEvent', acctVal)
 
     @iswrapper
     def accountSummaryEnd(self, reqId):
@@ -233,7 +234,7 @@ class Wrapper(EWrapper):
             portfolioItems.pop(contract.conId, None)
         else:
             portfolioItems[contract.conId] = portfItem
-        self.handleEvent('updatePortfolio', portfItem)
+        self.handleEvent('updatePortfolioEvent', portfItem)
         self._logger.info(f'updatePortfolio: {portfItem}')
 
     @iswrapper
@@ -245,7 +246,7 @@ class Wrapper(EWrapper):
             positions.pop(contract.conId, None)
         else:
             positions[contract.conId] = position
-        self.handleEvent('position', position)
+        self.handleEvent('positionEvent', position)
         self._logger.info(f'position: {position}')
         results = self._results.get('positions')
         if results is not None:
@@ -263,7 +264,7 @@ class Wrapper(EWrapper):
         pnl.dailyPnL = dailyPnL
         pnl.unrealizedPnL = unrealizedPnL
         pnl.realizedPnL = realizedPnL
-        self.handleEvent('pnl', pnl)
+        self.handleEvent('pnlEvent', pnl)
 
     @iswrapper
     def pnlSingle(self, reqId, pos, dailyPnL,
@@ -276,7 +277,7 @@ class Wrapper(EWrapper):
         pnlSingle.unrealizedPnL = unrealizedPnL
         pnlSingle.realizedPnL = realizedPnL
         pnlSingle.value = value
-        self.handleEvent('pnlSingle', pnlSingle)
+        self.handleEvent('pnlSingleEvent', pnlSingle)
 
     @iswrapper
     def openOrder(self, orderId, contract, order, orderState):
@@ -308,7 +309,7 @@ class Wrapper(EWrapper):
                 self._logger.info(f'openOrder: {trade}')
             results = self._results.get('openOrders')
             if results is None:
-                self.handleEvent('openOrder', trade)
+                self.handleEvent('openOrderEvent', trade)
             else:
                 # response to reqOpenOrders
                 results.append(order)
@@ -324,6 +325,7 @@ class Wrapper(EWrapper):
         key = self.orderKey(clientId, orderId, permId)
         trade = self.trades.get(key)
         if trade:
+            oldStatus = trade.orderStatus.status
             new = dict(status=status, filled=filled,
                     remaining=remaining, avgFillPrice=avgFillPrice,
                     permId=permId, parentId=parentId,
@@ -346,7 +348,13 @@ class Wrapper(EWrapper):
                 logEntry = TradeLogEntry(self.lastTime, status, msg)
                 trade.log.append(logEntry)
                 self._logger.info(f'orderStatus: {trade}')
-                self.handleEvent('orderStatus', trade)
+                self.handleEvent('orderStatusEvent', trade)
+                trade.statusEvent.emit(trade)
+                if status != oldStatus:
+                    if status == OrderStatus.Filled:
+                        trade.filledEvent.emit(trade)
+                    elif status == OrderStatus.Cancelled:
+                        trade.cancelledEvent.emit(trade)
         else:
             self._logger.error('orderStatus: No order found for '
                     'orderId %s and clientId %s', orderId, clientId)
@@ -380,8 +388,9 @@ class Wrapper(EWrapper):
                         f'Fill {execution.shares}@{execution.price}')
                 trade.log.append(logEntry)
                 if isLive:
-                    self.handleEvent('execDetails', trade, fill)
+                    self.handleEvent('execDetailsEvent', trade, fill)
                     self._logger.info(f'execDetails: {fill}')
+                    trade.fillEvent(trade, fill)
         if not isLive:
             self._results[reqId].append(fill)
 
@@ -400,12 +409,12 @@ class Wrapper(EWrapper):
                     fill.execution.orderId, fill.execution.permId)
             trade = self.trades.get(key)
             if trade:
-                self.handleEvent('commissionReport',
+                self.handleEvent('commissionReportEvent',
                         trade, fill, report)
+                trade.commissionReportEvent.emit(trade, fill, report)
             else:
-                # this is not a live execution and the order was filled
-                # before this connection started
-                pass
+                self._logger.error('commissionReport: '
+                        'No trade found for %s', report)
         else:
             report = CommissionReport(**commissionReport.__dict__)
             self._logger.error('commissionReport: '
@@ -440,7 +449,7 @@ class Wrapper(EWrapper):
         bar = RealTimeBar(dt, -1, open_, high, low, close, volume, wap, count)
         bars = self.reqId2Bars[reqId]
         bars.append(bar)
-        self.handleEvent('barUpdate', bars, True)
+        self.handleEvent('barUpdateEvent', bars, True)
 
     @iswrapper
     def historicalData(self, reqId , bar):
@@ -459,12 +468,15 @@ class Wrapper(EWrapper):
         if not bars:
             return
         bar.date = util.parseIBDatetime(bar.date)
-        if len(bars) == 0 or bar.date > bars[-1].date:
+        hasNewBar = len(bars) == 0 or bar.date > bars[-1].date
+        if hasNewBar:
             bars.append(bar)
-            self.handleEvent('barUpdate', bars, True)
         elif bars[-1] != bar:
             bars[-1] = bar
-            self.handleEvent('barUpdate', bars, False)
+        else:
+            return
+        self.handleEvent('barUpdateEvent', bars, hasNewBar)
+        bars.updated(bars, hasNewBar)
 
     @iswrapper
     def headTimestamp(self, reqId, headTimestamp):
@@ -805,7 +817,7 @@ class Wrapper(EWrapper):
             headline, extraData):
         news = NewsTick(timeStamp, providerCode, articleId, headline, extraData)
         self.newsTicks.append(news)
-        self.handleEvent('tickNews', news)
+        self.handleEvent('tickNewsEvent', news)
 
     @iswrapper
     def newsArticle(self, reqId, articleType, articleText):
@@ -856,7 +868,8 @@ class Wrapper(EWrapper):
                     logEntry = TradeLogEntry(self.lastTime, status, msg)
                     trade.log.append(logEntry)
                     self._logger.warning(f'Canceled order: {trade}')
-                    self.handleEvent('orderStatus', trade)
+                    self.handleEvent('orderStatusEvent', trade)
+                    self.trade.canceledEvent.emit(trade)
             elif errorCode == 317:
                 # Market depth data has been RESET
                 ticker = self.reqId2Ticker.get(reqId)
@@ -868,7 +881,7 @@ class Wrapper(EWrapper):
                                     '', 2, side, level.price, 0)
                             ticker.domTicks.append(tick)
 
-        self.handleEvent('error', reqId, errorCode, errorString, contract)
+        self.handleEvent('errorEvent', reqId, errorCode, errorString, contract)
 
     @iswrapper
     # additional wrapper method provided by Client
@@ -881,10 +894,19 @@ class Wrapper(EWrapper):
     # additional wrapper method provided by Client
     def tcpDataProcessed(self):
         if self.pendingTickers:
-            self.handleEvent('pendingTickers', list(self.pendingTickers))
+            self.handleEvent('pendingTickersEvent', list(self.pendingTickers))
+            for ticker in self.pendingTickers:
+                if ticker.updated.slots:
+                    ticker.updated.emit(ticker)
+                if ticker.hasTicks.slots and ticker.ticks:
+                    ticker.hasTicks.emit(ticker.ticks)
+                if ticker.domTicks:
+                    ticker.hasDOMTicks.emit(ticker.domTicks)
+                if ticker.tickByTicks:
+                    ticker.hasTickByTicks.emit(ticker.tickByTicks)
         self.updateEvent.set()
         self.updateEvent.clear()
-        self.handleEvent('updated')
+        self.handleEvent('updatedEvent')
 
     def clearPendingTickers(self):
         """
@@ -895,4 +917,3 @@ class Wrapper(EWrapper):
             del ticker.tickByTicks[:]
             del ticker.domTicks[:]
         self.pendingTickers.clear()
-

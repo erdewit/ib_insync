@@ -15,6 +15,7 @@ from ib_insync.order import Order, OrderStatus, Trade, \
         LimitOrder, StopOrder, MarketOrder
 from ib_insync.objects import *
 import ib_insync.util as util
+from ib_insync.event import Event
 
 __all__ = ['IB']
 
@@ -77,10 +78,83 @@ class IB:
     
     For introducing a delay, never use time.sleep() but use
     :py:meth:`.sleep` instead.
+    
+    Events:
+        * ``connectedEvent()``:
+          Is emitted after connecting and synchronzing with TWS/gateway.
+
+        * ``updatedEvent()``:
+          Is emitted after a network packet has been handeled.
+        
+        * ``pendingTickersEvent(tickers: List[Ticker])``:
+          Emits the set of tickers that have been updated during the last
+          update and for which there are new ticks, tickByTicks or domTicks. 
+          
+        * ``barUpdateEvent(bars: BarDataList, hasNewBar: bool)``:
+          Emits the bar list that has been updated in real time.
+          If a new bar has been added then hasNewBar is True, when the last
+          bar has changed it is False.
+          
+        * ``openOrderEvent(trade: Trade)``:
+          Emits the trade with open order.
+          
+        * ``orderStatusEvent(trade: Trade)``:
+          Emits the changed order status of the ongoing trade.
+           
+        * ``execDetailsEvent(trade: Trade, fill: Fill)``:
+          Emits the fill together with the ongoing trade it belong to.
+          
+        * ``commissionReportEvent(trade: Trade, fill: Fill, report: CommissionReport)``:
+          The commission report is emitted after the fill that it belongs to.
+          
+        * ``updatePortfolioEvent(item: PortfolioItem)``:
+          A portfolio item has changed.
+          
+        * ``positionEvent(position: Position)``:
+          A position has changed.
+        
+        * ``accountValueEvent(value: AccountValue)``:
+          An account value has changed.
+        
+        * ``accountSummaryEvent(value: AccountValue)``:
+          An account value has changed.
+        
+        * ``pnlEvent(entry: PnL)``:
+          A profit- and loss entry is updated.
+        
+        * ``pnlSingleEvent(entry: PnLSingle)``:
+          A profit- and loss entry for a single position is updated.
+        
+        * ``tickNewsEvent(news: NewsTick)``:
+          Emit a new news headline.
+          
+        * ``errorEvent(reqId: int, errorCode: int, errorString: str, contract: Contract)``:
+          Emits the reqId/orderId and TWS error code and string (see
+          https://interactivebrokers.github.io/tws-api/message_codes.html)
+          together with the contract the error applies to (or None if no
+          contract applies).
+          
+        * ``timeoutEvent(idlePeriod: float)``:
+          Is emitted if no data is received for longer than the timeout period
+          specified with ``setTimeout``. The value emitted is the period in
+          seconds since the last update.
+        
+        Note that it is not advisible to place new requests inside an event
+        handler as it may lead to too much recursion.
     """
 
+    events = ('connectedEvent', 'updatedEvent', 'pendingTickersEvent',
+            'barUpdateEvent', 'openOrderEvent', 'orderStatusEvent',
+            'execDetailsEvent', 'commissionReportEvent',
+            'updatePortfolioEvent', 'positionEvent', 'accountValueEvent',
+            'accountSummaryEvent', 'pnlEvent', 'pnlSingleEvent',
+            'tickNewsEvent', 'errorEvent', 'timeoutEvent')
+
+    __slots__ = ('client', 'wrapper', '_logger') + events
+
     def __init__(self):
-        self.wrapper = Wrapper()
+        Event.init(self, IB.events)
+        self.wrapper = Wrapper(self)
         self.client = Client(self.wrapper)
         self._logger = logging.getLogger('ib_insync.ib')
 
@@ -265,67 +339,9 @@ class IB:
 
     def setCallback(self, eventName: str, callback: Callable) -> None:
         """
-        Set an optional callback to be invoked after an event. Events:
+        Depreciated: Use events instead.
         
-        * ``connected()``:
-          Is emitted after connecting and synchronzing with TWS/gateway.
-
-        * ``updated()``:
-          Is emitted after a network packet has been handeled.
-        
-        * ``pendingTickers(tickers: List[Ticker])``:
-          Emits the set of tickers that have been updated during the last
-          update and for which there are new ticks, tickByTicks or domTicks. 
-          
-        * ``barUpdate(bars: BarDataList, hasNewBar: bool)``:
-          Emits the bar list that has been updated in real time.
-          If a new bar has been added then hasNewBar is True, when the last
-          bar has changed it is False.
-          
-        * ``openOrder(trade: Trade)``:
-          Emits the trade with open order.
-          
-        * ``orderStatus(trade: Trade)``:
-          Emits the changed order status of the ongoing trade.
-           
-        * ``execDetails(trade: Trade, fill: Fill)``:
-          Emits the fill together with the ongoing trade it belong to.
-          
-        * ``commissionReport(trade: Trade, fill: Fill, report: CommissionReport)``:
-          The commission report is emitted after the fill that it belongs to.
-          
-        * ``updatePortfolio(item: PortfolioItem)``:
-          A portfolio item has changed.
-          
-        * ``position(position: Position)``:
-          A position has changed.
-        
-        * ``accountValue(value: AccountValue)``:
-          An account value has changed.
-        
-        * ``accountSummary(value: AccountValue)``:
-          An account value has changed.
-        
-        * ``pnl(entry: PnL)``:
-          A profit- and loss entry is updated.
-        
-        * ``pnlSingle(entry: PnLSingle)``:
-          A profit- and loss entry for a single position is updated.
-        
-        * ``tickNews(news: NewsTick)``:
-          Emit a new news headline.
-          
-        * ``error(reqId: int, errorCode: int, errorString: str, contract: Contract)``:
-          Emits the reqId/orderId and TWS error code and string (see
-          https://interactivebrokers.github.io/tws-api/message_codes.html)
-          together with the contract the error applies to (or None if no
-          contract applies).
-          
-        * ``timeout(idlePeriod: float)``:
-          Is emitted if no data is received for longer than the timeout period
-          specified with ``setTimeout``. The value emitted is the period in
-          seconds since the last update.
-
+        Set an optional callback to be invoked after an event.
         Unsetting is done by supplying None as callback.
         """
         self.wrapper.setCallback(eventName, callback)
@@ -596,6 +612,7 @@ class IB:
                     trade.orderStatus.status, 'Modify')
             trade.log.append(logEntry)
             self._logger.info(f'placeOrder: Modify order {trade}')
+            trade.modifyEvent.emit(trade)
         else:
             # this is a new order
             order.orderId = orderId
@@ -620,7 +637,10 @@ class IB:
             if trade.orderStatus.status not in OrderStatus.DoneStates:
                 logEntry = TradeLogEntry(now, OrderStatus.PendingCancel, '')
                 trade.log.append(logEntry)
-            self._logger.info(f'cancelOrder: {trade}')
+                trade.orderStatus.status = OrderStatus.PendingCancel
+                self._logger.info(f'cancelOrder: {trade}')
+                trade.cancelEvent.emit(trade)
+                trade.statusEvent.emit(trade)
         else:
             self._logger.error(f'cancelOrder: Unknown orderId {order.orderId}')
         return trade
@@ -1196,7 +1216,7 @@ class IB:
             # autobind orders
             self.reqAutoOpenOrders(True)
         self._logger.info('Synchronization complete')
-        self.wrapper.handleEvent('connected')
+        self.wrapper.handleEvent('connectedEvent')
 
     async def qualifyContractsAsync(self, *contracts):
         detailsLists = await asyncio.gather(

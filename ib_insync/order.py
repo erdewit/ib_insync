@@ -1,6 +1,7 @@
 import ibapi
 
 from .objects import Object
+from ib_insync.event import Event
 
 __all__ = ('Trade OrderStatus Order '
         'LimitOrder MarketOrder StopOrder StopLimitOrder').split()
@@ -9,7 +10,20 @@ __all__ = ('Trade OrderStatus Order '
 class Trade(Object):
     """
     Trade keeps track of an order, its status and all its fills.
+    
+    Events:
+        * ``statusEvent(trade)``
+        * ``modifyEvent(trade)``
+        * ``fillEvent(trade, fill)``
+        * ``commissionReportEvent(trade, fill, commissionReport)``
+        * ``filledEvent(trade)``
+        * ``cancelEvent(trade)``
+        * ``cancelledEvent(trade)``
     """
+    events = ('statusEvent', 'modifyEvent', 'fillEvent',
+            'commissionReportEvent', 'filledEvent',
+            'cancelEvent', 'cancelledEvent')
+
     defaults = dict(
         contract=None,
         order=None,
@@ -17,7 +31,11 @@ class Trade(Object):
         fills=None,
         log=None
     )
-    __slots__ = defaults.keys()
+    __slots__ = tuple(defaults.keys()) + events
+
+    def __init__(self, *args, **kwargs):
+        Object.__init__(self, *args, **kwargs)
+        Event.init(self, Trade.events)
 
     def isActive(self):
         """

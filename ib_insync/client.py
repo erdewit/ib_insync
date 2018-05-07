@@ -14,6 +14,7 @@ from ibapi.common import UNSET_INTEGER, UNSET_DOUBLE
 from ib_insync.objects import ConnectionStats
 from ib_insync.contract import Contract
 import ib_insync.util as util
+from ib_insync.event import Event
 
 __all__ = ['Client']
 
@@ -58,28 +59,26 @@ class Client(EClient):
       A possible use is to write or evaluate the newly arrived data in
       one batch instead of item by item.
       
-    * Optional callbacks:
-        - apiStart()
-        - apiEnd()
-        - apiError(errorMsg)
+    * Events:
+        * ``apiStart()``
+        * ``apiEnd()``
+        * ``apiError(errorMsg)``
     """
+
+    events = ('apiStart', 'apiEnd', 'apiError')
 
     # throttle number of requests to MaxRequests per RequestsInterval seconds
     MaxRequests, RequestsInterval = 250, 5
 
     def __init__(self, wrapper):
         EClient.__init__(self, wrapper)
+        Event.init(self, Client.events)
         self._logger = logging.getLogger('ib_insync.client')
 
         # extra optional wrapper methods
         self._priceSizeTick = getattr(wrapper, 'priceSizeTick', None)
         self._tcpDataArrived = getattr(wrapper, 'tcpDataArrived', None)
         self._tcpDataProcessed = getattr(wrapper, 'tcpDataProcessed', None)
-
-        # optional callbacks
-        self.apiStart = None
-        self.apiEnd = None
-        self.apiError = None
 
     def reset(self):
         EClient.reset(self)
@@ -160,8 +159,7 @@ class Client(EClient):
             await asyncio.wait_for(asyncio.gather(
                     self.conn.connect(), self._readyEvent.wait()), timeout)
             self._logger.info('API connection ready')
-            if self.apiStart:
-                self.apiStart()
+            self.apiStart()
         except Exception as e:
             self.reset()
             msg = f'API connection failed: {e!r}'
@@ -169,8 +167,7 @@ class Client(EClient):
             if isinstance(e, ConnectionRefusedError):
                 msg = 'Make sure API port on TWS/IBG is open'
                 self._logger.error(msg)
-            if self.apiError:
-                self.apiError(msg)
+            self.apiError(msg)
             raise
 
     def sendMsg(self, msg):
@@ -262,19 +259,16 @@ class Client(EClient):
             if not self.isReady():
                 msg = f'clientId {self.clientId} already in use?'
                 self._logger.error(msg)
-            if self.apiError:
-                self.apiError(msg)
+            self.apiError(msg)
         else:
             self._logger.info('Disconnected')
         self.reset()
-        if self.apiEnd:
-            self.apiEnd()
+        self.apiEnd()
 
     def _onSocketHasError(self, msg):
         self._logger.error(msg)
         self.reset()
-        if self.apiError:
-            self.apiError(msg)
+        self.apiError(msg)
 
     def _encode(self, *fields):
         """

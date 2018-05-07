@@ -7,6 +7,7 @@ from contextlib import suppress
 from ib_insync.objects import Object
 from ib_insync.contract import Forex
 from ib_insync.ib import IB
+from ib_insync.event import Event
 import ib_insync.util as util
 
 __all__ = ['IBC', 'IBController', 'Watchdog']
@@ -312,15 +313,15 @@ class Watchdog(Object):
     
     Arguments:
     
-    * ``controller``: IBC or IBController instance;
+    * ``controller`` (required): IBC or IBController instance;
+    * ``ib`` (required): IB instance to be used. Do no connect this
+      instance as Watchdog takes care of that.
     * ``host``, ``port``, ``clientId`` and ``connectTimeout``: Used for
       connecting to the app;
     * ``appStartupTime``: Time (in seconds) that the app is given to start up;
       Make sure that it is given ample time;
     * ``appTimeout``: Timeout (in seconds) for network traffic idle time;
     * ``retryDelay``: Time (in seconds) to restart app after a previous failure;
-    * ``ib``: The (optional) IB instance to be used. Do no connect this
-      instance as Watchdog takes care of that.
       If left empty then Watchdog creates the IB instance.
     
     Note: ``util.patchAsyncio()`` must have been called before.
@@ -336,33 +337,49 @@ class Watchdog(Object):
         app.start()
         print(app.ib.accountValues())
         IB.run()
-        
+    
+    Events:
+        * ``starting()``
+        * ``started()``
+        * ``stopping()``
+        * ``stopped()``
+        * ``softTimeoutEvent()``
+        * ``hardTimeoutEvent()``
     """
+
+    events = ['starting', 'started', 'stopping', 'stopped',
+            'softTimeout', 'hardTimeout']
+
     defaults = dict(
         controller=None,
+        ib=None,
         host='127.0.0.1',
         port='7497',
         clientId=1,
         connectTimeout=2,
-        ib=None,
         appStartupTime=30,
         appTimeout=20,
         retryDelay=2)
-    __slots__ = list(defaults.keys()) + ['_watcher', '_logger']
+    __slots__ = list(defaults.keys()) + events + ['_watcher', '_logger']
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
-        assert self.controller
+        Event.init(self, Watchdog.events)
+        if not self.controller:
+            raise ValueError('No controller supplied')
+        if not self.ib:
+            raise ValueError('No IB instance supplied')
+        if self.ib.isConnected():
+            raise ValueError('IB instance must not be connected')
         assert 0 < self.appTimeout < 60
         assert self.retryDelay > 0
-        if self.ib is None:
-            self.ib = IB()
-        self.ib.client.apiError = self.onApiError
-        self.ib.setCallback('error', self.onError)
+        self.ib.client.apiError += self.onApiError
+        self.ib.errorEvent += self.onError
         self._watcher = asyncio.ensure_future(self.watchAsync())
         self._logger = logging.getLogger('ib_insync.Watchdog')
 
     def start(self):
+        self.starting.emit()
         self._logger.info('Starting')
         self.controller.start()
         IB.sleep(self.appStartupTime)
@@ -370,14 +387,17 @@ class Watchdog(Object):
             self.ib.connect(self.host, self.port, self.clientId,
                     self.connectTimeout)
             self.ib.setTimeout(self.appTimeout)
+            self.started.emit()
         except:
             # a connection failure will be handled by the apiError callback
             pass
 
     def stop(self):
+        self.stopping.emit()
         self._logger.info('Stopping')
         self.ib.disconnect()
         self.controller.terminate()
+        self.stopped.emit()
 
     def scheduleRestart(self):
         self._logger.info(f'Schedule restart in {self.retryDelay}s')
@@ -398,6 +418,7 @@ class Watchdog(Object):
         while True:
             await self.ib.wrapper.timeoutEvent.wait()
             # soft timeout, probe the app with a historical request
+            self.softTimeoutEvent.emit()
             contract = Forex('EURUSD')
             probe = self.ib.reqHistoricalDataAsync(
                     contract, '', '30 S', '5 secs', 'MIDPOINT', False)
@@ -409,6 +430,7 @@ class Watchdog(Object):
             except:
                 # hard timeout, flush everything and start anew
                 self._logger.error('Hard timeout')
+                self.hardTimeoutEvent.emit()
                 self.stop()
                 self.scheduleRestart()
 
@@ -418,6 +440,7 @@ if __name__ == '__main__':
     util.patchAsyncio()
     ibc = IBC(969, gateway=True, tradingMode='paper')
 #             userid='edemo', password='demouser')
-    app = Watchdog(ibc, port=4002)
+    ib = IB()
+    app = Watchdog(ibc, ib, port=4002)
     app.start()
     IB.run()

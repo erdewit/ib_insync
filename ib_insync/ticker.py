@@ -1,5 +1,6 @@
 from ib_insync.objects import Object
 from ib_insync.util import isNan
+from ib_insync.event import Event
 
 __all__ = ['Ticker']
 
@@ -23,7 +24,16 @@ class Ticker(Object):
     last price are stored in the ``bidGreeks``, ``askGreeks`` resp.
     ``lastGreeks`` attributes. There is also ``modelGreeks`` that conveys
     the greeks as calculated by Interactive Brokers' option model.
+    
+    Events:
+        * ``updated(ticker)``
+        * ``hasTicks(ticks: TickData)``
+        * ``hasDomTicks(domTicks: MktDepthData)``
+        * ``hasTickByTicks(tickByTicks)``
     """
+
+    events = ('updated', 'hasTicks', 'hasDOMTicks')
+
     defaults = dict(
         contract=None,
         time=None,
@@ -71,7 +81,11 @@ class Ticker(Object):
         lastGreeks=None,
         modelGreeks=None
     )
-    __slots__ = defaults.keys()
+    __slots__ = tuple(defaults.keys()) + events
+
+    def __init__(self, *args, **kwargs):
+        Object.__init__(self, *args, **kwargs)
+        Event.init(self, Ticker.events)
 
     def __eq__(self, other):
         return self is other
