@@ -63,6 +63,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.contract">Contract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.ticker">Ticker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.objects">Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.event">Event</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.wrapper">Wrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.util">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ib_insync.flexreport">FlexReport</a></li>
@@ -1318,7 +1319,7 @@ If an attribute is not given it will take its value from the
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'ApiPending', 'Submitted', 'PreSubmitted', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'PendingSubmit', 'PreSubmitted', 'Submitted', 'ApiPending'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1338,7 +1339,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'Cancelled', 'Filled', 'Inactive', 'ApiCancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'Inactive', 'Cancelled', 'ApiCancelled', 'Filled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1590,7 +1591,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 139811158785160: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': '', 'dontUseAutoPriceForHedge': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'softDollarTier': 140602681715848: =,, 'orderId': 0, 'clientId': 0, 'permId': 0, 'action': '', 'totalQuantity': 0, 'orderType': '', 'lmtPrice': 1.7976931348623157e+308, 'auxPrice': 1.7976931348623157e+308, 'tif': '', 'activeStartTime': '', 'activeStopTime': '', 'ocaGroup': '', 'ocaType': 0, 'orderRef': '', 'transmit': True, 'parentId': 0, 'blockOrder': False, 'sweepToFill': False, 'displaySize': 0, 'triggerMethod': 0, 'outsideRth': False, 'hidden': False, 'goodAfterTime': '', 'goodTillDate': '', 'rule80A': '', 'allOrNone': False, 'minQty': 2147483647, 'percentOffset': 1.7976931348623157e+308, 'overridePercentageConstraints': False, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'faGroup': '', 'faProfile': '', 'faMethod': '', 'faPercentage': '', 'designatedLocation': '', 'openClose': 'O', 'origin': 0, 'shortSaleSlot': 0, 'exemptCode': -1, 'discretionaryAmt': 0, 'eTradeOnly': True, 'firmQuoteOnly': True, 'nbboPriceCap': 1.7976931348623157e+308, 'optOutSmartRouting': False, 'auctionStrategy': 0, 'startingPrice': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'delta': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'randomizePrice': False, 'randomizeSize': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'deltaNeutralOrderType': '', 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralConId': 0, 'deltaNeutralSettlingFirm': '', 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralOpenClose': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'deltaNeutralDesignatedLocation': '', 'continuousUpdate': False, 'referencePriceType': 2147483647, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleSubsLevelSize': 2147483647, 'scalePriceIncrement': 1.7976931348623157e+308, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceAdjustInterval': 2147483647, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleAutoReset': False, 'scaleInitPosition': 2147483647, 'scaleInitFillQty': 2147483647, 'scaleRandomPercent': False, 'scaleTable': '', 'hedgeType': '', 'hedgeParam': '', 'account': '', 'settlingFirm': '', 'clearingAccount': '', 'clearingIntent': '', 'algoStrategy': '', 'algoParams': None, 'smartComboRoutingParams': None, 'algoId': '', 'whatIf': False, 'notHeld': False, 'solicited': False, 'modelCode': '', 'orderComboLegs': None, 'orderMiscOptions': None, 'referenceContractId': 0, 'peggedChangeAmount': 0.0, 'isPeggedChangeAmountDecrease': False, 'referenceChangeAmount': 0.0, 'referenceExchangeId': '', 'adjustedOrderType': '', 'triggerPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'adjustableTrailingUnit': 0, 'lmtPriceOffset': 1.7976931348623157e+308, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'extOperator': '', 'cashQty': 1.7976931348623157e+308, 'mifid2DecisionMaker': '', 'mifid2DecisionAlgo': '', 'mifid2ExecutionTrader': '', 'mifid2ExecutionAlgo': '', 'dontUseAutoPriceForHedge': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4924,6 +4925,64 @@ and as keyword, the keyword wins.</p>
 <dl class="method">
 <dt id="ib_insync.objects.VolumeCondition.valueToString">
 <code class="descname">valueToString</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/ibapi/order_condition.html#VolumeCondition.valueToString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.VolumeCondition.valueToString" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ib_insync.event">
+<span id="event"></span><h2>Event<a class="headerlink" href="#module-ib_insync.event" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ib_insync.event.Event">
+<em class="property">class </em><code class="descclassname">ib_insync.event.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>name=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/event.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.event.Event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable event passing between loosely coupled compenents.</p>
+<p>An event contains a list of callables (the listener slots) that are
+called in order when the event is emitted.</p>
+<dl class="method">
+<dt id="ib_insync.event.Event.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/event.html#Event.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.event.Event.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear all slots.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.event.Event.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><em>c</em>, <em>weakRef=True</em>, <em>hiPriority=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/event.html#Event.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.event.Event.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect the callable c to this event.</p>
+<p>When <code class="docutils literal"><span class="pre">weakRef=True</span></code> the callable can be garbage collected upon which
+it will be automatically disconnected from this event; 
+When <a href="#id1"><span class="problematic" id="id2">``</span></a>weakRef=False` a strong reference to the callable will be kept.</p>
+<p>With <code class="docutils literal"><span class="pre">hiPriority=True</span></code> the callable will be placed in the first slot,
+otherwise it will be placed last.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.event.Event.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><em>c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/event.html#Event.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.event.Event.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect the callable from this event.</p>
+<p>This is a no-op if the callable is not connected.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.event.Event.emit">
+<code class="descname">emit</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/event.html#Event.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.event.Event.emit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call all slots in this event with the given arguments.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="ib_insync.event.Event.init">
+<em class="property">static </em><code class="descname">init</code><span class="sig-paren">(</span><em>obj</em>, <em>eventNames</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/event.html#Event.init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.event.Event.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience function for initializing events as members
+of the given object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.event.Event.name">
+<code class="descname">name</code><a class="headerlink" href="#ib_insync.event.Event.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.event.Event.slots">
+<code class="descname">slots</code><a class="headerlink" href="#ib_insync.event.Event.slots" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

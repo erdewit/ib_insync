@@ -44,6 +44,11 @@ Objects
 
 .. automodule:: ib_insync.objects
 
+Event
+-----
+
+.. automodule:: ib_insync.event
+
 Wrapper
 -------
 
