@@ -303,8 +303,9 @@ def _ipython_loop_asyncio(kernel):
         if not loop.is_running():
             loop.run_forever()
     finally:
-        loop.run_until_complete(loop.shutdown_asyncgens())
-        loop.close()
+        if not loop.is_running():
+            loop.run_until_complete(loop.shutdown_asyncgens())
+            loop.close()
 
 
 def useQt():

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ibcontroller &#8212; IB-insync 0.9.15 documentation</title>
+    <title>ib_insync.ibcontroller &#8212; IB-insync 0.9.16 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.15',
+        VERSION:     '0.9.16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -88,6 +88,7 @@
 <span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="n">Object</span>
 <span class="kn">from</span> <span class="nn">ib_insync.contract</span> <span class="k">import</span> <span class="n">Forex</span>
 <span class="kn">from</span> <span class="nn">ib_insync.ib</span> <span class="k">import</span> <span class="n">IB</span>
+<span class="kn">from</span> <span class="nn">ib_insync.event</span> <span class="k">import</span> <span class="n">Event</span>
 <span class="kn">import</span> <span class="nn">ib_insync.util</span> <span class="k">as</span> <span class="nn">util</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IBC&#39;</span><span class="p">,</span> <span class="s1">&#39;IBController&#39;</span><span class="p">,</span> <span class="s1">&#39;Watchdog&#39;</span><span class="p">]</span>
@@ -393,15 +394,15 @@
 <span class="sd">    </span>
 <span class="sd">    Arguments:</span>
 <span class="sd">    </span>
-<span class="sd">    * ``controller``: IBC or IBController instance;</span>
+<span class="sd">    * ``controller`` (required): IBC or IBController instance;</span>
+<span class="sd">    * ``ib`` (required): IB instance to be used. Do no connect this</span>
+<span class="sd">      instance as Watchdog takes care of that.</span>
 <span class="sd">    * ``host``, ``port``, ``clientId`` and ``connectTimeout``: Used for</span>
 <span class="sd">      connecting to the app;</span>
 <span class="sd">    * ``appStartupTime``: Time (in seconds) that the app is given to start up;</span>
 <span class="sd">      Make sure that it is given ample time;</span>
 <span class="sd">    * ``appTimeout``: Timeout (in seconds) for network traffic idle time;</span>
 <span class="sd">    * ``retryDelay``: Time (in seconds) to restart app after a previous failure;</span>
-<span class="sd">    * ``ib``: The (optional) IB instance to be used. Do no connect this</span>
-<span class="sd">      instance as Watchdog takes care of that.</span>
 <span class="sd">      If left empty then Watchdog creates the IB instance.</span>
 <span class="sd">    </span>
 <span class="sd">    Note: ``util.patchAsyncio()`` must have been called before.</span>
@@ -413,37 +414,54 @@
 <span class="sd">        util.patchAsyncio()</span>
 
 <span class="sd">        ibc = IBC(969, gateway=True, tradingMode=&#39;paper&#39;)</span>
-<span class="sd">        app = Watchdog(ibc, port=4002)</span>
+<span class="sd">        ib = IB()</span>
+<span class="sd">        app = Watchdog(ibc, ib, port=4002)</span>
 <span class="sd">        app.start()</span>
 <span class="sd">        print(app.ib.accountValues())</span>
 <span class="sd">        IB.run()</span>
-<span class="sd">        </span>
+<span class="sd">    </span>
+<span class="sd">    Events:</span>
+<span class="sd">        * ``startingEvent(watchdog)``</span>
+<span class="sd">        * ``startedEvent(watchdog)``</span>
+<span class="sd">        * ``stoppingEvent(watchdog)``</span>
+<span class="sd">        * ``stoppedEvent(watchdog)``</span>
+<span class="sd">        * ``softTimeoutEvent(watchdog)``</span>
+<span class="sd">        * ``hardTimeoutEvent(watchdog)``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">events</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;startingEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;startedEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;stoppingEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;stoppedEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;softTimeout&#39;</span><span class="p">,</span> <span class="s1">&#39;hardTimeout&#39;</span><span class="p">]</span>
+
     <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
         <span class="n">controller</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ib</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
         <span class="n">port</span><span class="o">=</span><span class="s1">&#39;7497&#39;</span><span class="p">,</span>
         <span class="n">clientId</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">connectTimeout</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">ib</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">appStartupTime</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
         <span class="n">appTimeout</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
         <span class="n">retryDelay</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;_watcher&#39;</span><span class="p">,</span> <span class="s1">&#39;_logger&#39;</span><span class="p">]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="n">events</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;_watcher&#39;</span><span class="p">,</span> <span class="s1">&#39;_logger&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">controller</span>
+        <span class="n">Event</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Watchdog</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No controller supplied&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No IB instance supplied&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">isConnected</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;IB instance must not be connected&#39;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">appTimeout</span> <span class="o">&lt;</span> <span class="mi">60</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">retryDelay</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ib</span> <span class="o">=</span> <span class="n">IB</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">apiError</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">onApiError</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">setCallback</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onError</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">apiError</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">onApiError</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">errorEvent</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">onError</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_watcher</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watchAsync</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.Watchdog&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Watchdog.start"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">startingEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="n">IB</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">appStartupTime</span><span class="p">)</span>
@@ -451,14 +469,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">connectTimeout</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">appTimeout</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">startedEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="c1"># a connection failure will be handled by the apiError callback</span>
             <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Watchdog.stop"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stoppingEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Stopping&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stoppedEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Watchdog.scheduleRestart"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog.scheduleRestart">[docs]</a>    <span class="k">def</span> <span class="nf">scheduleRestart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Schedule restart in </span><span class="si">{self.retryDelay}</span><span class="s1">s&#39;</span><span class="p">)</span>
@@ -477,8 +498,9 @@
 
 <div class="viewcode-block" id="Watchdog.watchAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog.watchAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">watchAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">timeoutEvent</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">timeoutEv</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
             <span class="c1"># soft timeout, probe the app with a historical request</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">softTimeoutEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="n">contract</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;EURUSD&#39;</span><span class="p">)</span>
             <span class="n">probe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalDataAsync</span><span class="p">(</span>
                     <span class="n">contract</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;30 S&#39;</span><span class="p">,</span> <span class="s1">&#39;5 secs&#39;</span><span class="p">,</span> <span class="s1">&#39;MIDPOINT&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
@@ -490,6 +512,7 @@
             <span class="k">except</span><span class="p">:</span>
                 <span class="c1"># hard timeout, flush everything and start anew</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Hard timeout&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">hardTimeoutEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">scheduleRestart</span><span class="p">()</span></div></div>
 
@@ -499,7 +522,8 @@
     <span class="n">util</span><span class="o">.</span><span class="n">patchAsyncio</span><span class="p">()</span>
     <span class="n">ibc</span> <span class="o">=</span> <span class="n">IBC</span><span class="p">(</span><span class="mi">969</span><span class="p">,</span> <span class="n">gateway</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tradingMode</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">)</span>
 <span class="c1">#             userid=&#39;edemo&#39;, password=&#39;demouser&#39;)</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">Watchdog</span><span class="p">(</span><span class="n">ibc</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">4002</span><span class="p">)</span>
+    <span class="n">ib</span> <span class="o">=</span> <span class="n">IB</span><span class="p">()</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Watchdog</span><span class="p">(</span><span class="n">ibc</span><span class="p">,</span> <span class="n">ib</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">4002</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
     <span class="n">IB</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
@@ -514,7 +538,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>
 

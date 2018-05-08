@@ -450,6 +450,7 @@ class Wrapper(EWrapper):
         bars = self.reqId2Bars[reqId]
         bars.append(bar)
         self.handleEvent('barUpdateEvent', bars, True)
+        bars.updateEvent(bars, True)
 
     @iswrapper
     def historicalData(self, reqId , bar):
@@ -476,7 +477,7 @@ class Wrapper(EWrapper):
         else:
             return
         self.handleEvent('barUpdateEvent', bars, hasNewBar)
-        bars.updated(bars, hasNewBar)
+        bars.updateEvent(bars, hasNewBar)
 
     @iswrapper
     def headTimestamp(self, reqId, headTimestamp):

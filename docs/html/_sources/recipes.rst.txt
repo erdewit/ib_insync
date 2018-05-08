@@ -130,8 +130,8 @@ This example depends on PyQt5 and quamash:
     
             self.connectInfo = (host, port, clientId)
             self.ib = IB()
-            self.ib.setCallback('pendingTickers', self.table.onPendingTickers)
-    
+            self.ib.pendingTickersEvent += self.table.onPendingTickers
+
         def add(self, text=''):
             text = text or self.edit.text()
             if text:

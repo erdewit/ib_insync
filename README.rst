@@ -93,6 +93,12 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.16
+^^^^^^^^^^^^^^
+* New event system that will supersede IB.setCallback
+* Notebooks updated to use events
+* Watchdog must now be given an IB instance
+
 Version 0.9.15
 ^^^^^^^^^^^^^^
 

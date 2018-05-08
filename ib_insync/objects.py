@@ -257,11 +257,13 @@ class BarList(list):
     Events:
         * ``updateEvent(bars, hasNewBar)``
     """
-    __slots__ = ('updateEvent',)
+    events = ('updateEvent',)
+    
+    __slots__ = events
 
     def __init__(self, *args):
         list.__init__(self, *args)
-        self.updated = Event('updated')
+        Event.init(self, BarList.events)
 
     def __eq__(self, other):
         return self is other

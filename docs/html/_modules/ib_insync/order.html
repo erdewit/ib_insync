@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.order &#8212; IB-insync 0.9.15 documentation</title>
+    <title>ib_insync.order &#8212; IB-insync 0.9.16 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.15',
+        VERSION:     '0.9.16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -82,6 +82,7 @@
 <span></span><span class="kn">import</span> <span class="nn">ibapi</span>
 
 <span class="kn">from</span> <span class="nn">.objects</span> <span class="k">import</span> <span class="n">Object</span>
+<span class="kn">from</span> <span class="nn">ib_insync.event</span> <span class="k">import</span> <span class="n">Event</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Trade OrderStatus Order &#39;</span>
         <span class="s1">&#39;LimitOrder MarketOrder StopOrder StopLimitOrder&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
@@ -90,7 +91,20 @@
 <div class="viewcode-block" id="Trade"><a class="viewcode-back" href="../../api.html#ib_insync.order.Trade">[docs]</a><span class="k">class</span> <span class="nc">Trade</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Trade keeps track of an order, its status and all its fills.</span>
+<span class="sd">    </span>
+<span class="sd">    Events:</span>
+<span class="sd">        * ``statusEvent(trade)``</span>
+<span class="sd">        * ``modifyEvent(trade)``</span>
+<span class="sd">        * ``fillEvent(trade, fill)``</span>
+<span class="sd">        * ``commissionReportEvent(trade, fill, commissionReport)``</span>
+<span class="sd">        * ``filledEvent(trade)``</span>
+<span class="sd">        * ``cancelEvent(trade)``</span>
+<span class="sd">        * ``cancelledEvent(trade)``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;statusEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;modifyEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;fillEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;commissionReportEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;filledEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;cancelEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;cancelledEvent&#39;</span><span class="p">)</span>
+
     <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
         <span class="n">contract</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -98,7 +112,11 @@
         <span class="n">fills</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">log</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="n">events</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">Event</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Trade</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Trade.isActive"><a class="viewcode-back" href="../../api.html#ib_insync.order.Trade.isActive">[docs]</a>    <span class="k">def</span> <span class="nf">isActive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -234,7 +252,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>
 

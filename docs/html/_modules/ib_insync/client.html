@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.client &#8212; IB-insync 0.9.15 documentation</title>
+    <title>ib_insync.client &#8212; IB-insync 0.9.16 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.15',
+        VERSION:     '0.9.16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -95,6 +95,7 @@
 <span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="n">ConnectionStats</span>
 <span class="kn">from</span> <span class="nn">ib_insync.contract</span> <span class="k">import</span> <span class="n">Contract</span>
 <span class="kn">import</span> <span class="nn">ib_insync.util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">from</span> <span class="nn">ib_insync.event</span> <span class="k">import</span> <span class="n">Event</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Client&#39;</span><span class="p">]</span>
 
@@ -126,6 +127,8 @@
 <span class="sd">    * Optional ``wrapper.priceSizeTick(reqId, tickType, price, size)`` that</span>
 <span class="sd">      combines price and size instead of the two wrapper methods</span>
 <span class="sd">      priceTick and sizeTick.</span>
+<span class="sd">      </span>
+<span class="sd">    * Automatic request throttling.</span>
 <span class="sd">    </span>
 <span class="sd">    * Optional ``wrapper.tcpDataArrived()`` method;</span>
 <span class="sd">      If the wrapper has this method it is invoked directly after</span>
@@ -139,28 +142,26 @@
 <span class="sd">      A possible use is to write or evaluate the newly arrived data in</span>
 <span class="sd">      one batch instead of item by item.</span>
 <span class="sd">      </span>
-<span class="sd">    * Optional callbacks:</span>
-<span class="sd">        - apiStart()</span>
-<span class="sd">        - apiEnd()</span>
-<span class="sd">        - apiError(errorMsg)</span>
+<span class="sd">    * Events:</span>
+<span class="sd">        * ``apiStart()``</span>
+<span class="sd">        * ``apiEnd()``</span>
+<span class="sd">        * ``apiError(errorMsg)``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;apiStart&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEnd&#39;</span><span class="p">,</span> <span class="s1">&#39;apiError&#39;</span><span class="p">)</span>
 
     <span class="c1"># throttle number of requests to MaxRequests per RequestsInterval seconds</span>
     <span class="n">MaxRequests</span><span class="p">,</span> <span class="n">RequestsInterval</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">5</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">):</span>
         <span class="n">EClient</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">)</span>
+        <span class="n">Event</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Client</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.client&#39;</span><span class="p">)</span>
 
         <span class="c1"># extra optional wrapper methods</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_priceSizeTick</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="s1">&#39;priceSizeTick&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcpDataArrived</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="s1">&#39;tcpDataArrived&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcpDataProcessed</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="s1">&#39;tcpDataProcessed&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-        <span class="c1"># optional callbacks</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">apiEnd</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Client.reset"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">EClient</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -241,17 +242,15 @@
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">connect</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span><span class="o">.</span><span class="n">wait</span><span class="p">()),</span> <span class="n">timeout</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;API connection ready&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;API connection failed: </span><span class="si">{e!r}</span><span class="s1">&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="ne">ConnectionRefusedError</span><span class="p">):</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Make sure API port on TWS/IBG is open&#39;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">raise</span></div>
 
 <div class="viewcode-block" id="Client.sendMsg"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.sendMsg">[docs]</a>    <span class="k">def</span> <span class="nf">sendMsg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
@@ -343,19 +342,16 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;clientId </span><span class="si">{self.clientId}</span><span class="s1"> already in use?&#39;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Disconnected&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apiEnd</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">apiEnd</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apiEnd</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_onSocketHasError</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -527,7 +523,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>
 

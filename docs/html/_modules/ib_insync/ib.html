@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ib &#8212; IB-insync 0.9.15 documentation</title>
+    <title>ib_insync.ib &#8212; IB-insync 0.9.16 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.15',
+        VERSION:     '0.9.16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -96,6 +96,7 @@
         <span class="n">LimitOrder</span><span class="p">,</span> <span class="n">StopOrder</span><span class="p">,</span> <span class="n">MarketOrder</span>
 <span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">ib_insync.util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">from</span> <span class="nn">ib_insync.event</span> <span class="k">import</span> <span class="n">Event</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IB&#39;</span><span class="p">]</span>
 
@@ -158,10 +159,83 @@
 <span class="sd">    </span>
 <span class="sd">    For introducing a delay, never use time.sleep() but use</span>
 <span class="sd">    :py:meth:`.sleep` instead.</span>
+<span class="sd">    </span>
+<span class="sd">    Events:</span>
+<span class="sd">        * ``connectedEvent()``:</span>
+<span class="sd">          Is emitted after connecting and synchronzing with TWS/gateway.</span>
+
+<span class="sd">        * ``updateEvent()``:</span>
+<span class="sd">          Is emitted after a network packet has been handeled.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``pendingTickersEvent(tickers: List[Ticker])``:</span>
+<span class="sd">          Emits the set of tickers that have been updated during the last</span>
+<span class="sd">          update and for which there are new ticks, tickByTicks or domTicks. </span>
+<span class="sd">          </span>
+<span class="sd">        * ``barUpdateEvent(bars: BarDataList, hasNewBar: bool)``:</span>
+<span class="sd">          Emits the bar list that has been updated in real time.</span>
+<span class="sd">          If a new bar has been added then hasNewBar is True, when the last</span>
+<span class="sd">          bar has changed it is False.</span>
+<span class="sd">          </span>
+<span class="sd">        * ``openOrderEvent(trade: Trade)``:</span>
+<span class="sd">          Emits the trade with open order.</span>
+<span class="sd">          </span>
+<span class="sd">        * ``orderStatusEvent(trade: Trade)``:</span>
+<span class="sd">          Emits the changed order status of the ongoing trade.</span>
+<span class="sd">           </span>
+<span class="sd">        * ``execDetailsEvent(trade: Trade, fill: Fill)``:</span>
+<span class="sd">          Emits the fill together with the ongoing trade it belong to.</span>
+<span class="sd">          </span>
+<span class="sd">        * ``commissionReportEvent(trade: Trade, fill: Fill, report: CommissionReport)``:</span>
+<span class="sd">          The commission report is emitted after the fill that it belongs to.</span>
+<span class="sd">          </span>
+<span class="sd">        * ``updatePortfolioEvent(item: PortfolioItem)``:</span>
+<span class="sd">          A portfolio item has changed.</span>
+<span class="sd">          </span>
+<span class="sd">        * ``positionEvent(position: Position)``:</span>
+<span class="sd">          A position has changed.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``accountValueEvent(value: AccountValue)``:</span>
+<span class="sd">          An account value has changed.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``accountSummaryEvent(value: AccountValue)``:</span>
+<span class="sd">          An account value has changed.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``pnlEvent(entry: PnL)``:</span>
+<span class="sd">          A profit- and loss entry is updated.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``pnlSingleEvent(entry: PnLSingle)``:</span>
+<span class="sd">          A profit- and loss entry for a single position is updated.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``tickNewsEvent(news: NewsTick)``:</span>
+<span class="sd">          Emit a new news headline.</span>
+<span class="sd">          </span>
+<span class="sd">        * ``errorEvent(reqId: int, errorCode: int, errorString: str, contract: Contract)``:</span>
+<span class="sd">          Emits the reqId/orderId and TWS error code and string (see</span>
+<span class="sd">          https://interactivebrokers.github.io/tws-api/message_codes.html)</span>
+<span class="sd">          together with the contract the error applies to (or None if no</span>
+<span class="sd">          contract applies).</span>
+<span class="sd">          </span>
+<span class="sd">        * ``timeoutEvent(idlePeriod: float)``:</span>
+<span class="sd">          Is emitted if no data is received for longer than the timeout period</span>
+<span class="sd">          specified with ``setTimeout``. The value emitted is the period in</span>
+<span class="sd">          seconds since the last update.</span>
+<span class="sd">        </span>
+<span class="sd">        Note that it is not advisible to place new requests inside an event</span>
+<span class="sd">        handler as it may lead to too much recursion.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;connectedEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;updateEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;pendingTickersEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;barUpdateEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;openOrderEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;orderStatusEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;execDetailsEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;commissionReportEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;updatePortfolioEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;positionEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;accountValueEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;accountSummaryEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;pnlEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;pnlSingleEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tickNewsEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;errorEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;timeoutEvent&#39;</span><span class="p">)</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;client&#39;</span><span class="p">,</span> <span class="s1">&#39;wrapper&#39;</span><span class="p">,</span> <span class="s1">&#39;_logger&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">events</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span> <span class="o">=</span> <span class="n">Wrapper</span><span class="p">()</span>
+        <span class="n">Event</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IB</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span> <span class="o">=</span> <span class="n">Wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.ib&#39;</span><span class="p">)</span>
 
@@ -313,7 +387,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">clearPendingTickers</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">autoclearTickers</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">wait</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">updateEv</span><span class="o">.</span><span class="n">wait</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">autoclearTickers</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
@@ -337,7 +411,7 @@
             <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">wait</span><span class="p">(),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">updateEv</span><span class="o">.</span><span class="n">wait</span><span class="p">(),</span>
                         <span class="n">endTime</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
                 <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
                     <span class="k">pass</span>
@@ -346,67 +420,9 @@
 
 <div class="viewcode-block" id="IB.setCallback"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.setCallback">[docs]</a>    <span class="k">def</span> <span class="nf">setCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eventName</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set an optional callback to be invoked after an event. Events:</span>
+<span class="sd">        Depreciated: Use events instead.</span>
 <span class="sd">        </span>
-<span class="sd">        * ``connected()``:</span>
-<span class="sd">          Is emitted after connecting and synchronzing with TWS/gateway.</span>
-
-<span class="sd">        * ``updated()``:</span>
-<span class="sd">          Is emitted after a network packet has been handeled.</span>
-<span class="sd">        </span>
-<span class="sd">        * ``pendingTickers(tickers: List[Ticker])``:</span>
-<span class="sd">          Emits the set of tickers that have been updated during the last</span>
-<span class="sd">          update and for which there are new ticks, tickByTicks or domTicks. </span>
-<span class="sd">          </span>
-<span class="sd">        * ``barUpdate(bars: BarDataList, hasNewBar: bool)``:</span>
-<span class="sd">          Emits the bar list that has been updated in real time.</span>
-<span class="sd">          If a new bar has been added then hasNewBar is True, when the last</span>
-<span class="sd">          bar has changed it is False.</span>
-<span class="sd">          </span>
-<span class="sd">        * ``openOrder(trade: Trade)``:</span>
-<span class="sd">          Emits the trade with open order.</span>
-<span class="sd">          </span>
-<span class="sd">        * ``orderStatus(trade: Trade)``:</span>
-<span class="sd">          Emits the changed order status of the ongoing trade.</span>
-<span class="sd">           </span>
-<span class="sd">        * ``execDetails(trade: Trade, fill: Fill)``:</span>
-<span class="sd">          Emits the fill together with the ongoing trade it belong to.</span>
-<span class="sd">          </span>
-<span class="sd">        * ``commissionReport(trade: Trade, fill: Fill, report: CommissionReport)``:</span>
-<span class="sd">          The commission report is emitted after the fill that it belongs to.</span>
-<span class="sd">          </span>
-<span class="sd">        * ``updatePortfolio(item: PortfolioItem)``:</span>
-<span class="sd">          A portfolio item has changed.</span>
-<span class="sd">          </span>
-<span class="sd">        * ``position(position: Position)``:</span>
-<span class="sd">          A position has changed.</span>
-<span class="sd">        </span>
-<span class="sd">        * ``accountValue(value: AccountValue)``:</span>
-<span class="sd">          An account value has changed.</span>
-<span class="sd">        </span>
-<span class="sd">        * ``accountSummary(value: AccountValue)``:</span>
-<span class="sd">          An account value has changed.</span>
-<span class="sd">        </span>
-<span class="sd">        * ``pnl(entry: PnL)``:</span>
-<span class="sd">          A profit- and loss entry is updated.</span>
-<span class="sd">        </span>
-<span class="sd">        * ``pnlSingle(entry: PnLSingle)``:</span>
-<span class="sd">          A profit- and loss entry for a single position is updated.</span>
-<span class="sd">        </span>
-<span class="sd">        * ``tickNews(news: NewsTick)``:</span>
-<span class="sd">          Emit a new news headline.</span>
-<span class="sd">          </span>
-<span class="sd">        * ``error(reqId: int, errorCode: int, errorString: str, contract: Contract)``:</span>
-<span class="sd">          Emits the reqId/orderId and TWS error code and string (see</span>
-<span class="sd">          https://interactivebrokers.github.io/tws-api/message_codes.html)</span>
-<span class="sd">          together with the contract the error applies to (or None if no</span>
-<span class="sd">          contract applies).</span>
-<span class="sd">          </span>
-<span class="sd">        * ``timeout(idlePeriod: float)``:</span>
-<span class="sd">          Is emitted if no data is received for longer than the timeout period</span>
-<span class="sd">          specified with ``setTimeout``. The value emitted is the period in</span>
-<span class="sd">          seconds since the last update.</span>
-
+<span class="sd">        Set an optional callback to be invoked after an event.</span>
 <span class="sd">        Unsetting is done by supplying None as callback.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">setCallback</span><span class="p">(</span><span class="n">eventName</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span></div>
@@ -600,7 +616,7 @@
 
 <div class="viewcode-block" id="IB.bracketOrder"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.bracketOrder">[docs]</a>    <span class="k">def</span> <span class="nf">bracketOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
             <span class="n">limitPrice</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">takeProfitPrice</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-            <span class="n">stopLossPrice</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BracketOrder</span><span class="p">:</span>
+            <span class="n">stopLossPrice</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BracketOrder</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a limit order that is bracketed by a take-profit order and</span>
 <span class="sd">        a stop-loss order. Submit the bracket like:</span>
@@ -617,17 +633,20 @@
         <span class="n">parent</span> <span class="o">=</span> <span class="n">LimitOrder</span><span class="p">(</span>
                 <span class="n">action</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">limitPrice</span><span class="p">,</span>
                 <span class="n">orderId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">(),</span>
-                <span class="n">transmit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">transmit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">takeProfit</span> <span class="o">=</span> <span class="n">LimitOrder</span><span class="p">(</span>
                 <span class="n">reverseAction</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">takeProfitPrice</span><span class="p">,</span>
                 <span class="n">orderId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">(),</span>
                 <span class="n">transmit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="n">parentId</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">orderId</span><span class="p">)</span>
+                <span class="n">parentId</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">orderId</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">stopLoss</span> <span class="o">=</span> <span class="n">StopOrder</span><span class="p">(</span>
                 <span class="n">reverseAction</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">stopLossPrice</span><span class="p">,</span>
                 <span class="n">orderId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">(),</span>
                 <span class="n">transmit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">parentId</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">orderId</span><span class="p">)</span>
+                <span class="n">parentId</span><span class="o">=</span><span class="n">parent</span><span class="o">.</span><span class="n">orderId</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">BracketOrder</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">takeProfit</span><span class="p">,</span> <span class="n">stopLoss</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="IB.oneCancelsAll"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.oneCancelsAll">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -674,6 +693,7 @@
                     <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="s1">&#39;Modify&#39;</span><span class="p">)</span>
             <span class="n">trade</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">logEntry</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;placeOrder: Modify order </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">trade</span><span class="o">.</span><span class="n">modifyEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># this is a new order</span>
             <span class="n">order</span><span class="o">.</span><span class="n">orderId</span> <span class="o">=</span> <span class="n">orderId</span>
@@ -698,7 +718,10 @@
             <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">DoneStates</span><span class="p">:</span>
                 <span class="n">logEntry</span> <span class="o">=</span> <span class="n">TradeLogEntry</span><span class="p">(</span><span class="n">now</span><span class="p">,</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">PendingCancel</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
                 <span class="n">trade</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">logEntry</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;cancelOrder: </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">PendingCancel</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;cancelOrder: </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">trade</span><span class="o">.</span><span class="n">cancelEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
+                <span class="n">trade</span><span class="o">.</span><span class="n">statusEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;cancelOrder: Unknown orderId </span><span class="si">{order.orderId}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">trade</span></div>
@@ -1274,7 +1297,7 @@
             <span class="c1"># autobind orders</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reqAutoOpenOrders</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Synchronization complete&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">(</span><span class="s1">&#39;connected&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">(</span><span class="s1">&#39;connectedEvent&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="IB.qualifyContractsAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.qualifyContractsAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">qualifyContractsAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">contracts</span><span class="p">):</span>
         <span class="n">detailsLists</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
@@ -1666,7 +1689,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>
 
