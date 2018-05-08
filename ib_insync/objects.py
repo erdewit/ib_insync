@@ -255,9 +255,9 @@ class PnLSingle(Object):
 class BarList(list):
     """
     Events:
-        * ``updated(bars, hasNewBar)``
+        * ``updateEvent(bars, hasNewBar)``
     """
-    __slots__ = ('updated',)
+    __slots__ = ('updateEvent',)
 
     def __init__(self, *args):
         list.__init__(self, *args)

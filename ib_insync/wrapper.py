@@ -20,8 +20,8 @@ class Wrapper(EWrapper):
     """
 
     def __init__(self, ib):
-        self.updateEvent = asyncio.Event()
-        self.timeoutEvent = asyncio.Event()
+        self.updateEv = asyncio.Event()
+        self.timeoutEv = asyncio.Event()
         self._ib = ib
         self._callbacks = {}  # eventName -> callback
         self._logger = logging.getLogger('ib_insync.wrapper')
@@ -166,8 +166,8 @@ class Wrapper(EWrapper):
         else:
             self._logger.debug('Timeout')
             self.handleEvent('timeoutEvent', diff)
-            self.timeoutEvent.set()
-            self.timeoutEvent.clear()
+            self.timeoutEv.set()
+            self.timeoutEv.clear()
             self._timeout = 0
             self._timeoutHandle = None
 
@@ -895,18 +895,12 @@ class Wrapper(EWrapper):
     def tcpDataProcessed(self):
         if self.pendingTickers:
             self.handleEvent('pendingTickersEvent', list(self.pendingTickers))
-            for ticker in self.pendingTickers:
-                if ticker.updated.slots:
-                    ticker.updated.emit(ticker)
-                if ticker.hasTicks.slots and ticker.ticks:
-                    ticker.hasTicks.emit(ticker.ticks)
-                if ticker.domTicks:
-                    ticker.hasDOMTicks.emit(ticker.domTicks)
-                if ticker.tickByTicks:
-                    ticker.hasTickByTicks.emit(ticker.tickByTicks)
-        self.updateEvent.set()
-        self.updateEvent.clear()
-        self.handleEvent('updatedEvent')
+            for ticker in (t for t in self.pendingTickers
+                    if t.updateEvent.slots):
+                ticker.updateEvent.emit(ticker)
+        self.updateEv.set()
+        self.updateEv.clear()
+        self.handleEvent('updateEvent')
 
     def clearPendingTickers(self):
         """

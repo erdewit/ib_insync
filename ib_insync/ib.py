@@ -83,7 +83,7 @@ class IB:
         * ``connectedEvent()``:
           Is emitted after connecting and synchronzing with TWS/gateway.
 
-        * ``updatedEvent()``:
+        * ``updateEvent()``:
           Is emitted after a network packet has been handeled.
         
         * ``pendingTickersEvent(tickers: List[Ticker])``:
@@ -143,7 +143,7 @@ class IB:
         handler as it may lead to too much recursion.
     """
 
-    events = ('connectedEvent', 'updatedEvent', 'pendingTickersEvent',
+    events = ('connectedEvent', 'updateEvent', 'pendingTickersEvent',
             'barUpdateEvent', 'openOrderEvent', 'orderStatusEvent',
             'execDetailsEvent', 'commissionReportEvent',
             'updatePortfolioEvent', 'positionEvent', 'accountValueEvent',
@@ -306,7 +306,7 @@ class IB:
         """
         self.wrapper.clearPendingTickers()
         self.wrapper.autoclearTickers = False
-        self.run(self.wrapper.updateEvent.wait())
+        self.run(self.wrapper.updateEv.wait())
         self.wrapper.autoclearTickers = True
         return True
 
@@ -330,7 +330,7 @@ class IB:
             if timeout:
                 try:
                     self.run(asyncio.wait_for(
-                        self.wrapper.updateEvent.wait(),
+                        self.wrapper.updateEv.wait(),
                         endTime - time.time()))
                 except asyncio.TimeoutError:
                     pass

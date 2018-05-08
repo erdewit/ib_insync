@@ -339,15 +339,15 @@ class Watchdog(Object):
         IB.run()
     
     Events:
-        * ``starting()``
-        * ``started()``
-        * ``stopping()``
-        * ``stopped()``
-        * ``softTimeoutEvent()``
-        * ``hardTimeoutEvent()``
+        * ``startingEvent(watchdog)``
+        * ``startedEvent(watchdog)``
+        * ``stoppingEvent(watchdog)``
+        * ``stoppedEvent(watchdog)``
+        * ``softTimeoutEvent(watchdog)``
+        * ``hardTimeoutEvent(watchdog)``
     """
 
-    events = ['starting', 'started', 'stopping', 'stopped',
+    events = ['startingEvent', 'startedEvent', 'stoppingEvent', 'stoppedEvent',
             'softTimeout', 'hardTimeout']
 
     defaults = dict(
@@ -379,7 +379,7 @@ class Watchdog(Object):
         self._logger = logging.getLogger('ib_insync.Watchdog')
 
     def start(self):
-        self.starting.emit()
+        self.startingEvent.emit(self)
         self._logger.info('Starting')
         self.controller.start()
         IB.sleep(self.appStartupTime)
@@ -387,17 +387,17 @@ class Watchdog(Object):
             self.ib.connect(self.host, self.port, self.clientId,
                     self.connectTimeout)
             self.ib.setTimeout(self.appTimeout)
-            self.started.emit()
+            self.startedEvent.emit(self)
         except:
             # a connection failure will be handled by the apiError callback
             pass
 
     def stop(self):
-        self.stopping.emit()
+        self.stoppingEvent.emit(self)
         self._logger.info('Stopping')
         self.ib.disconnect()
         self.controller.terminate()
-        self.stopped.emit()
+        self.stoppedEvent.emit(self)
 
     def scheduleRestart(self):
         self._logger.info(f'Schedule restart in {self.retryDelay}s')
@@ -416,9 +416,9 @@ class Watchdog(Object):
 
     async def watchAsync(self):
         while True:
-            await self.ib.wrapper.timeoutEvent.wait()
+            await self.ib.wrapper.timeoutEv.wait()
             # soft timeout, probe the app with a historical request
-            self.softTimeoutEvent.emit()
+            self.softTimeoutEvent.emit(self)
             contract = Forex('EURUSD')
             probe = self.ib.reqHistoricalDataAsync(
                     contract, '', '30 S', '5 secs', 'MIDPOINT', False)
@@ -430,7 +430,7 @@ class Watchdog(Object):
             except:
                 # hard timeout, flush everything and start anew
                 self._logger.error('Hard timeout')
-                self.hardTimeoutEvent.emit()
+                self.hardTimeoutEvent.emit(self)
                 self.stop()
                 self.scheduleRestart()
 

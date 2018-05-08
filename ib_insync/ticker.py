@@ -26,13 +26,10 @@ class Ticker(Object):
     the greeks as calculated by Interactive Brokers' option model.
     
     Events:
-        * ``updated(ticker)``
-        * ``hasTicks(ticks: TickData)``
-        * ``hasDomTicks(domTicks: MktDepthData)``
-        * ``hasTickByTicks(tickByTicks)``
+        * ``updateEvent(ticker)``
     """
 
-    events = ('updated', 'hasTicks', 'hasDOMTicks')
+    events = ('updateEvent',)
 
     defaults = dict(
         contract=None,

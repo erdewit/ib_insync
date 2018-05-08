@@ -46,6 +46,8 @@ class Client(EClient):
     * Optional ``wrapper.priceSizeTick(reqId, tickType, price, size)`` that
       combines price and size instead of the two wrapper methods
       priceTick and sizeTick.
+      
+    * Automatic request throttling.
     
     * Optional ``wrapper.tcpDataArrived()`` method;
       If the wrapper has this method it is invoked directly after
@@ -164,10 +166,10 @@ class Client(EClient):
             self.reset()
             msg = f'API connection failed: {e!r}'
             self._logger.error(msg)
+            self.apiError(msg)
             if isinstance(e, ConnectionRefusedError):
                 msg = 'Make sure API port on TWS/IBG is open'
                 self._logger.error(msg)
-            self.apiError(msg)
             raise
 
     def sendMsg(self, msg):
