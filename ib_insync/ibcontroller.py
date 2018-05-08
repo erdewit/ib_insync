@@ -333,7 +333,8 @@ class Watchdog(Object):
         util.patchAsyncio()
 
         ibc = IBC(969, gateway=True, tradingMode='paper')
-        app = Watchdog(ibc, port=4002)
+        ib = IB()
+        app = Watchdog(ibc, ib, port=4002)
         app.start()
         print(app.ib.accountValues())
         IB.run()
