@@ -4,6 +4,7 @@ import datetime
 from collections import defaultdict
 
 from ibapi.wrapper import EWrapper, iswrapper
+from ibapi.common import UNSET_DOUBLE
 
 from ib_insync.contract import Contract
 from ib_insync.ticker import Ticker
@@ -400,6 +401,8 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def commissionReport(self, commissionReport):
+        if commissionReport.yield_ == UNSET_DOUBLE:
+            commissionReport.yield_ = 0.0
         fill = self.fills.get(commissionReport.execId)
         if fill:
             report = fill.commissionReport.update(
@@ -413,8 +416,9 @@ class Wrapper(EWrapper):
                         trade, fill, report)
                 trade.commissionReportEvent.emit(trade, fill, report)
             else:
-                self._logger.error('commissionReport: '
-                        'No trade found for %s', report)
+                # this is not a live execution and the order was filled
+                # before this connection started
+                pass
         else:
             report = CommissionReport(**commissionReport.__dict__)
             self._logger.error('commissionReport: '
