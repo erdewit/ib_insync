@@ -85,6 +85,7 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
 
 <span class="kn">from</span> <span class="nn">ibapi.wrapper</span> <span class="k">import</span> <span class="n">EWrapper</span><span class="p">,</span> <span class="n">iswrapper</span>
+<span class="kn">from</span> <span class="nn">ibapi.common</span> <span class="k">import</span> <span class="n">UNSET_DOUBLE</span>
 
 <span class="kn">from</span> <span class="nn">ib_insync.contract</span> <span class="k">import</span> <span class="n">Contract</span>
 <span class="kn">from</span> <span class="nn">ib_insync.ticker</span> <span class="k">import</span> <span class="n">Ticker</span>
@@ -481,6 +482,8 @@
 
 <div class="viewcode-block" id="Wrapper.commissionReport"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.commissionReport">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">commissionReport</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commissionReport</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">commissionReport</span><span class="o">.</span><span class="n">yield_</span> <span class="o">==</span> <span class="n">UNSET_DOUBLE</span><span class="p">:</span>
+            <span class="n">commissionReport</span><span class="o">.</span><span class="n">yield_</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="n">fill</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fills</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">commissionReport</span><span class="o">.</span><span class="n">execId</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">fill</span><span class="p">:</span>
             <span class="n">report</span> <span class="o">=</span> <span class="n">fill</span><span class="o">.</span><span class="n">commissionReport</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
@@ -494,8 +497,9 @@
                         <span class="n">trade</span><span class="p">,</span> <span class="n">fill</span><span class="p">,</span> <span class="n">report</span><span class="p">)</span>
                 <span class="n">trade</span><span class="o">.</span><span class="n">commissionReportEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">,</span> <span class="n">fill</span><span class="p">,</span> <span class="n">report</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;commissionReport: &#39;</span>
-                        <span class="s1">&#39;No trade found for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">report</span><span class="p">)</span>
+                <span class="c1"># this is not a live execution and the order was filled</span>
+                <span class="c1"># before this connection started</span>
+                <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">report</span> <span class="o">=</span> <span class="n">CommissionReport</span><span class="p">(</span><span class="o">**</span><span class="n">commissionReport</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;commissionReport: &#39;</span>

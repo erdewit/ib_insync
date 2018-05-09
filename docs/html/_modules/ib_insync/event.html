@@ -101,10 +101,11 @@
 <div class="viewcode-block" id="Event.connect"><a class="viewcode-back" href="../../api.html#ib_insync.event.Event.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">weakRef</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hiPriority</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Connect the callable c to this event.</span>
+<span class="sd">        The ``+=`` operator can be used as a synonym for this method.</span>
 <span class="sd">        </span>
 <span class="sd">        When ``weakRef=True`` the callable can be garbage collected upon which</span>
 <span class="sd">        it will be automatically disconnected from this event; </span>
-<span class="sd">        When ``weakRef=False` a strong reference to the callable will be kept.</span>
+<span class="sd">        When ``weakRef=False`` a strong reference to the callable will be kept.</span>
 
 <span class="sd">        With ``hiPriority=True`` the callable will be placed in the first slot,</span>
 <span class="sd">        otherwise it will be placed last.</span>
@@ -128,8 +129,12 @@
 <div class="viewcode-block" id="Event.disconnect"><a class="viewcode-back" href="../../api.html#ib_insync.event.Event.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Disconnect the callable from this event.</span>
+<span class="sd">        The ``-=`` operator can be used as a synonym for this method.</span>
 <span class="sd">        </span>
-<span class="sd">        This is a no-op if the callable is not connected.</span>
+<span class="sd">        It&#39;s okay (i.e. not considered an error) if the callable is</span>
+<span class="sd">        already not connected.</span>
+<span class="sd">        If the callable is connected multiple times, all connections are</span>
+<span class="sd">        removed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj</span><span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">:</span>
