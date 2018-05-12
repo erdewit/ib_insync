@@ -82,6 +82,9 @@ class IB:
     Events:
         * ``connectedEvent()``:
           Is emitted after connecting and synchronzing with TWS/gateway.
+        
+        * ``disconnectedEvent()``:
+          Is emitted after disconnecting from TWS/gateway.
 
         * ``updateEvent()``:
           Is emitted after a network packet has been handeled.
@@ -94,6 +97,15 @@ class IB:
           Emits the bar list that has been updated in real time.
           If a new bar has been added then hasNewBar is True, when the last
           bar has changed it is False.
+          
+        * ``newOrderEvent(trade: Trade)``:
+          Emits a newly placed trade.
+        
+        * ``orderModifyEvent(trade: Trade)``:
+          Emits when order is modified.
+        
+        * ``cancelOrderEvent(trade: Trade)``:
+          Emits a trade directly after requesting for it to be cancelled.
           
         * ``openOrderEvent(trade: Trade)``:
           Emits the trade with open order.
@@ -143,8 +155,10 @@ class IB:
         handler as it may lead to too much recursion.
     """
 
-    events = ('connectedEvent', 'updateEvent', 'pendingTickersEvent',
-            'barUpdateEvent', 'openOrderEvent', 'orderStatusEvent',
+    events = ('connectedEvent', 'disconnectedEvent', 'updateEvent',
+            'pendingTickersEvent', 'barUpdateEvent',
+            'newOrderEvent', 'orderModifyEvent', 'cancelOrderEvent',
+            'openOrderEvent', 'orderStatusEvent',
             'execDetailsEvent', 'commissionReportEvent',
             'updatePortfolioEvent', 'positionEvent', 'accountValueEvent',
             'accountSummaryEvent', 'pnlEvent', 'pnlSingleEvent',
@@ -156,6 +170,7 @@ class IB:
         Event.init(self, IB.events)
         self.wrapper = Wrapper(self)
         self.client = Client(self.wrapper)
+        self.client.apiEnd += self.disconnectedEvent
         self._logger = logging.getLogger('ib_insync.ib')
 
     def __del__(self):
@@ -613,6 +628,7 @@ class IB:
             trade.log.append(logEntry)
             self._logger.info(f'placeOrder: Modify order {trade}')
             trade.modifyEvent.emit(trade)
+            self.orderModifyEvent.emit(trade)
         else:
             # this is a new order
             order.orderId = orderId
@@ -622,6 +638,7 @@ class IB:
                     contract, order, orderStatus, [], [logEntry])
             self.wrapper.trades[key] = trade
             self._logger.info(f'placeOrder: New order {trade}')
+            self.newOrderEvent.emit(trade)
         return trade
 
     @api
@@ -641,6 +658,8 @@ class IB:
                 self._logger.info(f'cancelOrder: {trade}')
                 trade.cancelEvent.emit(trade)
                 trade.statusEvent.emit(trade)
+                self.orderCancelEvent.emit(trade)
+                self.orderStatusEvent.emit(trade)
         else:
             self._logger.error(f'cancelOrder: Unknown orderId {order.orderId}')
         return trade

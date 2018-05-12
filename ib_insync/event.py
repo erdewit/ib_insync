@@ -52,8 +52,6 @@ class Event:
         
         It's okay (i.e. not considered an error) if the callable is
         already not connected.
-        If the callable is connected multiple times, all connections are
-        removed.
         """
         obj, func = self._split(c)
         for slot in self.slots:

@@ -93,6 +93,12 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.17
+^^^^^^^^^^^^^^
+* New IB events disconnectedEvent, newOrderEvent, orderModifyEvent and cancelOrderEvent
+* Watchdog improvements
+
+
 Version 0.9.16
 ^^^^^^^^^^^^^^
 * New event system that will supersede IB.setCallback

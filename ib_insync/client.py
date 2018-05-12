@@ -73,6 +73,7 @@ class Client(EClient):
     MaxRequests, RequestsInterval = 250, 5
 
     def __init__(self, wrapper):
+        self._readyEvent = asyncio.Event()
         EClient.__init__(self, wrapper)
         Event.init(self, Client.events)
         self._logger = logging.getLogger('ib_insync.client')
@@ -84,8 +85,8 @@ class Client(EClient):
 
     def reset(self):
         EClient.reset(self)
+        self._readyEvent.clear()
         self._data = b''
-        self._readyEvent = asyncio.Event()
         self._reqIdSeq = 0
         self._accounts = None
         self._startTime = time.time()

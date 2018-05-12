@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ib &#8212; IB-insync 0.9.16 documentation</title>
+    <title>ib_insync.ib &#8212; IB-insync 0.9.17 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.16',
+        VERSION:     '0.9.17',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -163,6 +163,9 @@
 <span class="sd">    Events:</span>
 <span class="sd">        * ``connectedEvent()``:</span>
 <span class="sd">          Is emitted after connecting and synchronzing with TWS/gateway.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``disconnectedEvent()``:</span>
+<span class="sd">          Is emitted after disconnecting from TWS/gateway.</span>
 
 <span class="sd">        * ``updateEvent()``:</span>
 <span class="sd">          Is emitted after a network packet has been handeled.</span>
@@ -175,6 +178,15 @@
 <span class="sd">          Emits the bar list that has been updated in real time.</span>
 <span class="sd">          If a new bar has been added then hasNewBar is True, when the last</span>
 <span class="sd">          bar has changed it is False.</span>
+<span class="sd">          </span>
+<span class="sd">        * ``newOrderEvent(trade: Trade)``:</span>
+<span class="sd">          Emits a newly placed trade.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``orderModifyEvent(trade: Trade)``:</span>
+<span class="sd">          Emits when order is modified.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``cancelOrderEvent(trade: Trade)``:</span>
+<span class="sd">          Emits a trade directly after requesting for it to be cancelled.</span>
 <span class="sd">          </span>
 <span class="sd">        * ``openOrderEvent(trade: Trade)``:</span>
 <span class="sd">          Emits the trade with open order.</span>
@@ -224,8 +236,10 @@
 <span class="sd">        handler as it may lead to too much recursion.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;connectedEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;updateEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;pendingTickersEvent&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;barUpdateEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;openOrderEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;orderStatusEvent&#39;</span><span class="p">,</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;connectedEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;disconnectedEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;updateEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;pendingTickersEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;barUpdateEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;newOrderEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;orderModifyEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;cancelOrderEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;openOrderEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;orderStatusEvent&#39;</span><span class="p">,</span>
             <span class="s1">&#39;execDetailsEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;commissionReportEvent&#39;</span><span class="p">,</span>
             <span class="s1">&#39;updatePortfolioEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;positionEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;accountValueEvent&#39;</span><span class="p">,</span>
             <span class="s1">&#39;accountSummaryEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;pnlEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;pnlSingleEvent&#39;</span><span class="p">,</span>
@@ -237,6 +251,7 @@
         <span class="n">Event</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IB</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span> <span class="o">=</span> <span class="n">Wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">apiEnd</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">disconnectedEvent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.ib&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -694,6 +709,7 @@
             <span class="n">trade</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">logEntry</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;placeOrder: Modify order </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">trade</span><span class="o">.</span><span class="n">modifyEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">orderModifyEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># this is a new order</span>
             <span class="n">order</span><span class="o">.</span><span class="n">orderId</span> <span class="o">=</span> <span class="n">orderId</span>
@@ -703,6 +719,7 @@
                     <span class="n">contract</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">orderStatus</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[</span><span class="n">logEntry</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">trades</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">trade</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;placeOrder: New order </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">newOrderEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">trade</span></div>
 
 <div class="viewcode-block" id="IB.cancelOrder"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelOrder">[docs]</a>    <span class="nd">@api</span>
@@ -722,6 +739,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;cancelOrder: </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">trade</span><span class="o">.</span><span class="n">cancelEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
                 <span class="n">trade</span><span class="o">.</span><span class="n">statusEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">orderCancelEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">orderStatusEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;cancelOrder: Unknown orderId </span><span class="si">{order.orderId}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">trade</span></div>

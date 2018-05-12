@@ -164,12 +164,12 @@ class IBC(Object):
         if not self._proc:
             return
         self._logger.info('Terminating')
+        self._monitor.cancel()
+        self._monitor = None
         with suppress(ProcessLookupError):
             self._proc.terminate()
             await self._proc.wait()
         self._proc = None
-        self._monitor.cancel()
-        self._monitor = None
 
     async def monitorAsync(self):
         while self._proc:
@@ -285,12 +285,12 @@ class IBController(Object):
         if not self._proc:
             return
         self._logger.info('Terminating')
+        self._monitor.cancel()
+        self._monitor = None
         with suppress(ProcessLookupError):
             self._proc.terminate()
             await self._proc.wait()
         self._proc = None
-        self._monitor.cancel()
-        self._monitor = None
 
     async def monitorAsync(self):
         while self._proc:
@@ -349,7 +349,7 @@ class Watchdog(Object):
     """
 
     events = ['startingEvent', 'startedEvent', 'stoppingEvent', 'stoppedEvent',
-            'softTimeout', 'hardTimeout']
+            'softTimeoutEvent', 'hardTimeoutEvent']
 
     defaults = dict(
         controller=None,
@@ -374,8 +374,8 @@ class Watchdog(Object):
             raise ValueError('IB instance must not be connected')
         assert 0 < self.appTimeout < 60
         assert self.retryDelay > 0
-        self.ib.client.apiError += self.onApiError
         self.ib.errorEvent += self.onError
+        self.ib.disconnectedEvent += self.flush
         self._watcher = asyncio.ensure_future(self.watchAsync())
         self._logger = logging.getLogger('ib_insync.Watchdog')
 
@@ -390,8 +390,7 @@ class Watchdog(Object):
             self.ib.setTimeout(self.appTimeout)
             self.startedEvent.emit(self)
         except:
-            # a connection failure will be handled by the apiError callback
-            pass
+            self.flush()
 
     def stop(self):
         self.stoppingEvent.emit(self)
@@ -401,24 +400,24 @@ class Watchdog(Object):
         self.stoppedEvent.emit(self)
 
     def scheduleRestart(self):
-        self._logger.info(f'Schedule restart in {self.retryDelay}s')
         loop = asyncio.get_event_loop()
         loop.call_later(self.retryDelay, self.start)
+        self._logger.info(f'Schedule restart in {self.retryDelay}s')
 
-    def onApiError(self, msg):
+    def flush(self):
         self.stop()
         self.scheduleRestart()
 
     def onError(self, reqId, errorCode, errorString, contract):
         if errorCode == 1100:
-            self._logger.info(f'Error 1100: {errorString}')
-            self.stop()
-            self.scheduleRestart()
+            self._logger.error(f'Error 1100: {errorString}')
+            self.ib.disconnect()
 
     async def watchAsync(self):
         while True:
             await self.ib.wrapper.timeoutEv.wait()
             # soft timeout, probe the app with a historical request
+            self._logger.debug('Soft timeout')
             self.softTimeoutEvent.emit(self)
             contract = Forex('EURUSD')
             probe = self.ib.reqHistoricalDataAsync(
@@ -432,16 +431,16 @@ class Watchdog(Object):
                 # hard timeout, flush everything and start anew
                 self._logger.error('Hard timeout')
                 self.hardTimeoutEvent.emit(self)
-                self.stop()
-                self.scheduleRestart()
+                self.disconnect()
 
 
 if __name__ == '__main__':
-    util.logToConsole()
+    asyncio.get_event_loop().set_debug(True)
+    util.logToConsole(logging.DEBUG)
     util.patchAsyncio()
-    ibc = IBC(969, gateway=True, tradingMode='paper')
+    ibc = IBC(971, gateway=True, tradingMode='paper')
 #             userid='edemo', password='demouser')
     ib = IB()
-    app = Watchdog(ibc, ib, port=4002)
+    app = Watchdog(ibc, ib, port=4002, appStartupTime=10, appTimeout=10)
     app.start()
     IB.run()
