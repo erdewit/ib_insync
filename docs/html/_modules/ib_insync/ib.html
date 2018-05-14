@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ib &#8212; IB-insync 0.9.17 documentation</title>
+    <title>ib_insync.ib &#8212; IB-insync 0.9.18 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.17',
+        VERSION:     '0.9.18',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -739,7 +739,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;cancelOrder: </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">trade</span><span class="o">.</span><span class="n">cancelEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
                 <span class="n">trade</span><span class="o">.</span><span class="n">statusEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">orderCancelEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cancelOrderEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">orderStatusEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;cancelOrder: Unknown orderId </span><span class="si">{order.orderId}</span><span class="s1">&#39;</span><span class="p">)</span>

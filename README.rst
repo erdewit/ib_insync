@@ -93,6 +93,11 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.18
+^^^^^^^^^^^^^^
+* Merged PR #65 (Fix misnamed event)
+
+
 Version 0.9.17
 ^^^^^^^^^^^^^^
 * New IB events disconnectedEvent, newOrderEvent, orderModifyEvent and cancelOrderEvent

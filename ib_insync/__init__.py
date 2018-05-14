@@ -1,6 +1,6 @@
 import sys
 
-__version__ = '0.9.17'
+__version__ = '0.9.18'
 
 if sys.version_info < (3, 6, 0):
     print("Python 3.6.0 or higher is required")
