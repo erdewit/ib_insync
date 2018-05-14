@@ -658,7 +658,7 @@ class IB:
                 self._logger.info(f'cancelOrder: {trade}')
                 trade.cancelEvent.emit(trade)
                 trade.statusEvent.emit(trade)
-                self.orderCancelEvent.emit(trade)
+                self.cancelOrderEvent.emit(trade)
                 self.orderStatusEvent.emit(trade)
         else:
             self._logger.error(f'cancelOrder: Unknown orderId {order.orderId}')
