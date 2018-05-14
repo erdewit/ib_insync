@@ -93,6 +93,10 @@ This project is not affiliated with Interactive Brokers Group, Inc.'s.
 Changelog
 ---------
 
+Version 0.9.19
+^^^^^^^^^^^^^^
+* Don't overwrite exchange='SMART' in qualifyContracts
+
 Version 0.9.18
 ^^^^^^^^^^^^^^
 * Merged PR #65 (Fix misnamed event)
