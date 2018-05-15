@@ -431,7 +431,7 @@ class Watchdog(Object):
                 # hard timeout, flush everything and start anew
                 self._logger.error('Hard timeout')
                 self.hardTimeoutEvent.emit(self)
-                self.disconnect()
+                self.ib.disconnect()
 
 
 if __name__ == '__main__':
