@@ -5,6 +5,7 @@ import time
 from typing import List, Iterator, Callable
 from collections.abc import Awaitable  # @UnusedImport
 
+import ibapi
 from ibapi.account_summary_tags import AccountSummaryTags
 
 from ib_insync.client import Client
@@ -988,7 +989,8 @@ class IB:
                     f'No reqId found for contract {contract}')
 
     @api
-    def reqTickByTickData(self, contract: Contract, tickType: str) -> Ticker:
+    def reqTickByTickData(self, contract: Contract, tickType: str,
+            numberOfTicks: int=0, ignoreSize: bool=False) -> Ticker:
         """
         Subscribe to tick-by-tick data and return the Ticker that
         holds the ticks in ticker.tickByTicks.
@@ -997,7 +999,11 @@ class IB:
         """
         reqId = self.client.getReqId()
         ticker = self.wrapper.startTicker(reqId, contract, tickType)
-        self.client.reqTickByTickData(reqId, contract, tickType)
+        if ibapi.__version__ == '9.73.6':
+            self.client.reqTickByTickData(reqId, contract, tickType)
+        else:
+            self.client.reqTickByTickData(reqId, contract, tickType,
+                    numberOfTicks, ignoreSize)
         return ticker
 
     def cancelTickByTickData(self, contract: Contract, tickType: str):

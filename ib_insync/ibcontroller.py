@@ -390,7 +390,8 @@ class Watchdog(Object):
             self.ib.setTimeout(self.appTimeout)
             self.startedEvent.emit(self)
         except:
-            self.flush()
+            self.controller.terminate()
+            self.scheduleRestart()
 
     def stop(self):
         self.stoppingEvent.emit(self)

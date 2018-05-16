@@ -4,6 +4,11 @@ Changelog
 0.9
 ---
 
+Version 0.9.21
+^^^^^^^^^^^^^^
+
+* updated ib.reqTickByTickData signature to ibapi v9.73.07 while keeping backward compatibility
+
 Version 0.9.20
 ^^^^^^^^^^^^^^
 
