@@ -442,6 +442,6 @@ if __name__ == '__main__':
     ibc = IBC(971, gateway=True, tradingMode='paper')
 #             userid='edemo', password='demouser')
     ib = IB()
-    app = Watchdog(ibc, ib, port=4002, appStartupTime=10, appTimeout=10)
+    app = Watchdog(ibc, ib, port=4002, appStartupTime=15, appTimeout=10)
     app.start()
     IB.run()

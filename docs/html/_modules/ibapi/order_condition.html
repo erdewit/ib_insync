@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ibapi.order_condition &#8212; IB-insync 0.9.21 documentation</title>
+    <title>ibapi.order_condition &#8212; IB-insync 0.9.22 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.9.21',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -29,8 +21,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -65,12 +56,14 @@
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -109,28 +102,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">isConjunctionConnection</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="OrderCondition.type"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OrderCondition.type">[docs]</a>    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">condType</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">condType</span>
+</div>
 <div class="viewcode-block" id="OrderCondition.And"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OrderCondition.And">[docs]</a>    <span class="k">def</span> <span class="nf">And</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isConjunctionConnection</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span>
+</div>
 <div class="viewcode-block" id="OrderCondition.Or"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OrderCondition.Or">[docs]</a>    <span class="k">def</span> <span class="nf">Or</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isConjunctionConnection</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span>
+</div>
 <div class="viewcode-block" id="OrderCondition.decode"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OrderCondition.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">):</span>
         <span class="n">connector</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">isConjunctionConnection</span> <span class="o">=</span> <span class="n">connector</span> <span class="o">==</span> <span class="s2">&quot;a&quot;</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">isConjunctionConnection</span> <span class="o">=</span> <span class="n">connector</span> <span class="o">==</span> <span class="s2">&quot;a&quot;</span>
+</div>
 <div class="viewcode-block" id="OrderCondition.make_fields"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OrderCondition.make_fields">[docs]</a>    <span class="k">def</span> <span class="nf">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">flds</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">flds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comm</span><span class="o">.</span><span class="n">make_field</span><span class="p">(</span><span class="s2">&quot;a&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isConjunctionConnection</span> <span class="k">else</span> <span class="s2">&quot;o&quot;</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">flds</span></div>
- 
+        <span class="k">return</span> <span class="n">flds</span>
+ </div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;&lt;AND&gt;&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isConjunctionConnection</span> <span class="k">else</span> <span class="s2">&quot;&lt;OR&gt;&quot;</span></div>
-
+        <span class="k">return</span> <span class="s2">&quot;&lt;AND&gt;&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isConjunctionConnection</span> <span class="k">else</span> <span class="s2">&quot;&lt;OR&gt;&quot;</span>
+</div>
 
 <div class="viewcode-block" id="ExecutionCondition"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ExecutionCondition">[docs]</a><span class="k">class</span> <span class="nc">ExecutionCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
 
@@ -144,19 +137,19 @@
         <span class="n">OrderCondition</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">secType</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exchange</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="ExecutionCondition.make_fields"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ExecutionCondition.make_fields">[docs]</a>    <span class="k">def</span> <span class="nf">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">flds</span> <span class="o">=</span> <span class="n">OrderCondition</span><span class="o">.</span><span class="n">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> \
             <span class="p">[</span><span class="n">comm</span><span class="o">.</span><span class="n">make_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">secType</span><span class="p">),</span>
             <span class="n">comm</span><span class="o">.</span><span class="n">make_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exchange</span><span class="p">),</span> 
             <span class="n">comm</span><span class="o">.</span><span class="n">make_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="n">flds</span></div>
- 
+        <span class="k">return</span> <span class="n">flds</span>
+ </div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;trade occurs for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span> <span class="o">+</span> <span class="s2">&quot; symbol on &quot;</span> <span class="o">+</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">exchange</span> <span class="o">+</span> <span class="s2">&quot; exchange for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">secType</span> <span class="o">+</span> <span class="s2">&quot; security type&quot;</span></div>
-        
+            <span class="bp">self</span><span class="o">.</span><span class="n">exchange</span> <span class="o">+</span> <span class="s2">&quot; exchange for &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">secType</span> <span class="o">+</span> <span class="s2">&quot; security type&quot;</span>
+        </div>
 
 <div class="viewcode-block" id="OperatorCondition"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OperatorCondition">[docs]</a><span class="k">class</span> <span class="nc">OperatorCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condType</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">isMore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -164,27 +157,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">isMore</span> <span class="o">=</span> <span class="n">isMore</span>
 
 <div class="viewcode-block" id="OperatorCondition.valueToString"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OperatorCondition.valueToString">[docs]</a>    <span class="k">def</span> <span class="nf">valueToString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;abstractmethod!&quot;</span><span class="p">)</span></div>
-
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;abstractmethod!&quot;</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="OperatorCondition.setValueFromString"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OperatorCondition.setValueFromString">[docs]</a>    <span class="k">def</span> <span class="nf">setValueFromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;abstractmethod!&quot;</span><span class="p">)</span></div>
-
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;abstractmethod!&quot;</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="OperatorCondition.decode"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OperatorCondition.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">):</span>
         <span class="n">OrderCondition</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isMore</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
         <span class="n">text</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setValueFromString</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">setValueFromString</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="OperatorCondition.make_fields"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OperatorCondition.make_fields">[docs]</a>    <span class="k">def</span> <span class="nf">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">flds</span> <span class="o">=</span> <span class="n">OrderCondition</span><span class="o">.</span><span class="n">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> \
             <span class="p">[</span><span class="n">comm</span><span class="o">.</span><span class="n">make_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isMore</span><span class="p">),</span>
              <span class="n">comm</span><span class="o">.</span><span class="n">make_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valueToString</span><span class="p">()),</span> <span class="p">]</span>
-        <span class="k">return</span> <span class="n">flds</span></div>
-
+        <span class="k">return</span> <span class="n">flds</span>
+</div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">sb</span> <span class="o">=</span> <span class="s2">&quot;&gt;= &quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isMore</span> <span class="k">else</span> <span class="s2">&quot;&lt;= &quot;</span>
-        <span class="k">return</span> <span class="s2">&quot; </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">valueToString</span><span class="p">())</span></div>
- 
+        <span class="k">return</span> <span class="s2">&quot; </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">valueToString</span><span class="p">())</span>
+ </div>
 
 <div class="viewcode-block" id="MarginCondition"><a class="viewcode-back" href="../../api.html#ib_insync.objects.MarginCondition">[docs]</a><span class="k">class</span> <span class="nc">MarginCondition</span><span class="p">(</span><span class="n">OperatorCondition</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isMore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">percent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -192,22 +185,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">percent</span> <span class="o">=</span> <span class="n">percent</span>
 
 <div class="viewcode-block" id="MarginCondition.decode"><a class="viewcode-back" href="../../api.html#ib_insync.objects.MarginCondition.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">):</span>
-        <span class="n">OperatorCondition</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span></div>
-
+        <span class="n">OperatorCondition</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="MarginCondition.make_fields"><a class="viewcode-back" href="../../api.html#ib_insync.objects.MarginCondition.make_fields">[docs]</a>    <span class="k">def</span> <span class="nf">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">flds</span> <span class="o">=</span> <span class="n">OperatorCondition</span><span class="o">.</span><span class="n">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">flds</span></div>
-
+        <span class="k">return</span> <span class="n">flds</span>
+</div>
 <div class="viewcode-block" id="MarginCondition.valueToString"><a class="viewcode-back" href="../../api.html#ib_insync.objects.MarginCondition.valueToString">[docs]</a>    <span class="k">def</span> <span class="nf">valueToString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">percent</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">percent</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="MarginCondition.setValueFromString"><a class="viewcode-back" href="../../api.html#ib_insync.objects.MarginCondition.setValueFromString">[docs]</a>    <span class="k">def</span> <span class="nf">setValueFromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">percent</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
- 
+        <span class="bp">self</span><span class="o">.</span><span class="n">percent</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+ </div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;the margin cushion percent </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span>
-            <span class="n">OperatorCondition</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
- 
+            <span class="n">OperatorCondition</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+ </div>
 
 <div class="viewcode-block" id="ContractCondition"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ContractCondition">[docs]</a><span class="k">class</span> <span class="nc">ContractCondition</span><span class="p">(</span><span class="n">OperatorCondition</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condType</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">isMore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -218,18 +211,18 @@
 <div class="viewcode-block" id="ContractCondition.decode"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ContractCondition.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">):</span>
         <span class="n">OperatorCondition</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conId</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exchange</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">exchange</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="ContractCondition.make_fields"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ContractCondition.make_fields">[docs]</a>    <span class="k">def</span> <span class="nf">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">flds</span> <span class="o">=</span> <span class="n">OperatorCondition</span><span class="o">.</span><span class="n">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> \
             <span class="p">[</span><span class="n">comm</span><span class="o">.</span><span class="n">make_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conId</span><span class="p">),</span>
              <span class="n">comm</span><span class="o">.</span><span class="n">make_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exchange</span><span class="p">),</span> <span class="p">]</span>
-        <span class="k">return</span> <span class="n">flds</span></div>
-
+        <span class="k">return</span> <span class="n">flds</span>
+</div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> on </span><span class="si">%s</span><span class="s2"> is </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conId</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exchange</span><span class="p">,</span> 
-            <span class="n">OperatorCondition</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
- 
+            <span class="n">OperatorCondition</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+ </div>
 
 <div class="viewcode-block" id="TimeCondition"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TimeCondition">[docs]</a><span class="k">class</span> <span class="nc">TimeCondition</span><span class="p">(</span><span class="n">OperatorCondition</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isMore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -237,21 +230,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
 
 <div class="viewcode-block" id="TimeCondition.decode"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TimeCondition.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">):</span>
-        <span class="n">OperatorCondition</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span></div>
-
+        <span class="n">OperatorCondition</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="TimeCondition.make_fields"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TimeCondition.make_fields">[docs]</a>    <span class="k">def</span> <span class="nf">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">flds</span> <span class="o">=</span> <span class="n">OperatorCondition</span><span class="o">.</span><span class="n">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">flds</span></div>
-
+        <span class="k">return</span> <span class="n">flds</span>
+</div>
 <div class="viewcode-block" id="TimeCondition.valueToString"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TimeCondition.valueToString">[docs]</a>    <span class="k">def</span> <span class="nf">valueToString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span>
+</div>
 <div class="viewcode-block" id="TimeCondition.setValueFromString"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TimeCondition.setValueFromString">[docs]</a>    <span class="k">def</span> <span class="nf">setValueFromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">text</span></div>
- 
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">text</span>
+ </div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;time is </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">OperatorCondition</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>  </div>
-
+        <span class="k">return</span> <span class="s2">&quot;time is </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">OperatorCondition</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>  
+</div>
                           
 <div class="viewcode-block" id="PriceCondition"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PriceCondition">[docs]</a><span class="k">class</span> <span class="nc">PriceCondition</span><span class="p">(</span><span class="n">ContractCondition</span><span class="p">):</span>
     <span class="n">TriggerMethodEnum</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span>
@@ -274,24 +267,24 @@
 
 <div class="viewcode-block" id="PriceCondition.decode"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PriceCondition.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">):</span>
         <span class="n">ContractCondition</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">triggerMethod</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">triggerMethod</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="PriceCondition.make_fields"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PriceCondition.make_fields">[docs]</a>    <span class="k">def</span> <span class="nf">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">flds</span> <span class="o">=</span> <span class="n">ContractCondition</span><span class="o">.</span><span class="n">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> \
             <span class="p">[</span><span class="n">comm</span><span class="o">.</span><span class="n">make_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">triggerMethod</span><span class="p">),</span> <span class="p">]</span>
-        <span class="k">return</span> <span class="n">flds</span></div>
-
+        <span class="k">return</span> <span class="n">flds</span>
+</div>
 <div class="viewcode-block" id="PriceCondition.valueToString"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PriceCondition.valueToString">[docs]</a>    <span class="k">def</span> <span class="nf">valueToString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">price</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">price</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="PriceCondition.setValueFromString"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PriceCondition.setValueFromString">[docs]</a>    <span class="k">def</span> <span class="nf">setValueFromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
- 
+        <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+ </div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> price of </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span>
             <span class="n">PriceCondition</span><span class="o">.</span><span class="n">TriggerMethodEnum</span><span class="o">.</span><span class="n">to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">triggerMethod</span><span class="p">),</span> 
-            <span class="n">ContractCondition</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
-
+            <span class="n">ContractCondition</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+</div>
 
 <div class="viewcode-block" id="PercentChangeCondition"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PercentChangeCondition">[docs]</a><span class="k">class</span> <span class="nc">PercentChangeCondition</span><span class="p">(</span><span class="n">ContractCondition</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">isMore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -301,22 +294,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">changePercent</span> <span class="o">=</span> <span class="n">changePercent</span>
 
 <div class="viewcode-block" id="PercentChangeCondition.decode"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PercentChangeCondition.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">):</span>
-        <span class="n">ContractCondition</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span></div>
-
+        <span class="n">ContractCondition</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="PercentChangeCondition.make_fields"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PercentChangeCondition.make_fields">[docs]</a>    <span class="k">def</span> <span class="nf">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">flds</span> <span class="o">=</span> <span class="n">ContractCondition</span><span class="o">.</span><span class="n">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">flds</span></div>
-
+        <span class="k">return</span> <span class="n">flds</span>
+</div>
 <div class="viewcode-block" id="PercentChangeCondition.valueToString"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PercentChangeCondition.valueToString">[docs]</a>    <span class="k">def</span> <span class="nf">valueToString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">changePercent</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">changePercent</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="PercentChangeCondition.setValueFromString"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PercentChangeCondition.setValueFromString">[docs]</a>    <span class="k">def</span> <span class="nf">setValueFromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">changePercent</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">changePercent</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;percent change of </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span>
-            <span class="n">ContractCondition</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
-  
+            <span class="n">ContractCondition</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+  </div>
 
 <div class="viewcode-block" id="VolumeCondition"><a class="viewcode-back" href="../../api.html#ib_insync.objects.VolumeCondition">[docs]</a><span class="k">class</span> <span class="nc">VolumeCondition</span><span class="p">(</span><span class="n">ContractCondition</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">isMore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -325,22 +318,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">volume</span>
 
 <div class="viewcode-block" id="VolumeCondition.decode"><a class="viewcode-back" href="../../api.html#ib_insync.objects.VolumeCondition.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">):</span>
-        <span class="n">ContractCondition</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span></div>
-
+        <span class="n">ContractCondition</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="VolumeCondition.make_fields"><a class="viewcode-back" href="../../api.html#ib_insync.objects.VolumeCondition.make_fields">[docs]</a>    <span class="k">def</span> <span class="nf">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">flds</span> <span class="o">=</span> <span class="n">ContractCondition</span><span class="o">.</span><span class="n">make_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">flds</span></div>
-
+        <span class="k">return</span> <span class="n">flds</span>
+</div>
 <div class="viewcode-block" id="VolumeCondition.valueToString"><a class="viewcode-back" href="../../api.html#ib_insync.objects.VolumeCondition.valueToString">[docs]</a>    <span class="k">def</span> <span class="nf">valueToString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="VolumeCondition.setValueFromString"><a class="viewcode-back" href="../../api.html#ib_insync.objects.VolumeCondition.setValueFromString">[docs]</a>    <span class="k">def</span> <span class="nf">setValueFromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;volume of </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span>
-            <span class="n">ContractCondition</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
- 
+            <span class="n">ContractCondition</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+ </div>
 
 <span class="k">def</span> <span class="nf">Create</span><span class="p">(</span><span class="n">condType</span><span class="p">):</span>
     <span class="n">cond</span> <span class="o">=</span> <span class="kc">None</span>
@@ -373,7 +366,7 @@
       &copy;2018, Ewald de Wit.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

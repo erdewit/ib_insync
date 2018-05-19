@@ -4,6 +4,10 @@ Changelog
 0.9
 ---
 
+Version 0.9.22
+^^^^^^^^^^^^^^
+* updated ib.reqNewsArticle and ib.reqHistoricalNews to ibapi v9.73.07
+
 Version 0.9.21
 ^^^^^^^^^^^^^^
 

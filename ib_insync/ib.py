@@ -1166,7 +1166,8 @@ class IB:
         return self.run(self.reqNewsProvidersAsync())
 
     @api
-    def reqNewsArticle(self, providerCode: str, articleId: str) -> NewsArticle:
+    def reqNewsArticle(self, providerCode: str, articleId: str,
+            newsArticleOptions: List[TagValue]=None) -> NewsArticle:
         """
         Get the body of a news article.
 
@@ -1174,7 +1175,8 @@ class IB:
 
         https://interactivebrokers.github.io/tws-api/news.html
         """
-        return self.run(self.reqNewsArticleAsync(providerCode, articleId))
+        return self.run(self.reqNewsArticleAsync(providerCode, articleId,
+                newsArticleOptions))
 
     @api
     def reqHistoricalNews(self, conId: int, providerCodes: str,
@@ -1238,7 +1240,7 @@ class IB:
                 self.reqPositionsAsync(),
                 self.reqExecutionsAsync())
         if clientId == 0:
-            # autobind orders
+            # autobind manual orders
             self.reqAutoOpenOrders(True)
         self._logger.info('Synchronization complete')
         self.wrapper.handleEvent('connectedEvent')
@@ -1463,20 +1465,21 @@ class IB:
         self.client.reqNewsProviders()
         return future
 
-    def reqNewsArticleAsync(self, providerCode, articleId):
+    def reqNewsArticleAsync(self, providerCode, articleId,
+            newsArticleOptions):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
-        self.client.reqNewsArticle(reqId, providerCode, articleId)
+        self.client.reqNewsArticle(reqId, providerCode, articleId,
+                newsArticleOptions)
         return future
 
     async def reqHistoricalNewsAsync(self, conId, providerCodes,
             startDateTime, endDateTime, totalResults,
-            _historicalNewsOptions=None):
+            historicalNewsOptions=None):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
-        # API does not take historicalNewsOptions parameter
         self.client.reqHistoricalNews(reqId, conId, providerCodes,
-            startDateTime, endDateTime, totalResults)
+            startDateTime, endDateTime, totalResults, historicalNewsOptions)
         try:
             await asyncio.wait_for(future, 4)
             return future.result()
