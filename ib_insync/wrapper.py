@@ -34,7 +34,7 @@ class Wrapper(EWrapper):
         self.acctSummary = {}  # (account, tag, currency) -> AccountValue
         self.portfolio = defaultdict(dict)  # account -> conId -> PortfolioItem
         self.positions = defaultdict(dict)  # account -> conId -> Position
-        self.trades = {}  # (client, orderId) or permidId -> Trade
+        self.trades = {}  # (client, orderId) or permId -> Trade
         self.fills = {}  # execId -> Fill
         self.newsTicks = []  # list of NewsTick
         self.newsBulletins = {}  # msgId -> NewsBulletin
@@ -427,7 +427,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def contractDetails(self, reqId, contractDetails):
         cd = ContractDetails(**contractDetails.__dict__)
-        cd.summary = Contract(**cd.summary.__dict__)
+        cd.contract = Contract(**cd.contract.__dict__)
         if cd.secIdList:
             cd.secIdList = [TagValue(s.tag, s.value) for s in cd.secIdList]
         self._results[reqId].append(cd)
@@ -682,10 +682,12 @@ class Wrapper(EWrapper):
                 price = float(price)
                 size = float(size)
                 if price and size:
-                    ticker.prevLast = ticker.last
-                    ticker.prevLastSize = ticker.lastSize
-                    ticker.last = price
-                    ticker.lastSize = size
+                    if ticker.prevLast != ticker.last:
+                        ticker.prevLast = ticker.last
+                        ticker.last = price
+                    if ticker.prevLastSize != ticker.lastSize:
+                        ticker.prevLastSize = ticker.lastSize
+                        ticker.lastSize = size
                     tick = TickData(self.lastTime, tickType, price, size)
                     ticker.ticks.append(tick)
                     self.pendingTickers.add(ticker)
@@ -786,8 +788,8 @@ class Wrapper(EWrapper):
     def scannerData(self, reqId, rank, contractDetails, distance,
             benchmark, projection, legsStr):
         cd = ContractDetails(**contractDetails.__dict__)
-        if cd.summary:
-            cd.summary = Contract(**cd.summary.__dict__)
+        if cd.contract:
+            cd.contract = Contract(**cd.contract.__dict__)
         data = ScanData(rank, cd, distance, benchmark, projection, legsStr)
         self._results[reqId].append(data)
 

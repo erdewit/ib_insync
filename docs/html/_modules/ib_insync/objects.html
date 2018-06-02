@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.objects &#8212; IB-insync 0.9.22 documentation</title>
+    <title>ib_insync.objects &#8212; IB-insync 0.9.23 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../_static/documentation_options.js"></script>
@@ -150,22 +150,22 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return values as a tuple.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Object.dict"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Object.dict">[docs]</a>    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return key-value pairs as a dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">defaults</span><span class="p">}</span>
-</div>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">defaults</span><span class="p">}</span></div>
+
 <div class="viewcode-block" id="Object.update"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Object.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update key values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
 <div class="viewcode-block" id="Object.diff"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Object.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return differences between self and other as dictionary of 2-tuples.</span>
@@ -176,8 +176,8 @@
             <span class="n">r</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">l</span> <span class="o">!=</span> <span class="n">r</span><span class="p">:</span>
                 <span class="n">diff</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">diff</span>
-</div>
+        <span class="k">return</span> <span class="n">diff</span></div>
+
 <div class="viewcode-block" id="Object.nonDefaults"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Object.nonDefaults">[docs]</a>    <span class="k">def</span> <span class="nf">nonDefaults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a dictionary of all attributes that differ from the default.</span>
@@ -187,8 +187,8 @@
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="n">d</span> <span class="ow">and</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">v</span> <span class="ow">or</span> <span class="n">d</span> <span class="o">==</span> <span class="n">d</span><span class="p">):</span>  <span class="c1"># tests for NaN too</span>
                 <span class="n">nonDefaults</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="k">return</span> <span class="n">nonDefaults</span>
-</div></div>
+        <span class="k">return</span> <span class="n">nonDefaults</span></div></div>
+
 
 <span class="k">class</span> <span class="nc">DynamicObject</span><span class="p">:</span>
 
@@ -203,106 +203,108 @@
 
 <div class="viewcode-block" id="ContractDetails"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ContractDetails">[docs]</a><span class="k">class</span> <span class="nc">ContractDetails</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">ContractDetails</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">defaults</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;contract&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">defaults</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> \
             <span class="p">[</span><span class="s1">&#39;secIdListCount&#39;</span><span class="p">]</span>  <span class="c1"># bug in ibapi decoder</span>
 
-    <span class="c1"># summary is renamed to contract in ibapi v9.73.07</span>
+    <span class="c1"># backwards compatibility with ibapi v9.73.06</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">contract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span>
+    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">contract</span>
 
-    <span class="nd">@contract</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">contract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="n">c</span>
-</div>
+    <span class="nd">@summary</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contract</span> <span class="o">=</span> <span class="n">c</span></div>
+
 
 <div class="viewcode-block" id="ContractDescription"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ContractDescription">[docs]</a><span class="k">class</span> <span class="nc">ContractDescription</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">ContractDescription</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
     <span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;contract&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="ComboLeg"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ComboLeg">[docs]</a><span class="k">class</span> <span class="nc">ComboLeg</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">ComboLeg</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="UnderComp"><a class="viewcode-back" href="../../api.html#ib_insync.objects.UnderComp">[docs]</a><span class="k">class</span> <span class="nc">UnderComp</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DeltaNeutralContract"><a class="viewcode-back" href="../../api.html#ib_insync.objects.DeltaNeutralContract">[docs]</a><span class="k">class</span> <span class="nc">DeltaNeutralContract</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
        <span class="n">conId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
        <span class="n">delta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
        <span class="n">price</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-<span class="c1"># UnderComp is renamed to DeltaNeutralContract in ibapi v9.73.07</span></div>
-<span class="n">DeltaNeutralContract</span> <span class="o">=</span> <span class="n">UnderComp</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+
+<span class="c1"># backwards compatibility with ibapi v9.73.06</span>
+<span class="n">UnderComp</span> <span class="o">=</span> <span class="n">DeltaNeutralContract</span>
 
 
 <div class="viewcode-block" id="OrderComboLeg"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OrderComboLeg">[docs]</a><span class="k">class</span> <span class="nc">OrderComboLeg</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">OrderComboLeg</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="OrderState"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OrderState">[docs]</a><span class="k">class</span> <span class="nc">OrderState</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">order_state</span><span class="o">.</span><span class="n">OrderState</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="ScannerSubscription"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ScannerSubscription">[docs]</a><span class="k">class</span> <span class="nc">ScannerSubscription</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">scanner</span><span class="o">.</span><span class="n">ScannerSubscription</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="SoftDollarTier"><a class="viewcode-back" href="../../api.html#ib_insync.objects.SoftDollarTier">[docs]</a><span class="k">class</span> <span class="nc">SoftDollarTier</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">softdollartier</span><span class="o">.</span><span class="n">SoftDollarTier</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="Execution"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Execution">[docs]</a><span class="k">class</span> <span class="nc">Execution</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">Execution</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="CommissionReport"><a class="viewcode-back" href="../../api.html#ib_insync.objects.CommissionReport">[docs]</a><span class="k">class</span> <span class="nc">CommissionReport</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">commission_report</span><span class="o">.</span><span class="n">CommissionReport</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="ExecutionFilter"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ExecutionFilter">[docs]</a><span class="k">class</span> <span class="nc">ExecutionFilter</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">ExecutionFilter</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="BarData"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarData">[docs]</a><span class="k">class</span> <span class="nc">BarData</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">BarData</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="RealTimeBar"><a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBar">[docs]</a><span class="k">class</span> <span class="nc">RealTimeBar</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">RealTimeBar</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="TickAttrib"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TickAttrib">[docs]</a><span class="k">class</span> <span class="nc">TickAttrib</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">TickAttrib</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="HistogramData"><a class="viewcode-back" href="../../api.html#ib_insync.objects.HistogramData">[docs]</a><span class="k">class</span> <span class="nc">HistogramData</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">HistogramData</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="NewsProvider"><a class="viewcode-back" href="../../api.html#ib_insync.objects.NewsProvider">[docs]</a><span class="k">class</span> <span class="nc">NewsProvider</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">NewsProvider</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="DepthMktDataDescription"><a class="viewcode-back" href="../../api.html#ib_insync.objects.DepthMktDataDescription">[docs]</a><span class="k">class</span> <span class="nc">DepthMktDataDescription</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">DepthMktDataDescription</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="PnL"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PnL">[docs]</a><span class="k">class</span> <span class="nc">PnL</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
@@ -311,8 +313,8 @@
         <span class="n">dailyPnL</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
         <span class="n">unrealizedPnL</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
         <span class="n">realizedPnL</span><span class="o">=</span><span class="n">nan</span><span class="p">)</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="PnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PnLSingle">[docs]</a><span class="k">class</span> <span class="nc">PnLSingle</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
@@ -324,8 +326,8 @@
         <span class="n">realizedPnL</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
         <span class="n">position</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">value</span><span class="o">=</span><span class="n">nan</span><span class="p">)</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="BarList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarList">[docs]</a><span class="k">class</span> <span class="nc">BarList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -344,19 +346,19 @@
         <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>
 
     <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="BarDataList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarDataList">[docs]</a><span class="k">class</span> <span class="nc">BarDataList</span><span class="p">(</span><span class="n">BarList</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;reqId&#39;</span><span class="p">,</span> <span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;endDateTime&#39;</span><span class="p">,</span> <span class="s1">&#39;durationStr&#39;</span><span class="p">,</span>
             <span class="s1">&#39;barSizeSetting&#39;</span><span class="p">,</span> <span class="s1">&#39;whatToShow&#39;</span><span class="p">,</span> <span class="s1">&#39;useRTH&#39;</span><span class="p">,</span> <span class="s1">&#39;formatDate&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;keepUpToDate&#39;</span><span class="p">,</span> <span class="s1">&#39;chartOptions&#39;</span><span class="p">)</span>
-</div>
+            <span class="s1">&#39;keepUpToDate&#39;</span><span class="p">,</span> <span class="s1">&#39;chartOptions&#39;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="RealTimeBarList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBarList">[docs]</a><span class="k">class</span> <span class="nc">RealTimeBarList</span><span class="p">(</span><span class="n">BarList</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;reqId&#39;</span><span class="p">,</span> <span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;barSize&#39;</span><span class="p">,</span> <span class="s1">&#39;whatToShow&#39;</span><span class="p">,</span> <span class="s1">&#39;useRTH&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;realTimeBarsOptions&#39;</span><span class="p">)</span>
-</div>
+            <span class="s1">&#39;realTimeBarsOptions&#39;</span><span class="p">)</span></div>
+
 
 <span class="n">AccountValue</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;AccountValue&#39;</span><span class="p">,</span>
     <span class="s1">&#39;account tag value currency modelCode&#39;</span><span class="p">)</span>

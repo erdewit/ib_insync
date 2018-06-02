@@ -282,10 +282,11 @@ def startLoop():
     Use asyncio event loop for Jupyter notebooks.
     """
     patchAsyncio()
-    from ipykernel.eventloops import register_integration, enable_gui
-
-    register_integration('asyncio')(_ipython_loop_asyncio)
-    enable_gui('asyncio')
+    loop = asyncio.get_event_loop()
+    if not loop.is_running():
+        from ipykernel.eventloops import register_integration, enable_gui
+        register_integration('asyncio')(_ipython_loop_asyncio)
+        enable_gui('asyncio')
 
 
 def _ipython_loop_asyncio(kernel):

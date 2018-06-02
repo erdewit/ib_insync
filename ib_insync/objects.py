@@ -128,19 +128,19 @@ class DynamicObject:
 
 class ContractDetails(Object):
     defaults = ibapi.contract.ContractDetails().__dict__
-    defaults['summary'] = None
-    defaults.pop('contract', None)
+    defaults['contract'] = None
+    defaults.pop('summary', None)
     __slots__ = list(defaults.keys()) + \
             ['secIdListCount']  # bug in ibapi decoder
 
-    # summary is renamed to contract in ibapi v9.73.07
+    # backwards compatibility with ibapi v9.73.06
     @property
-    def contract(self):
-        return self.summary
+    def summary(self):
+        return self.contract
 
-    @contract.setter
-    def contract(self, c):
-        self.summary = c
+    @summary.setter
+    def summary(self, c):
+        self.contract = c
 
 
 class ContractDescription(Object):
@@ -154,14 +154,16 @@ class ComboLeg(Object):
     __slots__ = defaults.keys()
 
 
-class UnderComp(Object):
+class DeltaNeutralContract(Object):
     defaults = dict(
        conId=0,
        delta=0.0,
        price=0.0)
     __slots__ = defaults.keys()
-# UnderComp is renamed to DeltaNeutralContract in ibapi v9.73.07
-DeltaNeutralContract = UnderComp
+
+
+# backwards compatibility with ibapi v9.73.06
+UnderComp = DeltaNeutralContract
 
 
 class OrderComboLeg(Object):

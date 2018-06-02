@@ -236,6 +236,8 @@ class IB:
         """
         loop = asyncio.get_event_loop()
         if not awaitables:
+            if loop.is_running():
+                return
             result = loop.run_forever()
             f = asyncio.gather(*asyncio.Task.all_tasks())
             f.cancel()
@@ -616,8 +618,6 @@ class IB:
         orderId = order.orderId or self.client.getReqId()
         self.client.placeOrder(orderId, contract, order)
         now = datetime.datetime.now(datetime.timezone.utc)
-        if not isinstance(order, Order):
-            order = Order(**order.__dict__)
         key = self.wrapper.orderKey(
                 self.wrapper.clientId, orderId, order.permId)
         trade = self.wrapper.trades.get(key)
@@ -837,7 +837,7 @@ class IB:
         If the list has multiple values then the contract is ambiguous.
     
         The fully qualified contract is available in the the
-        ContractDetails.summary attribute.
+        ContractDetails.contract attribute.
         
         This method is blocking.
 
@@ -1253,11 +1253,11 @@ class IB:
             if not detailsList:
                 self._logger.error(f'Unknown contract: {contract}')
             elif len(detailsList) > 1:
-                possibles = [details.summary for details in detailsList]
+                possibles = [details.contract for details in detailsList]
                 self._logger.error(f'Ambiguous contract: {contract}, '
                         f'possibles are {possibles}')
             else:
-                c = detailsList[0].summary
+                c = detailsList[0].contract
                 expiry = c.lastTradeDateOrContractMonth
                 if expiry:
                     # remove time and timezone part as it will cause problems
@@ -1520,7 +1520,7 @@ if __name__ == '__main__':
         print(cds)
         cd = cds[0]
         print(cd)
-        conId = cd.summary.conId
+        conId = cd.contract.conId
         ib.qualifyContracts(aex, eurusd, intc)
         print(aex, eurusd, intc)
         print(ib.reqContractDetails(wrongContract))

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.wrapper &#8212; IB-insync 0.9.22 documentation</title>
+    <title>ib_insync.wrapper &#8212; IB-insync 0.9.23 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../_static/documentation_options.js"></script>
@@ -109,7 +109,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">acctSummary</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># (account, tag, currency) -&gt; AccountValue</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">portfolio</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>  <span class="c1"># account -&gt; conId -&gt; PortfolioItem</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>  <span class="c1"># account -&gt; conId -&gt; Position</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">trades</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># (client, orderId) or permidId -&gt; Trade</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trades</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># (client, orderId) or permId -&gt; Trade</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fills</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># execId -&gt; Fill</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">newsTicks</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list of NewsTick</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">newsBulletins</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># msgId -&gt; NewsBulletin</span>
@@ -502,7 +502,7 @@
 <div class="viewcode-block" id="Wrapper.contractDetails"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.contractDetails">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">contractDetails</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contractDetails</span><span class="p">):</span>
         <span class="n">cd</span> <span class="o">=</span> <span class="n">ContractDetails</span><span class="p">(</span><span class="o">**</span><span class="n">contractDetails</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
-        <span class="n">cd</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="n">Contract</span><span class="p">(</span><span class="o">**</span><span class="n">cd</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="n">cd</span><span class="o">.</span><span class="n">contract</span> <span class="o">=</span> <span class="n">Contract</span><span class="p">(</span><span class="o">**</span><span class="n">cd</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cd</span><span class="o">.</span><span class="n">secIdList</span><span class="p">:</span>
             <span class="n">cd</span><span class="o">.</span><span class="n">secIdList</span> <span class="o">=</span> <span class="p">[</span><span class="n">TagValue</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">cd</span><span class="o">.</span><span class="n">secIdList</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cd</span><span class="p">)</span></div>
@@ -757,10 +757,12 @@
                 <span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">price</span><span class="p">)</span>
                 <span class="n">size</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">price</span> <span class="ow">and</span> <span class="n">size</span><span class="p">:</span>
-                    <span class="n">ticker</span><span class="o">.</span><span class="n">prevLast</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">last</span>
-                    <span class="n">ticker</span><span class="o">.</span><span class="n">prevLastSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span>
-                    <span class="n">ticker</span><span class="o">.</span><span class="n">last</span> <span class="o">=</span> <span class="n">price</span>
-                    <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span> <span class="o">=</span> <span class="n">size</span>
+                    <span class="k">if</span> <span class="n">ticker</span><span class="o">.</span><span class="n">prevLast</span> <span class="o">!=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">last</span><span class="p">:</span>
+                        <span class="n">ticker</span><span class="o">.</span><span class="n">prevLast</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">last</span>
+                        <span class="n">ticker</span><span class="o">.</span><span class="n">last</span> <span class="o">=</span> <span class="n">price</span>
+                    <span class="k">if</span> <span class="n">ticker</span><span class="o">.</span><span class="n">prevLastSize</span> <span class="o">!=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span><span class="p">:</span>
+                        <span class="n">ticker</span><span class="o">.</span><span class="n">prevLastSize</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span>
+                        <span class="n">ticker</span><span class="o">.</span><span class="n">lastSize</span> <span class="o">=</span> <span class="n">size</span>
                     <span class="n">tick</span> <span class="o">=</span> <span class="n">TickData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
                     <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
@@ -861,8 +863,8 @@
     <span class="k">def</span> <span class="nf">scannerData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">contractDetails</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span>
             <span class="n">benchmark</span><span class="p">,</span> <span class="n">projection</span><span class="p">,</span> <span class="n">legsStr</span><span class="p">):</span>
         <span class="n">cd</span> <span class="o">=</span> <span class="n">ContractDetails</span><span class="p">(</span><span class="o">**</span><span class="n">contractDetails</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">cd</span><span class="o">.</span><span class="n">summary</span><span class="p">:</span>
-            <span class="n">cd</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="n">Contract</span><span class="p">(</span><span class="o">**</span><span class="n">cd</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cd</span><span class="o">.</span><span class="n">contract</span><span class="p">:</span>
+            <span class="n">cd</span><span class="o">.</span><span class="n">contract</span> <span class="o">=</span> <span class="n">Contract</span><span class="p">(</span><span class="o">**</span><span class="n">cd</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">ScanData</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">cd</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">benchmark</span><span class="p">,</span> <span class="n">projection</span><span class="p">,</span> <span class="n">legsStr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 

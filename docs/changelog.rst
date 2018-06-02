@@ -1,8 +1,11 @@
 Changelog
 =========
 
-0.9
----
+
+
+Version 0.9.23
+^^^^^^^^^^^^^^
+* Compatability with Tornado 5 as used in new Jupyter notebook server  
 
 Version 0.9.22
 ^^^^^^^^^^^^^^
