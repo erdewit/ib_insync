@@ -616,6 +616,8 @@ class Wrapper(EWrapper):
             ticker.callVolume = size
         elif tickType == 30:
             ticker.putVolume = size
+        elif tickType == 86:
+            ticker.futuresOpenInterest = size
         if price or size:
             tick = TickData(self.lastTime, tickType, price, size)
             ticker.ticks.append(tick)
