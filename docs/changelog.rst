@@ -1,7 +1,10 @@
 Changelog
 =========
 
-
+Version 0.9.24
+^^^^^^^^^^^^^^
+``ticker.futuresOpenInterest`` added
+``execution.time`` was string, is now parsed to UTC datetime
 
 Version 0.9.23
 ^^^^^^^^^^^^^^

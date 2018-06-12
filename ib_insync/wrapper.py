@@ -377,8 +377,11 @@ class Wrapper(EWrapper):
             contract = Contract(**contract.__dict__)
         execId = execution.execId
         execution = Execution(**execution.__dict__)
-        fill = Fill(contract, execution, CommissionReport(), self.lastTime)
+        execution.time = util.parseIBDatetime(execution.time). \
+                astimezone(datetime.timezone.utc)
         isLive = reqId not in self._futures
+        time = self.lastTime if isLive else execution.time
+        fill = Fill(contract, execution, CommissionReport(), time)
         if execId not in self.fills:
             # first time we see this execution so add it
             self.fills[execId] = fill
@@ -403,6 +406,8 @@ class Wrapper(EWrapper):
     def commissionReport(self, commissionReport):
         if commissionReport.yield_ == UNSET_DOUBLE:
             commissionReport.yield_ = 0.0
+        if commissionReport.realizedPNL == UNSET_DOUBLE:
+            commissionReport.realizedPNL = 0.0
         fill = self.fills.get(commissionReport.execId)
         if fill:
             report = fill.commissionReport.update(
