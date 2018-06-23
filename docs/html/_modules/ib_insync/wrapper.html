@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.wrapper &#8212; IB-insync 0.9.23 documentation</title>
+    <title>ib_insync.wrapper &#8212; IB-insync 0.9.24 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../_static/documentation_options.js"></script>
@@ -359,9 +359,10 @@
     <span class="k">def</span> <span class="nf">openOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">orderState</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This wrapper is called to:</span>
+<span class="sd">        </span>
 <span class="sd">        * feed in open orders at startup;</span>
 <span class="sd">        * feed in open orders or order updates from other clients and TWS</span>
-<span class="sd">        if clientId=master id;</span>
+<span class="sd">          if clientId=master id;</span>
 <span class="sd">        * feed in manual orders and order updates from TWS if clientId=0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">whatIf</span><span class="p">:</span>
@@ -452,8 +453,11 @@
             <span class="n">contract</span> <span class="o">=</span> <span class="n">Contract</span><span class="p">(</span><span class="o">**</span><span class="n">contract</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="n">execId</span> <span class="o">=</span> <span class="n">execution</span><span class="o">.</span><span class="n">execId</span>
         <span class="n">execution</span> <span class="o">=</span> <span class="n">Execution</span><span class="p">(</span><span class="o">**</span><span class="n">execution</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
-        <span class="n">fill</span> <span class="o">=</span> <span class="n">Fill</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="n">execution</span><span class="p">,</span> <span class="n">CommissionReport</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">)</span>
+        <span class="n">execution</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">parseIBDatetime</span><span class="p">(</span><span class="n">execution</span><span class="o">.</span><span class="n">time</span><span class="p">)</span><span class="o">.</span> \
+                <span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
         <span class="n">isLive</span> <span class="o">=</span> <span class="n">reqId</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_futures</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span> <span class="k">if</span> <span class="n">isLive</span> <span class="k">else</span> <span class="n">execution</span><span class="o">.</span><span class="n">time</span>
+        <span class="n">fill</span> <span class="o">=</span> <span class="n">Fill</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="n">execution</span><span class="p">,</span> <span class="n">CommissionReport</span><span class="p">(),</span> <span class="n">time</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">execId</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fills</span><span class="p">:</span>
             <span class="c1"># first time we see this execution so add it</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fills</span><span class="p">[</span><span class="n">execId</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill</span>
@@ -478,6 +482,8 @@
     <span class="k">def</span> <span class="nf">commissionReport</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commissionReport</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">commissionReport</span><span class="o">.</span><span class="n">yield_</span> <span class="o">==</span> <span class="n">UNSET_DOUBLE</span><span class="p">:</span>
             <span class="n">commissionReport</span><span class="o">.</span><span class="n">yield_</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="n">commissionReport</span><span class="o">.</span><span class="n">realizedPNL</span> <span class="o">==</span> <span class="n">UNSET_DOUBLE</span><span class="p">:</span>
+            <span class="n">commissionReport</span><span class="o">.</span><span class="n">realizedPNL</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="n">fill</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fills</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">commissionReport</span><span class="o">.</span><span class="n">execId</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">fill</span><span class="p">:</span>
             <span class="n">report</span> <span class="o">=</span> <span class="n">fill</span><span class="o">.</span><span class="n">commissionReport</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
@@ -520,6 +526,12 @@
         <span class="k">for</span> <span class="n">cd</span> <span class="ow">in</span> <span class="n">cds</span><span class="p">:</span>
             <span class="n">cd</span><span class="o">.</span><span class="n">contract</span> <span class="o">=</span> <span class="n">Contract</span><span class="p">(</span><span class="o">**</span><span class="n">cd</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">cds</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Wrapper.marketRule"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.marketRule">[docs]</a>    <span class="nd">@iswrapper</span>
+    <span class="k">def</span> <span class="nf">marketRule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marketRuleId</span><span class="p">,</span> <span class="n">priceIncrements</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">PriceIncrement</span><span class="p">(</span><span class="n">pi</span><span class="o">.</span><span class="n">lowEdge</span><span class="p">,</span> <span class="n">pi</span><span class="o">.</span><span class="n">increment</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="n">priceIncrements</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;marketRule-</span><span class="si">{marketRuleId}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wrapper.realtimeBar"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.realtimeBar">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">realtimeBar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">open_</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">close</span><span class="p">,</span> <span class="n">volume</span><span class="p">,</span>
@@ -691,6 +703,8 @@
             <span class="n">ticker</span><span class="o">.</span><span class="n">callVolume</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">putVolume</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">86</span><span class="p">:</span>
+            <span class="n">ticker</span><span class="o">.</span><span class="n">futuresOpenInterest</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">if</span> <span class="n">price</span> <span class="ow">or</span> <span class="n">size</span><span class="p">:</span>
             <span class="n">tick</span> <span class="o">=</span> <span class="n">TickData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
