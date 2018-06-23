@@ -19,7 +19,7 @@ from ib_insync.event import Event
 __all__ = (
     'Object ContractDetails ContractDescription '
     'ComboLeg UnderComp DeltaNeutralContract OrderComboLeg OrderState '
-    'ScannerSubscription SoftDollarTier '
+    'ScannerSubscription SoftDollarTier PriceIncrement '
     'Execution CommissionReport ExecutionFilter '
     'BarList BarDataList RealTimeBarList BarData RealTimeBar '
     'HistogramData TickAttrib NewsProvider DepthMktDataDescription '
@@ -321,6 +321,9 @@ BracketOrder = namedtuple('BracketOrder',
 TradeLogEntry = namedtuple('TradeLogEntry',
     'time status message')
 
+PriceIncrement = namedtuple('PriceIncrement',
+    'lowEdge increment')
+    
 ScanData = namedtuple('ScanData',
     'rank contractDetails distance benchmark projection legsStr')
 

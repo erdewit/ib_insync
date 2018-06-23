@@ -857,6 +857,15 @@ class IB:
         """
         return self.run(self.reqMatchingSymbolsAsync(pattern))
 
+    def reqMarketRule(self, marketRuleId: int):
+        """
+        Request list of price increments corresponding to given market rule
+        (the market rule id is given by :py:meth:`.reqContractDetails`).
+        
+        https://interactivebrokers.github.io/tws-api/minimum_increment.html
+        """
+        return self.run(self.reqMarketRuleAsync(marketRuleId))
+
     @api
     def reqRealTimeBars(self, contract, barSize, whatToShow,
             useRTH, realTimeBarsOptions=None) -> RealTimeBarList:
@@ -1343,6 +1352,11 @@ class IB:
             return future.result()
         except asyncio.TimeoutError:
             self._logger.error('reqMatchingSymbolsAsync: Timeout')
+
+    def reqMarketRuleAsync(self, marketRuleId):
+        future = self.wrapper.startReq(f'marketRule-{marketRuleId}')
+        self.client.reqMarketRule(marketRuleId)
+        return future
 
     def reqHistoricalDataAsync(self, contract, endDateTime,
             durationStr, barSizeSetting, whatToShow, useRTH,

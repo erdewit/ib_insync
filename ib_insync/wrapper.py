@@ -452,6 +452,12 @@ class Wrapper(EWrapper):
         self._endReq(reqId, cds)
 
     @iswrapper
+    def marketRule(self, marketRuleId, priceIncrements):
+        result = [PriceIncrement(pi.lowEdge, pi.increment)
+                for pi in priceIncrements]
+        self._endReq(f'marketRule-{marketRuleId}', result)
+
+    @iswrapper
     def realtimeBar(self, reqId, time, open_, high, low, close, volume,
             wap, count):
         dt = datetime.datetime.fromtimestamp(time, datetime.timezone.utc)

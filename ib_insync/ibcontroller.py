@@ -70,7 +70,7 @@ class IBC(Object):
     * ``fixuserid``: FIX account user id (gateway only).
     * ``fixpassword``: FIX account password (gateway only).
     
-    To use IBC on Windows, the the proactor (or quamash) event loop
+    To use IBC on Windows, the proactor (or quamash) event loop
     must have been set:
     
     .. code-block:: python

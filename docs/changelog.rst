@@ -5,6 +5,7 @@ Version 0.9.24
 ^^^^^^^^^^^^^^
 ``ticker.futuresOpenInterest`` added
 ``execution.time`` was string, is now parsed to UTC datetime
+``ib.reqMarketRule`` request added
 
 Version 0.9.23
 ^^^^^^^^^^^^^^
