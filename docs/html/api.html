@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.9.24 documentation</title>
+    <title>API docs &#8212; IB-insync 0.9.25 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -91,7 +91,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.24.</p>
+<p>Release 0.9.25.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -242,7 +242,7 @@ This will clear all session state.</p>
 
 <dl class="staticmethod">
 <dt id="ib_insync.ib.IB.run">
-<em class="property">static </em><code class="descname">run</code><span class="sig-paren">(</span><em>*awaitables</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.run" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">run</code><span class="sig-paren">(</span><em>*awaitables</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.ib.IB.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>By default run the event loop forever.</p>
 <p>When awaitables (like Tasks, Futures or coroutines) are given then
 run the event loop until each has completed and return their results.</p>
@@ -250,21 +250,21 @@ run the event loop until each has completed and return their results.</p>
 
 <dl class="staticmethod">
 <dt id="ib_insync.ib.IB.schedule">
-<em class="property">static </em><code class="descname">schedule</code><span class="sig-paren">(</span><em>time</em>, <em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.schedule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.schedule" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">schedule</code><span class="sig-paren">(</span><em>time</em>, <em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.ib.IB.schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Schedule the callback to be run at the given time with
 the given arguments.</p>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="ib_insync.ib.IB.sleep">
-<em class="property">static </em><code class="descname">sleep</code><span class="sig-paren">(</span><em>secs: float = 0.02</em><span class="sig-paren">)</span> &#x2192; True<a class="reference internal" href="_modules/ib_insync/ib.html#IB.sleep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.sleep" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">sleep</code><span class="sig-paren">(</span><em>secs: float = 0.02</em><span class="sig-paren">)</span> &#x2192; True<a class="headerlink" href="#ib_insync.ib.IB.sleep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait for the given amount of seconds while everything still keeps
 processing in the background. Never use time.sleep().</p>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="ib_insync.ib.IB.timeRange">
-<em class="property">static </em><code class="descname">timeRange</code><span class="sig-paren">(</span><em>start: datetime.time</em>, <em>end: datetime.time</em>, <em>step: float</em><span class="sig-paren">)</span> &#x2192; Iterator[datetime.datetime]<a class="reference internal" href="_modules/ib_insync/ib.html#IB.timeRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.timeRange" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">timeRange</code><span class="sig-paren">(</span><em>start: datetime.time</em>, <em>end: datetime.time</em>, <em>step: float</em><span class="sig-paren">)</span> &#x2192; Iterator[datetime.datetime]<a class="headerlink" href="#ib_insync.ib.IB.timeRange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterator that waits periodically until certain time points are
 reached while yielding those time points.</p>
 <p>The startTime and dateTime parameters can be specified as
@@ -275,7 +275,7 @@ is used as the date.</p>
 
 <dl class="staticmethod">
 <dt id="ib_insync.ib.IB.waitUntil">
-<em class="property">static </em><code class="descname">waitUntil</code><span class="sig-paren">(</span><em>t: datetime.time</em><span class="sig-paren">)</span> &#x2192; True<a class="reference internal" href="_modules/ib_insync/ib.html#IB.waitUntil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.waitUntil" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">waitUntil</code><span class="sig-paren">(</span><em>t: datetime.time</em><span class="sig-paren">)</span> &#x2192; True<a class="headerlink" href="#ib_insync.ib.IB.waitUntil" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait until the given time t is reached.</p>
 <p>The time can be specified as datetime.datetime,
 or as datetime.time in which case today is used as the date.</p>
@@ -283,7 +283,7 @@ or as datetime.time in which case today is used as the date.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.waitOnUpdate">
-<code class="descname">waitOnUpdate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; True<a class="reference internal" href="_modules/ib_insync/ib.html#IB.waitOnUpdate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.waitOnUpdate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">waitOnUpdate</code><span class="sig-paren">(</span><em>timeout: float = 0</em><span class="sig-paren">)</span> &#x2192; True<a class="reference internal" href="_modules/ib_insync/ib.html#IB.waitOnUpdate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.waitOnUpdate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait on any new update to arrive from the network.</p>
 </dd></dl>
 
@@ -1166,12 +1166,12 @@ one batch instead of item by item.</li>
 
 <dl class="attribute">
 <dt id="ib_insync.client.Client.MaxRequests">
-<code class="descname">MaxRequests</code><em class="property"> = 250</em><a class="headerlink" href="#ib_insync.client.Client.MaxRequests" title="Permalink to this definition">¶</a></dt>
+<code class="descname">MaxRequests</code><em class="property"> = 100</em><a class="headerlink" href="#ib_insync.client.Client.MaxRequests" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.client.Client.RequestsInterval">
-<code class="descname">RequestsInterval</code><em class="property"> = 5</em><a class="headerlink" href="#ib_insync.client.Client.RequestsInterval" title="Permalink to this definition">¶</a></dt>
+<code class="descname">RequestsInterval</code><em class="property"> = 2</em><a class="headerlink" href="#ib_insync.client.Client.RequestsInterval" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1405,12 +1405,12 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'ApiCancelled', 'Filled', 'Inactive', 'Cancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'Cancelled', 'Inactive', 'Filled', 'ApiCancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'ApiPending', 'PreSubmitted', 'PendingSubmit', 'Submitted'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'Submitted', 'ApiPending', 'PreSubmitted', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1482,7 +1482,7 @@ and as keyword, the keyword wins.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/available_orders.html">https://interactivebrokers.github.io/tws-api/available_orders.html</a></p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 140342863152744: =,, 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 140200326393080: =,, 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -5632,10 +5632,9 @@ communication or when TWS wants to send a message to the client.</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="ib_insync.wrapper.Wrapper.clearPendingTickers">
-<code class="descname">clearPendingTickers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.clearPendingTickers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.clearPendingTickers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear pending tickers and their ticks</p>
-</dd></dl>
+<dt id="ib_insync.wrapper.Wrapper.waitOnUpdate">
+<code class="descname">waitOnUpdate</code><span class="sig-paren">(</span><em>timeout=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#Wrapper.waitOnUpdate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.Wrapper.waitOnUpdate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -5708,6 +5707,47 @@ a DataFrame or as a list of bar objects.</p>
 <dt id="ib_insync.util.timeit">
 <em class="property">class </em><code class="descclassname">ib_insync.util.</code><code class="descname">timeit</code><span class="sig-paren">(</span><em>title='Run'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#timeit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.timeit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Context manager for timing.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.run">
+<code class="descclassname">ib_insync.util.</code><code class="descname">run</code><span class="sig-paren">(</span><em>*awaitables</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default run the event loop forever.</p>
+<p>When awaitables (like Tasks, Futures or coroutines) are given then
+run the event loop until each has completed and return their results.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.schedule">
+<code class="descclassname">ib_insync.util.</code><code class="descname">schedule</code><span class="sig-paren">(</span><em>time</em>, <em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#schedule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.schedule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schedule the callback to be run at the given time with
+the given arguments.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.sleep">
+<code class="descclassname">ib_insync.util.</code><code class="descname">sleep</code><span class="sig-paren">(</span><em>secs: float = 0.02</em><span class="sig-paren">)</span> &#x2192; True<a class="reference internal" href="_modules/ib_insync/util.html#sleep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.sleep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for the given amount of seconds while everything still keeps
+processing in the background. Never use time.sleep().</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.timeRange">
+<code class="descclassname">ib_insync.util.</code><code class="descname">timeRange</code><span class="sig-paren">(</span><em>start: datetime.time</em>, <em>end: datetime.time</em>, <em>step: float</em><span class="sig-paren">)</span> &#x2192; Iterator[datetime.datetime]<a class="reference internal" href="_modules/ib_insync/util.html#timeRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.timeRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator that waits periodically until certain time points are
+reached while yielding those time points.</p>
+<p>The startTime and dateTime parameters can be specified as
+datetime.datetime, or as datetime.time in which case today
+is used as the date.</p>
+<p>The step parameter is the number of seconds of each period.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.waitUntil">
+<code class="descclassname">ib_insync.util.</code><code class="descname">waitUntil</code><span class="sig-paren">(</span><em>t: datetime.time</em><span class="sig-paren">)</span> &#x2192; True<a class="reference internal" href="_modules/ib_insync/util.html#waitUntil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.waitUntil" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the given time t is reached.</p>
+<p>The time can be specified as datetime.datetime,
+or as datetime.time in which case today is used as the date.</p>
 </dd></dl>
 
 <dl class="function">

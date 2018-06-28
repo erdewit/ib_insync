@@ -1,11 +1,17 @@
 Changelog
 =========
 
+Version 0.9.25
+^^^^^^^^^^^^^^
+* Default throttling rate now compatible with reqTickers
+* Fixed issue with ib.waitOnUpdate in combination with ib.pendingTickersEvent
+* Added timeout parameter for ib.waitOnUpdate
+
 Version 0.9.24
 ^^^^^^^^^^^^^^
-``ticker.futuresOpenInterest`` added
-``execution.time`` was string, is now parsed to UTC datetime
-``ib.reqMarketRule`` request added
+* ``ticker.futuresOpenInterest`` added
+* ``execution.time`` was string, is now parsed to UTC datetime
+* ``ib.reqMarketRule`` request added
 
 Version 0.9.23
 ^^^^^^^^^^^^^^
