@@ -21,8 +21,8 @@ class Wrapper(EWrapper):
     """
 
     def __init__(self, ib):
-        self.updateEv = asyncio.Event()
         self.timeoutEv = asyncio.Event()
+        self._updateEv = asyncio.Event()
         self._ib = ib
         self._callbacks = {}  # eventName -> callback
         self._logger = logging.getLogger('ib_insync.wrapper')
@@ -58,7 +58,7 @@ class Wrapper(EWrapper):
         self.accounts = []
         self.clientId = -1
         self.lastTime = None  # datetime (UTC) of last network packet arrival
-        self.autoclearTickers = True
+        self._waitingOnUpdate = False
         self._timeout = 0
         if self._timeoutHandle:
             self._timeoutHandle.cancel()
@@ -908,25 +908,41 @@ class Wrapper(EWrapper):
     # additional wrapper method provided by Client
     def tcpDataArrived(self):
         self.lastTime = datetime.datetime.now(datetime.timezone.utc)
-        if self.autoclearTickers:
-            self.clearPendingTickers()
 
     @iswrapper
     # additional wrapper method provided by Client
     def tcpDataProcessed(self):
+        if self._waitingOnUpdate:
+            self._updateEv.set()
+            self._updateEv.clear()
+        else:
+            self._emitPendingTickers()
+            self._clearPendingTickers()
+        self.handleEvent('updateEvent')
+
+    def waitOnUpdate(self, timeout=0):
+        self._clearPendingTickers()
+        self._waitingOnUpdate = True
+        coro = self._updateEv.wait()
+        if timeout:
+            try:
+                util.run(asyncio.wait_for(coro, timeout))
+            except asyncio.TimeoutError:
+                pass
+        else:
+            util.run(coro)
+        self._waitingOnUpdate = False
+        self._emitPendingTickers()
+        return True
+
+    def _emitPendingTickers(self):
         if self.pendingTickers:
             self.handleEvent('pendingTickersEvent', list(self.pendingTickers))
             for ticker in (t for t in self.pendingTickers
                     if t.updateEvent.slots):
                 ticker.updateEvent.emit(ticker)
-        self.updateEv.set()
-        self.updateEv.clear()
-        self.handleEvent('updateEvent')
 
-    def clearPendingTickers(self):
-        """
-        Clear pending tickers and their ticks
-        """
+    def _clearPendingTickers(self):
         for ticker in self.pendingTickers:
             del ticker.ticks[:]
             del ticker.tickByTicks[:]

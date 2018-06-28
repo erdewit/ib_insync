@@ -226,107 +226,17 @@ class IB:
         """
         return self.client.isConnected()
 
-    @staticmethod
-    def run(*awaitables: List[Awaitable]):
-        """
-        By default run the event loop forever.
-        
-        When awaitables (like Tasks, Futures or coroutines) are given then
-        run the event loop until each has completed and return their results.
-        """
-        loop = asyncio.get_event_loop()
-        if not awaitables:
-            if loop.is_running():
-                return
-            result = loop.run_forever()
-            f = asyncio.gather(*asyncio.Task.all_tasks())
-            f.cancel()
-            try:
-                loop.run_until_complete(f)
-            except asyncio.CancelledError:
-                pass
-        else:
-            if len(awaitables) == 1:
-                future = awaitables[0]
-            else:
-                future = asyncio.gather(*awaitables)
-            result = util.syncAwait(future)
-        return result
+    run = staticmethod(util.run)
+    schedule = staticmethod(util.schedule)
+    sleep = staticmethod(util.sleep)
+    timeRange = staticmethod(util.timeRange)
+    waitUntil = staticmethod(util.waitUntil)
 
-    @staticmethod
-    def schedule(time, callback, *args):
-        """
-        Schedule the callback to be run at the given time with
-        the given arguments.
-        """
-        loop = asyncio.get_event_loop()
-        if isinstance(time, datetime.time):
-            dt = datetime.datetime.combine(datetime.date.today(), time)
-        else:
-            dt = time
-        delay = (dt - datetime.datetime.now()).total_seconds()
-        loop.call_later(delay, callback, *args)
-
-    @staticmethod
-    def sleep(secs: float=0.02) -> True:
-        """
-        Wait for the given amount of seconds while everything still keeps
-        processing in the background. Never use time.sleep().
-        """
-        IB.run(asyncio.sleep(secs))
-        return True
-
-    @staticmethod
-    def timeRange(start: datetime.time, end: datetime.time,
-                  step: float) -> Iterator[datetime.datetime]:
-        """
-        Iterator that waits periodically until certain time points are
-        reached while yielding those time points.
-        
-        The startTime and dateTime parameters can be specified as
-        datetime.datetime, or as datetime.time in which case today
-        is used as the date.
-        
-        The step parameter is the number of seconds of each period.
-        """
-        assert step > 0
-        if isinstance(start, datetime.time):
-            start = datetime.datetime.combine(datetime.date.today(), start)
-        if isinstance(end, datetime.time):
-            end = datetime.datetime.combine(datetime.date.today(), end)
-        delta = datetime.timedelta(seconds=step)
-        t = start
-        while t < datetime.datetime.now():
-            t += delta
-        while t <= end:
-            IB.waitUntil(t)
-            yield t
-            t += delta
-
-    @staticmethod
-    def waitUntil(t: datetime.time) -> True:
-        """
-        Wait until the given time t is reached.
-        
-        The time can be specified as datetime.datetime,
-        or as datetime.time in which case today is used as the date.
-        """
-        if isinstance(t, datetime.time):
-            t = datetime.datetime.combine(datetime.date.today(), t)
-        now = datetime.datetime.now(t.tzinfo)
-        secs = (t - now).total_seconds()
-        IB.run(asyncio.sleep(secs))
-        return True
-
-    def waitOnUpdate(self) -> True:
+    def waitOnUpdate(self, timeout: float=0) -> True:
         """
         Wait on any new update to arrive from the network.
         """
-        self.wrapper.clearPendingTickers()
-        self.wrapper.autoclearTickers = False
-        self.run(self.wrapper.updateEv.wait())
-        self.wrapper.autoclearTickers = True
-        return True
+        return self.wrapper.waitOnUpdate(timeout)
 
     def loopUntil(self, condition=None, timeout: float=0) -> Iterator:
         """
@@ -345,15 +255,7 @@ class IB:
                 return
             else:
                 yield test
-            if timeout:
-                try:
-                    self.run(asyncio.wait_for(
-                        self.wrapper.updateEv.wait(),
-                        endTime - time.time()))
-                except asyncio.TimeoutError:
-                    pass
-            else:
-                self.waitOnUpdate()
+            self.waitOnUpdate(endTime - time.time() if timeout else 0)
 
     def setCallback(self, eventName: str, callback: Callable) -> None:
         """
