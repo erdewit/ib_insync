@@ -577,6 +577,15 @@ class IB:
         self._logger.info(f'reqGlobalCancel')
 
     @api
+    def reqCurrentTime(self) -> datetime.datetime:
+        """
+        Request TWS current time.
+
+        This method is blocking.
+        """
+        return self.run(self.reqCurrentTimeAsync())
+
+    @api
     def reqAccountUpdates(self, account: str='') -> None:
         """
         This is called at startup - no need to call again.
@@ -1202,6 +1211,11 @@ class IB:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         self.client.placeOrder(reqId, contract, whatIfOrder)
+        return future
+
+    def reqCurrentTimeAsync(self):
+        future = self.wrapper.startReq('currentTime')
+        self.client.reqCurrentTime()
         return future
 
     def reqAccountUpdatesAsync(self, account):
