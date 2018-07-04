@@ -1,10 +1,9 @@
 import os
 import sys
 import codecs
+import ast
 from setuptools import setup
 from warnings import warn
-
-import ib_insync
 
 if sys.version_info < (3, 0, 0):
     raise RuntimeError("ib_insync is for Python 3")
@@ -16,15 +15,26 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
+# find __init__ assignments due to runtime ibapi checks preventing import
+with codecs.open(os.path.join(here, 'ib_insync', '__init__.py')) as f:
+    # extract top level assignment statements
+    nodes = ast.parse(f.read())
+    assigns = [ n for n in nodes.body if isinstance(n, ast.Assign) ]
+    # execute just assignment statments from __init__ into ib_insync
+    ib_insync = {}
+    exec(compile(ast.Module(assigns), '<setup>', 'exec'), ib_insync)
+
+
+
 setup(
     name='ib_insync',
-    version=ib_insync.__version__,
+    version=ib_insync['__version__'],
     description='Python sync/async framework for Interactive Brokers API',
     long_description=long_description,
     url='https://github.com/erdewit/ib_insync',
-    author='Ewald R. de Wit',
-    author_email='ewald.de.wit@gmail.com',
-    license='BSD',
+    author=ib_insync['__author__'],
+    author_email=ib_insync['__email__'],
+    license=ib_insync['__license__'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
