@@ -864,6 +864,11 @@ class Wrapper(EWrapper):
         self._endReq('requestFA', faXmlData)
 
     @iswrapper
+    def currentTime(self, time):
+        dt = datetime.datetime.fromtimestamp(time, datetime.timezone.utc)
+        self._endReq('currentTime', dt)
+
+    @iswrapper
     def error(self, reqId, errorCode, errorString):
         # https://interactivebrokers.github.io/tws-api/message_codes.html
         warningCodes = {165, 202, 399, 434, 10167}
