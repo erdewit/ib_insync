@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.wrapper &#8212; IB-insync 0.9.25 documentation</title>
+    <title>ib_insync.wrapper &#8212; IB-insync 0.9.26 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="../../_static/documentation_options.js"></script>
@@ -938,6 +938,11 @@
     <span class="k">def</span> <span class="nf">receiveFA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_faDataType</span><span class="p">,</span> <span class="n">faXmlData</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="s1">&#39;requestFA&#39;</span><span class="p">,</span> <span class="n">faXmlData</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Wrapper.currentTime"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.currentTime">[docs]</a>    <span class="nd">@iswrapper</span>
+    <span class="k">def</span> <span class="nf">currentTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="s1">&#39;currentTime&#39;</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Wrapper.error"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.Wrapper.error">[docs]</a>    <span class="nd">@iswrapper</span>
     <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">errorCode</span><span class="p">,</span> <span class="n">errorString</span><span class="p">):</span>
         <span class="c1"># https://interactivebrokers.github.io/tws-api/message_codes.html</span>
@@ -965,7 +970,7 @@
                     <span class="n">trade</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">logEntry</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Canceled order: </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">handleEvent</span><span class="p">(</span><span class="s1">&#39;orderStatusEvent&#39;</span><span class="p">,</span> <span class="n">trade</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">trade</span><span class="o">.</span><span class="n">canceledEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
+                    <span class="n">trade</span><span class="o">.</span><span class="n">cancelledEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">errorCode</span> <span class="o">==</span> <span class="mi">317</span><span class="p">:</span>
                 <span class="c1"># Market depth data has been RESET</span>
                 <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Ticker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>

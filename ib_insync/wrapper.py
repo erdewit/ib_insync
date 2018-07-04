@@ -895,7 +895,7 @@ class Wrapper(EWrapper):
                     trade.log.append(logEntry)
                     self._logger.warning(f'Canceled order: {trade}')
                     self.handleEvent('orderStatusEvent', trade)
-                    self.trade.canceledEvent.emit(trade)
+                    trade.cancelledEvent.emit(trade)
             elif errorCode == 317:
                 # Market depth data has been RESET
                 ticker = self.reqId2Ticker.get(reqId)

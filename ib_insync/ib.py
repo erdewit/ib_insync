@@ -639,7 +639,7 @@ class IB:
         Request and return a list a list of open orders.
         
         This method can give stale information where a new open order is not
-        reported or an already filled or canceled order is reported as open.
+        reported or an already filled or cancelled order is reported as open.
         It is recommended to use the more reliable and much faster
         :py:meth:`.openTrades` or :py:meth:`.openOrders` methods instead.
 

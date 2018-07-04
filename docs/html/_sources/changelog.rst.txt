@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 0.9.26
+^^^^^^^^^^^^^^
+* PR #74 merged (ib.reqCurrentTime method added)
+* Fixed bug with order error handling
+
 Version 0.9.25
 ^^^^^^^^^^^^^^
 * Default throttling rate now compatible with reqTickers
