@@ -1,23 +1,21 @@
 import sys
 
-__version__ = '0.9.26'
-
 if sys.version_info < (3, 6, 0):
-    print("Python 3.6.0 or higher is required")
-    sys.exit()
+    raise RuntimeError('ib_insync requires Python 3.6 or higher')
 
 try:
     import ibapi
 except ImportError:
-    print('IB API from http://interactivebrokers.github.io is required')
-    sys.exit()
+    raise RuntimeError(
+        'IB API from http://interactivebrokers.github.io is required')
 
 if tuple(int(i) for i in ibapi.__version__.split('.')) < (9, 73, 6):
-    print('Old version of ibapi module detected. '
+    raise RuntimeError(
+        f'Old version ({ibapi.__version__}) of ibapi package detected. '
         'The newest version from http://interactivebrokers.github.io '
         'is required')
-    sys.exit()
 
+from .version import __version__, __version_info__
 from .objects import *
 from .event import *
 from .contract import *

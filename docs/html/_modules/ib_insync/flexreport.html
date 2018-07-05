@@ -86,8 +86,8 @@
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.flexreport&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="FlexError"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexError">[docs]</a><span class="k">class</span> <span class="nc">FlexError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span> <span class="k">pass</span>
-</div>
+<div class="viewcode-block" id="FlexError"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexError">[docs]</a><span class="k">class</span> <span class="nc">FlexError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span> <span class="k">pass</span></div>
+
 
 <div class="viewcode-block" id="FlexReport"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport">[docs]</a><span class="k">class</span> <span class="nc">FlexReport</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -123,8 +123,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the set of topics that can be extracted from this report.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">tag</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">()</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">tag</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">()</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="FlexReport.extract"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parseNumbers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract items of given topic and return as list of objects.</span>
@@ -145,14 +145,14 @@
                             <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
                         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                             <span class="k">pass</span>
-        <span class="k">return</span> <span class="n">results</span>
-</div>
+        <span class="k">return</span> <span class="n">results</span></div>
+
 <div class="viewcode-block" id="FlexReport.df"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport.df">[docs]</a>    <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topics</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parseNumbers</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Same as extract but return the result as a pandas DataFrame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">topics</span><span class="p">,</span> <span class="n">parseNumbers</span><span class="p">))</span>
-</div>
+        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">topics</span><span class="p">,</span> <span class="n">parseNumbers</span><span class="p">))</span></div>
+
 <div class="viewcode-block" id="FlexReport.download"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">queryId</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Download report for the given ``token`` and ``queryId``.</span>
@@ -187,23 +187,23 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">FlexError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">break</span>
-        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Statement retrieved.&#39;</span><span class="p">)</span>
-</div>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Statement retrieved.&#39;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="FlexReport.load"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load report from XML file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">et</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-</div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">et</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="FlexReport.save"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save report to XML file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-</div></div>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div></div>
+
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">util</span><span class="o">.</span><span class="n">logToConsole</span><span class="p">()</span>
