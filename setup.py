@@ -9,7 +9,7 @@ if sys.version_info < (3, 6, 0):
 here = os.path.abspath(os.path.dirname(__file__))
 
 __version__ = None
-exec(open(os.path.join(here, 'ib_insync/version.py')).read())
+exec(open(os.path.join(here, 'ib_insync', 'version.py')).read())
 
 with codecs.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
