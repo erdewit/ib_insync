@@ -901,7 +901,7 @@ class Wrapper(EWrapper):
                 ticker = self.reqId2Ticker.get(reqId)
                 if ticker:
                     for side, l in ((0, ticker.domAsks), (1, ticker.domBids)):
-                        for position in reversed(range(l)):
+                        for position in reversed(l):
                             level = l.pop(position)
                             tick = MktDepthData(self.lastTime, position,
                                     '', 2, side, level.price, 0)
