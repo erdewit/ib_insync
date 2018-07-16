@@ -1,6 +1,10 @@
 Changelog
 =========
 
+Version 0.9.27
+^^^^^^^^^^^^^^
+* Fixed bug #77
+
 Version 0.9.26
 ^^^^^^^^^^^^^^
 * PR #74 merged (ib.reqCurrentTime method added)
