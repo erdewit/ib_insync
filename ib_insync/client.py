@@ -70,7 +70,8 @@ class Client(EClient):
     events = ('apiStart', 'apiEnd', 'apiError')
 
     # throttle number of requests to MaxRequests per RequestsInterval seconds
-    MaxRequests, RequestsInterval = 100, 2
+    MaxRequests = 100
+    RequestsInterval = 2
 
     def __init__(self, wrapper):
         self._readyEvent = asyncio.Event()

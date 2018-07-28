@@ -215,12 +215,16 @@ class timeit:
         print(self.title + ' took ' + formatSI(time.time() - self.t0) + 's')
 
 
-def run(*awaitables: List[Awaitable]):
+def run(*awaitables: List[Awaitable], timeout=None):
     """
     By default run the event loop forever.
 
     When awaitables (like Tasks, Futures or coroutines) are given then
     run the event loop until each has completed and return their results.
+    
+    An optional timeout (in seconds) can be given that will raise
+    asyncio.TimeoutError if the awaitables are not ready within the
+    timeout period.
     """
     loop = asyncio.get_event_loop()
     if not awaitables:
@@ -238,6 +242,8 @@ def run(*awaitables: List[Awaitable]):
             future = awaitables[0]
         else:
             future = asyncio.gather(*awaitables)
+        if timeout:
+            future = asyncio.wait_for(future, timeout)
         result = syncAwait(future)
     return result
 

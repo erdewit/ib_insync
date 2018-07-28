@@ -165,7 +165,7 @@ class IB:
             'accountSummaryEvent', 'pnlEvent', 'pnlSingleEvent',
             'tickNewsEvent', 'errorEvent', 'timeoutEvent')
 
-    __slots__ = ('client', 'wrapper', '_logger') + events
+    RequestTimeout = None  # timeout in seconds for requests
 
     def __init__(self):
         Event.init(self, IB.events)
@@ -199,7 +199,7 @@ class IB:
         
         This method is blocking.
         """
-        self.run(self.connectAsync(host, port, clientId, timeout))
+        self._run(self.connectAsync(host, port, clientId, timeout))
         return self
 
     def disconnect(self) -> None:
@@ -231,6 +231,9 @@ class IB:
     sleep = staticmethod(util.sleep)
     timeRange = staticmethod(util.timeRange)
     waitUntil = staticmethod(util.waitUntil)
+
+    def _run(self, *awaitables):
+        return util.run(*awaitables, timeout=self.RequestTimeout)
 
     def waitOnUpdate(self, timeout: float=0) -> True:
         """
@@ -439,7 +442,7 @@ class IB:
 
         This method is blocking.
         """
-        return self.run(self.reqTickersAsync(*contracts,
+        return self._run(self.reqTickersAsync(*contracts,
                 regulatorySnapshot=regulatorySnapshot))
 
     def qualifyContracts(self, *contracts: List[Contract]) -> List[Contract]:
@@ -451,7 +454,7 @@ class IB:
 
         This method is blocking.
         """
-        return self.run(self.qualifyContractsAsync(*contracts))
+        return self._run(self.qualifyContractsAsync(*contracts))
 
     def bracketOrder(self, action: str, quantity: float,
             limitPrice: float, takeProfitPrice: float,
@@ -508,7 +511,7 @@ class IB:
         
         This method is blocking.
         """
-        return self.run(self.whatIfOrderAsync(contract, order))
+        return self._run(self.whatIfOrderAsync(contract, order))
 
     @api
     def placeOrder(self, contract: Contract, order: Order) -> Trade:
@@ -583,7 +586,7 @@ class IB:
 
         This method is blocking.
         """
-        return self.run(self.reqCurrentTimeAsync())
+        return self._run(self.reqCurrentTimeAsync())
 
     @api
     def reqAccountUpdates(self, account: str='') -> None:
@@ -596,7 +599,7 @@ class IB:
 
         This method is blocking.
         """
-        self.run(self.reqAccountUpdatesAsync(account))
+        self._run(self.reqAccountUpdatesAsync(account))
 
     @api
     def reqAccountUpdatesMulti(self, account: str='', modelCode: str=''):
@@ -607,7 +610,7 @@ class IB:
 
         This method is blocking.
         """
-        self.run(self.reqAccountUpdatesMultiAsync(account, modelCode))
+        self._run(self.reqAccountUpdatesMultiAsync(account, modelCode))
 
     @api
     def reqAccountSummary(self) -> None:
@@ -619,7 +622,7 @@ class IB:
 
         This method is blocking.
         """
-        self.run(self.reqAccountSummaryAsync())
+        self._run(self.reqAccountSummaryAsync())
 
     @api
     def reqAutoOpenOrders(self, autoBind: bool=True):
@@ -645,7 +648,7 @@ class IB:
 
         This method is blocking.
         """
-        return self.run(self.reqOpenOrdersAsync())
+        return self._run(self.reqOpenOrdersAsync())
 
     @api
     def reqExecutions(self,
@@ -658,7 +661,7 @@ class IB:
 
         This method is blocking.
         """
-        return self.run(self.reqExecutionsAsync(execFilter))
+        return self._run(self.reqExecutionsAsync(execFilter))
 
     @api
     def reqPositions(self) -> List[Position]:
@@ -669,7 +672,7 @@ class IB:
 
         This method is blocking.
         """
-        return self.run(self.reqPositionsAsync())
+        return self._run(self.reqPositionsAsync())
 
     @api
     def reqPnL(self, account: str, modelCode: str='') -> PnL:
@@ -754,7 +757,7 @@ class IB:
 
         https://interactivebrokers.github.io/tws-api/contract_details.html
         """
-        return self.run(self.reqContractDetailsAsync(contract))
+        return self._run(self.reqContractDetailsAsync(contract))
 
     @api
     def reqMatchingSymbols(self, pattern: str) -> List[ContractDescription]:
@@ -766,7 +769,7 @@ class IB:
 
         https://interactivebrokers.github.io/tws-api/matching_symbols.html
         """
-        return self.run(self.reqMatchingSymbolsAsync(pattern))
+        return self._run(self.reqMatchingSymbolsAsync(pattern))
 
     def reqMarketRule(self, marketRuleId: int):
         """
@@ -775,7 +778,7 @@ class IB:
         
         https://interactivebrokers.github.io/tws-api/minimum_increment.html
         """
-        return self.run(self.reqMarketRuleAsync(marketRuleId))
+        return self._run(self.reqMarketRuleAsync(marketRuleId))
 
     @api
     def reqRealTimeBars(self, contract, barSize, whatToShow,
@@ -824,7 +827,7 @@ class IB:
 
         https://interactivebrokers.github.io/tws-api/historical_bars.html
         """
-        return self.run(self.reqHistoricalDataAsync(contract, endDateTime,
+        return self._run(self.reqHistoricalDataAsync(contract, endDateTime,
                 durationStr, barSizeSetting, whatToShow,
                 useRTH, formatDate, keepUpToDate, chartOptions))
 
@@ -848,7 +851,7 @@ class IB:
         
         https://interactivebrokers.github.io/tws-api/historical_time_and_sales.html
         """
-        return self.run(self.reqHistoricalTicksAsync(contract,
+        return self._run(self.reqHistoricalTicksAsync(contract,
             startDateTime, endDateTime, numberOfTicks, whatToShow, useRth,
             ignoreSize, miscOptions))
 
@@ -874,7 +877,7 @@ class IB:
         If formatDate=2 then the result is returned as a
         timezone-aware datetime.datetime with UTC timezone.
         """
-        return self.run(self.reqHeadTimeStampAsync(contract, whatToShow,
+        return self._run(self.reqHeadTimeStampAsync(contract, whatToShow,
                 useRTH, formatDate))
 
     @api
@@ -945,7 +948,7 @@ class IB:
         Get those exchanges that have have multiple market makers
         (and have ticks returned with marketMaker info). 
         """
-        return self.run(self.reqMktDepthExchangesAsync())
+        return self._run(self.reqMktDepthExchangesAsync())
 
     @api
     def reqMktDepth(self, contract: Contract, numRows: int=5,
@@ -986,7 +989,7 @@ class IB:
 
         https://interactivebrokers.github.io/tws-api/histograms.html
         """
-        return self.run(self.reqHistogramDataAsync(
+        return self._run(self.reqHistogramDataAsync(
                 contract, useRTH, period))
 
     @api
@@ -999,7 +1002,7 @@ class IB:
 
         https://interactivebrokers.github.io/tws-api/reuters_fundamentals.html
         """
-        return self.run(self.reqFundamentalDataAsync(contract, reportType,
+        return self._run(self.reqFundamentalDataAsync(contract, reportType,
                 fundamentalDataOptions))
 
     @api
@@ -1012,7 +1015,7 @@ class IB:
 
         https://interactivebrokers.github.io/tws-api/market_scanners.html
         """
-        return self.run(self.reqScannerSubscriptionAsync(
+        return self._run(self.reqScannerSubscriptionAsync(
                 subscription, scannerSubscriptionOptions))
 
     @api
@@ -1022,7 +1025,7 @@ class IB:
 
         This method is blocking.
         """
-        return self.run(self.reqScannerParametersAsync())
+        return self._run(self.reqScannerParametersAsync())
 
     @api
     def calculateImpliedVolatility(self, contract: Contract,
@@ -1035,7 +1038,7 @@ class IB:
 
         https://interactivebrokers.github.io/tws-api/option_computations.html
         """
-        return self.run(self.calculateImpliedVolatilityAsync(
+        return self._run(self.calculateImpliedVolatilityAsync(
                 contract, optionPrice, underPrice, implVolOptions))
 
     @api
@@ -1049,7 +1052,7 @@ class IB:
 
         https://interactivebrokers.github.io/tws-api/option_computations.html
         """
-        return self.run(self.calculateOptionPriceAsync(
+        return self._run(self.calculateOptionPriceAsync(
                 contract, volatility, underPrice, optPrcOptions))
 
     @api
@@ -1063,7 +1066,7 @@ class IB:
 
         https://interactivebrokers.github.io/tws-api/options.html
         """
-        return self.run(self.reqSecDefOptParamsAsync(underlyingSymbol,
+        return self._run(self.reqSecDefOptParamsAsync(underlyingSymbol,
                 futFopExchange, underlyingSecType, underlyingConId))
 
     @api
@@ -1083,7 +1086,7 @@ class IB:
 
         This method is blocking.
         """
-        return self.run(self.reqNewsProvidersAsync())
+        return self._run(self.reqNewsProvidersAsync())
 
     @api
     def reqNewsArticle(self, providerCode: str, articleId: str,
@@ -1095,7 +1098,7 @@ class IB:
 
         https://interactivebrokers.github.io/tws-api/news.html
         """
-        return self.run(self.reqNewsArticleAsync(providerCode, articleId,
+        return self._run(self.reqNewsArticleAsync(providerCode, articleId,
                 newsArticleOptions))
 
     @api
@@ -1107,7 +1110,7 @@ class IB:
 
         This method is blocking.
         """
-        return self.run(self.reqHistoricalNewsAsync(conId, providerCodes,
+        return self._run(self.reqHistoricalNewsAsync(conId, providerCodes,
                 startDateTime, endDateTime, totalResults,
                 historicalNewsOptions))
 
@@ -1139,7 +1142,7 @@ class IB:
         
         https://interactivebrokers.github.io/tws-api/financial_advisor_methods_and_orders.html
         """
-        return self.run(self.requestFAAsync(faDataType))
+        return self._run(self.requestFAAsync(faDataType))
 
     @api
     def replaceFA(self, faDataType: int, xml: str) -> None:
