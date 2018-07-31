@@ -258,7 +258,8 @@ def schedule(time, callback, *args):
         dt = datetime.datetime.combine(datetime.date.today(), time)
     else:
         dt = time
-    delay = (dt - datetime.datetime.now()).total_seconds()
+    now = datetime.datetime.now(dt.tzinfo)
+    delay = (dt - now).total_seconds()
     loop.call_later(delay, callback, *args)
 
 
