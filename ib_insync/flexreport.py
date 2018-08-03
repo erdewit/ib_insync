@@ -19,7 +19,7 @@ class FlexReport:
     Download and parse IB account statements via the Flex Web Service.
     https://www.interactivebrokers.com/en/software/am/am/reports/flex_web_service_version_3.htm
     
-    To obtain a ``token`` in account managment, go to
+    To obtain a ``token`` in account management, go to
     Reports -> Settings -> Flex Web Service.
     Tip: choose a 1 year expiry.
     
@@ -72,11 +72,11 @@ class FlexReport:
                             pass
         return results
 
-    def df(self, topics: str, parseNumbers=True):
+    def df(self, topic: str, parseNumbers=True):
         """
         Same as extract but return the result as a pandas DataFrame.
         """
-        return util.df(self.extract(topics, parseNumbers))
+        return util.df(self.extract(topic, parseNumbers))
 
     def download(self, token, queryId):
         """
