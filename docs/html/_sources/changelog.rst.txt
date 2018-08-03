@@ -1,6 +1,9 @@
 Changelog
 =========
 
+0.9
+---
+
 Version 0.9.28
 ^^^^^^^^^^^^^^
 
@@ -269,15 +272,15 @@ Version 0.8.1
 Version 0.8.0
 ^^^^^^^^^^^^^
 
-0.7
----
-
 * support for realtime bars and keepUpToDate for historical bars
 * added option greeks to Ticker
 * new IB.waitUntil and IB.timeRange scheduling methods
 * notebooks no longer depend on PyQt5 for live updates
 * notebooks can be run in one go ('run all')
 * tick handling bypasses ibapi decoder for more efficiency 
+
+0.7
+---
 
 Version 0.7.3
 ^^^^^^^^^^^^^
@@ -298,12 +301,12 @@ Version 0.7.1
 Version 0.7.0
 ^^^^^^^^^^^^^
 
-0.6
----
-
 * added lots of request methods
 * order book (DOM) added
 * notebooks updated
+
+0.6
+---
 
 Version 0.6.1
 ^^^^^^^^^^^^^
