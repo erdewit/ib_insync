@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.9.27 documentation</title>
+    <title>API docs &#8212; IB-insync 0.9.28 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
@@ -91,7 +91,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.27.</p>
+<p>Release 0.9.28.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -209,13 +209,8 @@ handler as it may lead to too much recursion.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ib_insync.ib.IB.wrapper">
-<code class="descname">wrapper</code><a class="headerlink" href="#ib_insync.ib.IB.wrapper" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.client">
-<code class="descname">client</code><a class="headerlink" href="#ib_insync.ib.IB.client" title="Permalink to this definition">¶</a></dt>
+<dt id="ib_insync.ib.IB.RequestTimeout">
+<code class="descname">RequestTimeout</code><em class="property"> = None</em><a class="headerlink" href="#ib_insync.ib.IB.RequestTimeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -242,10 +237,13 @@ This will clear all session state.</p>
 
 <dl class="staticmethod">
 <dt id="ib_insync.ib.IB.run">
-<em class="property">static </em><code class="descname">run</code><span class="sig-paren">(</span><em>*awaitables</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.ib.IB.run" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">run</code><span class="sig-paren">(</span><em>*awaitables</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.ib.IB.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>By default run the event loop forever.</p>
 <p>When awaitables (like Tasks, Futures or coroutines) are given then
 run the event loop until each has completed and return their results.</p>
+<p>An optional timeout (in seconds) can be given that will raise
+asyncio.TimeoutError if the awaitables are not ready within the
+timeout period.</p>
 </dd></dl>
 
 <dl class="staticmethod">
@@ -971,21 +969,6 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 <code class="descname">reqNewsArticleAsync</code><span class="sig-paren">(</span><em>providerCode</em>, <em>articleId</em>, <em>newsArticleOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqNewsArticleAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqNewsArticleAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.accountSummaryEvent">
-<code class="descname">accountSummaryEvent</code><a class="headerlink" href="#ib_insync.ib.IB.accountSummaryEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.accountValueEvent">
-<code class="descname">accountValueEvent</code><a class="headerlink" href="#ib_insync.ib.IB.accountValueEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.barUpdateEvent">
-<code class="descname">barUpdateEvent</code><a class="headerlink" href="#ib_insync.ib.IB.barUpdateEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="ib_insync.ib.IB.calculateImpliedVolatilityAsync">
 <code class="descname">calculateImpliedVolatilityAsync</code><span class="sig-paren">(</span><em>contract</em>, <em>optionPrice</em>, <em>underPrice</em>, <em>implVolOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.calculateImpliedVolatilityAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.calculateImpliedVolatilityAsync" title="Permalink to this definition">¶</a></dt>
@@ -996,79 +979,9 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 <code class="descname">calculateOptionPriceAsync</code><span class="sig-paren">(</span><em>contract</em>, <em>volatility</em>, <em>underPrice</em>, <em>optPrcOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.calculateOptionPriceAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.calculateOptionPriceAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.cancelOrderEvent">
-<code class="descname">cancelOrderEvent</code><a class="headerlink" href="#ib_insync.ib.IB.cancelOrderEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.commissionReportEvent">
-<code class="descname">commissionReportEvent</code><a class="headerlink" href="#ib_insync.ib.IB.commissionReportEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="ib_insync.ib.IB.connectAsync">
 <code class="descname">connectAsync</code><span class="sig-paren">(</span><em>host</em>, <em>port</em>, <em>clientId</em>, <em>timeout=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.connectAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.connectAsync" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.connectedEvent">
-<code class="descname">connectedEvent</code><a class="headerlink" href="#ib_insync.ib.IB.connectedEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.disconnectedEvent">
-<code class="descname">disconnectedEvent</code><a class="headerlink" href="#ib_insync.ib.IB.disconnectedEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.errorEvent">
-<code class="descname">errorEvent</code><a class="headerlink" href="#ib_insync.ib.IB.errorEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.execDetailsEvent">
-<code class="descname">execDetailsEvent</code><a class="headerlink" href="#ib_insync.ib.IB.execDetailsEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.newOrderEvent">
-<code class="descname">newOrderEvent</code><a class="headerlink" href="#ib_insync.ib.IB.newOrderEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.openOrderEvent">
-<code class="descname">openOrderEvent</code><a class="headerlink" href="#ib_insync.ib.IB.openOrderEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.orderModifyEvent">
-<code class="descname">orderModifyEvent</code><a class="headerlink" href="#ib_insync.ib.IB.orderModifyEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.orderStatusEvent">
-<code class="descname">orderStatusEvent</code><a class="headerlink" href="#ib_insync.ib.IB.orderStatusEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.pendingTickersEvent">
-<code class="descname">pendingTickersEvent</code><a class="headerlink" href="#ib_insync.ib.IB.pendingTickersEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.pnlEvent">
-<code class="descname">pnlEvent</code><a class="headerlink" href="#ib_insync.ib.IB.pnlEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.pnlSingleEvent">
-<code class="descname">pnlSingleEvent</code><a class="headerlink" href="#ib_insync.ib.IB.pnlSingleEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.positionEvent">
-<code class="descname">positionEvent</code><a class="headerlink" href="#ib_insync.ib.IB.positionEvent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1099,26 +1012,6 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 <dl class="method">
 <dt id="ib_insync.ib.IB.requestFAAsync">
 <code class="descname">requestFAAsync</code><span class="sig-paren">(</span><em>faDataType</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.requestFAAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.requestFAAsync" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.tickNewsEvent">
-<code class="descname">tickNewsEvent</code><a class="headerlink" href="#ib_insync.ib.IB.tickNewsEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.timeoutEvent">
-<code class="descname">timeoutEvent</code><a class="headerlink" href="#ib_insync.ib.IB.timeoutEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.updateEvent">
-<code class="descname">updateEvent</code><a class="headerlink" href="#ib_insync.ib.IB.updateEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.ib.IB.updatePortfolioEvent">
-<code class="descname">updatePortfolioEvent</code><a class="headerlink" href="#ib_insync.ib.IB.updatePortfolioEvent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1417,12 +1310,12 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'ApiCancelled', 'Cancelled', 'Inactive', 'Filled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'Inactive', 'Filled', 'ApiCancelled', 'Cancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'PendingSubmit', 'Submitted', 'PreSubmitted', 'ApiPending'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'PendingSubmit', 'PreSubmitted', 'Submitted', 'ApiPending'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1494,7 +1387,7 @@ and as keyword, the keyword wins.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/available_orders.html">https://interactivebrokers.github.io/tws-api/available_orders.html</a></p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 139951843195480: =,, 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 140154284715592: =,, 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -5730,10 +5623,13 @@ a DataFrame or as a list of bar objects.</p>
 
 <dl class="function">
 <dt id="ib_insync.util.run">
-<code class="descclassname">ib_insync.util.</code><code class="descname">run</code><span class="sig-paren">(</span><em>*awaitables</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.run" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ib_insync.util.</code><code class="descname">run</code><span class="sig-paren">(</span><em>*awaitables</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>By default run the event loop forever.</p>
 <p>When awaitables (like Tasks, Futures or coroutines) are given then
 run the event loop until each has completed and return their results.</p>
+<p>An optional timeout (in seconds) can be given that will raise
+asyncio.TimeoutError if the awaitables are not ready within the
+timeout period.</p>
 </dd></dl>
 
 <dl class="function">
@@ -5822,7 +5718,7 @@ Let the Qt event loop spin the asyncio event loop
 <em class="property">class </em><code class="descclassname">ib_insync.flexreport.</code><code class="descname">FlexReport</code><span class="sig-paren">(</span><em>token=None</em>, <em>queryId=None</em>, <em>path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/flexreport.html#FlexReport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.flexreport.FlexReport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download and parse IB account statements via the Flex Web Service.
 <a class="reference external" href="https://www.interactivebrokers.com/en/software/am/am/reports/flex_web_service_version_3.htm">https://www.interactivebrokers.com/en/software/am/am/reports/flex_web_service_version_3.htm</a></p>
-<p>To obtain a <code class="docutils literal notranslate"><span class="pre">token</span></code> in account managment, go to
+<p>To obtain a <code class="docutils literal notranslate"><span class="pre">token</span></code> in account management, go to
 Reports -&gt; Settings -&gt; Flex Web Service.
 Tip: choose a 1 year expiry.</p>
 <p>To obtain a <code class="docutils literal notranslate"><span class="pre">queryId</span></code>: Create and save a query with
@@ -5849,7 +5745,7 @@ Order, etc.</p>
 
 <dl class="method">
 <dt id="ib_insync.flexreport.FlexReport.df">
-<code class="descname">df</code><span class="sig-paren">(</span><em>topics: str</em>, <em>parseNumbers=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/flexreport.html#FlexReport.df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.flexreport.FlexReport.df" title="Permalink to this definition">¶</a></dt>
+<code class="descname">df</code><span class="sig-paren">(</span><em>topic: str</em>, <em>parseNumbers=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/flexreport.html#FlexReport.df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.flexreport.FlexReport.df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Same as extract but return the result as a pandas DataFrame.</p>
 </dd></dl>
 

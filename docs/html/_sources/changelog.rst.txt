@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.9.28
+^^^^^^^^^^^^^^
+
+* IB.RequestTimeout added
+* util.schedule() accepts tz-aware datetimes now
+* Let client.disconnect() complete when no event loop is running
+
 Version 0.9.27
 ^^^^^^^^^^^^^^
 * Fixed bug #77
