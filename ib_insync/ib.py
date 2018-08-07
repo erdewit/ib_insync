@@ -115,7 +115,7 @@ class IB:
           Emits the changed order status of the ongoing trade.
            
         * ``execDetailsEvent(trade: Trade, fill: Fill)``:
-          Emits the fill together with the ongoing trade it belong to.
+          Emits the fill together with the ongoing trade it belongs to.
           
         * ``commissionReportEvent(trade: Trade, fill: Fill, report: CommissionReport)``:
           The commission report is emitted after the fill that it belongs to.
