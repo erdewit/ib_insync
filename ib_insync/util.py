@@ -377,7 +377,7 @@ def _syncAwaitAsyncio(future):
         try:
             loop._run_once()
         except:
-            if new_task and future.done() and not future.cancelled():
+            if new_task and task.done() and not task.cancelled():
                 task._log_traceback = False
             raise
     return task.result()
