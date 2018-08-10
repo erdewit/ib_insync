@@ -160,8 +160,8 @@ class Client(EClient):
         self.conn.disconnected = self._onSocketDisconnected
         self.conn.hasError = self._onSocketHasError
         try:
-            await asyncio.wait_for(asyncio.gather(
-                    self.conn.connect(), self._readyEvent.wait()), timeout)
+            fut = asyncio.gather(self.conn.connect(), self._readyEvent.wait())
+            await asyncio.wait_for(fut, timeout)
             self._logger.info('API connection ready')
             self.apiStart()
         except Exception as e:

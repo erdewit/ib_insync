@@ -164,8 +164,9 @@ class IBC(Object):
         if not self._proc:
             return
         self._logger.info('Terminating')
-        self._monitor.cancel()
-        self._monitor = None
+        if self._monitor:
+            self._monitor.cancel()
+            self._monitor = None
         with suppress(ProcessLookupError):
             self._proc.terminate()
             await self._proc.wait()
@@ -332,7 +333,7 @@ class Watchdog(Object):
     
         util.patchAsyncio()
 
-        ibc = IBC(969, gateway=True, tradingMode='paper')
+        ibc = IBC(973, gateway=True, tradingMode='paper')
         ib = IB()
         app = Watchdog(ibc, ib, port=4002)
         app.start()
@@ -361,7 +362,8 @@ class Watchdog(Object):
         appStartupTime=30,
         appTimeout=20,
         retryDelay=2)
-    __slots__ = list(defaults.keys()) + events + ['_watcher', '_logger']
+    __slots__ = list(defaults.keys()) + events + [
+            '_watcher', '_logger', '_isRunning']
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
@@ -374,47 +376,57 @@ class Watchdog(Object):
             raise ValueError('IB instance must not be connected')
         assert 0 < self.appTimeout < 60
         assert self.retryDelay > 0
-        self.ib.errorEvent += self.onError
-        self.ib.disconnectedEvent += self.flush
-        self._watcher = asyncio.ensure_future(self.watchAsync())
+        self._watcher = asyncio.ensure_future(self._watchAsync())
         self._logger = logging.getLogger('ib_insync.Watchdog')
+        self._isRunning = False
+        self.ib.errorEvent += self._onError
+        self.ib.disconnectedEvent += self._stop
 
     def start(self):
-        self.startingEvent.emit(self)
         self._logger.info('Starting')
+        self._isRunning = True
+        self.startingEvent.emit(self)
         self.controller.start()
         IB.sleep(self.appStartupTime)
         try:
-            self.ib.connect(self.host, self.port, self.clientId,
-                    self.connectTimeout)
+            self._connect()
             self.ib.setTimeout(self.appTimeout)
             self.startedEvent.emit(self)
         except:
             self.controller.terminate()
-            self.scheduleRestart()
+            self._scheduleRestart()
 
     def stop(self):
-        self.stoppingEvent.emit(self)
+        self._isRunning = False
+        self._stop()
+
+    def _stop(self):
         self._logger.info('Stopping')
-        self.ib.disconnect()
+        self.stoppingEvent.emit(self)
+        self._disconnect()
         self.controller.terminate()
         self.stoppedEvent.emit(self)
+        if self._isRunning:
+            self._scheduleRestart()
 
-    def scheduleRestart(self):
+    def _connect(self):
+        self.ib.connect(self.host, self.port, self.clientId,
+                self.connectTimeout)
+
+    def _disconnect(self):
+        self.ib.disconnect()
+
+    def _scheduleRestart(self):
         loop = asyncio.get_event_loop()
         loop.call_later(self.retryDelay, self.start)
         self._logger.info(f'Schedule restart in {self.retryDelay}s')
 
-    def flush(self):
-        self.stop()
-        self.scheduleRestart()
-
-    def onError(self, reqId, errorCode, errorString, contract):
+    def _onError(self, reqId, errorCode, errorString, contract):
         if errorCode == 1100:
             self._logger.error(f'Error 1100: {errorString}')
-            self.ib.disconnect()
+            self._stop()
 
-    async def watchAsync(self):
+    async def _watchAsync(self):
         while True:
             await self.ib.wrapper.timeoutEv.wait()
             # soft timeout, probe the app with a historical request
@@ -432,14 +444,14 @@ class Watchdog(Object):
                 # hard timeout, flush everything and start anew
                 self._logger.error('Hard timeout')
                 self.hardTimeoutEvent.emit(self)
-                self.ib.disconnect()
+                self._stop()
 
 
 if __name__ == '__main__':
     asyncio.get_event_loop().set_debug(True)
     util.logToConsole(logging.DEBUG)
     util.patchAsyncio()
-    ibc = IBC(971, gateway=True, tradingMode='paper')
+    ibc = IBC(973, gateway=True, tradingMode='paper')
 #             userid='edemo', password='demouser')
     ib = IB()
     app = Watchdog(ibc, ib, port=4002, appStartupTime=15, appTimeout=10)
