@@ -330,7 +330,9 @@ def patchAsyncio():
         try:
             step_orig(self, exc)
         finally:
-            if curr_task is not None:
+            if curr_task is None:
+                curr_tasks.pop(self._loop, None)
+            else:
                 curr_tasks[self._loop] = curr_task
 
     if sys.version_info >= (3, 7, 0):
@@ -368,7 +370,10 @@ def syncAwait(future):
 def _syncAwaitAsyncio(future):
     assert asyncio.Task is asyncio.tasks._PyTask, \
             'To allow nested event loops, use util.patchAsyncio()'
+    # https://bugs.python.org/issue22239
     loop = asyncio.get_event_loop()
+    preserved_ready = list(loop._ready)
+    loop._ready.clear()
     task = asyncio.tasks.ensure_future(future)
     new_task = task is not future
     if new_task:
@@ -380,6 +385,7 @@ def _syncAwaitAsyncio(future):
             if new_task and task.done() and not task.cancelled():
                 task._log_traceback = False
             raise
+    loop._ready.extendleft(reversed(preserved_ready))
     return task.result()
 
 
