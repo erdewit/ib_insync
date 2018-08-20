@@ -359,7 +359,7 @@ def syncAwait(future):
         isQuamash = False
 
     if not loop.is_running():
-        result = loop.run_until_complete(future)
+        result = loop.run_until_complete(asyncio.wait_for(future, 30))
     elif isQuamash:
         result = _syncAwaitQt(future)
     else:
