@@ -18,6 +18,8 @@ class IBC(Object):
     Programmatic control over starting and stopping TWS/Gateway
     using IBC (https://github.com/IbcAlpha/IBC).
     
+    This is not intended to be run in a notebook.
+    
     Arguments:
     
     * ``twsVersion`` (required): The major version number for TWS or gateway.
@@ -183,7 +185,7 @@ class IBC(Object):
 class IBController(Object):
     """
     For new installations it is recommended to use IBC instead.
-    
+      
     Programmatic control over starting and stopping TWS/Gateway
     using IBController (https://github.com/ib-controller/ib-controller).
     
@@ -194,6 +196,7 @@ class IBController(Object):
         import asyncio
         asyncio.set_event_loop(asyncio.ProactorEventLoop())
 
+    This is not intended to be run in a notebook.
     """
     defaults = dict(
         APP='TWS',  # 'TWS' or 'GATEWAY'
@@ -303,8 +306,8 @@ class IBController(Object):
 
 class Watchdog(Object):
     """
-    Start, connect and watch over the TWS or gateway app to keep it running
-    in the face of crashes, freezes and network outages.
+    Start, connect and watch over the TWS or gateway app and try to keep it
+    up and running.
     
     The idea is to wait until there is no traffic coming from the app for
     a certain amount of time (the ``appTimeout`` parameter). This triggers
@@ -327,6 +330,8 @@ class Watchdog(Object):
     
     Note: ``util.patchAsyncio()`` must have been called before.
     
+    This is not intended to be run in a notebook.
+
     Example usage:
     
     .. code-block:: python

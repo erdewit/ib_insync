@@ -324,26 +324,6 @@ def patchAsyncio():
     asyncio.Future = asyncio.futures._CFuture = asyncio.futures.Future = \
             asyncio.futures._PyFuture
 
-    # patch the Task's step method to make it reentrant
-    def step(self, exc=None):
-        curr_task = curr_tasks.get(self._loop)
-        try:
-            step_orig(self, exc)
-        finally:
-            if curr_task is None:
-                curr_tasks.pop(self._loop, None)
-            else:
-                curr_tasks[self._loop] = curr_task
-
-    if sys.version_info >= (3, 7, 0):
-        curr_tasks = asyncio.tasks._current_tasks
-        step_orig = Task._Task__step
-        Task._Task__step = step
-    else:
-        curr_tasks = Task._current_tasks
-        step_orig = Task._step
-        Task._step = step
-
 
 def syncAwait(future):
     """
@@ -368,24 +348,29 @@ def syncAwait(future):
 
 
 def _syncAwaitAsyncio(future):
+    # https://bugs.python.org/issue22239
     assert asyncio.Task is asyncio.tasks._PyTask, \
             'To allow nested event loops, use util.patchAsyncio()'
-    # https://bugs.python.org/issue22239
     loop = asyncio.get_event_loop()
     preserved_ready = list(loop._ready)
     loop._ready.clear()
-    task = asyncio.tasks.ensure_future(future)
-    new_task = task is not future
-    if new_task:
+    task = asyncio.ensure_future(future)
+    if task is not future:
         task._log_destroy_pending = False
+    if sys.version_info >= (3, 7, 0):
+        current_tasks = asyncio.tasks._current_tasks
+    else:
+        current_tasks = asyncio.Task._current_tasks
+    preserved_task = current_tasks.get(loop)
     while not task.done():
-        try:
-            loop._run_once()
-        except:
-            if new_task and task.done() and not task.cancelled():
-                task._log_traceback = False
-            raise
+        loop._run_once()
+        if loop._stopping:
+            break
     loop._ready.extendleft(reversed(preserved_ready))
+    if preserved_task is not None:
+        current_tasks[loop] = preserved_task
+    else:
+        current_tasks.pop(loop, None)
     return task.result()
 
 
