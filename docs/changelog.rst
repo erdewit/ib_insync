@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.30
+^^^^^^^^^^^^^^
+
+* Watchdog.stop() will not trigger restart now
+* Fixed bug #93
+
 Version 0.9.29
 ^^^^^^^^^^^^^^
 * util.patchAsyncio() updated for Python 3.7

@@ -6,10 +6,10 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.util &#8212; IB-insync 0.9.29 documentation</title>
+    <title>ib_insync.util &#8212; IB-insync 0.9.30 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -70,6 +70,8 @@
       </div>
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for ib_insync.util</h1><div class="highlight"><pre>
@@ -397,25 +399,7 @@
     <span class="n">Task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_CTask</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> \
             <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_PyTask</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">_CFuture</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Future</span> <span class="o">=</span> \
-            <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">_PyFuture</span>
-
-    <span class="c1"># patch the Task&#39;s step method to make it reentrant</span>
-    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">curr_task</span> <span class="o">=</span> <span class="n">curr_tasks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">step_orig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">curr_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">curr_tasks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">]</span> <span class="o">=</span> <span class="n">curr_task</span>
-
-    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="n">curr_tasks</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_current_tasks</span>
-        <span class="n">step_orig</span> <span class="o">=</span> <span class="n">Task</span><span class="o">.</span><span class="n">_Task__step</span>
-        <span class="n">Task</span><span class="o">.</span><span class="n">_Task__step</span> <span class="o">=</span> <span class="n">step</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">curr_tasks</span> <span class="o">=</span> <span class="n">Task</span><span class="o">.</span><span class="n">_current_tasks</span>
-        <span class="n">step_orig</span> <span class="o">=</span> <span class="n">Task</span><span class="o">.</span><span class="n">_step</span>
-        <span class="n">Task</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">step</span></div>
+            <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">_PyFuture</span></div>
 
 
 <div class="viewcode-block" id="syncAwait"><a class="viewcode-back" href="../../api.html#ib_insync.ib.syncAwait">[docs]</a><span class="k">def</span> <span class="nf">syncAwait</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
@@ -441,20 +425,29 @@
 
 
 <span class="k">def</span> <span class="nf">_syncAwaitAsyncio</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
+    <span class="c1"># https://bugs.python.org/issue22239</span>
     <span class="k">assert</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="ow">is</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_PyTask</span><span class="p">,</span> \
             <span class="s1">&#39;To allow nested event loops, use util.patchAsyncio()&#39;</span>
     <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-    <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
-    <span class="n">new_task</span> <span class="o">=</span> <span class="n">task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">future</span>
-    <span class="k">if</span> <span class="n">new_task</span><span class="p">:</span>
+    <span class="n">preserved_ready</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">loop</span><span class="o">.</span><span class="n">_ready</span><span class="p">)</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">_ready</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">future</span><span class="p">:</span>
         <span class="n">task</span><span class="o">.</span><span class="n">_log_destroy_pending</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">current_tasks</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_current_tasks</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">current_tasks</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="o">.</span><span class="n">_current_tasks</span>
+    <span class="n">preserved_task</span> <span class="o">=</span> <span class="n">current_tasks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">task</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">loop</span><span class="o">.</span><span class="n">_run_once</span><span class="p">()</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">new_task</span> <span class="ow">and</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">future</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
-                <span class="n">task</span><span class="o">.</span><span class="n">_log_traceback</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">raise</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">_run_once</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">loop</span><span class="o">.</span><span class="n">_stopping</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">_ready</span><span class="o">.</span><span class="n">extendleft</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">preserved_ready</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">preserved_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">current_tasks</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="n">preserved_task</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">current_tasks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
 
 
@@ -553,6 +546,7 @@
 </pre></div>
 
           </div>
+          
         </div>
       </div>
     <div class="clearer"></div>
@@ -561,8 +555,8 @@
       &copy;2018, Ewald de Wit.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
     </div>
 
