@@ -368,7 +368,7 @@ class Watchdog(Object):
         appTimeout=20,
         retryDelay=2)
     __slots__ = list(defaults.keys()) + events + [
-            '_watcher', '_logger', '_isRunning']
+            '_watcher', '_logger', '_isRunning', '_isRestarting']
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
@@ -384,12 +384,14 @@ class Watchdog(Object):
         self._watcher = asyncio.ensure_future(self._watchAsync())
         self._logger = logging.getLogger('ib_insync.Watchdog')
         self._isRunning = False
+        self._isRestarting = False
         self.ib.errorEvent += self._onError
         self.ib.disconnectedEvent += self._stop
 
     def start(self):
         self._logger.info('Starting')
         self._isRunning = True
+        self._isRestarting = False
         self.startingEvent.emit(self)
         self.controller.start()
         IB.sleep(self.appStartupTime)
@@ -422,6 +424,9 @@ class Watchdog(Object):
         self.ib.disconnect()
 
     def _scheduleRestart(self):
+        if self._isRestarting:
+            return
+        self._isRestarting = True
         loop = asyncio.get_event_loop()
         loop.call_later(self.retryDelay, self.start)
         self._logger.info(f'Schedule restart in {self.retryDelay}s')
