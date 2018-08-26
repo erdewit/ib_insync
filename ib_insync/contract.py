@@ -4,7 +4,7 @@ from ib_insync.objects import Object
 
 __all__ = (
     'Contract Stock Option Future ContFuture Forex Index CFD '
-    'Commodity Bond FuturesOption MutualFund Warrant').split()
+    'Commodity Bond FuturesOption MutualFund Warrant Bag').split()
 
 
 class Contract(Object):
@@ -40,6 +40,7 @@ class Contract(Object):
             'STK': Stock,
             'OPT': Option,
             'FUT': Future,
+            'CONTFUT': ContFuture,
             'CASH': Forex,
             'IND': Index,
             'CFD': CFD,
@@ -47,16 +48,30 @@ class Contract(Object):
             'CMDTY': Commodity,
             'FOP': FuturesOption,
             'FUND': MutualFund,
-            'IOPT': Warrant
+            'IOPT': Warrant,
+            'BAG': Bag
         }[secType]
         return cls(**kwargs)
 
+    def isHashable(self):
+        """
+        See if this contract can be hashed by conId.
+        
+        Note: Bag contracts always get conId=28812380 and ContFutures get the
+        same conId as the front contract, so these contract types are
+        not hashable.
+        """
+        return self.conId and self.conId != 28812380 and \
+                self.secType not in ('BAG', 'CONTFUT')
+
     def __eq__(self, other):
-        return (self.conId and isinstance(other, Contract) and
-                (self.conId == other.conId) or
-                Object.__eq__(self, other))
+        return self.isHashable() and isinstance(other, Contract) and \
+                self.conId == other.conId \
+                or Object.__eq__(self, other)
 
     def __hash__(self):
+        if not self.isHashable():
+            raise ValueError(f'Contract {self} can\'t be hashed')
         return self.conId
 
     def __repr__(self):
@@ -197,3 +212,10 @@ class Warrant(Contract):
 
     def __init__(self, **kwargs):
         Contract.__init__(self, 'IOPT', **kwargs)
+
+
+class Bag(Contract):
+    __slots__ = ()
+
+    def __init__(self, **kwargs):
+        Contract.__init__(self, 'BAG', **kwargs)

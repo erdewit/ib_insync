@@ -51,6 +51,8 @@ class Wrapper(EWrapper):
         self.pnlKey2ReqId = {}  # (account, modelCode) -> reqId
         self.pnlSingleKey2ReqId = {}  # (account, modelCode, conId) -> reqId
 
+        self.conId2Contract = {}  #  conId -> Contract, pool of shared contracts
+
         self._futures = {}  # futures and results are linked by key
         self._results = {}
         self._reqId2Contract = {}
@@ -63,6 +65,22 @@ class Wrapper(EWrapper):
         if self._timeoutHandle:
             self._timeoutHandle.cancel()
             self._timeoutHandle = None
+
+    def _getContract(self, ibContract):
+        """
+        Return existing shared contract or newly created contract 
+        that corresponds to the given ibapi contract.
+        """
+        conId = ibContract.conId
+        contract = self.conId2Contract.get(conId)
+        if not contract:
+            contract = Contract.create(**ibContract.__dict__)
+            if ibContract.comboLegs:
+                contract.comboLegs = [ComboLeg(**leg.__dict__)
+                        for leg in ibContract.comboLegs]
+            if contract.isHashable():
+                self.conId2Contract[conId] = contract
+        return contract
 
     def startReq(self, key, contract=None, container=None):
         """
@@ -226,7 +244,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def updatePortfolio(self, contract, posSize, marketPrice, marketValue,
             averageCost, unrealizedPNL, realizedPNL, account):
-        contract = Contract(**contract.__dict__)
+        contract = self._getContract(contract)
         portfItem = PortfolioItem(
                 contract, posSize, marketPrice, marketValue,
                 averageCost, unrealizedPNL, realizedPNL, account)
@@ -240,7 +258,7 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def position(self, account, contract, posSize, avgCost):
-        contract = Contract(**contract.__dict__)
+        contract = self._getContract(contract)
         position = Position(account, contract, posSize, avgCost)
         positions = self.positions[account]
         if posSize == 0:
@@ -303,7 +321,7 @@ class Wrapper(EWrapper):
             if trade:
                 trade.order.update(**order.__dict__)
             else:
-                contract = Contract(**contract.__dict__)
+                contract = self._getContract(contract)
                 order = Order(**order.__dict__)
                 orderStatus = OrderStatus(status=orderState.status)
                 trade = Trade(contract, order, orderStatus, [], [])
@@ -369,13 +387,7 @@ class Wrapper(EWrapper):
         if execution.orderId == 2147483647:
             # bug in TWS: executions of manual orders have orderId=2**31 - 1
             execution.orderId = 0
-        key = self.orderKey(
-                execution.clientId, execution.orderId, execution.permId)
-        trade = self.trades.get(key)
-        if trade and contract.conId == trade.contract.conId:
-            contract = trade.contract
-        else:
-            contract = Contract(**contract.__dict__)
+        contract = self._getContract(contract)
         execId = execution.execId
         execution = Execution(**execution.__dict__)
         execution.time = util.parseIBDatetime(execution.time). \
@@ -386,6 +398,9 @@ class Wrapper(EWrapper):
         if execId not in self.fills:
             # first time we see this execution so add it
             self.fills[execId] = fill
+            key = self.orderKey(
+                    execution.clientId, execution.orderId, execution.permId)
+            trade = self.trades.get(key)
             if trade:
                 trade.fills.append(fill)
                 logEntry = TradeLogEntry(self.lastTime,
@@ -433,7 +448,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def contractDetails(self, reqId, contractDetails):
         cd = ContractDetails(**contractDetails.__dict__)
-        cd.contract = Contract(**cd.contract.__dict__)
+        cd.contract = self._getContract(cd.contract)
         if cd.secIdList:
             cd.secIdList = [TagValue(s.tag, s.value) for s in cd.secIdList]
         self._results[reqId].append(cd)
@@ -449,7 +464,7 @@ class Wrapper(EWrapper):
         cds = [ContractDescription(
                 **cd.__dict__) for cd in contractDescriptions]
         for cd in cds:
-            cd.contract = Contract(**cd.contract.__dict__)
+            cd.contract = self._getContract(cd.contract)
         self._endReq(reqId, cds)
 
     @iswrapper
@@ -803,7 +818,7 @@ class Wrapper(EWrapper):
             benchmark, projection, legsStr):
         cd = ContractDetails(**contractDetails.__dict__)
         if cd.contract:
-            cd.contract = Contract(**cd.contract.__dict__)
+            cd.contract = self._getContract(cd.contract)
         data = ScanData(rank, cd, distance, benchmark, projection, legsStr)
         self._results[reqId].append(data)
 
