@@ -51,8 +51,6 @@ class Wrapper(EWrapper):
         self.pnlKey2ReqId = {}  # (account, modelCode) -> reqId
         self.pnlSingleKey2ReqId = {}  # (account, modelCode, conId) -> reqId
 
-        self.conId2Contract = {}  #  conId -> Contract, pool of shared contracts
-
         self._futures = {}  # futures and results are linked by key
         self._results = {}
         self._reqId2Contract = {}
@@ -68,18 +66,12 @@ class Wrapper(EWrapper):
 
     def _getContract(self, ibContract):
         """
-        Return existing shared contract or newly created contract 
-        that corresponds to the given ibapi contract.
+        Create contract that corresponds to the given ibapi contract.
         """
-        conId = ibContract.conId
-        contract = self.conId2Contract.get(conId)
-        if not contract:
-            contract = Contract.create(**ibContract.__dict__)
-            if ibContract.comboLegs:
-                contract.comboLegs = [ComboLeg(**leg.__dict__)
-                        for leg in ibContract.comboLegs]
-            if contract.isHashable():
-                self.conId2Contract[conId] = contract
+        contract = Contract.create(**ibContract.__dict__)
+        if ibContract.comboLegs:
+            contract.comboLegs = [ComboLeg(**leg.__dict__)
+                    for leg in ibContract.comboLegs]
         return contract
 
     def startReq(self, key, contract=None, container=None):
@@ -225,7 +217,7 @@ class Wrapper(EWrapper):
         acctVal = AccountValue(account, tag, val, currency, modelCode)
         self.accountValues[key] = acctVal
         self.handleEvent('accountValueEvent', acctVal)
-    
+
     @iswrapper
     def accountUpdateMultiEnd(self, reqId):
         self._endReq(reqId)
@@ -302,7 +294,7 @@ class Wrapper(EWrapper):
     def openOrder(self, orderId, contract, order, orderState):
         """
         This wrapper is called to:
-        
+
         * feed in open orders at startup;
         * feed in open orders or order updates from other clients and TWS
           if clientId=master id;
@@ -689,7 +681,7 @@ class Wrapper(EWrapper):
         tick = TickByTickMidPoint(self.lastTime, midPoint)
         ticker.tickByTicks.append(tick)
         self.pendingTickers.add(ticker)
-    
+
     @iswrapper
     def tickString(self, reqId, tickType, value):
         ticker = self.reqId2Ticker.get(reqId)
@@ -743,11 +735,11 @@ class Wrapper(EWrapper):
             self.pendingTickers.add(ticker)
         except ValueError:
             self._logger.error(f'genericTick: malformed value: {value!r}')
-            
+
     @iswrapper
     def tickReqParams(self, reqId, minTick, bboExchange, snapshotPermissions):
         pass
-        
+
     @iswrapper
     def mktDepthExchanges(self, depthMktDataDescriptions):
         result = [DepthMktDataDescription(**d.__dict__)
