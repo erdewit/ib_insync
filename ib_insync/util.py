@@ -196,7 +196,7 @@ def formatSI(n):
             j = 0
         s += val + ' '
         if i != 0:
-            s += 'yzafpnm kMGTPEZY'[i + 7]
+            s += 'yzafpnum kMGTPEZY'[i + 8]
     return s
 
 
@@ -221,7 +221,7 @@ def run(*awaitables: List[Awaitable], timeout=None):
 
     When awaitables (like Tasks, Futures or coroutines) are given then
     run the event loop until each has completed and return their results.
-    
+
     An optional timeout (in seconds) can be given that will raise
     asyncio.TimeoutError if the awaitables are not ready within the
     timeout period.
@@ -277,11 +277,11 @@ def timeRange(start: datetime.time, end: datetime.time,
     """
     Iterator that waits periodically until certain time points are
     reached while yielding those time points.
-    
+
     The startTime and dateTime parameters can be specified as
     datetime.datetime, or as datetime.time in which case today
     is used as the date.
-    
+
     The step parameter is the number of seconds of each period.
     """
     assert step > 0
@@ -302,7 +302,7 @@ def timeRange(start: datetime.time, end: datetime.time,
 def waitUntil(t: datetime.time) -> True:
     """
     Wait until the given time t is reached.
-    
+
     The time can be specified as datetime.datetime,
     or as datetime.time in which case today is used as the date.
     """
