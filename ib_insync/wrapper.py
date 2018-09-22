@@ -379,7 +379,13 @@ class Wrapper(EWrapper):
         if execution.orderId == 2147483647:
             # bug in TWS: executions of manual orders have orderId=2**31 - 1
             execution.orderId = 0
-        contract = self._getContract(contract)
+        key = self.orderKey(
+                execution.clientId, execution.orderId, execution.permId)
+        trade = self.trades.get(key)
+        if trade and contract.conId == trade.contract.conId:
+            contract = trade.contract
+        else:
+            contract = self._getContract(contract)
         execId = execution.execId
         execution = Execution(**execution.__dict__)
         execution.time = util.parseIBDatetime(execution.time). \
@@ -390,9 +396,6 @@ class Wrapper(EWrapper):
         if execId not in self.fills:
             # first time we see this execution so add it
             self.fills[execId] = fill
-            key = self.orderKey(
-                    execution.clientId, execution.orderId, execution.permId)
-            trade = self.trades.get(key)
             if trade:
                 trade.fills.append(fill)
                 logEntry = TradeLogEntry(self.lastTime,
