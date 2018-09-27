@@ -22,45 +22,45 @@ __all__ = ['Client']
 class Client(EClient):
     """
     Modification of ``ibapi.client.EClient`` that uses asyncio.
-    
+
     The client is fully asynchronous and has its own
     event-driven networking code that replaces the
     networking code of the standard EClient.
     It also replaces the infinite loop of ``EClient.run()``
     with the asyncio event loop. It can be used as a drop-in
     replacement for the standard EClient as provided by IBAPI.
-    
+
     Compared to the standard EClient this client has the following
     additional features:
-    
+
     * ``client.connect()`` will block until the client is ready to
       serve requests; It is not necessary to wait for ``nextValidId``
       to start requests as the client has already done that.
       The reqId is directly available with :py:meth:`.getReqId()`.
-      
+
     * ``client.connectAsync()`` is a coroutine for connecting asynchronously.
-      
+
     * When blocking, ``client.connect()`` can be made to time out with
       the timeout parameter (default 2 seconds).
-    
+
     * Optional ``wrapper.priceSizeTick(reqId, tickType, price, size)`` that
       combines price and size instead of the two wrapper methods
       priceTick and sizeTick.
-      
+
     * Automatic request throttling.
-    
+
     * Optional ``wrapper.tcpDataArrived()`` method;
       If the wrapper has this method it is invoked directly after
       a network packet has arrived.
       A possible use is to timestamp all data in the packet with
       the exact same time.
-      
+
     * Optional ``wrapper.tcpDataProcessed()`` method;
       If the wrapper has this method it is invoked after the
       network packet's data has been handled.
       A possible use is to write or evaluate the newly arrived data in
       one batch instead of item by item.
-      
+
     * Events:
         * ``apiStart()``
         * ``apiEnd()``
@@ -141,7 +141,7 @@ class Client(EClient):
         """
         Connect to TWS/IBG at given host and port and with a clientId
         that is not in use elsewhere.
-        
+
         When timeout is not zero, asyncio.TimeoutError
         is raised if the connection is not established within the timeout period.
         """
@@ -205,9 +205,7 @@ class Client(EClient):
         self._logger.info('Connected')
         # start handshake
         msg = b'API\0'
-        msg += self._prefix(b'v%d..%d' % (
-                ibapi.server_versions.MIN_CLIENT_VER,
-                ibapi.server_versions.MAX_CLIENT_VER))
+        msg += self._prefix(b'v%d..%d' % (100, 142))
         self.conn.sendMsg(msg)
         self.decoder = ibapi.decoder.Decoder(self.wrapper, None)
 
