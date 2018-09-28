@@ -143,13 +143,14 @@ class Client(EClient):
         that is not in use elsewhere.
 
         When timeout is not zero, asyncio.TimeoutError
-        is raised if the connection is not established within the timeout period.
+        is raised if the connection is not established
+        within the timeout period.
         """
         util.syncAwait(self.connectAsync(host, port, clientId, timeout))
 
     async def connectAsync(self, host, port, clientId, timeout=2):
         self._logger.info(
-                f'Connecting to {host}:{port} with clientId {clientId}...')
+            f'Connecting to {host}:{port} with clientId {clientId}...')
         self.host = host
         self.port = port
         self.clientId = clientId
@@ -191,7 +192,9 @@ class Client(EClient):
             if not self._isThrottling:
                 self._isThrottling = True
                 self._logger.warn('Started to throttle requests')
-            loop.call_at(times[0] + Client.RequestsInterval, self.sendMsg, None)
+            loop.call_at(
+                times[0] + Client.RequestsInterval,
+                self.sendMsg, None)
         else:
             if self._isThrottling:
                 self._isThrottling = False
@@ -205,7 +208,8 @@ class Client(EClient):
         self._logger.info('Connected')
         # start handshake
         msg = b'API\0'
-        msg += self._prefix(b'v%d..%d' % (100, 142))
+        versionRange = (100, 142)
+        msg += self._prefix(b'v%d..%d' % versionRange)
         self.conn.sendMsg(msg)
         self.decoder = ibapi.decoder.Decoder(self.wrapper, None)
 
@@ -232,7 +236,8 @@ class Client(EClient):
             self._numMsgRecv += 1
 
             if debug:
-                self._logger.debug('<<< %s', ','.join(f.decode() for f in fields))
+                self._logger.debug(
+                    '<<< %s', ','.join(f.decode() for f in fields))
 
             if not self.serverVersion_ and len(fields) == 2:
                 # this concludes the handshake
@@ -248,7 +253,7 @@ class Client(EClient):
                 # decode and handle the message
                 try:
                     self._decode(fields)
-                except:
+                except Exception:
                     self._logger.exception('Decode failed')
 
         if self._tcpDataProcessed:
@@ -312,22 +317,26 @@ class Client(EClient):
         # bypass the ibapi decoder for ticks for more efficiency
         if msgId == 2:
             _, _, reqId, tickType, size = fields
-            self.wrapper.tickSize(int(reqId), int(tickType), int(size))
+            self.wrapper.tickSize(
+                    int(reqId), int(tickType), int(size))
             return
         elif msgId == 1:
             if self._priceSizeTick:
                 _, _, reqId, tickType, price, size, _ = fields
-                self._priceSizeTick(int(reqId), int(tickType),
+                self._priceSizeTick(
+                        int(reqId), int(tickType),
                         float(price), int(size))
                 return
         elif msgId == 12:
             _, _, reqId, position, operation, side, price, size = fields
-            self.wrapper.updateMktDepth(int(reqId), int(position),
+            self.wrapper.updateMktDepth(
+                    int(reqId), int(position),
                     int(operation), int(side), float(price), int(size))
             return
         elif msgId == 46:
             _, _, reqId, tickType, value = fields
-            self.wrapper.tickString(int(reqId), int(tickType), value.decode())
+            self.wrapper.tickString(
+                    int(reqId), int(tickType), value.decode())
             return
 
         # snoop for nextValidId and managedAccounts response,
@@ -372,7 +381,7 @@ class Connection:
     def connect(self):
         loop = asyncio.get_event_loop()
         coro = loop.create_connection(lambda: Socket(self),
-                self.host, self.port)
+                                      self.host, self.port)
         future = asyncio.ensure_future(coro)
         future.add_done_callback(self._onConnectionCreated)
         return future

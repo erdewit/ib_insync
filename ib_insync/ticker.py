@@ -10,21 +10,21 @@ nan = float('nan')
 class Ticker(Object):
     """
     Current market data such as bid, ask, last price, etc. for a contract.
-            
+
     Streaming level-1 ticks of type ``TickData`` are stored in
     the ``ticks`` list.
-    
+
     Streaming level-2 ticks of type ``MktDepthData`` are stored in the
     ``domTicks`` list. The order book (DOM) is available as lists of
     ``DOMLevel`` in ``domBids`` and ``domAsks``.
-    
+
     Streaming tick-by-tick ticks are stored in ``tickByTicks``.
-    
+
     For options the ``OptionComputation`` values for the bid, ask, resp.
     last price are stored in the ``bidGreeks``, ``askGreeks`` resp.
     ``lastGreeks`` attributes. There is also ``modelGreeks`` that conveys
     the greeks as calculated by Interactive Brokers' option model.
-    
+
     Events:
         * ``updateEvent(ticker)``
     """
@@ -100,14 +100,14 @@ class Ticker(Object):
     def marketPrice(self):
         """
         Return the first available one of
-        
+
         * last price if within current bid/ask;
         * average of bid and ask (midpoint);
         * close price.
         """
         midpoint = self.midpoint()
-        price = self.last if (isNan(midpoint) or
-                self.bid <= self.last <= self.ask) else nan
+        price = self.last if (
+            isNan(midpoint) or self.bid <= self.last <= self.ask) else nan
         if isNan(price):
             price = midpoint
         if isNan(price) or price == -1:

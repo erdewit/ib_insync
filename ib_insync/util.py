@@ -5,8 +5,7 @@ import math
 import signal
 import asyncio
 import time
-from typing import List, Iterator
-from collections.abc import Awaitable
+from typing import List, Iterator, Awaitable
 
 from ib_insync.objects import Object, DynamicObject
 
@@ -69,8 +68,8 @@ def barplot(bars, title='', upColor='blue', downColor='red'):
     from matplotlib.patches import Rectangle
 
     if isinstance(bars, pd.DataFrame):
-        ohlcTups = [tuple(v) for v in
-                bars[['open', 'high', 'low', 'close']].values]
+        ohlcTups = [
+            tuple(v) for v in bars[['open', 'high', 'low', 'close']].values]
     else:
         ohlcTups = [(b.open, b.high, b.low, b.close) for b in bars]
 
@@ -86,25 +85,25 @@ def barplot(bars, title='', upColor='blue', downColor='red'):
             color = downColor
             bodyHi, bodyLo = open_, close
         line = Line2D(
-                xdata=(n, n),
-                ydata=(low, bodyLo),
-                color=color,
-                linewidth=1)
+            xdata=(n, n),
+            ydata=(low, bodyLo),
+            color=color,
+            linewidth=1)
         ax.add_line(line)
         line = Line2D(
-                xdata=(n, n),
-                ydata=(high, bodyHi),
-                color=color,
-                linewidth=1)
+            xdata=(n, n),
+            ydata=(high, bodyHi),
+            color=color,
+            linewidth=1)
         ax.add_line(line)
         rect = Rectangle(
-                xy=(n - 0.3, bodyLo),
-                width=0.6,
-                height=bodyHi - bodyLo,
-                edgecolor=color,
-                facecolor=color,
-                alpha=0.4,
-                antialiased=True
+            xy=(n - 0.3, bodyLo),
+            width=0.6,
+            height=bodyHi - bodyLo,
+            edgecolor=color,
+            facecolor=color,
+            alpha=0.4,
+            antialiased=True
         )
         ax.add_patch(rect)
 
@@ -128,7 +127,7 @@ def logToFile(path, level=logging.INFO, ibapiLevel=logging.ERROR):
     logger.addFilter(f)
     logger.setLevel(level)
     formatter = logging.Formatter(
-            '%(asctime)s %(name)s %(levelname)s %(message)s')
+        '%(asctime)s %(name)s %(levelname)s %(message)s')
     handler = logging.FileHandler(path)
     handler.setFormatter(formatter)
     logger.addHandler(handler)
@@ -143,11 +142,12 @@ def logToConsole(level=logging.INFO, ibapiLevel=logging.ERROR):
     logger.addFilter(f)
     logger.setLevel(level)
     formatter = logging.Formatter(
-            '%(asctime)s %(name)s %(levelname)s %(message)s')
+        '%(asctime)s %(name)s %(levelname)s %(message)s')
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
-    logger.handlers = [h for h in logger.handlers
-            if type(h) is not logging.StreamHandler]
+    logger.handlers = [
+        h for h in logger.handlers
+        if type(h) is not logging.StreamHandler]
     logger.addHandler(handler)
 
 
@@ -319,10 +319,10 @@ def patchAsyncio():
     Patch asyncio to use pure Python implementation of Future and Task,
     to deal with nested event loops in syncAwait.
     """
-    Task = asyncio.Task = asyncio.tasks._CTask = asyncio.tasks.Task = \
-            asyncio.tasks._PyTask
+    asyncio.Task = asyncio.tasks._CTask = asyncio.tasks.Task = \
+        asyncio.tasks._PyTask
     asyncio.Future = asyncio.futures._CFuture = asyncio.futures.Future = \
-            asyncio.futures._PyFuture
+        asyncio.futures._PyFuture
 
 
 def syncAwait(future):
@@ -350,7 +350,7 @@ def syncAwait(future):
 def _syncAwaitAsyncio(future):
     # https://bugs.python.org/issue22239
     assert asyncio.Task is asyncio.tasks._PyTask, \
-            'To allow nested event loops, use util.patchAsyncio()'
+        'To allow nested event loops, use util.patchAsyncio()'
     loop = asyncio.get_event_loop()
     preserved_ready = list(loop._ready)
     loop._ready.clear()
@@ -426,8 +426,7 @@ def useQt():
     import quamash
     if isinstance(asyncio.get_event_loop(), quamash.QEventLoop):
         return
-    if not qt.QApplication.instance():
-        _ = qt.QApplication(sys.argv)
+    assert qt.QApplication.instance()
     loop = quamash.QEventLoop()
     asyncio.set_event_loop(loop)
 
@@ -462,7 +461,7 @@ def parseIBDatetime(s):
         dt = datetime.date(y, m, d)
     elif s.isdigit():
         dt = datetime.datetime.fromtimestamp(
-                int(s), datetime.timezone.utc)
+            int(s), datetime.timezone.utc)
     else:
         dt = datetime.datetime.strptime(s, '%Y%m%d  %H:%M:%S')
     return dt

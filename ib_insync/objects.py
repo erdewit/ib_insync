@@ -10,7 +10,7 @@ import ibapi.execution
 import ibapi.commission_report
 
 # order conditions are imported as-is from ibapi
-from ibapi.order_condition import (OrderCondition, ExecutionCondition,
+from ibapi.order_condition import (OrderCondition, ExecutionCondition,  # noqa
         OperatorCondition, MarginCondition, ContractCondition, TimeCondition,
         PriceCondition, PercentChangeCondition, VolumeCondition)
 
@@ -32,7 +32,7 @@ __all__ = (
     'OrderCondition ExecutionCondition OperatorCondition MarginCondition '
     'ContractCondition TimeCondition PriceCondition PercentChangeCondition '
     'VolumeCondition'
-    ).split()
+).split()
 
 nan = float('nan')
 
@@ -40,7 +40,7 @@ nan = float('nan')
 class Object:
     """
     Base object, with:
-    
+
     * __slots__ to avoid typos;
     * A general constructor;
     * A general string representation;
@@ -97,10 +97,10 @@ class Object:
         """
         diff = {}
         for k in self.__class__.defaults:
-            l = getattr(self, k)
-            r = getattr(other, k)
-            if l != r:
-                diff[k] = (l, r)
+            left = getattr(self, k)
+            right = getattr(other, k)
+            if left != right:
+                diff[k] = (left, right)
         return diff
 
     def nonDefaults(self):
@@ -131,7 +131,7 @@ class ContractDetails(Object):
     defaults['contract'] = None
     defaults.pop('summary', None)
     __slots__ = list(defaults.keys()) + \
-            ['secIdListCount']  # bug in ibapi decoder
+        ['secIdListCount']  # bug in ibapi decoder
 
     # backwards compatibility with ibapi v9.73.06
     @property
@@ -156,9 +156,9 @@ class ComboLeg(Object):
 
 class DeltaNeutralContract(Object):
     defaults = dict(
-       conId=0,
-       delta=0.0,
-       price=0.0)
+        conId=0,
+        delta=0.0,
+        price=0.0)
     __slots__ = defaults.keys()
 
 
@@ -260,7 +260,7 @@ class BarList(list):
         * ``updateEvent(bars, hasNewBar)``
     """
     events = ('updateEvent',)
-    
+
     __slots__ = events
 
     def __init__(self, *args):
@@ -275,91 +275,119 @@ class BarList(list):
 
 
 class BarDataList(BarList):
-    __slots__ = ('reqId', 'contract', 'endDateTime', 'durationStr',
-            'barSizeSetting', 'whatToShow', 'useRTH', 'formatDate',
-            'keepUpToDate', 'chartOptions')
+    __slots__ = (
+        'reqId', 'contract', 'endDateTime', 'durationStr',
+        'barSizeSetting', 'whatToShow', 'useRTH', 'formatDate',
+        'keepUpToDate', 'chartOptions')
 
 
 class RealTimeBarList(BarList):
-    __slots__ = ('reqId', 'contract', 'barSize', 'whatToShow', 'useRTH',
-            'realTimeBarsOptions')
+    __slots__ = (
+        'reqId', 'contract', 'barSize', 'whatToShow', 'useRTH',
+        'realTimeBarsOptions')
 
 
-AccountValue = namedtuple('AccountValue',
+AccountValue = namedtuple(
+    'AccountValue',
     'account tag value currency modelCode')
 
-TickData = namedtuple('TickData',
+TickData = namedtuple(
+    'TickData',
     'time tickType price size')
 
-HistoricalTick = namedtuple('HistoricalTick',
+HistoricalTick = namedtuple(
+    'HistoricalTick',
     'time price size')
 
-HistoricalTickBidAsk = namedtuple('HistoricalTickBidAsk',
+HistoricalTickBidAsk = namedtuple(
+    'HistoricalTickBidAsk',
     'time mask priceBid priceAsk sizeBid sizeAsk')
 
-HistoricalTickLast = namedtuple('HistoricalTickLast',
+HistoricalTickLast = namedtuple(
+    'HistoricalTickLast',
     'time mask price size exchange specialConditions')
 
-TickByTickAllLast = namedtuple('TickByTickAllLast',
+TickByTickAllLast = namedtuple(
+    'TickByTickAllLast',
     'tickType time price size attribs exchange specialConditions')
 
-TickByTickBidAsk = namedtuple('TickByTickBidAsk',
+TickByTickBidAsk = namedtuple(
+    'TickByTickBidAsk',
     'time bidPrice askPrice bidSize askSize attribs')
 
-TickByTickMidPoint = namedtuple('TickByTickMidPoint',
+TickByTickMidPoint = namedtuple(
+    'TickByTickMidPoint',
     'time midPoint')
 
-MktDepthData = namedtuple('MktDepthData',
+MktDepthData = namedtuple(
+    'MktDepthData',
     'time position marketMaker operation side price size')
 
-DOMLevel = namedtuple('DOMLevel',
+DOMLevel = namedtuple(
+    'DOMLevel',
     'price size marketMaker')
 
-BracketOrder = namedtuple('BracketOrder',
+BracketOrder = namedtuple(
+    'BracketOrder',
     'parent takeProfit stopLoss')
 
-TradeLogEntry = namedtuple('TradeLogEntry',
+TradeLogEntry = namedtuple(
+    'TradeLogEntry',
     'time status message')
 
-PriceIncrement = namedtuple('PriceIncrement',
+PriceIncrement = namedtuple(
+    'PriceIncrement',
     'lowEdge increment')
-    
-ScanData = namedtuple('ScanData',
+
+ScanData = namedtuple(
+    'ScanData',
     'rank contractDetails distance benchmark projection legsStr')
 
-TagValue = namedtuple('TagValue',
+TagValue = namedtuple(
+    'TagValue',
     'tag value')
 
-PortfolioItem = namedtuple('PortfolioItem', (
+PortfolioItem = namedtuple(
+    'PortfolioItem',
     'contract position marketPrice marketValue averageCost '
-    'unrealizedPNL realizedPNL account'))
+    'unrealizedPNL realizedPNL account')
 
-Position = namedtuple('Position',
+Position = namedtuple(
+    'Position',
     'account contract position avgCost')
 
-Fill = namedtuple('Fill',
+Fill = namedtuple(
+    'Fill',
     'contract execution commissionReport time')
 
-OptionComputation = namedtuple('OptionComputation',
+OptionComputation = namedtuple(
+    'OptionComputation',
     'impliedVol delta optPrice pvDividend gamma vega theta undPrice')
 
-OptionChain = namedtuple('OptionChain',
+OptionChain = namedtuple(
+    'OptionChain',
     'exchange underlyingConId tradingClass multiplier expirations strikes')
 
-Dividends = namedtuple('Dividends',
+Dividends = namedtuple(
+    'Dividends',
     'past12Months next12Months nextDate nextAmount')
 
-NewsArticle = namedtuple('NewsArticle',
+NewsArticle = namedtuple(
+    'NewsArticle',
     'articleType articleText')
 
-HistoricalNews = namedtuple('HistoricalNews',
+HistoricalNews = namedtuple(
+    'HistoricalNews',
     'time providerCode articleId headline')
 
-NewsTick = namedtuple('NewsTick',
+NewsTick = namedtuple(
+    'NewsTick',
     'timeStamp providerCode articleId headline extraData')
 
-NewsBulletin = namedtuple('NewsBulletin',
+NewsBulletin = namedtuple(
+    'NewsBulletin',
     'msgId msgType message origExchange')
 
-ConnectionStats = namedtuple('ConnectionStats',
+ConnectionStats = namedtuple(
+    'ConnectionStats',
     'startTime duration numBytesRecv numBytesSent numMsgRecv numMsgSent')

@@ -7,7 +7,7 @@ __all__ = ['Event']
 class Event:
     """
     Enable event passing between loosely coupled compenents.
-     
+
     An event contains a list of callables (the listener slots) that are
     called in order when the event is emitted.
     """
@@ -21,9 +21,9 @@ class Event:
         """
         Connect the callable c to this event.
         The ``+=`` operator can be used as a synonym for this method.
-        
+
         When ``weakRef=True`` the callable can be garbage collected upon which
-        it will be automatically disconnected from this event; 
+        it will be automatically disconnected from this event;
         When ``weakRef=False`` a strong reference to the callable will be kept.
 
         With ``hiPriority=True`` the callable will be placed in the first slot,
@@ -31,7 +31,7 @@ class Event:
         """
         if c in self:
             raise ValueError(f'Duplicate callback: {c}')
-        
+
         obj, func = self._split(c)
         if weakRef and hasattr(obj, '__weakref__'):
             ref = weakref.ref(obj, self._onFinalize)
@@ -49,7 +49,7 @@ class Event:
         """
         Disconnect the callable from this event.
         The ``-=`` operator can be used as a synonym for this method.
-        
+
         It's okay (i.e. not considered an error) if the callable is
         already not connected.
         """
@@ -97,7 +97,7 @@ class Event:
     __iadd__ = connect
     __isub__ = disconnect
     __call__ = emit
-            
+
     def __repr__(self):
         return f'Event<{self.name}, {self.slots}>'
 
@@ -122,11 +122,11 @@ class Event:
         """
         Split given callable in (object, function) tuple.
         """
-        if type(c) is types.FunctionType:
+        if isinstance(c, types.FunctionType):
             t = (None, c)
-        elif type(c) is types.MethodType:
+        elif isinstance(c, types.MethodType):
             t = (c.__self__, c.__func__)
-        elif type(c) is types.BuiltinMethodType:
+        elif isinstance(c, types.BuiltinMethodType):
             if type(c.__self__) is type:
                 # built-in method
                 t = (c.__self__, c)
@@ -138,7 +138,7 @@ class Event:
         else:
             raise ValueError(f'Invalid callable: {c}')
         return t
-    
+
     def _onFinalize(self, ref):
         for slot in self.slots:
             if slot[1] is ref:

@@ -17,18 +17,18 @@ class IBC(Object):
     """
     Programmatic control over starting and stopping TWS/Gateway
     using IBC (https://github.com/IbcAlpha/IBC).
-    
+
     This is not intended to be run in a notebook.
-    
+
     Arguments:
-    
+
     * ``twsVersion`` (required): The major version number for TWS or gateway.
     * ``tradingMode``: 'live' or 'paper'.
     * ``userid``: IB account username. It is recommended to set the real
       username/password in a secured IBC config file.
     * ``password``: IB account password.
     * ``twsPath``: Path to the TWS installation folder.
-    
+
       =======  ==============
       Default
       =======================
@@ -36,9 +36,9 @@ class IBC(Object):
       OS X     ~/Applications
       Windows  C:\\\\Jts
       =======  ==============
-      
+
     * ``twsSettingsPath``: Path to the TWS settings folder.
-    
+
       ========  =============
       Default
       =======================
@@ -46,9 +46,9 @@ class IBC(Object):
       OS X      ~/Jts
       Windows   Not available
       ========  =============
-      
+
     * ``ibcPath``: Path to the IBC installation folder.
-    
+
       ========  =============
       Default
       =======================
@@ -56,9 +56,9 @@ class IBC(Object):
       OS X      /opt/ibc
       Windows   C:\\\\IBC
       ========  =============
-      
+
     * ``ibcIni``: Path to the IBC configuration file.
-    
+
       ========  =============
       Default
       =======================
@@ -66,24 +66,24 @@ class IBC(Object):
       OS X      ~/ibc/config.ini
       Windows   %%HOMEPATH%%\\\\Documents\\\\IBC\\\\config.ini
       ========  =============
-      
+
     * ``javaPath``: Path to Java executable.
       Default is to use the Java VM included with TWS/gateway.
     * ``fixuserid``: FIX account user id (gateway only).
     * ``fixpassword``: FIX account password (gateway only).
-    
+
     To use IBC on Windows, the proactor (or quamash) event loop
     must have been set:
-    
+
     .. code-block:: python
-        
+
         import asyncio
         asyncio.set_event_loop(asyncio.ProactorEventLoop())
-    
+
     Example usage:
-    
+
     .. code-block:: python
-    
+
         ibc = IBC(969, gateway=True, tradingMode='live',
                 userid='edemo', password='demouser')
         ibc.start()
@@ -114,7 +114,7 @@ class IBC(Object):
         Object.__init__(self, *args, **kwargs)
         if not self.ibcPath:
             self.ibcPath = '/opt/ibc' if os.sys.platform != 'win32' \
-                    else 'C:\\IBC'
+                else 'C:\\IBC'
         self._proc = None
         self._monitor = None
         self._logger = logging.getLogger('ib_insync.IBC')
@@ -145,7 +145,8 @@ class IBC(Object):
 
         # create shell command
         win32 = os.sys.platform == 'win32'
-        cmd = [f'{self.ibcPath}\\scripts\\StartIBC.bat' if win32 else
+        cmd = [
+            f'{self.ibcPath}\\scripts\\StartIBC.bat' if win32 else
             f'{self.ibcPath}/scripts/ibcstart.sh']
         for k, v in self.dict().items():
             arg = IBC._Args[k][2 if win32 else 1]
@@ -158,8 +159,8 @@ class IBC(Object):
                     cmd.append(str(v))
 
         # run shell command
-        self._proc = await asyncio.create_subprocess_exec(*cmd,
-                stdout=asyncio.subprocess.PIPE)
+        self._proc = await asyncio.create_subprocess_exec(
+            *cmd, stdout=asyncio.subprocess.PIPE)
         self._monitor = asyncio.ensure_future(self.monitorAsync())
 
     async def terminateAsync(self):
@@ -185,14 +186,14 @@ class IBC(Object):
 class IBController(Object):
     """
     For new installations it is recommended to use IBC instead.
-      
+
     Programmatic control over starting and stopping TWS/Gateway
     using IBController (https://github.com/ib-controller/ib-controller).
-    
+
     On Windows the the proactor (or quamash) event loop must have been set:
-    
+
     .. code-block:: python
-        
+
         import asyncio
         asyncio.set_event_loop(asyncio.ProactorEventLoop())
 
@@ -261,8 +262,8 @@ class IBController(Object):
         ext = 'bat' if os.sys.platform == 'win32' else 'sh'
         cmd = f'{d["IBC_PATH"]}/Scripts/DisplayBannerAndLaunch.{ext}'
         env = {**os.environ, **d}
-        self._proc = await asyncio.create_subprocess_exec(cmd, env=env,
-                stdout=asyncio.subprocess.PIPE)
+        self._proc = await asyncio.create_subprocess_exec(
+            cmd, env=env, stdout=asyncio.subprocess.PIPE)
         self._monitor = asyncio.ensure_future(self.monitorAsync())
 
     async def stopAsync(self):
@@ -308,15 +309,15 @@ class Watchdog(Object):
     """
     Start, connect and watch over the TWS or gateway app and try to keep it
     up and running.
-    
+
     The idea is to wait until there is no traffic coming from the app for
     a certain amount of time (the ``appTimeout`` parameter). This triggers
     a historical request to be placed just to see if the app is still alive
     and well. If yes, then continue, if no then restart the whole app
     and reconnect. Restarting will also occur directly on error 1100.
-    
+
     Arguments:
-    
+
     * ``controller`` (required): IBC or IBController instance;
     * ``ib`` (required): IB instance to be used. Do no connect this
       instance as Watchdog takes care of that.
@@ -325,17 +326,17 @@ class Watchdog(Object):
     * ``appStartupTime``: Time (in seconds) that the app is given to start up;
       Make sure that it is given ample time;
     * ``appTimeout``: Timeout (in seconds) for network traffic idle time;
-    * ``retryDelay``: Time (in seconds) to restart app after a previous failure;
-      If left empty then Watchdog creates the IB instance.
-    
+    * ``retryDelay``: Time (in seconds) to restart app after a
+      previous failure;
+
     Note: ``util.patchAsyncio()`` must have been called before.
-    
+
     This is not intended to be run in a notebook.
 
     Example usage:
-    
+
     .. code-block:: python
-    
+
         util.patchAsyncio()
 
         ibc = IBC(973, gateway=True, tradingMode='paper')
@@ -344,7 +345,7 @@ class Watchdog(Object):
         app.start()
         print(app.ib.accountValues())
         IB.run()
-    
+
     Events:
         * ``startingEvent(watchdog)``
         * ``startedEvent(watchdog)``
@@ -354,8 +355,9 @@ class Watchdog(Object):
         * ``hardTimeoutEvent(watchdog)``
     """
 
-    events = ['startingEvent', 'startedEvent', 'stoppingEvent', 'stoppedEvent',
-            'softTimeoutEvent', 'hardTimeoutEvent']
+    events = [
+        'startingEvent', 'startedEvent', 'stoppingEvent', 'stoppedEvent',
+        'softTimeoutEvent', 'hardTimeoutEvent']
 
     defaults = dict(
         controller=None,
@@ -368,7 +370,7 @@ class Watchdog(Object):
         appTimeout=20,
         retryDelay=2)
     __slots__ = list(defaults.keys()) + events + [
-            '_watcher', '_logger', '_isRunning', '_isRestarting']
+        '_watcher', '_logger', '_isRunning', '_isRestarting']
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
@@ -399,7 +401,7 @@ class Watchdog(Object):
             self._connect()
             self.ib.setTimeout(self.appTimeout)
             self.startedEvent.emit(self)
-        except:
+        except Exception:
             self.controller.terminate()
             self._scheduleRestart()
 
@@ -417,8 +419,8 @@ class Watchdog(Object):
             self._scheduleRestart()
 
     def _connect(self):
-        self.ib.connect(self.host, self.port, self.clientId,
-                self.connectTimeout)
+        self.ib.connect(
+            self.host, self.port, self.clientId, self.connectTimeout)
 
     def _disconnect(self):
         self.ib.disconnect()
@@ -444,13 +446,13 @@ class Watchdog(Object):
             self.softTimeoutEvent.emit(self)
             contract = Forex('EURUSD')
             probe = self.ib.reqHistoricalDataAsync(
-                    contract, '', '30 S', '5 secs', 'MIDPOINT', False)
+                contract, '', '30 S', '5 secs', 'MIDPOINT', False)
             try:
                 bars = await asyncio.wait_for(probe, 4)
                 if not bars:
                     raise Exception()
                 self.ib.setTimeout(self.appTimeout)
-            except:
+            except Exception:
                 # hard timeout, flush everything and start anew
                 self._logger.error('Hard timeout')
                 self.hardTimeoutEvent.emit(self)
