@@ -84,7 +84,7 @@
 <div class="viewcode-block" id="Event"><a class="viewcode-back" href="../../api.html#ib_insync.event.Event">[docs]</a><span class="k">class</span> <span class="nc">Event</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enable event passing between loosely coupled compenents.</span>
-<span class="sd">     </span>
+
 <span class="sd">    An event contains a list of callables (the listener slots) that are</span>
 <span class="sd">    called in order when the event is emitted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -98,9 +98,9 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Connect the callable c to this event.</span>
 <span class="sd">        The ``+=`` operator can be used as a synonym for this method.</span>
-<span class="sd">        </span>
+
 <span class="sd">        When ``weakRef=True`` the callable can be garbage collected upon which</span>
-<span class="sd">        it will be automatically disconnected from this event; </span>
+<span class="sd">        it will be automatically disconnected from this event;</span>
 <span class="sd">        When ``weakRef=False`` a strong reference to the callable will be kept.</span>
 
 <span class="sd">        With ``hiPriority=True`` the callable will be placed in the first slot,</span>
@@ -108,7 +108,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Duplicate callback: </span><span class="si">{c}</span><span class="s1">&#39;</span><span class="p">)</span>
-        
+
         <span class="n">obj</span><span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">weakRef</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;__weakref__&#39;</span><span class="p">):</span>
             <span class="n">ref</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onFinalize</span><span class="p">)</span>
@@ -126,7 +126,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Disconnect the callable from this event.</span>
 <span class="sd">        The ``-=`` operator can be used as a synonym for this method.</span>
-<span class="sd">        </span>
+
 <span class="sd">        It&#39;s okay (i.e. not considered an error) if the callable is</span>
 <span class="sd">        already not connected.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -174,7 +174,7 @@
     <span class="fm">__iadd__</span> <span class="o">=</span> <span class="n">connect</span>
     <span class="fm">__isub__</span> <span class="o">=</span> <span class="n">disconnect</span>
     <span class="fm">__call__</span> <span class="o">=</span> <span class="n">emit</span>
-            
+
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;Event&lt;</span><span class="si">{self.name}</span><span class="s1">, </span><span class="si">{self.slots}</span><span class="s1">&gt;&#39;</span>
 
@@ -199,11 +199,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Split given callable in (object, function) tuple.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="ow">is</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">):</span>
             <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="ow">is</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">):</span>
             <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="vm">__self__</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="vm">__func__</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="ow">is</span> <span class="n">types</span><span class="o">.</span><span class="n">BuiltinMethodType</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">BuiltinMethodType</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="vm">__self__</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">:</span>
                 <span class="c1"># built-in method</span>
                 <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="vm">__self__</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
@@ -215,7 +215,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Invalid callable: </span><span class="si">{c}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">t</span>
-    
+
     <span class="k">def</span> <span class="nf">_onFinalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">slot</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="n">ref</span><span class="p">:</span>

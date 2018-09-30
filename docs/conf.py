@@ -19,11 +19,8 @@ exec(open('../ib_insync/version.py').read())
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-#    'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
-#    'sphinx.ext.autosummary',
-#    'sphinx_autodoc_typehints',
-#    'sphinx.ext.githubpages',
+    'sphinx_autodoc_typehints'
     ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -105,7 +102,6 @@ html_sidebars = {
     '**': [
         'about.html',
         'navigation.html',
-#        'relations.html',  # needs 'show_related': True theme option to display
         'searchbox.html',
         'donate.html',
     ]
@@ -126,9 +122,6 @@ def onDocstring(app, what, name, obj, options, lines):
         # strip useless namedtuple number fields
         del lines[:]
 
-# def onSignature(app, what, name, obj, options, signature, return_annotation):
-#    return(signature, return_annotation)
-
 
 def setup(app):
     app.connect('autodoc-process-docstring', onDocstring),
@@ -139,25 +132,6 @@ def setup(app):
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'IB-insyncdoc'
 
-# -- Options for LaTeX output ---------------------------------------------
-
-latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #
-    # 'papersize': 'letterpaper',
-
-    # The font size ('10pt', '11pt' or '12pt').
-    #
-    # 'pointsize': '10pt',
-
-    # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
-
-    # Latex figure (float) alignment
-    #
-    # 'figure_align': 'htbp',
-}
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
@@ -176,15 +150,3 @@ man_pages = [
     (master_doc, 'ib-insync', 'IB-insync Documentation',
      [author], 1)
 ]
-
-# -- Options for Texinfo output -------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (master_doc, 'IB-insync', 'IB-insync Documentation',
-     author, 'IB-insync', 'One line description of project.',
-     'Miscellaneous'),
-]
-

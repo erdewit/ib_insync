@@ -5,7 +5,6 @@ import time
 from typing import List, Iterator, Callable, Awaitable
 
 import ibapi
-from ibapi.account_summary_tags import AccountSummaryTags
 
 from ib_insync.client import Client
 from ib_insync.wrapper import Wrapper
@@ -1283,7 +1282,8 @@ class IB:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqAccountSummary(
-            reqId, groupName='All', tags=AccountSummaryTags.AllTags)
+            reqId, groupName='All',
+            tags=ibapi.account_summary_tags.AccountSummaryTags.AllTags)
         return future
 
     def reqOpenOrdersAsync(self):

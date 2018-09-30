@@ -11,7 +11,7 @@ Release |release|.
 
 Also see the official
 `Python API documentation <https://interactivebrokers.github.io/tws-api>`_
-from IB. 
+from IB.
 
 
 IB
@@ -48,11 +48,6 @@ Event
 -----
 
 .. automodule:: ib_insync.event
-
-Wrapper
--------
-
-.. automodule:: ib_insync.wrapper
 
 Utilities
 ---------

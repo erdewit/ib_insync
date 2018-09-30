@@ -88,23 +88,24 @@
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.flexreport&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="FlexError"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexError">[docs]</a><span class="k">class</span> <span class="nc">FlexError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span> <span class="k">pass</span></div>
+<div class="viewcode-block" id="FlexError"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexError">[docs]</a><span class="k">class</span> <span class="nc">FlexError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="FlexReport"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport">[docs]</a><span class="k">class</span> <span class="nc">FlexReport</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Download and parse IB account statements via the Flex Web Service.</span>
 <span class="sd">    https://www.interactivebrokers.com/en/software/am/am/reports/flex_web_service_version_3.htm</span>
-<span class="sd">    </span>
+
 <span class="sd">    To obtain a ``token`` in account management, go to</span>
 <span class="sd">    Reports -&gt; Settings -&gt; Flex Web Service.</span>
 <span class="sd">    Tip: choose a 1 year expiry.</span>
-<span class="sd">    </span>
+
 <span class="sd">    To obtain a ``queryId``: Create and save a query with</span>
 <span class="sd">    Report -&gt; Activity -&gt; Flex Queries or</span>
 <span class="sd">    Report -&gt; Trade Confirmations -&gt; Flex Queries.</span>
 <span class="sd">    Find the query ID (not the query name).</span>
-<span class="sd">    </span>
+
 <span class="sd">    A large query can take a few minutes. In the weekends the query servers</span>
 <span class="sd">    can be down.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -130,7 +131,7 @@
 <div class="viewcode-block" id="FlexReport.extract"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parseNumbers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract items of given topic and return as list of objects.</span>
-<span class="sd">        </span>
+
 <span class="sd">        The topic is a string like TradeConfirm, ChangeInDividendAccrual,</span>
 <span class="sd">        Order, etc.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -159,7 +160,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Download report for the given ``token`` and ``queryId``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://gdcdyn.interactivebrokers.com&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s1">&#39;https://gdcdyn.interactivebrokers.com&#39;</span>
                 <span class="n">f</span><span class="s1">&#39;/Universal/servlet/FlexStatementService.SendRequest?&#39;</span>
                 <span class="n">f</span><span class="s1">&#39;t=</span><span class="si">{token}</span><span class="s1">&amp;q=</span><span class="si">{queryId}</span><span class="s1">&amp;v=3&#39;</span><span class="p">)</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>

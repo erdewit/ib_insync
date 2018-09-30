@@ -82,8 +82,7 @@
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterator</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="k">import</span> <span class="n">Awaitable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Awaitable</span>
 
 <span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="n">Object</span><span class="p">,</span> <span class="n">DynamicObject</span>
 
@@ -146,8 +145,8 @@
     <span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="k">import</span> <span class="n">Rectangle</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
-        <span class="n">ohlcTups</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span>
-                <span class="n">bars</span><span class="p">[[</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+        <span class="n">ohlcTups</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">bars</span><span class="p">[[</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ohlcTups</span> <span class="o">=</span> <span class="p">[(</span><span class="n">b</span><span class="o">.</span><span class="n">open</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">high</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">close</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bars</span><span class="p">]</span>
 
@@ -163,25 +162,25 @@
             <span class="n">color</span> <span class="o">=</span> <span class="n">downColor</span>
             <span class="n">bodyHi</span><span class="p">,</span> <span class="n">bodyLo</span> <span class="o">=</span> <span class="n">open_</span><span class="p">,</span> <span class="n">close</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">Line2D</span><span class="p">(</span>
-                <span class="n">xdata</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span>
-                <span class="n">ydata</span><span class="o">=</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">bodyLo</span><span class="p">),</span>
-                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">xdata</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span>
+            <span class="n">ydata</span><span class="o">=</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">bodyLo</span><span class="p">),</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">Line2D</span><span class="p">(</span>
-                <span class="n">xdata</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span>
-                <span class="n">ydata</span><span class="o">=</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">bodyHi</span><span class="p">),</span>
-                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">xdata</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span>
+            <span class="n">ydata</span><span class="o">=</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">bodyHi</span><span class="p">),</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="n">rect</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span>
-                <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">bodyLo</span><span class="p">),</span>
-                <span class="n">width</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-                <span class="n">height</span><span class="o">=</span><span class="n">bodyHi</span> <span class="o">-</span> <span class="n">bodyLo</span><span class="p">,</span>
-                <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
-                <span class="n">antialiased</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">bodyLo</span><span class="p">),</span>
+            <span class="n">width</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="n">bodyHi</span> <span class="o">-</span> <span class="n">bodyLo</span><span class="p">,</span>
+            <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+            <span class="n">antialiased</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
 
@@ -205,7 +204,7 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">addFilter</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
     <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(name)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(name)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span></div>
@@ -220,11 +219,12 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">addFilter</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
     <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
-            <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(name)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(name)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
     <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">]</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">h</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">]</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span></div>
 
 
@@ -273,7 +273,7 @@
             <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">s</span> <span class="o">+=</span> <span class="n">val</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;yzafpnm kMGTPEZY&#39;</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">7</span><span class="p">]</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;yzafpnum kMGTPEZY&#39;</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">8</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">s</span></div>
 
 
@@ -298,7 +298,7 @@
 
 <span class="sd">    When awaitables (like Tasks, Futures or coroutines) are given then</span>
 <span class="sd">    run the event loop until each has completed and return their results.</span>
-<span class="sd">    </span>
+
 <span class="sd">    An optional timeout (in seconds) can be given that will raise</span>
 <span class="sd">    asyncio.TimeoutError if the awaitables are not ready within the</span>
 <span class="sd">    timeout period.</span>
@@ -354,11 +354,11 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iterator that waits periodically until certain time points are</span>
 <span class="sd">    reached while yielding those time points.</span>
-<span class="sd">    </span>
+
 <span class="sd">    The startTime and dateTime parameters can be specified as</span>
 <span class="sd">    datetime.datetime, or as datetime.time in which case today</span>
 <span class="sd">    is used as the date.</span>
-<span class="sd">    </span>
+
 <span class="sd">    The step parameter is the number of seconds of each period.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">step</span> <span class="o">&gt;</span> <span class="mi">0</span>
@@ -379,7 +379,7 @@
 <div class="viewcode-block" id="waitUntil"><a class="viewcode-back" href="../../api.html#ib_insync.ib.waitUntil">[docs]</a><span class="k">def</span> <span class="nf">waitUntil</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">True</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wait until the given time t is reached.</span>
-<span class="sd">    </span>
+
 <span class="sd">    The time can be specified as datetime.datetime,</span>
 <span class="sd">    or as datetime.time in which case today is used as the date.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -396,10 +396,10 @@
 <span class="sd">    Patch asyncio to use pure Python implementation of Future and Task,</span>
 <span class="sd">    to deal with nested event loops in syncAwait.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_CTask</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> \
-            <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_PyTask</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_CTask</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> \
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_PyTask</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">_CFuture</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Future</span> <span class="o">=</span> \
-            <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">_PyFuture</span></div>
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">_PyFuture</span></div>
 
 
 <div class="viewcode-block" id="syncAwait"><a class="viewcode-back" href="../../api.html#ib_insync.ib.syncAwait">[docs]</a><span class="k">def</span> <span class="nf">syncAwait</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
@@ -427,7 +427,7 @@
 <span class="k">def</span> <span class="nf">_syncAwaitAsyncio</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
     <span class="c1"># https://bugs.python.org/issue22239</span>
     <span class="k">assert</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="ow">is</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_PyTask</span><span class="p">,</span> \
-            <span class="s1">&#39;To allow nested event loops, use util.patchAsyncio()&#39;</span>
+        <span class="s1">&#39;To allow nested event loops, use util.patchAsyncio()&#39;</span>
     <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
     <span class="n">preserved_ready</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">loop</span><span class="o">.</span><span class="n">_ready</span><span class="p">)</span>
     <span class="n">loop</span><span class="o">.</span><span class="n">_ready</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -503,8 +503,7 @@
     <span class="kn">import</span> <span class="nn">quamash</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">(),</span> <span class="n">quamash</span><span class="o">.</span><span class="n">QEventLoop</span><span class="p">):</span>
         <span class="k">return</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">():</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
     <span class="n">loop</span> <span class="o">=</span> <span class="n">quamash</span><span class="o">.</span><span class="n">QEventLoop</span><span class="p">()</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span></div>
 
@@ -539,7 +538,7 @@
         <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span>
-                <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">  %H:%M:%S&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">dt</span></div>

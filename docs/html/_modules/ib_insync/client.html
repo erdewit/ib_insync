@@ -99,45 +99,45 @@
 <div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="n">EClient</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Modification of ``ibapi.client.EClient`` that uses asyncio.</span>
-<span class="sd">    </span>
+
 <span class="sd">    The client is fully asynchronous and has its own</span>
 <span class="sd">    event-driven networking code that replaces the</span>
 <span class="sd">    networking code of the standard EClient.</span>
 <span class="sd">    It also replaces the infinite loop of ``EClient.run()``</span>
 <span class="sd">    with the asyncio event loop. It can be used as a drop-in</span>
 <span class="sd">    replacement for the standard EClient as provided by IBAPI.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Compared to the standard EClient this client has the following</span>
 <span class="sd">    additional features:</span>
-<span class="sd">    </span>
+
 <span class="sd">    * ``client.connect()`` will block until the client is ready to</span>
 <span class="sd">      serve requests; It is not necessary to wait for ``nextValidId``</span>
 <span class="sd">      to start requests as the client has already done that.</span>
 <span class="sd">      The reqId is directly available with :py:meth:`.getReqId()`.</span>
-<span class="sd">      </span>
+
 <span class="sd">    * ``client.connectAsync()`` is a coroutine for connecting asynchronously.</span>
-<span class="sd">      </span>
+
 <span class="sd">    * When blocking, ``client.connect()`` can be made to time out with</span>
 <span class="sd">      the timeout parameter (default 2 seconds).</span>
-<span class="sd">    </span>
+
 <span class="sd">    * Optional ``wrapper.priceSizeTick(reqId, tickType, price, size)`` that</span>
 <span class="sd">      combines price and size instead of the two wrapper methods</span>
 <span class="sd">      priceTick and sizeTick.</span>
-<span class="sd">      </span>
+
 <span class="sd">    * Automatic request throttling.</span>
-<span class="sd">    </span>
+
 <span class="sd">    * Optional ``wrapper.tcpDataArrived()`` method;</span>
 <span class="sd">      If the wrapper has this method it is invoked directly after</span>
 <span class="sd">      a network packet has arrived.</span>
 <span class="sd">      A possible use is to timestamp all data in the packet with</span>
 <span class="sd">      the exact same time.</span>
-<span class="sd">      </span>
+
 <span class="sd">    * Optional ``wrapper.tcpDataProcessed()`` method;</span>
 <span class="sd">      If the wrapper has this method it is invoked after the</span>
 <span class="sd">      network packet&#39;s data has been handled.</span>
 <span class="sd">      A possible use is to write or evaluate the newly arrived data in</span>
 <span class="sd">      one batch instead of item by item.</span>
-<span class="sd">      </span>
+
 <span class="sd">    * Events:</span>
 <span class="sd">        * ``apiStart()``</span>
 <span class="sd">        * ``apiEnd()``</span>
@@ -218,15 +218,16 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Connect to TWS/IBG at given host and port and with a clientId</span>
 <span class="sd">        that is not in use elsewhere.</span>
-<span class="sd">        </span>
+
 <span class="sd">        When timeout is not zero, asyncio.TimeoutError</span>
-<span class="sd">        is raised if the connection is not established within the timeout period.</span>
+<span class="sd">        is raised if the connection is not established</span>
+<span class="sd">        within the timeout period.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">util</span><span class="o">.</span><span class="n">syncAwait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Client.connectAsync"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connectAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">connectAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="n">f</span><span class="s1">&#39;Connecting to </span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1"> with clientId </span><span class="si">{clientId}</span><span class="s1">...&#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="s1">&#39;Connecting to </span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1"> with clientId </span><span class="si">{clientId}</span><span class="s1">...&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span> <span class="o">=</span> <span class="n">clientId</span>
@@ -268,7 +269,9 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Started to throttle requests&#39;</span><span class="p">)</span>
-            <span class="n">loop</span><span class="o">.</span><span class="n">call_at</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">Client</span><span class="o">.</span><span class="n">RequestsInterval</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">loop</span><span class="o">.</span><span class="n">call_at</span><span class="p">(</span>
+                <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">Client</span><span class="o">.</span><span class="n">RequestsInterval</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span> <span class="o">=</span> <span class="kc">False</span>
@@ -282,9 +285,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connected&#39;</span><span class="p">)</span>
         <span class="c1"># start handshake</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;API</span><span class="se">\0</span><span class="s1">&#39;</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;v</span><span class="si">%d</span><span class="s1">..</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
-                <span class="n">ibapi</span><span class="o">.</span><span class="n">server_versions</span><span class="o">.</span><span class="n">MIN_CLIENT_VER</span><span class="p">,</span>
-                <span class="n">ibapi</span><span class="o">.</span><span class="n">server_versions</span><span class="o">.</span><span class="n">MAX_CLIENT_VER</span><span class="p">))</span>
+        <span class="n">versionRange</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">142</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;v</span><span class="si">%d</span><span class="s1">..</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">versionRange</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">Decoder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
@@ -311,7 +313,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_numMsgRecv</span> <span class="o">+=</span> <span class="mi">1</span>
 
             <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;&lt; </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s1">&#39;&lt;&lt;&lt; </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion_</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="c1"># this concludes the handshake</span>
@@ -327,7 +330,7 @@
                 <span class="c1"># decode and handle the message</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_decode</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
-                <span class="k">except</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Decode failed&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcpDataProcessed</span><span class="p">:</span>
@@ -391,22 +394,26 @@
         <span class="c1"># bypass the ibapi decoder for ticks for more efficiency</span>
         <span class="k">if</span> <span class="n">msgId</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">fields</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">tickSize</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">tickSize</span><span class="p">(</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
             <span class="k">return</span>
         <span class="k">elif</span> <span class="n">msgId</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_priceSizeTick</span><span class="p">:</span>
                 <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fields</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_priceSizeTick</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_priceSizeTick</span><span class="p">(</span>
+                        <span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span>
                         <span class="nb">float</span><span class="p">(</span><span class="n">price</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
                 <span class="k">return</span>
         <span class="k">elif</span> <span class="n">msgId</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">fields</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">updateMktDepth</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">position</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">updateMktDepth</span><span class="p">(</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">position</span><span class="p">),</span>
                     <span class="nb">int</span><span class="p">(</span><span class="n">operation</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">side</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">price</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
             <span class="k">return</span>
         <span class="k">elif</span> <span class="n">msgId</span> <span class="o">==</span> <span class="mi">46</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">fields</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">tickString</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span> <span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">tickString</span><span class="p">(</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span> <span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
             <span class="k">return</span>
 
         <span class="c1"># snoop for nextValidId and managedAccounts response,</span>
@@ -451,7 +458,7 @@
     <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
         <span class="n">coro</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">create_connection</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Socket</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">coro</span><span class="p">)</span>
         <span class="n">future</span><span class="o">.</span><span class="n">add_done_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_onConnectionCreated</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span>

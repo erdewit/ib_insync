@@ -87,21 +87,21 @@
 <div class="viewcode-block" id="Ticker"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Ticker">[docs]</a><span class="k">class</span> <span class="nc">Ticker</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Current market data such as bid, ask, last price, etc. for a contract.</span>
-<span class="sd">            </span>
+
 <span class="sd">    Streaming level-1 ticks of type ``TickData`` are stored in</span>
 <span class="sd">    the ``ticks`` list.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Streaming level-2 ticks of type ``MktDepthData`` are stored in the</span>
 <span class="sd">    ``domTicks`` list. The order book (DOM) is available as lists of</span>
 <span class="sd">    ``DOMLevel`` in ``domBids`` and ``domAsks``.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Streaming tick-by-tick ticks are stored in ``tickByTicks``.</span>
-<span class="sd">    </span>
+
 <span class="sd">    For options the ``OptionComputation`` values for the bid, ask, resp.</span>
 <span class="sd">    last price are stored in the ``bidGreeks``, ``askGreeks`` resp.</span>
 <span class="sd">    ``lastGreeks`` attributes. There is also ``modelGreeks`` that conveys</span>
 <span class="sd">    the greeks as calculated by Interactive Brokers&#39; option model.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Events:</span>
 <span class="sd">        * ``updateEvent(ticker)``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -177,14 +177,14 @@
 <div class="viewcode-block" id="Ticker.marketPrice"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Ticker.marketPrice">[docs]</a>    <span class="k">def</span> <span class="nf">marketPrice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the first available one of</span>
-<span class="sd">        </span>
+
 <span class="sd">        * last price if within current bid/ask;</span>
 <span class="sd">        * average of bid and ask (midpoint);</span>
 <span class="sd">        * close price.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">midpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">midpoint</span><span class="p">()</span>
-        <span class="n">price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last</span> <span class="k">if</span> <span class="p">(</span><span class="n">isNan</span><span class="p">(</span><span class="n">midpoint</span><span class="p">)</span> <span class="ow">or</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">bid</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ask</span><span class="p">)</span> <span class="k">else</span> <span class="n">nan</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last</span> <span class="k">if</span> <span class="p">(</span>
+            <span class="n">isNan</span><span class="p">(</span><span class="n">midpoint</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">bid</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ask</span><span class="p">)</span> <span class="k">else</span> <span class="n">nan</span>
         <span class="k">if</span> <span class="n">isNan</span><span class="p">(</span><span class="n">price</span><span class="p">):</span>
             <span class="n">price</span> <span class="o">=</span> <span class="n">midpoint</span>
         <span class="k">if</span> <span class="n">isNan</span><span class="p">(</span><span class="n">price</span><span class="p">)</span> <span class="ow">or</span> <span class="n">price</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>

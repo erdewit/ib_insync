@@ -94,18 +94,18 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Programmatic control over starting and stopping TWS/Gateway</span>
 <span class="sd">    using IBC (https://github.com/IbcAlpha/IBC).</span>
-<span class="sd">    </span>
+
 <span class="sd">    This is not intended to be run in a notebook.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Arguments:</span>
-<span class="sd">    </span>
+
 <span class="sd">    * ``twsVersion`` (required): The major version number for TWS or gateway.</span>
 <span class="sd">    * ``tradingMode``: &#39;live&#39; or &#39;paper&#39;.</span>
 <span class="sd">    * ``userid``: IB account username. It is recommended to set the real</span>
 <span class="sd">      username/password in a secured IBC config file.</span>
 <span class="sd">    * ``password``: IB account password.</span>
 <span class="sd">    * ``twsPath``: Path to the TWS installation folder.</span>
-<span class="sd">    </span>
+
 <span class="sd">      =======  ==============</span>
 <span class="sd">      Default</span>
 <span class="sd">      =======================</span>
@@ -113,9 +113,9 @@
 <span class="sd">      OS X     ~/Applications</span>
 <span class="sd">      Windows  C:\\\\Jts</span>
 <span class="sd">      =======  ==============</span>
-<span class="sd">      </span>
+
 <span class="sd">    * ``twsSettingsPath``: Path to the TWS settings folder.</span>
-<span class="sd">    </span>
+
 <span class="sd">      ========  =============</span>
 <span class="sd">      Default</span>
 <span class="sd">      =======================</span>
@@ -123,9 +123,9 @@
 <span class="sd">      OS X      ~/Jts</span>
 <span class="sd">      Windows   Not available</span>
 <span class="sd">      ========  =============</span>
-<span class="sd">      </span>
+
 <span class="sd">    * ``ibcPath``: Path to the IBC installation folder.</span>
-<span class="sd">    </span>
+
 <span class="sd">      ========  =============</span>
 <span class="sd">      Default</span>
 <span class="sd">      =======================</span>
@@ -133,9 +133,9 @@
 <span class="sd">      OS X      /opt/ibc</span>
 <span class="sd">      Windows   C:\\\\IBC</span>
 <span class="sd">      ========  =============</span>
-<span class="sd">      </span>
+
 <span class="sd">    * ``ibcIni``: Path to the IBC configuration file.</span>
-<span class="sd">    </span>
+
 <span class="sd">      ========  =============</span>
 <span class="sd">      Default</span>
 <span class="sd">      =======================</span>
@@ -143,24 +143,24 @@
 <span class="sd">      OS X      ~/ibc/config.ini</span>
 <span class="sd">      Windows   %%HOMEPATH%%\\\\Documents\\\\IBC\\\\config.ini</span>
 <span class="sd">      ========  =============</span>
-<span class="sd">      </span>
+
 <span class="sd">    * ``javaPath``: Path to Java executable.</span>
 <span class="sd">      Default is to use the Java VM included with TWS/gateway.</span>
 <span class="sd">    * ``fixuserid``: FIX account user id (gateway only).</span>
 <span class="sd">    * ``fixpassword``: FIX account password (gateway only).</span>
-<span class="sd">    </span>
+
 <span class="sd">    To use IBC on Windows, the proactor (or quamash) event loop</span>
 <span class="sd">    must have been set:</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. code-block:: python</span>
-<span class="sd">        </span>
+
 <span class="sd">        import asyncio</span>
 <span class="sd">        asyncio.set_event_loop(asyncio.ProactorEventLoop())</span>
-<span class="sd">    </span>
+
 <span class="sd">    Example usage:</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. code-block:: python</span>
-<span class="sd">    </span>
+
 <span class="sd">        ibc = IBC(969, gateway=True, tradingMode=&#39;live&#39;,</span>
 <span class="sd">                userid=&#39;edemo&#39;, password=&#39;demouser&#39;)</span>
 <span class="sd">        ibc.start()</span>
@@ -191,7 +191,7 @@
         <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibcPath</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ibcPath</span> <span class="o">=</span> <span class="s1">&#39;/opt/ibc&#39;</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">!=</span> <span class="s1">&#39;win32&#39;</span> \
-                    <span class="k">else</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">IBC&#39;</span>
+                <span class="k">else</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">IBC&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.IBC&#39;</span><span class="p">)</span>
@@ -222,7 +222,8 @@
 
         <span class="c1"># create shell command</span>
         <span class="n">win32</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span>
-        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.ibcPath}</span><span class="se">\\</span><span class="s1">scripts</span><span class="se">\\</span><span class="s1">StartIBC.bat&#39;</span> <span class="k">if</span> <span class="n">win32</span> <span class="k">else</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.ibcPath}</span><span class="se">\\</span><span class="s1">scripts</span><span class="se">\\</span><span class="s1">StartIBC.bat&#39;</span> <span class="k">if</span> <span class="n">win32</span> <span class="k">else</span>
             <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.ibcPath}</span><span class="s1">/scripts/ibcstart.sh&#39;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">arg</span> <span class="o">=</span> <span class="n">IBC</span><span class="o">.</span><span class="n">_Args</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">2</span> <span class="k">if</span> <span class="n">win32</span> <span class="k">else</span> <span class="mi">1</span><span class="p">]</span>
@@ -235,8 +236,8 @@
                     <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 
         <span class="c1"># run shell command</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_subprocess_exec</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">,</span>
-                <span class="n">stdout</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_subprocess_exec</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">monitorAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IBC.terminateAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.terminateAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">terminateAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -262,14 +263,14 @@
 <div class="viewcode-block" id="IBController"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBController">[docs]</a><span class="k">class</span> <span class="nc">IBController</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    For new installations it is recommended to use IBC instead.</span>
-<span class="sd">      </span>
+
 <span class="sd">    Programmatic control over starting and stopping TWS/Gateway</span>
 <span class="sd">    using IBController (https://github.com/ib-controller/ib-controller).</span>
-<span class="sd">    </span>
+
 <span class="sd">    On Windows the the proactor (or quamash) event loop must have been set:</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. code-block:: python</span>
-<span class="sd">        </span>
+
 <span class="sd">        import asyncio</span>
 <span class="sd">        asyncio.set_event_loop(asyncio.ProactorEventLoop())</span>
 
@@ -338,8 +339,8 @@
         <span class="n">ext</span> <span class="o">=</span> <span class="s1">&#39;bat&#39;</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span> <span class="k">else</span> <span class="s1">&#39;sh&#39;</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{d[&quot;IBC_PATH&quot;]}</span><span class="s1">/Scripts/DisplayBannerAndLaunch.</span><span class="si">{ext}</span><span class="s1">&#39;</span>
         <span class="n">env</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="o">**</span><span class="n">d</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_subprocess_exec</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
-                <span class="n">stdout</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_subprocess_exec</span><span class="p">(</span>
+            <span class="n">cmd</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">monitorAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IBController.stopAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBController.stopAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">stopAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -385,15 +386,15 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Start, connect and watch over the TWS or gateway app and try to keep it</span>
 <span class="sd">    up and running.</span>
-<span class="sd">    </span>
+
 <span class="sd">    The idea is to wait until there is no traffic coming from the app for</span>
 <span class="sd">    a certain amount of time (the ``appTimeout`` parameter). This triggers</span>
 <span class="sd">    a historical request to be placed just to see if the app is still alive</span>
 <span class="sd">    and well. If yes, then continue, if no then restart the whole app</span>
 <span class="sd">    and reconnect. Restarting will also occur directly on error 1100.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Arguments:</span>
-<span class="sd">    </span>
+
 <span class="sd">    * ``controller`` (required): IBC or IBController instance;</span>
 <span class="sd">    * ``ib`` (required): IB instance to be used. Do no connect this</span>
 <span class="sd">      instance as Watchdog takes care of that.</span>
@@ -402,17 +403,17 @@
 <span class="sd">    * ``appStartupTime``: Time (in seconds) that the app is given to start up;</span>
 <span class="sd">      Make sure that it is given ample time;</span>
 <span class="sd">    * ``appTimeout``: Timeout (in seconds) for network traffic idle time;</span>
-<span class="sd">    * ``retryDelay``: Time (in seconds) to restart app after a previous failure;</span>
-<span class="sd">      If left empty then Watchdog creates the IB instance.</span>
-<span class="sd">    </span>
+<span class="sd">    * ``retryDelay``: Time (in seconds) to restart app after a</span>
+<span class="sd">      previous failure;</span>
+
 <span class="sd">    Note: ``util.patchAsyncio()`` must have been called before.</span>
-<span class="sd">    </span>
+
 <span class="sd">    This is not intended to be run in a notebook.</span>
 
 <span class="sd">    Example usage:</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. code-block:: python</span>
-<span class="sd">    </span>
+
 <span class="sd">        util.patchAsyncio()</span>
 
 <span class="sd">        ibc = IBC(973, gateway=True, tradingMode=&#39;paper&#39;)</span>
@@ -421,7 +422,7 @@
 <span class="sd">        app.start()</span>
 <span class="sd">        print(app.ib.accountValues())</span>
 <span class="sd">        IB.run()</span>
-<span class="sd">    </span>
+
 <span class="sd">    Events:</span>
 <span class="sd">        * ``startingEvent(watchdog)``</span>
 <span class="sd">        * ``startedEvent(watchdog)``</span>
@@ -431,8 +432,9 @@
 <span class="sd">        * ``hardTimeoutEvent(watchdog)``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">events</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;startingEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;startedEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;stoppingEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;stoppedEvent&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;softTimeoutEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;hardTimeoutEvent&#39;</span><span class="p">]</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;startingEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;startedEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;stoppingEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;stoppedEvent&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;softTimeoutEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;hardTimeoutEvent&#39;</span><span class="p">]</span>
 
     <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
         <span class="n">controller</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -445,7 +447,7 @@
         <span class="n">appTimeout</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
         <span class="n">retryDelay</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="n">events</span> <span class="o">+</span> <span class="p">[</span>
-            <span class="s1">&#39;_watcher&#39;</span><span class="p">,</span> <span class="s1">&#39;_logger&#39;</span><span class="p">,</span> <span class="s1">&#39;_isRunning&#39;</span><span class="p">,</span> <span class="s1">&#39;_isRestarting&#39;</span><span class="p">]</span>
+        <span class="s1">&#39;_watcher&#39;</span><span class="p">,</span> <span class="s1">&#39;_logger&#39;</span><span class="p">,</span> <span class="s1">&#39;_isRunning&#39;</span><span class="p">,</span> <span class="s1">&#39;_isRestarting&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -476,7 +478,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_connect</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">appTimeout</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">startedEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_scheduleRestart</span><span class="p">()</span></div>
 
@@ -494,8 +496,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_scheduleRestart</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">connectTimeout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectTimeout</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
@@ -521,13 +523,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">softTimeoutEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="n">contract</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;EURUSD&#39;</span><span class="p">)</span>
             <span class="n">probe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalDataAsync</span><span class="p">(</span>
-                    <span class="n">contract</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;30 S&#39;</span><span class="p">,</span> <span class="s1">&#39;5 secs&#39;</span><span class="p">,</span> <span class="s1">&#39;MIDPOINT&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="n">contract</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;30 S&#39;</span><span class="p">,</span> <span class="s1">&#39;5 secs&#39;</span><span class="p">,</span> <span class="s1">&#39;MIDPOINT&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">bars</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">probe</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">bars</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">appTimeout</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="c1"># hard timeout, flush everything and start anew</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Hard timeout&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">hardTimeoutEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
