@@ -164,6 +164,14 @@ class RootLogFilter:
             return True
 
 
+def ibapiVersionInfo():
+    """
+    Version info of ibapi module as 3-tuple.
+    """
+    import ibapi
+    return tuple(int(i) for i in ibapi.__version__.split('.'))
+
+
 def isNan(x: float):
     """
     Not a number test.

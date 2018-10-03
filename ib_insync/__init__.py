@@ -14,7 +14,7 @@ except ImportError:
     raise RuntimeError(
         'IB API from http://interactivebrokers.github.io is required')
 
-if tuple(int(i) for i in ibapi.__version__.split('.')) < (9, 73, 6):
+if util.ibapiVersionInfo() < (9, 73, 6):
     raise RuntimeError(
         f'Old version ({ibapi.__version__}) of ibapi package detected. '
         'The newest version from http://interactivebrokers.github.io '

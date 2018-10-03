@@ -949,7 +949,7 @@ class IB:
         """
         reqId = self.client.getReqId()
         ticker = self.wrapper.startTicker(reqId, contract, tickType)
-        if ibapi.__version__ == '9.73.6':
+        if util.ibapiVersionInfo() == (9, 73, 6):
             self.client.reqTickByTickData(reqId, contract, tickType)
         else:
             self.client.reqTickByTickData(
@@ -980,7 +980,7 @@ class IB:
     @api
     def reqMktDepth(
             self, contract: Contract, numRows: int=5,
-            mktDepthOptions=None) -> Ticker:
+            isSmartDepth: bool=False, mktDepthOptions=None) -> Ticker:
         """
         Subscribe to market depth data (a.k.a. DOM, L2 or order book).
         Returns the Ticker that holds the market depth ticks
@@ -990,11 +990,15 @@ class IB:
         """
         reqId = self.client.getReqId()
         ticker = self.wrapper.startTicker(reqId, contract, 'mktDepth')
-        self.client.reqMktDepth(reqId, contract, numRows, mktDepthOptions)
+        if util.ibapiVersionInfo() <= (9, 73, 7):
+            self.client.reqMktDepth(reqId, contract, numRows, mktDepthOptions)
+        else:
+            self.client.reqMktDepth(
+                reqId, contract, numRows, isSmartDepth, mktDepthOptions)
         return ticker
 
     @api
-    def cancelMktDepth(self, contract: Contract) -> None:
+    def cancelMktDepth(self, contract: Contract, isSmartDepth=False) -> None:
         """
         Unsubscribe market depth data for the given contract.
         The contract object must be the same as used to subscribe with.
@@ -1002,7 +1006,10 @@ class IB:
         ticker = self.ticker(contract)
         reqId = self.wrapper.endTicker(ticker, 'mktDepth')
         if reqId:
-            self.client.cancelMktDepth(reqId)
+            if util.ibapiVersionInfo() <= (9, 73, 7):
+                self.client.cancelMktDepth(reqId)
+            else:
+                self.client.cancelMktDepth(reqId, isSmartDepth)
         else:
             self._logger.error(
                 f'cancelMktDepth: No reqId found for contract {contract}')
@@ -1557,7 +1564,7 @@ if __name__ == '__main__':
         print(ib.reqTickers(amd))
         print(ib.reqTickers(eurusd))
         print(ib.reqTickers(amd, eurusd, aex))
-    if 1:
+    if 0:
         print(ib.reqMarketRule(145))
     if 0:
         m = ib.reqMatchingSymbols('Intel')
