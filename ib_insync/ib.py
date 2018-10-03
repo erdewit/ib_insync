@@ -18,7 +18,7 @@ from ib_insync.objects import (
     ContractDetails, ContractDescription, OptionChain, OptionComputation,
     NewsTick, NewsBulletin, NewsArticle, NewsProvider, HistoricalNews,
     BarList, BarDataList, RealTimeBarList, DepthMktDataDescription,
-    ScannerSubscription, ScanData, HistogramData)
+    ScannerSubscription, ScanData, HistogramData, PriceIncrement)
 import ib_insync.util as util
 from ib_insync.event import Event
 
@@ -278,7 +278,7 @@ class IB:
         """
         self.wrapper.setCallback(eventName, callback)
 
-    def setTimeout(self, timeout: float=60):
+    def setTimeout(self, timeout: float=60) -> None:
         """
         Set timeout in seconds for receiving messages from TWS/IBG.
         This will emit the ``timeout`` callback if there is no new data
@@ -614,7 +614,8 @@ class IB:
         self._run(self.reqAccountUpdatesAsync(account))
 
     @api
-    def reqAccountUpdatesMulti(self, account: str='', modelCode: str=''):
+    def reqAccountUpdatesMulti(
+            self, account: str='', modelCode: str='') -> None:
         """
         It is recommended to use :py:meth:`.accountValues` instead.
 
@@ -637,7 +638,7 @@ class IB:
         self._run(self.reqAccountSummaryAsync())
 
     @api
-    def reqAutoOpenOrders(self, autoBind: bool=True):
+    def reqAutoOpenOrders(self, autoBind: bool=True) -> None:
         """
         Bind manual TWS orders so that they can be managed from this client.
         The clientId must be 0 and the TWS API setting "Use negative numbers
@@ -707,7 +708,7 @@ class IB:
         return pnl
 
     @api
-    def cancelPnL(self, account, modelCode: str=''):
+    def cancelPnL(self, account, modelCode: str='') -> None:
         """
         Cancel PnL subscription for the given account and modelCode.
         """
@@ -723,8 +724,7 @@ class IB:
 
     @api
     def reqPnLSingle(
-            self, account: str, modelCode: str,
-            conId: int) -> PnLSingle:
+            self, account: str, modelCode: str, conId: int) -> PnLSingle:
         """
         Start a subscription for profit and loss events for single positions.
 
@@ -743,7 +743,8 @@ class IB:
         return pnlSingle
 
     @api
-    def cancelPnLSingle(self, account: str, modelCode: str, conId: int):
+    def cancelPnLSingle(
+            self, account: str, modelCode: str, conId: int) -> None:
         """
         Cancel PnLSingle subscription for the given account, modelCode
         and conId.
@@ -786,7 +787,7 @@ class IB:
         """
         return self._run(self.reqMatchingSymbolsAsync(pattern))
 
-    def reqMarketRule(self, marketRuleId: int):
+    def reqMarketRule(self, marketRuleId: int) -> List[PriceIncrement]:
         """
         Request list of price increments corresponding to given market rule
         (the market rule id is given by :py:meth:`.reqContractDetails`).
@@ -862,7 +863,7 @@ class IB:
             self, contract: Contract,
             startDateTime: str, endDateTime: str,
             numberOfTicks: int, whatToShow: str, useRth: bool,
-            ignoreSize: bool=False, miscOptions: List[TagValue]=None):
+            ignoreSize: bool=False, miscOptions: List[TagValue]=None) -> List:
         """
         Request historical ticks.
 
@@ -923,7 +924,7 @@ class IB:
             regulatorySnapshot, mktDataOptions)
         return ticker
 
-    def cancelMktData(self, contract: Contract):
+    def cancelMktData(self, contract: Contract) -> None:
         """
         Unsubscribe tick data for the given contract.
         The contract object must be the same as used to subscribe with.
@@ -955,7 +956,7 @@ class IB:
                 reqId, contract, tickType, numberOfTicks, ignoreSize)
         return ticker
 
-    def cancelTickByTickData(self, contract: Contract, tickType: str):
+    def cancelTickByTickData(self, contract: Contract, tickType: str) -> None:
         """
         Unsubscribe tick data for the given contract.
         The contract object must be the same as used to subscribe with.
@@ -993,7 +994,7 @@ class IB:
         return ticker
 
     @api
-    def cancelMktDepth(self, contract: Contract):
+    def cancelMktDepth(self, contract: Contract) -> None:
         """
         Unsubscribe market depth data for the given contract.
         The contract object must be the same as used to subscribe with.
@@ -1556,6 +1557,8 @@ if __name__ == '__main__':
         print(ib.reqTickers(amd))
         print(ib.reqTickers(eurusd))
         print(ib.reqTickers(amd, eurusd, aex))
+    if 1:
+        print(ib.reqMarketRule(145))
     if 0:
         m = ib.reqMatchingSymbols('Intel')
         print(m)
