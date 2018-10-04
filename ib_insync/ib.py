@@ -983,8 +983,8 @@ class IB:
             isSmartDepth: bool=False, mktDepthOptions=None) -> Ticker:
         """
         Subscribe to market depth data (a.k.a. DOM, L2 or order book).
-        Returns the Ticker that holds the market depth ticks
-        in ticker.domBids and ticker.domAsks.
+        Returns the Ticker that holds the market depth in ticker.domBids
+        and ticker.domAsks and the list of MktDepthData in ticker.domTicks.
 
         https://interactivebrokers.github.io/tws-api/market_depth.html
         """
