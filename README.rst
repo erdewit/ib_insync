@@ -26,12 +26,14 @@ Installation
 Requirements:
 
 * Python_ version 3.6 or higher;
-* The `Interactive Brokers Python API`_ version 9.73.06 or higher;
+* The `Interactive Brokers Python API`_ version 9.73.06 or higher. If using
+  Python 3.7, then comment out line 60 of ibapi/client.py that reads
+  ``self.async = False``.
 * A running TWS or IB gateway application (version 969 or higher).
   Make sure the
   `API port is enabled <https://interactivebrokers.github.io/tws-api/initial_setup.html>`_
   and 'Download open orders on connection' is checked.
-  
+
 To install packages needed for the examples and notebooks::
 
     pip3 install -U jupyter numpy pandas
@@ -45,20 +47,20 @@ This is a complete script to download historical data:
 
     from ib_insync import *
     # util.startLoop()  # uncomment this line when in a notebook
-      
+
     ib = IB()
     ib.connect('127.0.0.1', 7497, clientId=1)
-    
+
     contract = Forex('EURUSD')
     bars = ib.reqHistoricalData(contract, endDateTime='', durationStr='30 D',
             barSizeSetting='1 hour', whatToShow='MIDPOINT', useRTH=True)
-    
+
     # convert to pandas dataframe:
     df = util.df(bars)
     print(df[['date', 'open', 'high', 'low', 'close']])
-        
+
 Output::
-    
+
                        date      open      high       low     close
     0   2017-08-13 23:15:00  1.182850  1.183100  1.182100  1.182400
     1   2017-08-14 00:00:00  1.182400  1.182450  1.181875  1.182175
@@ -117,7 +119,7 @@ Good luck and enjoy,
 
 .. |License| image:: https://img.shields.io/badge/license-BSD-blue.svg
    :alt:
-   
+
 .. |Docs| image:: https://readthedocs.org/projects/ib-insync/badge/?version=latest
    :alt: Documentation Status
    :target: http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html
