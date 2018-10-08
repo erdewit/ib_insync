@@ -241,6 +241,14 @@
             <span class="k">return</span> <span class="kc">True</span></div></div>
 
 
+<div class="viewcode-block" id="ibapiVersionInfo"><a class="viewcode-back" href="../../api.html#ib_insync.ib.ibapiVersionInfo">[docs]</a><span class="k">def</span> <span class="nf">ibapiVersionInfo</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Version info of ibapi module as 3-tuple.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">ibapi</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">__version__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span></div>
+
+
 <div class="viewcode-block" id="isNan"><a class="viewcode-back" href="../../api.html#ib_insync.ib.isNan">[docs]</a><span class="k">def</span> <span class="nf">isNan</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Not a number test.</span>
@@ -321,7 +329,7 @@
             <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">awaitables</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
             <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">syncAwait</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 
@@ -344,6 +352,9 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wait for the given amount of seconds while everything still keeps</span>
 <span class="sd">    processing in the background. Never use time.sleep().</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        secs (float): Time in seconds to wait.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">run</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">secs</span><span class="p">))</span>
     <span class="k">return</span> <span class="kc">True</span></div>
@@ -355,11 +366,12 @@
 <span class="sd">    Iterator that waits periodically until certain time points are</span>
 <span class="sd">    reached while yielding those time points.</span>
 
-<span class="sd">    The startTime and dateTime parameters can be specified as</span>
-<span class="sd">    datetime.datetime, or as datetime.time in which case today</span>
-<span class="sd">    is used as the date.</span>
-
-<span class="sd">    The step parameter is the number of seconds of each period.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        start: Start time, can be specified as datetime.datetime,</span>
+<span class="sd">            or as datetime.time in which case today is used as the date</span>
+<span class="sd">        end: End time, can be specified as datetime.datetime,</span>
+<span class="sd">            or as datetime.time in which case today is used as the date</span>
+<span class="sd">        step (float): The number of seconds of each period</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">step</span> <span class="o">&gt;</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">):</span>
@@ -380,8 +392,9 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wait until the given time t is reached.</span>
 
-<span class="sd">    The time can be specified as datetime.datetime,</span>
-<span class="sd">    or as datetime.time in which case today is used as the date.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        t: The time t can be specified as datetime.datetime,</span>
+<span class="sd">            or as datetime.time in which case today is used as the date.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">):</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span> <span class="n">t</span><span class="p">)</span>
@@ -393,72 +406,10 @@
 
 <div class="viewcode-block" id="patchAsyncio"><a class="viewcode-back" href="../../api.html#ib_insync.ib.patchAsyncio">[docs]</a><span class="k">def</span> <span class="nf">patchAsyncio</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Patch asyncio to use pure Python implementation of Future and Task,</span>
-<span class="sd">    to deal with nested event loops in syncAwait.</span>
+<span class="sd">    Patch asyncio to allow nested event loops.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_CTask</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> \
-        <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_PyTask</span>
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">_CFuture</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Future</span> <span class="o">=</span> \
-        <span class="n">asyncio</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">_PyFuture</span></div>
-
-
-<div class="viewcode-block" id="syncAwait"><a class="viewcode-back" href="../../api.html#ib_insync.ib.syncAwait">[docs]</a><span class="k">def</span> <span class="nf">syncAwait</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Synchronously wait until future is done, accounting for the possibility</span>
-<span class="sd">    that the event loop is already running.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">quamash</span>
-        <span class="n">isQuamash</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span> <span class="n">quamash</span><span class="o">.</span><span class="n">QEventLoop</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="n">isQuamash</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">loop</span><span class="o">.</span><span class="n">is_running</span><span class="p">():</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">isQuamash</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">_syncAwaitQt</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">_syncAwaitAsyncio</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span></div>
-
-
-<span class="k">def</span> <span class="nf">_syncAwaitAsyncio</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
-    <span class="c1"># https://bugs.python.org/issue22239</span>
-    <span class="k">assert</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="ow">is</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_PyTask</span><span class="p">,</span> \
-        <span class="s1">&#39;To allow nested event loops, use util.patchAsyncio()&#39;</span>
-    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-    <span class="n">preserved_ready</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">loop</span><span class="o">.</span><span class="n">_ready</span><span class="p">)</span>
-    <span class="n">loop</span><span class="o">.</span><span class="n">_ready</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-    <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">future</span><span class="p">:</span>
-        <span class="n">task</span><span class="o">.</span><span class="n">_log_destroy_pending</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="n">current_tasks</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">_current_tasks</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">current_tasks</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="o">.</span><span class="n">_current_tasks</span>
-    <span class="n">preserved_task</span> <span class="o">=</span> <span class="n">current_tasks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
-    <span class="k">while</span> <span class="ow">not</span> <span class="n">task</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-        <span class="n">loop</span><span class="o">.</span><span class="n">_run_once</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">loop</span><span class="o">.</span><span class="n">_stopping</span><span class="p">:</span>
-            <span class="k">break</span>
-    <span class="n">loop</span><span class="o">.</span><span class="n">_ready</span><span class="o">.</span><span class="n">extendleft</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">preserved_ready</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">preserved_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">current_tasks</span><span class="p">[</span><span class="n">loop</span><span class="p">]</span> <span class="o">=</span> <span class="n">preserved_task</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">current_tasks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-
-
-<span class="k">def</span> <span class="nf">_syncAwaitQt</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">PyQt5.Qt</span> <span class="k">as</span> <span class="nn">qt</span>
-    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-    <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="n">loop</span><span class="p">)</span>
-    <span class="n">qLoop</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QEventLoop</span><span class="p">()</span>
-    <span class="n">future</span><span class="o">.</span><span class="n">add_done_callback</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">qLoop</span><span class="o">.</span><span class="n">quit</span><span class="p">())</span>
-    <span class="n">qLoop</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="kn">import</span> <span class="nn">nest_asyncio</span>
+    <span class="n">nest_asyncio</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="startLoop"><a class="viewcode-back" href="../../api.html#ib_insync.ib.startLoop">[docs]</a><span class="k">def</span> <span class="nf">startLoop</span><span class="p">():</span>
@@ -495,9 +446,7 @@
 
 <div class="viewcode-block" id="useQt"><a class="viewcode-back" href="../../api.html#ib_insync.ib.useQt">[docs]</a><span class="k">def</span> <span class="nf">useQt</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Integrate asyncio and Qt loops:</span>
-<span class="sd">    Let the Qt event loop spin the asyncio event loop</span>
-<span class="sd">    (does not work with nested event loops in Windows)</span>
+<span class="sd">    Depreciated.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">PyQt5.Qt</span> <span class="k">as</span> <span class="nn">qt</span>
     <span class="kn">import</span> <span class="nn">quamash</span>
@@ -508,7 +457,32 @@
     <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="formatIBDatetime"><a class="viewcode-back" href="../../api.html#ib_insync.ib.formatIBDatetime">[docs]</a><span class="k">def</span> <span class="nf">formatIBDatetime</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+<div class="viewcode-block" id="runQt"><a class="viewcode-back" href="../../api.html#ib_insync.ib.runQt">[docs]</a><span class="k">def</span> <span class="nf">runQt</span><span class="p">(</span><span class="n">asyncioSlice</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">qtSlice</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run combined Qt5/asyncio event loop.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        asyncioSlice: Time slice in ms for asyncio loop</span>
+<span class="sd">        qtSlice: Time slice in ms for Qt5 loop</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">onTimer</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">asyncioPause</span><span class="p">:</span>
+            <span class="n">loop</span><span class="o">.</span><span class="n">call_later</span><span class="p">(</span><span class="n">asyncioPause</span><span class="p">,</span> <span class="n">loop</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">loop</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="n">loop</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+
+    <span class="kn">import</span> <span class="nn">PyQt5.Qt</span> <span class="k">as</span> <span class="nn">qt</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+    <span class="n">asyncioPause</span> <span class="o">=</span> <span class="mf">0.001</span> <span class="o">*</span> <span class="n">asyncioSlice</span>
+    <span class="n">qApp</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span> <span class="ow">or</span> <span class="n">qt</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">timer</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QTimer</span><span class="p">()</span>
+    <span class="n">timer</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">qtSlice</span><span class="p">)</span>
+    <span class="n">timer</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">onTimer</span><span class="p">)</span>
+    <span class="n">qApp</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="formatIBDatetime"><a class="viewcode-back" href="../../api.html#ib_insync.ib.formatIBDatetime">[docs]</a><span class="k">def</span> <span class="nf">formatIBDatetime</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Format date or datetime to string that IB uses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

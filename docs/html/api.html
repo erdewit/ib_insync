@@ -281,7 +281,9 @@ processing in the background. Never use time.sleep().</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">True</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>secs</strong> (<em>float</em>) – Time in seconds to wait.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">True</td>
 </tr>
 </tbody>
 </table>
@@ -292,15 +294,21 @@ processing in the background. Never use time.sleep().</p>
 <em class="property">static </em><code class="descname">timeRange</code><span class="sig-paren">(</span><em>end</em>, <em>step</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.ib.IB.timeRange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterator that waits periodically until certain time points are
 reached while yielding those time points.</p>
-<p>The startTime and dateTime parameters can be specified as
-datetime.datetime, or as datetime.time in which case today
-is used as the date.</p>
-<p>The step parameter is the number of seconds of each period.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">time</span></code>) – Start time, can be specified as datetime.datetime,
+or as datetime.time in which case today is used as the date</li>
+<li><strong>end</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">time</span></code>) – End time, can be specified as datetime.datetime,
+or as datetime.time in which case today is used as the date</li>
+<li><strong>step</strong> (<em>float</em>) – The number of seconds of each period</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code>]</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -310,13 +318,14 @@ is used as the date.</p>
 <dt id="ib_insync.ib.IB.waitUntil">
 <em class="property">static </em><code class="descname">waitUntil</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.ib.IB.waitUntil" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait until the given time t is reached.</p>
-<p>The time can be specified as datetime.datetime,
-or as datetime.time in which case today is used as the date.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">True</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>t</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">time</span></code>) – The time t can be specified as datetime.datetime,
+or as datetime.time in which case today is used as the date.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">True</td>
 </tr>
 </tbody>
 </table>
@@ -376,6 +385,14 @@ This will emit the <code class="docutils literal notranslate"><span class="pre">
 for too long.</p>
 <p>The timeout fires once per connected session but can be set again
 after firing or after a reconnect.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -795,6 +812,14 @@ are filled.</p>
 <dd><p>It is recommended to use <a class="reference internal" href="#ib_insync.ib.IB.accountValues" title="ib_insync.ib.IB.accountValues"><code class="xref py py-meth docutils literal notranslate"><span class="pre">accountValues()</span></code></a> instead.</p>
 <p>Request account values of multiple accounts and keep updated.</p>
 <p>This method is blocking.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -822,6 +847,14 @@ The clientId must be 0 and the TWS API setting “Use negative numbers
 to bind automatic orders” must be checked.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/open_orders.html">https://interactivebrokers.github.io/tws-api/open_orders.html</a>
 <a class="reference external" href="https://interactivebrokers.github.io/tws-api/modifying_orders.html">https://interactivebrokers.github.io/tws-api/modifying_orders.html</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -898,6 +931,14 @@ The result can also be queried from <a class="reference internal" href="#ib_insy
 <dt id="ib_insync.ib.IB.cancelPnL">
 <code class="descname">cancelPnL</code><span class="sig-paren">(</span><em>account</em>, <em>modelCode=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelPnL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelPnL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cancel PnL subscription for the given account and modelCode.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -922,6 +963,14 @@ The result can also be queried from <a class="reference internal" href="#ib_insy
 <code class="descname">cancelPnLSingle</code><span class="sig-paren">(</span><em>account</em>, <em>modelCode</em>, <em>conId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelPnLSingle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelPnLSingle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cancel PnLSingle subscription for the given account, modelCode
 and conId.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -967,6 +1016,14 @@ pattern.</p>
 <dd><p>Request list of price increments corresponding to given market rule
 (the market rule id is given by <a class="reference internal" href="#ib_insync.ib.IB.reqContractDetails" title="ib_insync.ib.IB.reqContractDetails"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reqContractDetails()</span></code></a>).</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/minimum_increment.html">https://interactivebrokers.github.io/tws-api/minimum_increment.html</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.PriceIncrement" title="ib_insync.objects.PriceIncrement"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriceIncrement</span></code></a>]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1038,6 +1095,14 @@ field will be a timezone-aware datetime.datetime with UTC timezone.</p>
 <dd><p>Request historical ticks.</p>
 <p>This method is blocking.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/historical_time_and_sales.html">https://interactivebrokers.github.io/tws-api/historical_time_and_sales.html</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~T]</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1104,6 +1169,14 @@ be filled.</p>
 <code class="descname">cancelMktData</code><span class="sig-paren">(</span><em>contract</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelMktData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelMktData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unsubscribe tick data for the given contract.
 The contract object must be the same as used to subscribe with.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1127,6 +1200,14 @@ holds the ticks in ticker.tickByTicks.</p>
 <code class="descname">cancelTickByTickData</code><span class="sig-paren">(</span><em>contract</em>, <em>tickType</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelTickByTickData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelTickByTickData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unsubscribe tick data for the given contract.
 The contract object must be the same as used to subscribe with.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1146,10 +1227,10 @@ The contract object must be the same as used to subscribe with.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqMktDepth">
-<code class="descname">reqMktDepth</code><span class="sig-paren">(</span><em>contract</em>, <em>numRows=5</em>, <em>mktDepthOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqMktDepth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqMktDepth" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqMktDepth</code><span class="sig-paren">(</span><em>contract</em>, <em>numRows=5</em>, <em>isSmartDepth=False</em>, <em>mktDepthOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqMktDepth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqMktDepth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscribe to market depth data (a.k.a. DOM, L2 or order book).
-Returns the Ticker that holds the market depth ticks
-in ticker.domBids and ticker.domAsks.</p>
+Returns the Ticker that holds the market depth in ticker.domBids
+and ticker.domAsks and the list of MktDepthData in ticker.domTicks.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/market_depth.html">https://interactivebrokers.github.io/tws-api/market_depth.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1163,9 +1244,17 @@ in ticker.domBids and ticker.domAsks.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.cancelMktDepth">
-<code class="descname">cancelMktDepth</code><span class="sig-paren">(</span><em>contract</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelMktDepth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelMktDepth" title="Permalink to this definition">¶</a></dt>
+<code class="descname">cancelMktDepth</code><span class="sig-paren">(</span><em>contract</em>, <em>isSmartDepth=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelMktDepth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelMktDepth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unsubscribe market depth data for the given contract.
 The contract object must be the same as used to subscribe with.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1907,12 +1996,12 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'Inactive', 'ApiCancelled', 'Cancelled', 'Filled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'Filled', 'Inactive', 'Cancelled', 'ApiCancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'Submitted', 'PreSubmitted', 'ApiPending', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'PreSubmitted', 'ApiPending', 'Submitted', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1984,7 +2073,7 @@ and as keyword, the keyword wins.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/available_orders.html">https://interactivebrokers.github.io/tws-api/available_orders.html</a></p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 139675147497824: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 139903450510952: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -5703,6 +5792,12 @@ a DataFrame or as a list of bar objects.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="ib_insync.util.ibapiVersionInfo">
+<code class="descclassname">ib_insync.util.</code><code class="descname">ibapiVersionInfo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#ibapiVersionInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.ibapiVersionInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version info of ibapi module as 3-tuple.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="ib_insync.util.isNan">
 <code class="descclassname">ib_insync.util.</code><code class="descname">isNan</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#isNan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.isNan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Not a number test.</p>
@@ -5747,7 +5842,9 @@ processing in the background. Never use time.sleep().</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">True</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>secs</strong> (<em>float</em>) – Time in seconds to wait.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">True</td>
 </tr>
 </tbody>
 </table>
@@ -5758,15 +5855,21 @@ processing in the background. Never use time.sleep().</p>
 <code class="descclassname">ib_insync.util.</code><code class="descname">timeRange</code><span class="sig-paren">(</span><em>start</em>, <em>end</em>, <em>step</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#timeRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.timeRange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterator that waits periodically until certain time points are
 reached while yielding those time points.</p>
-<p>The startTime and dateTime parameters can be specified as
-datetime.datetime, or as datetime.time in which case today
-is used as the date.</p>
-<p>The step parameter is the number of seconds of each period.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">time</span></code>) – Start time, can be specified as datetime.datetime,
+or as datetime.time in which case today is used as the date</li>
+<li><strong>end</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">time</span></code>) – End time, can be specified as datetime.datetime,
+or as datetime.time in which case today is used as the date</li>
+<li><strong>step</strong> (<em>float</em>) – The number of seconds of each period</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code>]</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -5776,13 +5879,14 @@ is used as the date.</p>
 <dt id="ib_insync.util.waitUntil">
 <code class="descclassname">ib_insync.util.</code><code class="descname">waitUntil</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#waitUntil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.waitUntil" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait until the given time t is reached.</p>
-<p>The time can be specified as datetime.datetime,
-or as datetime.time in which case today is used as the date.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">True</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>t</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">time</span></code>) – The time t can be specified as datetime.datetime,
+or as datetime.time in which case today is used as the date.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">True</td>
 </tr>
 </tbody>
 </table>
@@ -5791,15 +5895,7 @@ or as datetime.time in which case today is used as the date.</p>
 <dl class="function">
 <dt id="ib_insync.util.patchAsyncio">
 <code class="descclassname">ib_insync.util.</code><code class="descname">patchAsyncio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#patchAsyncio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.patchAsyncio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Patch asyncio to use pure Python implementation of Future and Task,
-to deal with nested event loops in syncAwait.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ib_insync.util.syncAwait">
-<code class="descclassname">ib_insync.util.</code><code class="descname">syncAwait</code><span class="sig-paren">(</span><em>future</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#syncAwait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.syncAwait" title="Permalink to this definition">¶</a></dt>
-<dd><p>Synchronously wait until future is done, accounting for the possibility
-that the event loop is already running.</p>
+<dd><p>Patch asyncio to allow nested event loops.</p>
 </dd></dl>
 
 <dl class="function">
@@ -5811,15 +5907,42 @@ that the event loop is already running.</p>
 <dl class="function">
 <dt id="ib_insync.util.useQt">
 <code class="descclassname">ib_insync.util.</code><code class="descname">useQt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#useQt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.useQt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Integrate asyncio and Qt loops:
-Let the Qt event loop spin the asyncio event loop
-(does not work with nested event loops in Windows)</p>
+<dd><p>Depreciated.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.runQt">
+<code class="descclassname">ib_insync.util.</code><code class="descname">runQt</code><span class="sig-paren">(</span><em>asyncioSlice=10</em>, <em>qtSlice=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#runQt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.runQt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run combined Qt5/asyncio event loop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>asyncioSlice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Time slice in ms for asyncio loop</li>
+<li><strong>qtSlice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Time slice in ms for Qt5 loop</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="ib_insync.util.formatIBDatetime">
 <code class="descclassname">ib_insync.util.</code><code class="descname">formatIBDatetime</code><span class="sig-paren">(</span><em>dt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#formatIBDatetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.formatIBDatetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format date or datetime to string that IB uses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">

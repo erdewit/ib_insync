@@ -20,6 +20,7 @@ exec(open('../ib_insync/version.py').read())
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
+    'sphinxcontrib.napoleon',
     'sphinx_autodoc_typehints'
     ]
 

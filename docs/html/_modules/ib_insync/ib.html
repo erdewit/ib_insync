@@ -95,7 +95,7 @@
     <span class="n">ContractDetails</span><span class="p">,</span> <span class="n">ContractDescription</span><span class="p">,</span> <span class="n">OptionChain</span><span class="p">,</span> <span class="n">OptionComputation</span><span class="p">,</span>
     <span class="n">NewsTick</span><span class="p">,</span> <span class="n">NewsBulletin</span><span class="p">,</span> <span class="n">NewsArticle</span><span class="p">,</span> <span class="n">NewsProvider</span><span class="p">,</span> <span class="n">HistoricalNews</span><span class="p">,</span>
     <span class="n">BarList</span><span class="p">,</span> <span class="n">BarDataList</span><span class="p">,</span> <span class="n">RealTimeBarList</span><span class="p">,</span> <span class="n">DepthMktDataDescription</span><span class="p">,</span>
-    <span class="n">ScannerSubscription</span><span class="p">,</span> <span class="n">ScanData</span><span class="p">,</span> <span class="n">HistogramData</span><span class="p">)</span>
+    <span class="n">ScannerSubscription</span><span class="p">,</span> <span class="n">ScanData</span><span class="p">,</span> <span class="n">HistogramData</span><span class="p">,</span> <span class="n">PriceIncrement</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">ib_insync.util</span> <span class="k">as</span> <span class="nn">util</span>
 <span class="kn">from</span> <span class="nn">ib_insync.event</span> <span class="k">import</span> <span class="n">Event</span>
 
@@ -355,7 +355,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">setCallback</span><span class="p">(</span><span class="n">eventName</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.setTimeout"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.setTimeout">[docs]</a>    <span class="k">def</span> <span class="nf">setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.setTimeout"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.setTimeout">[docs]</a>    <span class="k">def</span> <span class="nf">setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set timeout in seconds for receiving messages from TWS/IBG.</span>
 <span class="sd">        This will emit the ``timeout`` callback if there is no new data</span>
@@ -691,7 +691,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqAccountUpdatesAsync</span><span class="p">(</span><span class="n">account</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="IB.reqAccountUpdatesMulti"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAccountUpdatesMulti">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqAccountUpdatesMulti</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reqAccountUpdatesMulti</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        It is recommended to use :py:meth:`.accountValues` instead.</span>
 
@@ -714,7 +715,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqAccountSummaryAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IB.reqAutoOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAutoOpenOrders">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqAutoOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">autoBind</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reqAutoOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">autoBind</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Bind manual TWS orders so that they can be managed from this client.</span>
 <span class="sd">        The clientId must be 0 and the TWS API setting &quot;Use negative numbers</span>
@@ -784,7 +785,7 @@
         <span class="k">return</span> <span class="n">pnl</span></div>
 
 <div class="viewcode-block" id="IB.cancelPnL"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelPnL">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">cancelPnL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cancelPnL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel PnL subscription for the given account and modelCode.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -800,8 +801,7 @@
 
 <div class="viewcode-block" id="IB.reqPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqPnLSingle">[docs]</a>    <span class="nd">@api</span>
     <span class="k">def</span> <span class="nf">reqPnLSingle</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">conId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PnLSingle</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">conId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PnLSingle</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start a subscription for profit and loss events for single positions.</span>
 
@@ -820,7 +820,8 @@
         <span class="k">return</span> <span class="n">pnlSingle</span></div>
 
 <div class="viewcode-block" id="IB.cancelPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelPnLSingle">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">cancelPnLSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">conId</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cancelPnLSingle</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">conId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel PnLSingle subscription for the given account, modelCode</span>
 <span class="sd">        and conId.</span>
@@ -863,7 +864,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqMatchingSymbolsAsync</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqMarketRule"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMarketRule">[docs]</a>    <span class="k">def</span> <span class="nf">reqMarketRule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marketRuleId</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.reqMarketRule"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMarketRule">[docs]</a>    <span class="k">def</span> <span class="nf">reqMarketRule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marketRuleId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PriceIncrement</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request list of price increments corresponding to given market rule</span>
 <span class="sd">        (the market rule id is given by :py:meth:`.reqContractDetails`).</span>
@@ -939,7 +940,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span>
             <span class="n">startDateTime</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">numberOfTicks</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">useRth</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-            <span class="n">ignoreSize</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">miscOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="n">ignoreSize</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">miscOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request historical ticks.</span>
 
@@ -1000,7 +1001,7 @@
             <span class="n">regulatorySnapshot</span><span class="p">,</span> <span class="n">mktDataOptions</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ticker</span></div>
 
-<div class="viewcode-block" id="IB.cancelMktData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelMktData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelMktData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.cancelMktData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelMktData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelMktData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Unsubscribe tick data for the given contract.</span>
 <span class="sd">        The contract object must be the same as used to subscribe with.</span>
@@ -1025,14 +1026,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
         <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startTicker</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">tickType</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">__version__</span> <span class="o">==</span> <span class="s1">&#39;9.73.6&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">ibapiVersionInfo</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqTickByTickData</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">tickType</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqTickByTickData</span><span class="p">(</span>
                 <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">numberOfTicks</span><span class="p">,</span> <span class="n">ignoreSize</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ticker</span></div>
 
-<div class="viewcode-block" id="IB.cancelTickByTickData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelTickByTickData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelTickByTickData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">tickType</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.cancelTickByTickData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelTickByTickData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelTickByTickData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">tickType</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Unsubscribe tick data for the given contract.</span>
 <span class="sd">        The contract object must be the same as used to subscribe with.</span>
@@ -1056,21 +1057,25 @@
 <div class="viewcode-block" id="IB.reqMktDepth"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMktDepth">[docs]</a>    <span class="nd">@api</span>
     <span class="k">def</span> <span class="nf">reqMktDepth</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">numRows</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-            <span class="n">mktDepthOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ticker</span><span class="p">:</span>
+            <span class="n">isSmartDepth</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mktDepthOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ticker</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Subscribe to market depth data (a.k.a. DOM, L2 or order book).</span>
-<span class="sd">        Returns the Ticker that holds the market depth ticks</span>
-<span class="sd">        in ticker.domBids and ticker.domAsks.</span>
+<span class="sd">        Returns the Ticker that holds the market depth in ticker.domBids</span>
+<span class="sd">        and ticker.domAsks and the list of MktDepthData in ticker.domTicks.</span>
 
 <span class="sd">        https://interactivebrokers.github.io/tws-api/market_depth.html</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
         <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startTicker</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="s1">&#39;mktDepth&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqMktDepth</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">numRows</span><span class="p">,</span> <span class="n">mktDepthOptions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">ibapiVersionInfo</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqMktDepth</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">numRows</span><span class="p">,</span> <span class="n">mktDepthOptions</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqMktDepth</span><span class="p">(</span>
+                <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">numRows</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="p">,</span> <span class="n">mktDepthOptions</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ticker</span></div>
 
 <div class="viewcode-block" id="IB.cancelMktDepth"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelMktDepth">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">cancelMktDepth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cancelMktDepth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Unsubscribe market depth data for the given contract.</span>
 <span class="sd">        The contract object must be the same as used to subscribe with.</span>
@@ -1078,7 +1083,10 @@
         <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ticker</span><span class="p">(</span><span class="n">contract</span><span class="p">)</span>
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">endTicker</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="s1">&#39;mktDepth&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">reqId</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelMktDepth</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">ibapiVersionInfo</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelMktDepth</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelMktDepth</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="n">f</span><span class="s1">&#39;cancelMktDepth: No reqId found for contract </span><span class="si">{contract}</span><span class="s1">&#39;</span><span class="p">)</span></div>
@@ -1633,6 +1641,8 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqTickers</span><span class="p">(</span><span class="n">amd</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqTickers</span><span class="p">(</span><span class="n">eurusd</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqTickers</span><span class="p">(</span><span class="n">amd</span><span class="p">,</span> <span class="n">eurusd</span><span class="p">,</span> <span class="n">aex</span><span class="p">))</span>
+    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqMarketRule</span><span class="p">(</span><span class="mi">145</span><span class="p">))</span>
     <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMatchingSymbols</span><span class="p">(</span><span class="s1">&#39;Intel&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
