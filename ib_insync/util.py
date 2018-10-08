@@ -164,7 +164,7 @@ class RootLogFilter:
             return True
 
 
-def ibapiVersionInfo():
+def ibapiVersionInfo() -> tuple:
     """
     Version info of ibapi module as 3-tuple.
     """
@@ -172,14 +172,14 @@ def ibapiVersionInfo():
     return tuple(int(i) for i in ibapi.__version__.split('.'))
 
 
-def isNan(x: float):
+def isNan(x: float) -> bool:
     """
     Not a number test.
     """
     return x != x
 
 
-def formatSI(n):
+def formatSI(n) -> str:
     """
     Format the integer or float n to 3 significant digits + SI prefix.
     """
@@ -252,7 +252,7 @@ def run(*awaitables: List[Awaitable], timeout=None):
             future = asyncio.gather(*awaitables)
         if timeout:
             future = asyncio.wait_for(future, timeout)
-        result = syncAwait(future)
+        result = loop.run_until_complete(future)
     return result
 
 
@@ -275,6 +275,9 @@ def sleep(secs: float=0.02) -> True:
     """
     Wait for the given amount of seconds while everything still keeps
     processing in the background. Never use time.sleep().
+
+    Args:
+        secs (float): Time in seconds to wait.
     """
     run(asyncio.sleep(secs))
     return True
@@ -286,11 +289,12 @@ def timeRange(start: datetime.time, end: datetime.time,
     Iterator that waits periodically until certain time points are
     reached while yielding those time points.
 
-    The startTime and dateTime parameters can be specified as
-    datetime.datetime, or as datetime.time in which case today
-    is used as the date.
-
-    The step parameter is the number of seconds of each period.
+    Args:
+        start: Start time, can be specified as datetime.datetime,
+            or as datetime.time in which case today is used as the date
+        end: End time, can be specified as datetime.datetime,
+            or as datetime.time in which case today is used as the date
+        step (float): The number of seconds of each period
     """
     assert step > 0
     if isinstance(start, datetime.time):
@@ -311,8 +315,9 @@ def waitUntil(t: datetime.time) -> True:
     """
     Wait until the given time t is reached.
 
-    The time can be specified as datetime.datetime,
-    or as datetime.time in which case today is used as the date.
+    Args:
+        t: The time t can be specified as datetime.datetime,
+            or as datetime.time in which case today is used as the date.
     """
     if isinstance(t, datetime.time):
         t = datetime.datetime.combine(datetime.date.today(), t)
@@ -324,72 +329,10 @@ def waitUntil(t: datetime.time) -> True:
 
 def patchAsyncio():
     """
-    Patch asyncio to use pure Python implementation of Future and Task,
-    to deal with nested event loops in syncAwait.
+    Patch asyncio to allow nested event loops.
     """
-    asyncio.Task = asyncio.tasks._CTask = asyncio.tasks.Task = \
-        asyncio.tasks._PyTask
-    asyncio.Future = asyncio.futures._CFuture = asyncio.futures.Future = \
-        asyncio.futures._PyFuture
-
-
-def syncAwait(future):
-    """
-    Synchronously wait until future is done, accounting for the possibility
-    that the event loop is already running.
-    """
-    loop = asyncio.get_event_loop()
-
-    try:
-        import quamash
-        isQuamash = isinstance(loop, quamash.QEventLoop)
-    except ImportError:
-        isQuamash = False
-
-    if not loop.is_running():
-        result = loop.run_until_complete(future)
-    elif isQuamash:
-        result = _syncAwaitQt(future)
-    else:
-        result = _syncAwaitAsyncio(future)
-    return result
-
-
-def _syncAwaitAsyncio(future):
-    # https://bugs.python.org/issue22239
-    assert asyncio.Task is asyncio.tasks._PyTask, \
-        'To allow nested event loops, use util.patchAsyncio()'
-    loop = asyncio.get_event_loop()
-    preserved_ready = list(loop._ready)
-    loop._ready.clear()
-    task = asyncio.ensure_future(future)
-    if task is not future:
-        task._log_destroy_pending = False
-    if sys.version_info >= (3, 7, 0):
-        current_tasks = asyncio.tasks._current_tasks
-    else:
-        current_tasks = asyncio.Task._current_tasks
-    preserved_task = current_tasks.get(loop)
-    while not task.done():
-        loop._run_once()
-        if loop._stopping:
-            break
-    loop._ready.extendleft(reversed(preserved_ready))
-    if preserved_task is not None:
-        current_tasks[loop] = preserved_task
-    else:
-        current_tasks.pop(loop, None)
-    return task.result()
-
-
-def _syncAwaitQt(future):
-    import PyQt5.Qt as qt
-    loop = asyncio.get_event_loop()
-    future = asyncio.ensure_future(future, loop=loop)
-    qLoop = qt.QEventLoop()
-    future.add_done_callback(lambda f: qLoop.quit())
-    qLoop.exec_()
-    return future.result() if future.done() else None
+    import nest_asyncio
+    nest_asyncio.apply()
 
 
 def startLoop():
@@ -426,9 +369,7 @@ def _ipython_loop_asyncio(kernel):
 
 def useQt():
     """
-    Integrate asyncio and Qt loops:
-    Let the Qt event loop spin the asyncio event loop
-    (does not work with nested event loops in Windows)
+    Depreciated.
     """
     import PyQt5.Qt as qt
     import quamash
@@ -439,7 +380,32 @@ def useQt():
     asyncio.set_event_loop(loop)
 
 
-def formatIBDatetime(dt):
+def runQt(asyncioSlice: int=10, qtSlice: int=0) -> None:
+    """
+    Run combined Qt5/asyncio event loop.
+
+    Args:
+        asyncioSlice: Time slice in ms for asyncio loop
+        qtSlice: Time slice in ms for Qt5 loop
+    """
+    def onTimer():
+        if asyncioPause:
+            loop.call_later(asyncioPause, loop.stop)
+        else:
+            loop.call_soon(loop.stop)
+        loop.run_forever()
+
+    import PyQt5.Qt as qt
+    loop = asyncio.get_event_loop()
+    asyncioPause = 0.001 * asyncioSlice
+    qApp = qt.QApplication.instance() or qt.QApplication(sys.argv)
+    timer = qt.QTimer()
+    timer.start(qtSlice)
+    timer.timeout.connect(onTimer)
+    qApp.exec_()
+
+
+def formatIBDatetime(dt) -> str:
     """
     Format date or datetime to string that IB uses.
     """

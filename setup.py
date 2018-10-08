@@ -33,5 +33,6 @@ setup(
         'Programming Language :: Python :: 3 :: Only',
     ],
     keywords='ibapi asyncio jupyter interactive brokers async',
-    packages=['ib_insync']
+    packages=['ib_insync'],
+    install_requires=['nest_asyncio']
 )
