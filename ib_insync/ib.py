@@ -548,6 +548,7 @@ class IB:
             self.orderModifyEvent.emit(trade)
         else:
             # this is a new order
+            order.clientId = self.wrapper.clientId
             order.orderId = orderId
             orderStatus = OrderStatus(status=OrderStatus.PendingSubmit)
             logEntry = TradeLogEntry(now, orderStatus.status, '')
@@ -568,6 +569,7 @@ class IB:
         key = self.wrapper.orderKey(
             order.clientId, order.orderId, order.permId)
         trade = self.wrapper.trades.get(key)
+        print('XXXXXXXXXXXXXXXX', key, trade)
         if trade:
             if trade.orderStatus.status not in OrderStatus.DoneStates:
                 logEntry = TradeLogEntry(now, OrderStatus.PendingCancel, '')
