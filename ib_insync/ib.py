@@ -570,15 +570,23 @@ class IB:
             order.clientId, order.orderId, order.permId)
         trade = self.wrapper.trades.get(key)
         if trade:
-            if trade.orderStatus.status not in OrderStatus.DoneStates:
-                logEntry = TradeLogEntry(now, OrderStatus.PendingCancel, '')
+            if not trade.isDone():
+                status = trade.orderStatus.status
+                if (status == OrderStatus.PendingSubmit and not order.transmit
+                        or status == OrderStatus.Inactive):
+                    newStatus = OrderStatus.Cancelled
+                else:
+                    newStatus = OrderStatus.PendingCancel
+                logEntry = TradeLogEntry(now, newStatus, '')
                 trade.log.append(logEntry)
-                trade.orderStatus.status = OrderStatus.PendingCancel
+                trade.orderStatus.status = newStatus
                 self._logger.info(f'cancelOrder: {trade}')
                 trade.cancelEvent.emit(trade)
                 trade.statusEvent.emit(trade)
                 self.cancelOrderEvent.emit(trade)
                 self.orderStatusEvent.emit(trade)
+                if newStatus == OrderStatus.Cancelled:
+                    trade.cancelledEvent.emit(trade)
         else:
             self._logger.error(f'cancelOrder: Unknown orderId {order.orderId}')
         return trade
