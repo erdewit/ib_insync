@@ -569,7 +569,6 @@ class IB:
         key = self.wrapper.orderKey(
             order.clientId, order.orderId, order.permId)
         trade = self.wrapper.trades.get(key)
-        print('XXXXXXXXXXXXXXXX', key, trade)
         if trade:
             if trade.orderStatus.status not in OrderStatus.DoneStates:
                 logEntry = TradeLogEntry(now, OrderStatus.PendingCancel, '')
