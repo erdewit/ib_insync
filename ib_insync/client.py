@@ -146,7 +146,7 @@ class Client(EClient):
         is raised if the connection is not established
         within the timeout period.
         """
-        util.syncAwait(self.connectAsync(host, port, clientId, timeout))
+        util.run(self.connectAsync(host, port, clientId, timeout))
 
     async def connectAsync(self, host, port, clientId, timeout=2):
         self._logger.info(

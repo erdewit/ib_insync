@@ -130,13 +130,13 @@ class IBC(Object):
         """
         Launch TWS/IBG.
         """
-        util.syncAwait(self.startAsync())
+        util.run(self.startAsync())
 
     def terminate(self):
         """
         Terminate TWS/IBG.
         """
-        util.syncAwait(self.terminateAsync())
+        util.run(self.terminateAsync())
 
     async def startAsync(self):
         if self._proc:
@@ -230,19 +230,19 @@ class IBController(Object):
         """
         Launch TWS/IBG.
         """
-        util.syncAwait(self.startAsync())
+        util.run(self.startAsync())
 
     def stop(self):
         """
         Cleanly shutdown TWS/IBG.
         """
-        util.syncAwait(self.stopAsync())
+        util.run(self.stopAsync())
 
     def terminate(self):
         """
         Terminate TWS/IBG.
         """
-        util.syncAwait(self.terminateAsync())
+        util.run(self.terminateAsync())
 
     async def startAsync(self):
         if self._proc:
