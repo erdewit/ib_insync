@@ -491,10 +491,11 @@ class Wrapper(EWrapper):
             self, reqId, time, open_, high, low, close, volume, wap, count):
         dt = datetime.datetime.fromtimestamp(time, datetime.timezone.utc)
         bar = RealTimeBar(dt, -1, open_, high, low, close, volume, wap, count)
-        bars = self.reqId2Bars[reqId]
-        bars.append(bar)
-        self.handleEvent('barUpdateEvent', bars, True)
-        bars.updateEvent(bars, True)
+        bars = self.reqId2Bars.get(reqId)
+        if bars is not None:
+            bars.append(bar)
+            self.handleEvent('barUpdateEvent', bars, True)
+            bars.updateEvent(bars, True)
 
     @iswrapper
     def historicalData(self, reqId, bar):
