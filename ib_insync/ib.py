@@ -147,6 +147,9 @@ class IB:
         * ``tickNewsEvent(news: NewsTick)``:
           Emit a new news headline.
 
+        * ``scannerDataEvent(data: ScanData)``:
+          Emit data from a scanner subscription.
+
         * ``errorEvent(reqId: int, errorCode: int, errorString: str,
           contract: Contract)``:
           Emits the reqId/orderId and TWS error code and string (see
@@ -171,7 +174,7 @@ class IB:
         'execDetailsEvent', 'commissionReportEvent',
         'updatePortfolioEvent', 'positionEvent', 'accountValueEvent',
         'accountSummaryEvent', 'pnlEvent', 'pnlSingleEvent',
-        'tickNewsEvent', 'errorEvent', 'timeoutEvent')
+        'scannerDataEvent', 'tickNewsEvent', 'errorEvent', 'timeoutEvent')
 
     RequestTimeout = None  # timeout in seconds for requests
 
@@ -1055,11 +1058,15 @@ class IB:
     @api
     def reqScannerData(
             self, subscription: ScannerSubscription,
-            scannerSubscriptionOptions=None) -> List[ScanData]:
+            scannerSubscriptionOptions=None,
+            scannerSubscriptionFilterOptions=None) -> List[ScanData]:
         """
         Do a market scan.
 
         This method is blocking.
+
+        For a non-blocking subscription, use ``ib.client.reqScannerData()``
+        directly and subscribe to ``scannerDataEvent``.
 
         https://interactivebrokers.github.io/tws-api/market_scanners.html
         """
@@ -1407,11 +1414,17 @@ class IB:
         return future
 
     async def reqScannerSubscriptionAsync(
-            self, subscription, scannerSubscriptionOptions=None):
+            self, subscription, scannerSubscriptionOptions=None,
+            scannerSubscriptionFilterOptions=None):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
-        self.client.reqScannerSubscription(
-            reqId, subscription, scannerSubscriptionOptions)
+        if util.ibapiVersionInfo() <= (9, 73, 7):
+            self.client.reqScannerSubscription(
+                reqId, subscription, scannerSubscriptionOptions)
+        else:
+            self.client.reqScannerSubscription(
+                reqId, subscription, scannerSubscriptionOptions,
+                scannerSubscriptionFilterOptions)
         await future
         self.client.cancelScannerSubscription(reqId)
         return future.result()

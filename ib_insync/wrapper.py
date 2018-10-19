@@ -851,7 +851,10 @@ class Wrapper(EWrapper):
         if cd.contract:
             cd.contract = self._getContract(cd.contract)
         data = ScanData(rank, cd, distance, benchmark, projection, legsStr)
-        self._results[reqId].append(data)
+        self.handleEvent('scannerDataEvent', data)
+        results = self._results.get(reqId)
+        if results:
+            results.append(data)
 
     @iswrapper
     def scannerDataEnd(self, reqId):
