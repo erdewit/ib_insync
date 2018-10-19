@@ -853,7 +853,7 @@ class Wrapper(EWrapper):
         data = ScanData(rank, cd, distance, benchmark, projection, legsStr)
         self.handleEvent('scannerDataEvent', data)
         results = self._results.get(reqId)
-        if results:
+        if results is not None:
             results.append(data)
 
     @iswrapper
