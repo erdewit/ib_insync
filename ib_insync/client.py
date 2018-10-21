@@ -173,6 +173,7 @@ class Client(EClient):
             if isinstance(e, ConnectionRefusedError):
                 msg = 'Make sure API port on TWS/IBG is open'
                 self._logger.error(msg)
+            await fut  # consume exception
             raise
 
     def sendMsg(self, msg):
