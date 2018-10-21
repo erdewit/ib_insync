@@ -368,6 +368,7 @@ def startLoop():
 def useQt(qtLib: str='PyQt5', period: float=0.01):
     """
     Run combined Qt5/asyncio event loop.
+
     Args:
         qtLib: Name of Qt library to use, can be 'PyQt5' or 'PySide2'.
         period: Period in seconds to poll Qt.
