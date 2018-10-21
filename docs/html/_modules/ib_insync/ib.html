@@ -224,6 +224,9 @@
 <span class="sd">        * ``tickNewsEvent(news: NewsTick)``:</span>
 <span class="sd">          Emit a new news headline.</span>
 
+<span class="sd">        * ``scannerDataEvent(data: ScanData)``:</span>
+<span class="sd">          Emit data from a scanner subscription.</span>
+
 <span class="sd">        * ``errorEvent(reqId: int, errorCode: int, errorString: str,</span>
 <span class="sd">          contract: Contract)``:</span>
 <span class="sd">          Emits the reqId/orderId and TWS error code and string (see</span>
@@ -248,7 +251,7 @@
         <span class="s1">&#39;execDetailsEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;commissionReportEvent&#39;</span><span class="p">,</span>
         <span class="s1">&#39;updatePortfolioEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;positionEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;accountValueEvent&#39;</span><span class="p">,</span>
         <span class="s1">&#39;accountSummaryEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;pnlEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;pnlSingleEvent&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;tickNewsEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;errorEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;timeoutEvent&#39;</span><span class="p">)</span>
+        <span class="s1">&#39;scannerDataEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;tickNewsEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;errorEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;timeoutEvent&#39;</span><span class="p">)</span>
 
     <span class="n">RequestTimeout</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># timeout in seconds for requests</span>
 
@@ -625,6 +628,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">orderModifyEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># this is a new order</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">clientId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">clientId</span>
             <span class="n">order</span><span class="o">.</span><span class="n">orderId</span> <span class="o">=</span> <span class="n">orderId</span>
             <span class="n">orderStatus</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">OrderStatus</span><span class="o">.</span><span class="n">PendingSubmit</span><span class="p">)</span>
             <span class="n">logEntry</span> <span class="o">=</span> <span class="n">TradeLogEntry</span><span class="p">(</span><span class="n">now</span><span class="p">,</span> <span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
@@ -646,15 +650,23 @@
             <span class="n">order</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">orderId</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">permId</span><span class="p">)</span>
         <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">trade</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">DoneStates</span><span class="p">:</span>
-                <span class="n">logEntry</span> <span class="o">=</span> <span class="n">TradeLogEntry</span><span class="p">(</span><span class="n">now</span><span class="p">,</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">PendingCancel</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">trade</span><span class="o">.</span><span class="n">isDone</span><span class="p">():</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">PendingSubmit</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">order</span><span class="o">.</span><span class="n">transmit</span>
+                        <span class="ow">or</span> <span class="n">status</span> <span class="o">==</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">Inactive</span><span class="p">):</span>
+                    <span class="n">newStatus</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">Cancelled</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">newStatus</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">PendingCancel</span>
+                <span class="n">logEntry</span> <span class="o">=</span> <span class="n">TradeLogEntry</span><span class="p">(</span><span class="n">now</span><span class="p">,</span> <span class="n">newStatus</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
                 <span class="n">trade</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">logEntry</span><span class="p">)</span>
-                <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">PendingCancel</span>
+                <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">newStatus</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;cancelOrder: </span><span class="si">{trade}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">trade</span><span class="o">.</span><span class="n">cancelEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
                 <span class="n">trade</span><span class="o">.</span><span class="n">statusEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cancelOrderEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">orderStatusEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">newStatus</span> <span class="o">==</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">Cancelled</span><span class="p">:</span>
+                    <span class="n">trade</span><span class="o">.</span><span class="n">cancelledEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;cancelOrder: Unknown orderId </span><span class="si">{order.orderId}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">trade</span></div>
@@ -1123,11 +1135,15 @@
 <div class="viewcode-block" id="IB.reqScannerData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqScannerData">[docs]</a>    <span class="nd">@api</span>
     <span class="k">def</span> <span class="nf">reqScannerData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">subscription</span><span class="p">:</span> <span class="n">ScannerSubscription</span><span class="p">,</span>
-            <span class="n">scannerSubscriptionOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ScanData</span><span class="p">]:</span>
+            <span class="n">scannerSubscriptionOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">scannerSubscriptionFilterOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ScanData</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Do a market scan.</span>
 
 <span class="sd">        This method is blocking.</span>
+
+<span class="sd">        For a non-blocking subscription, use ``ib.client.reqScannerData()``</span>
+<span class="sd">        directly and subscribe to ``scannerDataEvent``.</span>
 
 <span class="sd">        https://interactivebrokers.github.io/tws-api/market_scanners.html</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1475,11 +1491,17 @@
         <span class="k">return</span> <span class="n">future</span></div>
 
 <div class="viewcode-block" id="IB.reqScannerSubscriptionAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqScannerSubscriptionAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">reqScannerSubscriptionAsync</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">scannerSubscriptionFilterOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqScannerSubscription</span><span class="p">(</span>
-            <span class="n">reqId</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">ibapiVersionInfo</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqScannerSubscription</span><span class="p">(</span>
+                <span class="n">reqId</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqScannerSubscription</span><span class="p">(</span>
+                <span class="n">reqId</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">,</span>
+                <span class="n">scannerSubscriptionFilterOptions</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">future</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelScannerSubscription</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span></div>

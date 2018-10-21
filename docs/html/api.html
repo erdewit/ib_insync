@@ -191,6 +191,8 @@ A profit- and loss entry is updated.</li>
 A profit- and loss entry for a single position is updated.</li>
 <li><code class="docutils literal notranslate"><span class="pre">tickNewsEvent(news:</span> <span class="pre">NewsTick)</span></code>:
 Emit a new news headline.</li>
+<li><code class="docutils literal notranslate"><span class="pre">scannerDataEvent(data:</span> <span class="pre">ScanData)</span></code>:
+Emit data from a scanner subscription.</li>
 <li><code class="docutils literal notranslate"><span class="pre">errorEvent(reqId:</span> <span class="pre">int,</span> <span class="pre">errorCode:</span> <span class="pre">int,</span> <span class="pre">errorString:</span> <span class="pre">str,</span>
 <span class="pre">contract:</span> <span class="pre">Contract)</span></code>:
 Emits the reqId/orderId and TWS error code and string (see
@@ -208,7 +210,7 @@ handler as it may lead to too much recursion.</p>
 </dl>
 <dl class="attribute">
 <dt id="ib_insync.ib.IB.events">
-<code class="descname">events</code><em class="property"> = ('connectedEvent', 'disconnectedEvent', 'updateEvent', 'pendingTickersEvent', 'barUpdateEvent', 'newOrderEvent', 'orderModifyEvent', 'cancelOrderEvent', 'openOrderEvent', 'orderStatusEvent', 'execDetailsEvent', 'commissionReportEvent', 'updatePortfolioEvent', 'positionEvent', 'accountValueEvent', 'accountSummaryEvent', 'pnlEvent', 'pnlSingleEvent', 'tickNewsEvent', 'errorEvent', 'timeoutEvent')</em><a class="headerlink" href="#ib_insync.ib.IB.events" title="Permalink to this definition">¶</a></dt>
+<code class="descname">events</code><em class="property"> = ('connectedEvent', 'disconnectedEvent', 'updateEvent', 'pendingTickersEvent', 'barUpdateEvent', 'newOrderEvent', 'orderModifyEvent', 'cancelOrderEvent', 'openOrderEvent', 'orderStatusEvent', 'execDetailsEvent', 'commissionReportEvent', 'updatePortfolioEvent', 'positionEvent', 'accountValueEvent', 'accountSummaryEvent', 'pnlEvent', 'pnlSingleEvent', 'scannerDataEvent', 'tickNewsEvent', 'errorEvent', 'timeoutEvent')</em><a class="headerlink" href="#ib_insync.ib.IB.events" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1291,9 +1293,11 @@ The contract object must be the same as used to subscribe with.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqScannerData">
-<code class="descname">reqScannerData</code><span class="sig-paren">(</span><em>subscription</em>, <em>scannerSubscriptionOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqScannerData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqScannerData" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqScannerData</code><span class="sig-paren">(</span><em>subscription</em>, <em>scannerSubscriptionOptions=None</em>, <em>scannerSubscriptionFilterOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqScannerData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqScannerData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do a market scan.</p>
 <p>This method is blocking.</p>
+<p>For a non-blocking subscription, use <code class="docutils literal notranslate"><span class="pre">ib.client.reqScannerData()</span></code>
+directly and subscribe to <code class="docutils literal notranslate"><span class="pre">scannerDataEvent</span></code>.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/market_scanners.html">https://interactivebrokers.github.io/tws-api/market_scanners.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1654,7 +1658,7 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqScannerSubscriptionAsync">
-<code class="descname">reqScannerSubscriptionAsync</code><span class="sig-paren">(</span><em>subscription</em>, <em>scannerSubscriptionOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqScannerSubscriptionAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqScannerSubscriptionAsync" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reqScannerSubscriptionAsync</code><span class="sig-paren">(</span><em>subscription</em>, <em>scannerSubscriptionOptions=None</em>, <em>scannerSubscriptionFilterOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqScannerSubscriptionAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqScannerSubscriptionAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1996,12 +2000,12 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'Filled', 'Inactive', 'Cancelled', 'ApiCancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'Inactive', 'Filled', 'Cancelled', 'ApiCancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'PreSubmitted', 'ApiPending', 'Submitted', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'ApiPending', 'PreSubmitted', 'Submitted', 'PendingSubmit'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2073,7 +2077,7 @@ and as keyword, the keyword wins.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/available_orders.html">https://interactivebrokers.github.io/tws-api/available_orders.html</a></p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 139903450510952: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 140519040941976: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -5795,18 +5799,42 @@ a DataFrame or as a list of bar objects.</p>
 <dt id="ib_insync.util.ibapiVersionInfo">
 <code class="descclassname">ib_insync.util.</code><code class="descname">ibapiVersionInfo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#ibapiVersionInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.ibapiVersionInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Version info of ibapi module as 3-tuple.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="ib_insync.util.isNan">
 <code class="descclassname">ib_insync.util.</code><code class="descname">isNan</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#isNan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.isNan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Not a number test.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="ib_insync.util.formatSI">
 <code class="descclassname">ib_insync.util.</code><code class="descname">formatSI</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#formatSI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.formatSI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format the integer or float n to 3 significant digits + SI prefix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
@@ -5901,34 +5929,17 @@ or as datetime.time in which case today is used as the date.</td>
 <dl class="function">
 <dt id="ib_insync.util.startLoop">
 <code class="descclassname">ib_insync.util.</code><code class="descname">startLoop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#startLoop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.startLoop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use asyncio event loop for Jupyter notebooks.</p>
+<dd><p>Use nested asyncio event loop for Jupyter notebooks.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ib_insync.util.useQt">
-<code class="descclassname">ib_insync.util.</code><code class="descname">useQt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#useQt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.useQt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Depreciated.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ib_insync.util.runQt">
-<code class="descclassname">ib_insync.util.</code><code class="descname">runQt</code><span class="sig-paren">(</span><em>asyncioSlice=10</em>, <em>qtSlice=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#runQt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.runQt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run combined Qt5/asyncio event loop.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>asyncioSlice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Time slice in ms for asyncio loop</li>
-<li><strong>qtSlice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Time slice in ms for Qt5 loop</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+<code class="descclassname">ib_insync.util.</code><code class="descname">useQt</code><span class="sig-paren">(</span><em>qtLib='PyQt5'</em>, <em>period=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#useQt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.useQt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run combined Qt5/asyncio event loop.
+:type qtLib: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>
+:param qtLib: Name of Qt library to use, can be ‘PyQt5’ or ‘PySide2’.
+:type period: <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>
+:param period: Period in seconds to poll Qt.</p>
 </dd></dl>
 
 <dl class="function">
