@@ -401,7 +401,8 @@ class Watchdog(Object):
             self._connect()
             self.ib.setTimeout(self.appTimeout)
             self.startedEvent.emit(self)
-        except Exception:
+        except Exception as e:
+            self._logger.exception(e)
             self.controller.terminate()
             self._scheduleRestart()
 
