@@ -1,7 +1,7 @@
 import datetime
 import logging
-import sys
 import math
+import sys
 import signal
 import asyncio
 import time
@@ -212,7 +212,6 @@ class timeit:
     """
     Context manager for timing.
     """
-
     def __init__(self, title='Run'):
         self.title = title
 
@@ -337,8 +336,27 @@ def patchAsyncio():
 
 def startLoop():
     """
-    Use asyncio event loop for Jupyter notebooks.
+    Use nested asyncio event loop for Jupyter notebooks.
     """
+    def _ipython_loop_asyncio(kernel):
+        '''
+        Use asyncio event loop for the given IPython kernel.
+        '''
+        loop = asyncio.get_event_loop()
+
+        def kernel_handler():
+            kernel.do_one_iteration()
+            loop.call_later(kernel._poll_interval, kernel_handler)
+
+        loop.call_soon(kernel_handler)
+        try:
+            if not loop.is_running():
+                loop.run_forever()
+        finally:
+            if not loop.is_running():
+                loop.run_until_complete(loop.shutdown_asyncgens())
+                loop.close()
+
     patchAsyncio()
     loop = asyncio.get_event_loop()
     if not loop.is_running():
@@ -347,62 +365,38 @@ def startLoop():
         enable_gui('asyncio')
 
 
-def _ipython_loop_asyncio(kernel):
-    '''
-    Use asyncio event loop for the given IPython kernel.
-    '''
-    loop = asyncio.get_event_loop()
-
-    def kernel_handler():
-        kernel.do_one_iteration()
-        loop.call_later(kernel._poll_interval, kernel_handler)
-
-    loop.call_soon(kernel_handler)
-    try:
-        if not loop.is_running():
-            loop.run_forever()
-    finally:
-        if not loop.is_running():
-            loop.run_until_complete(loop.shutdown_asyncgens())
-            loop.close()
-
-
-def useQt():
-    """
-    Depreciated.
-    """
-    import PyQt5.Qt as qt
-    import quamash
-    if isinstance(asyncio.get_event_loop(), quamash.QEventLoop):
-        return
-    assert qt.QApplication.instance()
-    loop = quamash.QEventLoop()
-    asyncio.set_event_loop(loop)
-
-
-def runQt(asyncioSlice: int=10, qtSlice: int=0) -> None:
+def useQt(qtLib: str='PyQt5', period: float=0.01):
     """
     Run combined Qt5/asyncio event loop.
-
     Args:
-        asyncioSlice: Time slice in ms for asyncio loop
-        qtSlice: Time slice in ms for Qt5 loop
+        qtLib: Name of Qt library to use, can be 'PyQt5' or 'PySide2'.
+        period: Period in seconds to poll Qt.
     """
-    def onTimer():
-        if asyncioPause:
-            loop.call_later(asyncioPause, loop.stop)
-        else:
-            loop.call_soon(loop.stop)
-        loop.run_forever()
+    def qt_step():
+        loop.call_later(period, qt_step)
+        if not stack:
+            qloop = QEventLoop()
+            timer = QTimer()
+            timer.timeout.connect(qloop.quit)
+            stack.append((qloop, timer))
+        qloop, timer = stack.pop()
+        timer.start(0)
+        qloop.exec_()
+        timer.stop()
+        stack.append((qloop, timer))
 
-    import PyQt5.Qt as qt
+    if qtLib not in ('PyQt5', 'PySide2'):
+        raise RuntimeError(f'Unknown Qt library: {qtLib}')
+    if qtLib == 'PyQt5':
+        from PyQt5.Qt import QApplication, QTimer, QEventLoop
+    else:
+        from PySide2.QtWidgets import QApplication
+        from PySide2.QtCore import QTimer, QEventLoop
+    global qApp
+    qApp = QApplication.instance() or QApplication(sys.argv)
     loop = asyncio.get_event_loop()
-    asyncioPause = 0.001 * asyncioSlice
-    qApp = qt.QApplication.instance() or qt.QApplication(sys.argv)
-    timer = qt.QTimer()
-    timer.start(qtSlice)
-    timer.timeout.connect(onTimer)
-    qApp.exec_()
+    stack = []
+    qt_step()
 
 
 def formatIBDatetime(dt) -> str:

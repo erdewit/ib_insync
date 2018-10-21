@@ -15,15 +15,15 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-   
+
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
+
+
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
   <div class="document">
-    
+
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="../../index.html">IB-insync</a></h1>
@@ -70,10 +70,10 @@
       </div>
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
+
 
           <div class="body" role="main">
-            
+
   <h1>Source code for ib_insync.ibcontroller</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
@@ -207,13 +207,13 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Launch TWS/IBG.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">util</span><span class="o">.</span><span class="n">syncAwait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startAsync</span><span class="p">())</span></div>
+        <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IBC.terminate"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.terminate">[docs]</a>    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Terminate TWS/IBG.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">util</span><span class="o">.</span><span class="n">syncAwait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminateAsync</span><span class="p">())</span></div>
+        <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminateAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IBC.startAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.startAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">startAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="p">:</span>
@@ -307,19 +307,19 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Launch TWS/IBG.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">util</span><span class="o">.</span><span class="n">syncAwait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startAsync</span><span class="p">())</span></div>
+        <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IBController.stop"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBController.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cleanly shutdown TWS/IBG.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">util</span><span class="o">.</span><span class="n">syncAwait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stopAsync</span><span class="p">())</span></div>
+        <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stopAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IBController.terminate"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBController.terminate">[docs]</a>    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Terminate TWS/IBG.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">util</span><span class="o">.</span><span class="n">syncAwait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminateAsync</span><span class="p">())</span></div>
+        <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminateAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IBController.startAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBController.startAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">startAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="p">:</span>
@@ -549,22 +549,22 @@
 </pre></div>
 
           </div>
-          
+
         </div>
       </div>
     <div class="clearer"></div>
   </div>
     <div class="footer">
       &copy;2018, Ewald de Wit.
-      
+
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
-      
+
     </div>
 
-    
 
-    
+
+
   </body>
 </html>
