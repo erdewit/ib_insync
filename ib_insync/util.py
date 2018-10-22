@@ -122,6 +122,7 @@ def logToFile(path, level=logging.INFO, ibapiLevel=logging.ERROR):
     """
     Create a log handler that logs to the given file.
     """
+    logging.getLogger('ibapi').setLevel(ibapiLevel)
     logger = logging.getLogger()
     f = RootLogFilter(ibapiLevel)
     logger.addFilter(f)
@@ -137,6 +138,7 @@ def logToConsole(level=logging.INFO, ibapiLevel=logging.ERROR):
     """
     Create a log handler that logs to the console.
     """
+    logging.getLogger('ibapi').setLevel(ibapiLevel)
     logger = logging.getLogger()
     f = RootLogFilter(ibapiLevel)
     logger.addFilter(f)
