@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.9.30 documentation</title>
+    <title>API docs &#8212; IB-insync 0.9.31 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -92,7 +92,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.30.</p>
+<p>Release 0.9.31.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -149,60 +149,60 @@ that the current state may have been updated during the sleep(0) call.</p>
 <dl class="docutils">
 <dt>Events:</dt>
 <dd><ul class="first simple">
-<li><code class="docutils literal notranslate"><span class="pre">connectedEvent()</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">connectedEvent</span></code> ():
 Is emitted after connecting and synchronzing with TWS/gateway.</li>
-<li><code class="docutils literal notranslate"><span class="pre">disconnectedEvent()</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">disconnectedEvent</span></code> ():
 Is emitted after disconnecting from TWS/gateway.</li>
-<li><code class="docutils literal notranslate"><span class="pre">updateEvent()</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">updateEvent</span></code> ():
 Is emitted after a network packet has been handeled.</li>
-<li><code class="docutils literal notranslate"><span class="pre">pendingTickersEvent(tickers:</span> <span class="pre">List[Ticker])</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">pendingTickersEvent</span></code> (tickers: List[<a class="reference internal" href="#ib_insync.ticker.Ticker" title="ib_insync.ticker.Ticker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ticker</span></code></a>]):
 Emits the set of tickers that have been updated during the last
 update and for which there are new ticks, tickByTicks or domTicks.</li>
-<li><code class="docutils literal notranslate"><span class="pre">barUpdateEvent(bars:</span> <span class="pre">BarDataList,</span> <span class="pre">hasNewBar:</span> <span class="pre">bool)</span></code>:
-Emits the bar list that has been updated in real time.
-If a new bar has been added then hasNewBar is True, when the last
-bar has changed it is False.</li>
-<li><code class="docutils literal notranslate"><span class="pre">newOrderEvent(trade:</span> <span class="pre">Trade)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">barUpdateEvent</span></code> (bars: <a class="reference internal" href="#ib_insync.objects.BarDataList" title="ib_insync.objects.BarDataList"><code class="xref py py-class docutils literal notranslate"><span class="pre">BarDataList</span></code></a>,
+hasNewBar: bool): Emits the bar list that has been updated in
+real time. If a new bar has been added then hasNewBar is True,
+when the last bar has changed it is False.</li>
+<li><code class="docutils literal notranslate"><span class="pre">newOrderEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>):
 Emits a newly placed trade.</li>
-<li><code class="docutils literal notranslate"><span class="pre">orderModifyEvent(trade:</span> <span class="pre">Trade)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">orderModifyEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>):
 Emits when order is modified.</li>
-<li><code class="docutils literal notranslate"><span class="pre">cancelOrderEvent(trade:</span> <span class="pre">Trade)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">cancelOrderEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>):
 Emits a trade directly after requesting for it to be cancelled.</li>
-<li><code class="docutils literal notranslate"><span class="pre">openOrderEvent(trade:</span> <span class="pre">Trade)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">openOrderEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>):
 Emits the trade with open order.</li>
-<li><code class="docutils literal notranslate"><span class="pre">orderStatusEvent(trade:</span> <span class="pre">Trade)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">orderStatusEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>):
 Emits the changed order status of the ongoing trade.</li>
-<li><code class="docutils literal notranslate"><span class="pre">execDetailsEvent(trade:</span> <span class="pre">Trade,</span> <span class="pre">fill:</span> <span class="pre">Fill)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">execDetailsEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>, fill: <a class="reference internal" href="#ib_insync.objects.Fill" title="ib_insync.objects.Fill"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fill</span></code></a>):
 Emits the fill together with the ongoing trade it belongs to.</li>
-<li><code class="docutils literal notranslate"><span class="pre">commissionReportEvent(trade:</span> <span class="pre">Trade,</span> <span class="pre">fill:</span> <span class="pre">Fill,</span>
-<span class="pre">report:</span> <span class="pre">CommissionReport)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">commissionReportEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>,
+fill: <a class="reference internal" href="#ib_insync.objects.Fill" title="ib_insync.objects.Fill"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fill</span></code></a>, report: <a class="reference internal" href="#ib_insync.objects.CommissionReport" title="ib_insync.objects.CommissionReport"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommissionReport</span></code></a>):
 The commission report is emitted after the fill that it belongs to.</li>
-<li><code class="docutils literal notranslate"><span class="pre">updatePortfolioEvent(item:</span> <span class="pre">PortfolioItem)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">updatePortfolioEvent</span></code> (item: <a class="reference internal" href="#ib_insync.objects.PortfolioItem" title="ib_insync.objects.PortfolioItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">PortfolioItem</span></code></a>):
 A portfolio item has changed.</li>
-<li><code class="docutils literal notranslate"><span class="pre">positionEvent(position:</span> <span class="pre">Position)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">positionEvent</span></code> (position: <a class="reference internal" href="#ib_insync.objects.Position" title="ib_insync.objects.Position"><code class="xref py py-class docutils literal notranslate"><span class="pre">Position</span></code></a>):
 A position has changed.</li>
-<li><code class="docutils literal notranslate"><span class="pre">accountValueEvent(value:</span> <span class="pre">AccountValue)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">accountValueEvent</span></code> (value: <a class="reference internal" href="#ib_insync.objects.AccountValue" title="ib_insync.objects.AccountValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccountValue</span></code></a>):
 An account value has changed.</li>
-<li><code class="docutils literal notranslate"><span class="pre">accountSummaryEvent(value:</span> <span class="pre">AccountValue)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">accountSummaryEvent</span></code> (value: <a class="reference internal" href="#ib_insync.objects.AccountValue" title="ib_insync.objects.AccountValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccountValue</span></code></a>):
 An account value has changed.</li>
-<li><code class="docutils literal notranslate"><span class="pre">pnlEvent(entry:</span> <span class="pre">PnL)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">pnlEvent</span></code> (entry: <a class="reference internal" href="#ib_insync.objects.PnL" title="ib_insync.objects.PnL"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnL</span></code></a>):
 A profit- and loss entry is updated.</li>
-<li><code class="docutils literal notranslate"><span class="pre">pnlSingleEvent(entry:</span> <span class="pre">PnLSingle)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">pnlSingleEvent</span></code> (entry: <a class="reference internal" href="#ib_insync.objects.PnLSingle" title="ib_insync.objects.PnLSingle"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnLSingle</span></code></a>):
 A profit- and loss entry for a single position is updated.</li>
-<li><code class="docutils literal notranslate"><span class="pre">tickNewsEvent(news:</span> <span class="pre">NewsTick)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">tickNewsEvent</span></code> (news: <a class="reference internal" href="#ib_insync.objects.NewsTick" title="ib_insync.objects.NewsTick"><code class="xref py py-class docutils literal notranslate"><span class="pre">NewsTick</span></code></a>):
 Emit a new news headline.</li>
-<li><code class="docutils literal notranslate"><span class="pre">scannerDataEvent(data:</span> <span class="pre">ScanData)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">scannerDataEvent</span></code> (data: <a class="reference internal" href="#ib_insync.objects.ScanData" title="ib_insync.objects.ScanData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanData</span></code></a>):
 Emit data from a scanner subscription.</li>
-<li><code class="docutils literal notranslate"><span class="pre">errorEvent(reqId:</span> <span class="pre">int,</span> <span class="pre">errorCode:</span> <span class="pre">int,</span> <span class="pre">errorString:</span> <span class="pre">str,</span>
-<span class="pre">contract:</span> <span class="pre">Contract)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">errorEvent</span></code> (reqId: int, errorCode: int, errorString: str,
+contract: <a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>):
 Emits the reqId/orderId and TWS error code and string (see
 <a class="reference external" href="https://interactivebrokers.github.io/tws-api/message_codes.html">https://interactivebrokers.github.io/tws-api/message_codes.html</a>)
 together with the contract the error applies to (or None if no
 contract applies).</li>
-<li><code class="docutils literal notranslate"><span class="pre">timeoutEvent(idlePeriod:</span> <span class="pre">float)</span></code>:
+<li><code class="docutils literal notranslate"><span class="pre">timeoutEvent</span></code> (idlePeriod: float):
 Is emitted if no data is received for longer than the timeout period
-specified with <code class="docutils literal notranslate"><span class="pre">setTimeout</span></code>. The value emitted is the period in
-seconds since the last update.</li>
+specified with <a class="reference internal" href="#ib_insync.ib.IB.setTimeout" title="ib_insync.ib.IB.setTimeout"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setTimeout()</span></code></a>. The value emitted is the period
+in seconds since the last update.</li>
 </ul>
 <p class="last">Note that it is not advisible to place new requests inside an event
 handler as it may lead to too much recursion.</p>
@@ -221,10 +221,28 @@ handler as it may lead to too much recursion.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.connect">
 <code class="descname">connect</code><span class="sig-paren">(</span><em>host='127.0.0.1'</em>, <em>port='7497'</em>, <em>clientId=1</em>, <em>timeout=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.connect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connect to a TWS or IB gateway application running at host:port.
-After the connect the client is immediately ready to serve requests.</p>
-<p>Setting clientId=0 will merge manual TWS trading with this client.</p>
+<dd><p>Connect to a running TWS or IB gateway application.
+After the connection is made the client is fully synchronized
+and ready to serve requests.</p>
 <p>This method is blocking.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>host</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Host name or IP address.</li>
+<li><strong>port</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Port number.</li>
+<li><strong>clientId</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – ID number to use for this client; must be unique per
+connection. Setting clientId=0 will automatically merge manual
+TWS trading with this client.</li>
+<li><strong>timeout</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – If establishing the connection takes longer than
+<code class="docutils literal notranslate"><span class="pre">timeout</span></code> seconds then the <code class="docutils literal notranslate"><span class="pre">asyncio.TimeoutError</span></code> exception
+is raised. Set to 0 to disable timeout.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -232,14 +250,6 @@ After the connect the client is immediately ready to serve requests.</p>
 <code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.disconnect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Disconnect from a TWS or IB gateway application.
 This will clear all session state.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -269,9 +279,23 @@ timeout period.</p>
 
 <dl class="staticmethod">
 <dt id="ib_insync.ib.IB.schedule">
-<em class="property">static </em><code class="descname">schedule</code><span class="sig-paren">(</span><em>time</em>, <em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.ib.IB.schedule" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">schedule</code><span class="sig-paren">(</span><em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.ib.IB.schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Schedule the callback to be run at the given time with
 the given arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>time</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">time</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code>]) – Time to run callback. If given as <code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.time</span></code>
+then use today as date.</li>
+<li><strong>callback</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – Callable scheduled to run.</li>
+<li><strong>args</strong> – Arguments for to call callback with.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
@@ -341,7 +365,10 @@ or as datetime.time in which case today is used as the date.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">True</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Maximum time in seconds to wait.
+If 0 then no timeout is used.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">True</td>
 </tr>
 </tbody>
 </table>
@@ -351,13 +378,21 @@ or as datetime.time in which case today is used as the date.</td>
 <dt id="ib_insync.ib.IB.loopUntil">
 <code class="descname">loopUntil</code><span class="sig-paren">(</span><em>condition=None</em>, <em>timeout=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.loopUntil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.loopUntil" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iteratate until condition is met, with optional timeout in seconds.
-The given optional condition is tested after every network packet.
 The yielded value is that of the condition or False when timed out.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[+T_co]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>condition</strong> – Predicate function that is tested after every network</li>
+<li><strong>update.</strong> – </li>
+<li><strong>timeout</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Maximum time in seconds to wait.
+If 0 then no timeout is used.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code>]</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -369,29 +404,20 @@ The yielded value is that of the condition or False when timed out.</p>
 <dd><p>Depreciated: Use events instead.</p>
 <p>Set an optional callback to be invoked after an event.
 Unsetting is done by supplying None as callback.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.setTimeout">
 <code class="descname">setTimeout</code><span class="sig-paren">(</span><em>timeout=60</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.setTimeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.setTimeout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set timeout in seconds for receiving messages from TWS/IBG.
-This will emit the <code class="docutils literal notranslate"><span class="pre">timeout</span></code> callback if there is no new data
-for too long.</p>
+<dd><p>Set a timeout for receiving messages from TWS/IBG, emitting
+the <code class="docutils literal notranslate"><span class="pre">timeout</span></code> callback if there is no incoming data for too long.</p>
 <p>The timeout fires once per connected session but can be set again
 after firing or after a reconnect.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Timeout in seconds.</td>
 </tr>
 </tbody>
 </table>
@@ -420,7 +446,9 @@ or of all accounts if account is left blank.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.AccountValue" title="ib_insync.objects.AccountValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccountValue</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>account</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – If specified, filter for this account name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.AccountValue" title="ib_insync.objects.AccountValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccountValue</span></code></a>]</td>
 </tr>
 </tbody>
 </table>
@@ -436,7 +464,9 @@ or of all accounts if account is left blank.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.AccountValue" title="ib_insync.objects.AccountValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccountValue</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>account</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – If specified, filter for this account name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.AccountValue" title="ib_insync.objects.AccountValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccountValue</span></code></a>]</td>
 </tr>
 </tbody>
 </table>
@@ -465,7 +495,9 @@ or of all accounts if account is left blank.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.Position" title="ib_insync.objects.Position"><code class="xref py py-class docutils literal notranslate"><span class="pre">Position</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>account</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – If specified, filter for this account name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.Position" title="ib_insync.objects.Position"><code class="xref py py-class docutils literal notranslate"><span class="pre">Position</span></code></a>]</td>
 </tr>
 </tbody>
 </table>
@@ -474,14 +506,21 @@ or of all accounts if account is left blank.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.pnl">
 <code class="descname">pnl</code><span class="sig-paren">(</span><em>account=''</em>, <em>modelCode=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.pnl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.pnl" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of subscribed <code class="docutils literal notranslate"><span class="pre">PnL</span></code> objects (profit and loss),
+<dd><p>List of subscribed <a class="reference internal" href="#ib_insync.objects.PnL" title="ib_insync.objects.PnL"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnL</span></code></a> objects (profit and loss),
 optionally filtered by account and/or modelCode.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">PnL</span></code> objects are kept live updated.</p>
+<p>The <a class="reference internal" href="#ib_insync.objects.PnL" title="ib_insync.objects.PnL"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnL</span></code></a> objects are kept live updated.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.PnL" title="ib_insync.objects.PnL"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnL</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>account</strong> – If specified, filter for this account name.</li>
+<li><strong>modelCode</strong> – If specified, filter for this account model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.PnL" title="ib_insync.objects.PnL"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnL</span></code></a>]</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -490,15 +529,22 @@ optionally filtered by account and/or modelCode.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.pnlSingle">
 <code class="descname">pnlSingle</code><span class="sig-paren">(</span><em>account=''</em>, <em>modelCode=''</em>, <em>conId=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.pnlSingle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.pnlSingle" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of subscribed <code class="docutils literal notranslate"><span class="pre">PnLSingle</span></code> objects (profit and loss for
-single positions), optionally filtered by account, modelCode
-and/or conId.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">PnLSingle</span></code> objects are kept live updated</p>
+<dd><p>List of subscribed <a class="reference internal" href="#ib_insync.objects.PnLSingle" title="ib_insync.objects.PnLSingle"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnLSingle</span></code></a> objects (profit and loss for
+single positions).</p>
+<p>The <a class="reference internal" href="#ib_insync.objects.PnLSingle" title="ib_insync.objects.PnLSingle"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnLSingle</span></code></a> objects are kept live updated.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.PnLSingle" title="ib_insync.objects.PnLSingle"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnLSingle</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>account</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – If specified, filter for this account name.</li>
+<li><strong>modelCode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – If specified, filter for this account model.</li>
+<li><strong>conId</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – If specified, filter for this contract ID.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.PnLSingle" title="ib_insync.objects.PnLSingle"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnLSingle</span></code></a>]</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -649,14 +695,21 @@ The article itself can be retrieved with <a class="reference internal" href="#ib
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqTickers">
 <code class="descname">reqTickers</code><span class="sig-paren">(</span><em>*contracts</em>, <em>regulatorySnapshot=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqTickers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqTickers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request and return a list of snapshot tickers for the given contracts.
+<dd><p>Request and return a list of snapshot tickers.
 The list is returned when all tickers are ready.</p>
 <p>This method is blocking.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.ticker.Ticker" title="ib_insync.ticker.Ticker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ticker</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contracts</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>]) – Contracts to get tickers for.</li>
+<li><strong>regulatorySnapshot</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Request NBBO snapshots (may incur a fee).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.ticker.Ticker" title="ib_insync.ticker.Ticker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ticker</span></code></a>]</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -673,7 +726,9 @@ the missing fields in the contract, especially the conId.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>contracts</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>]) – Contracts to qualify.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>]</td>
 </tr>
 </tbody>
 </table>
@@ -693,7 +748,17 @@ a stop-loss order. Submit the bracket like:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.objects.BracketOrder" title="ib_insync.objects.BracketOrder"><code class="xref py py-class docutils literal notranslate"><span class="pre">BracketOrder</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>action</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – ‘BUY’ or ‘SELL’.</li>
+<li><strong>quantity</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Size of order.</li>
+<li><strong>limitPrice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Limit price of entry order.</li>
+<li><strong>takeProfitPrice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Limit price of profit order.</li>
+<li><strong>stopLossPrice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Stop price of loss order.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.objects.BracketOrder" title="ib_insync.objects.BracketOrder"><code class="xref py py-class docutils literal notranslate"><span class="pre">BracketOrder</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -702,13 +767,15 @@ a stop-loss order. Submit the bracket like:</p>
 <dl class="staticmethod">
 <dt id="ib_insync.ib.IB.oneCancelsAll">
 <em class="property">static </em><code class="descname">oneCancelsAll</code><span class="sig-paren">(</span><em>orders</em>, <em>ocaGroup</em>, <em>ocaType</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.oneCancelsAll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.oneCancelsAll" title="Permalink to this definition">¶</a></dt>
-<dd><p>Place the trades in the same OCA group.</p>
+<dd><p>Place the trades in the same One Cancels All (OCA) group.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/oca.html">https://interactivebrokers.github.io/tws-api/oca.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.order.Order" title="ib_insync.order.Order"><code class="xref py py-class docutils literal notranslate"><span class="pre">Order</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>orders</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.order.Order" title="ib_insync.order.Order"><code class="xref py py-class docutils literal notranslate"><span class="pre">Order</span></code></a>]) – The orders that are to be placed together.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.order.Order" title="ib_insync.order.Order"><code class="xref py py-class docutils literal notranslate"><span class="pre">Order</span></code></a>]</td>
 </tr>
 </tbody>
 </table>
@@ -724,7 +791,14 @@ placing the order. The given order will not be modified in any way.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.objects.OrderState" title="ib_insync.objects.OrderState"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrderState</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Contract to test.</li>
+<li><strong>order</strong> (<a class="reference internal" href="#ib_insync.order.Order" title="ib_insync.order.Order"><code class="xref py py-class docutils literal notranslate"><span class="pre">Order</span></code></a>) – Order to test.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.objects.OrderState" title="ib_insync.objects.OrderState"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrderState</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -740,7 +814,14 @@ status changes, fills, etc.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Contract to use for order.</li>
+<li><strong>order</strong> (<a class="reference internal" href="#ib_insync.order.Order" title="ib_insync.order.Order"><code class="xref py py-class docutils literal notranslate"><span class="pre">Order</span></code></a>) – The order to be placed.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -754,7 +835,9 @@ status changes, fills, etc.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>order</strong> (<a class="reference internal" href="#ib_insync.order.Order" title="ib_insync.order.Order"><code class="xref py py-class docutils literal notranslate"><span class="pre">Order</span></code></a>) – The order to be canceled.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -765,14 +848,6 @@ status changes, fills, etc.</p>
 <code class="descname">reqGlobalCancel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqGlobalCancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqGlobalCancel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cancel all active trades including those placed by other
 clients or TWS/IB gateway.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -802,7 +877,7 @@ are filled.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>account</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – If specified, filter for this account name.</td>
 </tr>
 </tbody>
 </table>
@@ -818,7 +893,11 @@ are filled.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>account</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – If specified, filter for this account name.</li>
+<li><strong>modelCode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – If specified, filter for this account model.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -831,14 +910,6 @@ are filled.</p>
 <p>Request account values for all accounts and keep them updated.
 Returns when account summary is filled.</p>
 <p>This method is blocking.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -847,13 +918,14 @@ Returns when account summary is filled.</p>
 <dd><p>Bind manual TWS orders so that they can be managed from this client.
 The clientId must be 0 and the TWS API setting “Use negative numbers
 to bind automatic orders” must be checked.</p>
+<p>This request is automatically called when clientId=0.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/open_orders.html">https://interactivebrokers.github.io/tws-api/open_orders.html</a>
 <a class="reference external" href="https://interactivebrokers.github.io/tws-api/modifying_orders.html">https://interactivebrokers.github.io/tws-api/modifying_orders.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>autoBind</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Set binding on or off.</td>
 </tr>
 </tbody>
 </table>
@@ -889,7 +961,9 @@ It is recommended to use the more reliable and much faster
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.Fill" title="ib_insync.objects.Fill"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fill</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>execFilter</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#ib_insync.objects.ExecutionFilter" title="ib_insync.objects.ExecutionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExecutionFilter</span></code></a>]) – If specified, return executions that match the filter.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.Fill" title="ib_insync.objects.Fill"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fill</span></code></a>]</td>
 </tr>
 </tbody>
 </table>
@@ -914,16 +988,22 @@ It is recommended to use the more reliable and much faster
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqPnL">
 <code class="descname">reqPnL</code><span class="sig-paren">(</span><em>account</em>, <em>modelCode=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqPnL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqPnL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Start a subscription for profit and loss events for the given
-account and optional modelCode.</p>
-<p>Returns a <code class="docutils literal notranslate"><span class="pre">PnL</span></code> object that is kept live updated.
+<dd><p>Start a subscription for profit and loss events.</p>
+<p>Returns a <a class="reference internal" href="#ib_insync.objects.PnL" title="ib_insync.objects.PnL"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnL</span></code></a> object that is kept live updated.
 The result can also be queried from <a class="reference internal" href="#ib_insync.ib.IB.pnl" title="ib_insync.ib.IB.pnl"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pnl()</span></code></a>.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/pnl.html">https://interactivebrokers.github.io/tws-api/pnl.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.objects.PnL" title="ib_insync.objects.PnL"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnL</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>account</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Subscribe to this account.</li>
+<li><strong>modelCode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – If specified, filter for this account model.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.objects.PnL" title="ib_insync.objects.PnL"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnL</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -932,12 +1012,16 @@ The result can also be queried from <a class="reference internal" href="#ib_insy
 <dl class="method">
 <dt id="ib_insync.ib.IB.cancelPnL">
 <code class="descname">cancelPnL</code><span class="sig-paren">(</span><em>account</em>, <em>modelCode=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelPnL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelPnL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cancel PnL subscription for the given account and modelCode.</p>
+<dd><p>Cancel PnL subscription.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>account</strong> – Cancel for this account.</li>
+<li><strong>modelCode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – If specified, cancel for this account model.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -947,14 +1031,22 @@ The result can also be queried from <a class="reference internal" href="#ib_insy
 <dt id="ib_insync.ib.IB.reqPnLSingle">
 <code class="descname">reqPnLSingle</code><span class="sig-paren">(</span><em>account</em>, <em>modelCode</em>, <em>conId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqPnLSingle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqPnLSingle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start a subscription for profit and loss events for single positions.</p>
-<p>Returns a <code class="docutils literal notranslate"><span class="pre">PnLSingle</span></code> object that is kept live updated.
+<p>Returns a <a class="reference internal" href="#ib_insync.objects.PnLSingle" title="ib_insync.objects.PnLSingle"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnLSingle</span></code></a> object that is kept live updated.
 The result can also be queried from <a class="reference internal" href="#ib_insync.ib.IB.pnlSingle" title="ib_insync.ib.IB.pnlSingle"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pnlSingle()</span></code></a>.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/pnl.html">https://interactivebrokers.github.io/tws-api/pnl.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.objects.PnLSingle" title="ib_insync.objects.PnLSingle"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnLSingle</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>account</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Subscribe to this account.</li>
+<li><strong>modelCode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Filter for this account model.</li>
+<li><strong>conId</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Filter for this contract ID.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.objects.PnLSingle" title="ib_insync.objects.PnLSingle"><code class="xref py py-class docutils literal notranslate"><span class="pre">PnLSingle</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -969,7 +1061,12 @@ and conId.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>account</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Cancel for this account name.</li>
+<li><strong>modelCode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Cancel for this account model.</li>
+<li><strong>conId</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Cancel for this contract ID.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -989,7 +1086,9 @@ ContractDetails.contract attribute.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.ContractDetails" title="ib_insync.objects.ContractDetails"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractDetails</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – The contract to get details for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.ContractDetails" title="ib_insync.objects.ContractDetails"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractDetails</span></code></a>]</td>
 </tr>
 </tbody>
 </table>
@@ -998,15 +1097,18 @@ ContractDetails.contract attribute.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqMatchingSymbols">
 <code class="descname">reqMatchingSymbols</code><span class="sig-paren">(</span><em>pattern</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqMatchingSymbols"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqMatchingSymbols" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request contract descriptions of contracts that match the given
-pattern.</p>
+<dd><p>Request contract descriptions of contracts that match a pattern.</p>
 <p>This method is blocking.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/matching_symbols.html">https://interactivebrokers.github.io/tws-api/matching_symbols.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.ContractDescription" title="ib_insync.objects.ContractDescription"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractDescription</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pattern</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The first few letters of the ticker symbol, or for
+longer strings a character sequence matching a word in
+the security name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.ContractDescription" title="ib_insync.objects.ContractDescription"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractDescription</span></code></a>]</td>
 </tr>
 </tbody>
 </table>
@@ -1015,14 +1117,19 @@ pattern.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqMarketRule">
 <code class="descname">reqMarketRule</code><span class="sig-paren">(</span><em>marketRuleId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqMarketRule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqMarketRule" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request list of price increments corresponding to given market rule
-(the market rule id is given by <a class="reference internal" href="#ib_insync.ib.IB.reqContractDetails" title="ib_insync.ib.IB.reqContractDetails"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reqContractDetails()</span></code></a>).</p>
+<dd><p>Request price increments rule.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/minimum_increment.html">https://interactivebrokers.github.io/tws-api/minimum_increment.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.PriceIncrement" title="ib_insync.objects.PriceIncrement"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriceIncrement</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>marketRuleId</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – ID of market rule.
+The market rule IDs for a contract can be obtained
+via <a class="reference internal" href="#ib_insync.ib.IB.reqContractDetails" title="ib_insync.ib.IB.reqContractDetails"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reqContractDetails()</span></code></a> from
+<a class="reference internal" href="#ib_insync.objects.ContractDetails" title="ib_insync.objects.ContractDetails"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContractDetails</span></code></a>.marketRuleIds,
+which contains a comma separated string of market rule IDs.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.objects.PriceIncrement" title="ib_insync.objects.PriceIncrement"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriceIncrement</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -1037,7 +1144,19 @@ pattern.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.objects.RealTimeBarList" title="ib_insync.objects.RealTimeBarList"><code class="xref py py-class docutils literal notranslate"><span class="pre">RealTimeBarList</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Contract of interest.</li>
+<li><strong>barSize</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Must be 5.</li>
+<li><strong>whatToShow</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specifies the source for constructing bars.
+Can be ‘TRADES’, ‘MIDPOINT’, ‘BID’ or ‘ASK’.</li>
+<li><strong>useRTH</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True then only show data from within Regular
+Trading Hours, if False then show all data.</li>
+<li><strong>realTimeBarsOptions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.TagValue" title="ib_insync.objects.TagValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagValue</span></code></a>]]) – Unknown.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.objects.RealTimeBarList" title="ib_insync.objects.RealTimeBarList"><code class="xref py py-class docutils literal notranslate"><span class="pre">RealTimeBarList</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1051,7 +1170,7 @@ pattern.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bars</strong> (<a class="reference internal" href="#ib_insync.objects.RealTimeBarList" title="ib_insync.objects.RealTimeBarList"><code class="xref py py-class docutils literal notranslate"><span class="pre">RealTimeBarList</span></code></a>) – The bar list that was obtained from <code class="docutils literal notranslate"><span class="pre">reqRealTimeBars</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -1060,18 +1179,48 @@ pattern.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqHistoricalData">
 <code class="descname">reqHistoricalData</code><span class="sig-paren">(</span><em>contract</em>, <em>endDateTime</em>, <em>durationStr</em>, <em>barSizeSetting</em>, <em>whatToShow</em>, <em>useRTH</em>, <em>formatDate=1</em>, <em>keepUpToDate=False</em>, <em>chartOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqHistoricalData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqHistoricalData" title="Permalink to this definition">¶</a></dt>
-<dd><p>The endDateTime can be set to ‘’ to indicate the current time,
-or it can be given as a datetime.date or datetime.datetime,
-or it can be given as a string in ‘yyyyMMdd HH:mm:ss’ format.</p>
-<p>If formatDate=2 is used for an intraday request the returned date
-field will be a timezone-aware datetime.datetime with UTC timezone.</p>
+<dd><p>Request historical bar data.</p>
 <p>This method is blocking.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/historical_bars.html">https://interactivebrokers.github.io/tws-api/historical_bars.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.objects.BarDataList" title="ib_insync.objects.BarDataList"><code class="xref py py-class docutils literal notranslate"><span class="pre">BarDataList</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Contract of interest.</li>
+<li><strong>endDateTime</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code>) – Can be set to ‘’ to indicate the current time,
+or it can be given as a datetime.date or datetime.datetime,
+or it can be given as a string in ‘yyyyMMdd HH:mm:ss’ format.
+If no timezone is given then the TWS login timezone is used.</li>
+<li><strong>durationsStr</strong> – Time span of all the bars. Examples:
+‘60 S’, ‘30 D’, ‘13 W’, ‘6 M’, ‘10 Y’.</li>
+<li><strong>barSizeSetting</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Time period of one bar. Must be one of:
+‘1 secs’, ‘5 secs’, ‘10 secs’ 15 secs’, ‘30 secs’,
+‘1 min’, ‘2 mins’, ‘3 mins’, ‘5 mins’, ‘10 mins’, ‘15 mins’,
+‘20 mins’, ‘30 mins’,
+‘1 hour’, ‘2 hours’, ‘3 hours’, ‘4 hours’, ‘8 hours’,
+‘1 day’, ‘1 week’, ‘1 month’.</li>
+<li><strong>whatToShow</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specifies the source for constructing bars.
+Must be one of:
+‘TRADES’, ‘MIDPOINT’, ‘BID’, ‘ASK’, ‘BID_ASK’,
+‘ADJUSTED_LAST’, ‘HISTORICAL_VOLATILITY’,
+‘OPTION_IMPLIED_VOLATILITY’, ‘REBATE_RATE’, ‘FEE_RATE’,
+‘YIELD_BID’, ‘YIELD_ASK’, ‘YIELD_BID_ASK’, ‘YIELD_LAST’.</li>
+<li><strong>useRTH</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True then only show data from within Regular
+Trading Hours, if False then show all data.</li>
+<li><strong>formatDate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – For an intraday request setting to 2 will cause
+the returned date fields to be timezone-aware
+datetime.datetime with UTC timezone, instead of local timezone
+as used by TWS.</li>
+<li><strong>keepUpToDate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True then a realtime subscription is started
+to keep the bars updated; <code class="docutils literal notranslate"><span class="pre">endDateTime</span></code> must be set
+empty (‘’) then.</li>
+<li><strong>chartOptions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.TagValue" title="ib_insync.objects.TagValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagValue</span></code></a>]]) – Unknown.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.objects.BarDataList" title="ib_insync.objects.BarDataList"><code class="xref py py-class docutils literal notranslate"><span class="pre">BarDataList</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1085,7 +1234,11 @@ field will be a timezone-aware datetime.datetime with UTC timezone.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>bars</strong> (<a class="reference internal" href="#ib_insync.objects.BarDataList" title="ib_insync.objects.BarDataList"><code class="xref py py-class docutils literal notranslate"><span class="pre">BarDataList</span></code></a>) – The bar list that was obtained from <code class="docutils literal notranslate"><span class="pre">reqHistoricalData</span></code></li>
+<li><strong>a keepUpToDate subscription.</strong> (<em>with</em>) – </li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1094,14 +1247,35 @@ field will be a timezone-aware datetime.datetime with UTC timezone.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqHistoricalTicks">
 <code class="descname">reqHistoricalTicks</code><span class="sig-paren">(</span><em>contract</em>, <em>startDateTime</em>, <em>endDateTime</em>, <em>numberOfTicks</em>, <em>whatToShow</em>, <em>useRth</em>, <em>ignoreSize=False</em>, <em>miscOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqHistoricalTicks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqHistoricalTicks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request historical ticks.</p>
+<dd><p>Request historical ticks. The time resolution of the ticks
+is one second.</p>
 <p>This method is blocking.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/historical_time_and_sales.html">https://interactivebrokers.github.io/tws-api/historical_time_and_sales.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~T]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Contract to query.</li>
+<li><strong>startDateTime</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code>]) – Can be given as a datetime.date or
+datetime.datetime, or it can be given as a string in
+‘yyyyMMdd HH:mm:ss’ format.
+If no timezone is given then the TWS login timezone is used.</li>
+<li><strong>endDateTime</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code>]) – One of <code class="docutils literal notranslate"><span class="pre">startDateTime</span></code> or <code class="docutils literal notranslate"><span class="pre">endDateTime</span></code> can
+be given, the other must be blank.</li>
+<li><strong>numberOfTicks</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of ticks to request (1000 max). The actual
+result can contain a bit more to accomodate all ticks in
+the latest second.</li>
+<li><strong>whatToShow</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – One of ‘Bid_Ask’, ‘Midpoint’ or ‘Trades’.</li>
+<li><strong>useRTH</strong> – If True then only show data from within Regular
+Trading Hours, if False then show all data.</li>
+<li><strong>ignoreSize</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Ignore bid/ask ticks that only update the size.</li>
+<li><strong>miscOptions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.TagValue" title="ib_insync.objects.TagValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagValue</span></code></a>]]) – Unknown.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~T]</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1110,25 +1284,23 @@ field will be a timezone-aware datetime.datetime with UTC timezone.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqMarketDataType">
 <code class="descname">reqMarketDataType</code><span class="sig-paren">(</span><em>marketDataType</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqMarketDataType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqMarketDataType" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>marketDataType:</dt>
-<dd><ul class="first last simple">
+<dd><p>Set the market data type used throughout.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>marketDataType</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – <p>One of:</p>
+<ul class="simple">
 <li>1 = Live</li>
 <li>2 = Frozen</li>
 <li>3 = Delayed</li>
 <li>4 = Delayed frozen</li>
 </ul>
-</dd>
-</dl>
-<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/market_data_type.html">https://interactivebrokers.github.io/tws-api/market_data_type.html</a></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</td>
 </tr>
 </tbody>
 </table>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/market_data_type.html">https://interactivebrokers.github.io/tws-api/market_data_type.html</a></p>
 </dd></dl>
 
 <dl class="method">
@@ -1136,13 +1308,21 @@ field will be a timezone-aware datetime.datetime with UTC timezone.</p>
 <code class="descname">reqHeadTimeStamp</code><span class="sig-paren">(</span><em>contract</em>, <em>whatToShow</em>, <em>useRTH</em>, <em>formatDate=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqHeadTimeStamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqHeadTimeStamp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the datetime of earliest available historical data
 for the contract.</p>
-<p>If formatDate=2 then the result is returned as a
-timezone-aware datetime.datetime with UTC timezone.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Contract of interest.</li>
+<li><strong>useRTH</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True then only show data from within Regular
+Trading Hours, if False then show all data.</li>
+<li><strong>formatDate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – If set to 2 then the result is returned as a
+timezone-aware datetime.datetime with UTC timezone.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1160,7 +1340,39 @@ be filled.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.ticker.Ticker" title="ib_insync.ticker.Ticker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ticker</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Contract of interest.</li>
+<li><strong>genericTickList</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>Comma separated IDs of desired
+generic ticks.</p>
+<ul>
+<li>100 = Option Volume (currently for stocks)</li>
+<li>101 = Option Open Interest (currently for stocks)</li>
+<li>104 = Historical Volatility (currently for stocks)</li>
+<li>105 = Average Option Volume (currently for stocks)</li>
+<li>106 = Option Implied Volatility (currently for stocks)</li>
+<li>162 = Index Future Premium</li>
+<li>165 = Miscellaneous Stats</li>
+<li>221 = Mark Price (used in TWS P&amp;L computations)</li>
+<li>225 = Auction values (volume, price and imbalance)</li>
+<li>233 = RTVolume - contains the last trade price, last
+trade size, last trade time, total volume, VWAP, and
+single trade flag.</li>
+<li>236 = Shortable</li>
+<li>256 = Inventory</li>
+<li>258 = Fundamental Ratios</li>
+<li>411 = Realtime Historical Volatility</li>
+<li>456 = IBDividends</li>
+</ul>
+</li>
+<li><strong>snapshot</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True then request a one-time snapshot, otherwise
+subscribe to a stream of realtime tick data.</li>
+<li><strong>regulatorySnapshot</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Request NBBO snapshot (may incur a fee).</li>
+<li><strong>mktDataOptions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.TagValue" title="ib_insync.objects.TagValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagValue</span></code></a>]]) – Unknown</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.ticker.Ticker" title="ib_insync.ticker.Ticker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ticker</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1169,13 +1381,16 @@ be filled.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.cancelMktData">
 <code class="descname">cancelMktData</code><span class="sig-paren">(</span><em>contract</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelMktData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelMktData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unsubscribe tick data for the given contract.
-The contract object must be the same as used to subscribe with.</p>
+<dd><p>Unsubscribe from realtime streaming tick data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – The exact contract object that was used to</li>
+<li><strong>with.</strong> (<em>subscribe</em>) – </li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1186,12 +1401,21 @@ The contract object must be the same as used to subscribe with.</p>
 <code class="descname">reqTickByTickData</code><span class="sig-paren">(</span><em>contract</em>, <em>tickType</em>, <em>numberOfTicks=0</em>, <em>ignoreSize=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqTickByTickData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqTickByTickData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscribe to tick-by-tick data and return the Ticker that
 holds the ticks in ticker.tickByTicks.</p>
-<p>The tickType is one of  ‘Last’, ‘AllLast’, ‘BidAsk’ or ‘MidPoint’.</p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/tick_data.html">https://interactivebrokers.github.io/tws-api/tick_data.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.ticker.Ticker" title="ib_insync.ticker.Ticker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ticker</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Contract of interest.</li>
+<li><strong>tickType</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – One of  ‘Last’, ‘AllLast’, ‘BidAsk’ or ‘MidPoint’.</li>
+<li><strong>numberOfTicks</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of ticks or 0 for unlimited.</li>
+<li><strong>ignoreSize</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Ignore bid/ask ticks that only update the size.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.ticker.Ticker" title="ib_insync.ticker.Ticker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ticker</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1200,13 +1424,13 @@ holds the ticks in ticker.tickByTicks.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.cancelTickByTickData">
 <code class="descname">cancelTickByTickData</code><span class="sig-paren">(</span><em>contract</em>, <em>tickType</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelTickByTickData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelTickByTickData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unsubscribe tick data for the given contract.
-The contract object must be the same as used to subscribe with.</p>
+<dd><p>Unsubscribe from tick-by-tick data</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – The exact contract object that was used to
+subscribe with.</td>
 </tr>
 </tbody>
 </table>
@@ -1230,15 +1454,28 @@ The contract object must be the same as used to subscribe with.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqMktDepth">
 <code class="descname">reqMktDepth</code><span class="sig-paren">(</span><em>contract</em>, <em>numRows=5</em>, <em>isSmartDepth=False</em>, <em>mktDepthOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqMktDepth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqMktDepth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subscribe to market depth data (a.k.a. DOM, L2 or order book).
-Returns the Ticker that holds the market depth in ticker.domBids
-and ticker.domAsks and the list of MktDepthData in ticker.domTicks.</p>
+<dd><p>Subscribe to market depth data (a.k.a. DOM, L2 or order book).</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/market_depth.html">https://interactivebrokers.github.io/tws-api/market_depth.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.ticker.Ticker" title="ib_insync.ticker.Ticker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ticker</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Contract of interest.</li>
+<li><strong>numRows</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of depth level on each side of the order book
+(5 max).</li>
+<li><strong>isSmartDepth</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Consolidate the order book across exchanges.</li>
+<li><strong>mktDepthOptions</strong> – Unknown.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#ib_insync.ticker.Ticker" title="ib_insync.ticker.Ticker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ticker</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The Ticker that holds the market depth in <code class="docutils literal notranslate"><span class="pre">ticker.domBids</span></code>
+and <code class="docutils literal notranslate"><span class="pre">ticker.domAsks</span></code> and the list of MktDepthData in
+<code class="docutils literal notranslate"><span class="pre">ticker.domTicks</span></code>.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1247,13 +1484,13 @@ and ticker.domAsks and the list of MktDepthData in ticker.domTicks.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.cancelMktDepth">
 <code class="descname">cancelMktDepth</code><span class="sig-paren">(</span><em>contract</em>, <em>isSmartDepth=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelMktDepth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelMktDepth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unsubscribe market depth data for the given contract.
-The contract object must be the same as used to subscribe with.</p>
+<dd><p>Unsubscribe from market depth data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – The exact contract object that was used to
+subscribe with.</td>
 </tr>
 </tbody>
 </table>
@@ -1262,14 +1499,24 @@ The contract object must be the same as used to subscribe with.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqHistogramData">
 <code class="descname">reqHistogramData</code><span class="sig-paren">(</span><em>contract</em>, <em>useRTH</em>, <em>period</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqHistogramData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqHistogramData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get histogram data of the contract over the period.</p>
+<dd><p>Request histogram data.</p>
 <p>This method is blocking.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/histograms.html">https://interactivebrokers.github.io/tws-api/histograms.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.HistogramData" title="ib_insync.objects.HistogramData"><code class="xref py py-class docutils literal notranslate"><span class="pre">HistogramData</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Contract to query.</li>
+<li><strong>useRTH</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True then only show data from within Regular
+Trading Hours, if False then show all data.</li>
+<li><strong>period</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Period of which data is being requested, for example
+‘3 days’.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.HistogramData" title="ib_insync.objects.HistogramData"><code class="xref py py-class docutils literal notranslate"><span class="pre">HistogramData</span></code></a>]</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1278,14 +1525,30 @@ The contract object must be the same as used to subscribe with.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqFundamentalData">
 <code class="descname">reqFundamentalData</code><span class="sig-paren">(</span><em>contract</em>, <em>reportType</em>, <em>fundamentalDataOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqFundamentalData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqFundamentalData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get Reuters’ fundamental data of the contract in XML format.</p>
+<dd><p>Get fundamental data of a contract in XML format.</p>
 <p>This method is blocking.</p>
-<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/reuters_fundamentals.html">https://interactivebrokers.github.io/tws-api/reuters_fundamentals.html</a></p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/fundamentals.html">https://interactivebrokers.github.io/tws-api/fundamentals.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Contract to query.</li>
+<li><strong>reportType</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <ul>
+<li>‘ReportsFinSummary’: Financial summary</li>
+<li>’ReportsOwnership’: Company’s ownership</li>
+<li>’ReportSnapshot’: Company’s financial overview</li>
+<li>’ReportsFinStatements’: Financial Statements</li>
+<li>’RESC’: Analyst Estimates</li>
+<li>’CalendarReport’: Company’s calendar</li>
+</ul>
+</li>
+<li><strong>fundamentalDataOptions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.TagValue" title="ib_insync.objects.TagValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagValue</span></code></a>]]) – Unknown</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1303,7 +1566,15 @@ directly and subscribe to <code class="docutils literal notranslate"><span class
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.ScanData" title="ib_insync.objects.ScanData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanData</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>subscription</strong> (<a class="reference internal" href="#ib_insync.objects.ScannerSubscription" title="ib_insync.objects.ScannerSubscription"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScannerSubscription</span></code></a>) – What to scan for.</li>
+<li><strong>scannerSubscriptionOptions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.TagValue" title="ib_insync.objects.TagValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagValue</span></code></a>]]) – Unknown.</li>
+<li><strong>scannerSubscriptionFilterOptions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.TagValue" title="ib_insync.objects.TagValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagValue</span></code></a>]]) – Unknown.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.ScanData" title="ib_insync.objects.ScanData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanData</span></code></a>]</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1334,7 +1605,16 @@ directly and subscribe to <code class="docutils literal notranslate"><span class
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.objects.OptionComputation" title="ib_insync.objects.OptionComputation"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptionComputation</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Option contract.</li>
+<li><strong>optionPrice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Option price to use in calculation.</li>
+<li><strong>underPrice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Price of the underlyer to use in calculation</li>
+<li><strong>implVolOptions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.TagValue" title="ib_insync.objects.TagValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagValue</span></code></a>]]) – Unknown</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.objects.OptionComputation" title="ib_insync.objects.OptionComputation"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptionComputation</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1350,7 +1630,16 @@ directly and subscribe to <code class="docutils literal notranslate"><span class
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.objects.OptionComputation" title="ib_insync.objects.OptionComputation"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptionComputation</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Option contract.</li>
+<li><strong>volatility</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Option volatility to use in calculation.</li>
+<li><strong>underPrice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Price of the underlyer to use in calculation</li>
+<li><strong>implVolOptions</strong> – Unknown</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.objects.OptionComputation" title="ib_insync.objects.OptionComputation"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptionComputation</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1366,7 +1655,18 @@ directly and subscribe to <code class="docutils literal notranslate"><span class
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.OptionChain" title="ib_insync.objects.OptionChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptionChain</span></code></a>]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>underlyingSymbol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Symbol of underlyer contract.</li>
+<li><strong>futFopExchange</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Exchange (only for <code class="docutils literal notranslate"><span class="pre">FuturesOption</span></code>, otherwise
+leave blank).</li>
+<li><strong>underlyingSecType</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The type of the underlying security, like
+‘STK’ or ‘FUT’.</li>
+<li><strong>underlyingConId</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – conId of the underlying contract.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.OptionChain" title="ib_insync.objects.OptionChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptionChain</span></code></a>]</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1375,12 +1675,28 @@ directly and subscribe to <code class="docutils literal notranslate"><span class
 <dl class="method">
 <dt id="ib_insync.ib.IB.exerciseOptions">
 <code class="descname">exerciseOptions</code><span class="sig-paren">(</span><em>contract</em>, <em>exerciseAction</em>, <em>exerciseQuantity</em>, <em>account</em>, <em>override</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.exerciseOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.exerciseOptions" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/options.html">https://interactivebrokers.github.io/tws-api/options.html</a></p>
+<dd><p>Exercise an options contract.</p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/options.html">https://interactivebrokers.github.io/tws-api/options.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – The option contract to be exercised.</li>
+<li><strong>exerciseAction</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – <ul>
+<li>1 = exercise the option</li>
+<li>2 = let the option lapse</li>
+</ul>
+</li>
+<li><strong>exerciseQuantity</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of contracts to be exercised.</li>
+<li><strong>account</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Destination account.</li>
+<li><strong>override</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – <ul>
+<li>0 = no override</li>
+<li>1 = override the system’s natural action</li>
+</ul>
+</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1411,7 +1727,15 @@ directly and subscribe to <code class="docutils literal notranslate"><span class
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.objects.NewsArticle" title="ib_insync.objects.NewsArticle"><code class="xref py py-class docutils literal notranslate"><span class="pre">NewsArticle</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>providerCode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Code indicating news provider, like ‘BZ’ or ‘FLY’.</li>
+<li><strong>articleId</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – ID of the specific article.</li>
+<li><strong>newsArticleOptions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.TagValue" title="ib_insync.objects.TagValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagValue</span></code></a>]]) – Unknown.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.objects.NewsArticle" title="ib_insync.objects.NewsArticle"><code class="xref py py-class docutils literal notranslate"><span class="pre">NewsArticle</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1421,12 +1745,31 @@ directly and subscribe to <code class="docutils literal notranslate"><span class
 <dt id="ib_insync.ib.IB.reqHistoricalNews">
 <code class="descname">reqHistoricalNews</code><span class="sig-paren">(</span><em>conId</em>, <em>providerCodes</em>, <em>startDateTime</em>, <em>endDateTime</em>, <em>totalResults</em>, <em>historicalNewsOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqHistoricalNews"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqHistoricalNews" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get historical news headline.</p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/news.html">https://interactivebrokers.github.io/tws-api/news.html</a></p>
 <p>This method is blocking.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.objects.HistoricalNews" title="ib_insync.objects.HistoricalNews"><code class="xref py py-class docutils literal notranslate"><span class="pre">HistoricalNews</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>conId</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Search news articles for contract with this conId.</li>
+<li><strong>providerCodes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – A ‘+’-separated list of provider codes, like
+‘BZ+FLY’.</li>
+<li><strong>startDateTime</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code>]) – The (exclusive) start of the date range.
+Can be given as a datetime.date or datetime.datetime,
+or it can be given as a string in ‘yyyyMMdd HH:mm:ss’ format.
+If no timezone is given then the TWS login timezone is used.</li>
+<li><strong>endDateTime</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code>]) – The (inclusive) end of the date range.
+Can be given as a datetime.date or datetime.datetime,
+or it can be given as a string in ‘yyyyMMdd HH:mm:ss’ format.
+If no timezone is given then the TWS login timezone is used.</li>
+<li><strong>totalResults</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Maximum number of headlines to fetch (300 max).</li>
+<li><strong>historicalNewsOptions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.TagValue" title="ib_insync.objects.TagValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagValue</span></code></a>]]) – Unknown.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.objects.HistoricalNews" title="ib_insync.objects.HistoricalNews"><code class="xref py py-class docutils literal notranslate"><span class="pre">HistoricalNews</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1435,13 +1778,13 @@ directly and subscribe to <code class="docutils literal notranslate"><span class
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqNewsBulletins">
 <code class="descname">reqNewsBulletins</code><span class="sig-paren">(</span><em>allMessages</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqNewsBulletins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqNewsBulletins" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subscribe to IB news bulletins. If allMessages=True then fetch
-all messages for the day.</p>
+<dd><p>Subscribe to IB news bulletins.</p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/news.html">https://interactivebrokers.github.io/tws-api/news.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>allMessages</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True then fetch all messages for the day.</td>
 </tr>
 </tbody>
 </table>
@@ -1451,32 +1794,28 @@ all messages for the day.</p>
 <dt id="ib_insync.ib.IB.cancelNewsBulletins">
 <code class="descname">cancelNewsBulletins</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelNewsBulletins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelNewsBulletins" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cancel subscription to IB news bulletins.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.requestFA">
 <code class="descname">requestFA</code><span class="sig-paren">(</span><em>faDataType</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.requestFA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.requestFA" title="Permalink to this definition">¶</a></dt>
-<dd><p>faDataType:</p>
-<ul class="simple">
-<li>1 = Groups;</li>
-<li>2 = Profiles;</li>
-<li>3 = Account Aliases.</li>
-</ul>
+<dd><p>Requests to change the FA configuration.</p>
 <p>This method is blocking.</p>
-<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/financial_advisor_methods_and_orders.html">https://interactivebrokers.github.io/tws-api/financial_advisor_methods_and_orders.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>faDataType</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – <ul class="simple">
+<li>1 = Groups: Offer traders a way to create a group of
+accounts and apply a single allocation method to all
+accounts in the group.</li>
+<li>2 = Profiles: Let you allocate shares on an
+account-by-account basis using a predefined calculation
+value.</li>
+<li>3 = Account Aliases: Let you easily identify the accounts
+by meaningful names rather than account numbers.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1485,12 +1824,16 @@ all messages for the day.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.replaceFA">
 <code class="descname">replaceFA</code><span class="sig-paren">(</span><em>faDataType</em>, <em>xml</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.replaceFA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.replaceFA" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/financial_advisor_methods_and_orders.html">https://interactivebrokers.github.io/tws-api/financial_advisor_methods_and_orders.html</a></p>
+<dd><p>Replaces Financial Advisor’s settings.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>faDataType</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – See <a class="reference internal" href="#ib_insync.ib.IB.requestFA" title="ib_insync.ib.IB.requestFA"><code class="xref py py-meth docutils literal notranslate"><span class="pre">requestFA()</span></code></a>.</li>
+<li><strong>xml</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The XML-formatted configuration string.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1520,7 +1863,9 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.ticker.Ticker" title="ib_insync.ticker.Ticker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ticker</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>contract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>) – Contract to get ticker for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ib_insync.ticker.Ticker" title="ib_insync.ticker.Ticker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ticker</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -1713,9 +2058,9 @@ one batch instead of item by item.</li>
 <li><dl class="first docutils">
 <dt>Events:</dt>
 <dd><ul class="first last">
-<li><code class="docutils literal notranslate"><span class="pre">apiStart()</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">apiEnd()</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">apiError(errorMsg)</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">apiStart</span></code> ()</li>
+<li><code class="docutils literal notranslate"><span class="pre">apiEnd</span></code> ()</li>
+<li><code class="docutils literal notranslate"><span class="pre">apiError</span></code> (errorMsg: str)</li>
 </ul>
 </dd>
 </dl>
@@ -1806,11 +2151,24 @@ one batch instead of item by item.</li>
 <dl class="method">
 <dt id="ib_insync.client.Client.connect">
 <code class="descname">connect</code><span class="sig-paren">(</span><em>host</em>, <em>port</em>, <em>clientId</em>, <em>timeout=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.connect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connect to TWS/IBG at given host and port and with a clientId
-that is not in use elsewhere.</p>
-<p>When timeout is not zero, asyncio.TimeoutError
-is raised if the connection is not established
-within the timeout period.</p>
+<dd><p>Connect to a running TWS or IB gateway application.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>host</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Host name or IP address.</li>
+<li><strong>port</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Port number.</li>
+<li><strong>clientId</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – ID number to use for this client; must be unique per
+connection.</li>
+<li><strong>timeout</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – If establishing the connection takes longer than
+<code class="docutils literal notranslate"><span class="pre">timeout</span></code> seconds then the <code class="docutils literal notranslate"><span class="pre">asyncio.TimeoutError</span></code> exception
+is raised. Set to 0 to disable timeout.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1835,13 +2193,14 @@ within the timeout period.</p>
 <dl class="docutils">
 <dt>Events:</dt>
 <dd><ul class="first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">statusEvent(trade)</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">modifyEvent(trade)</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">fillEvent(trade,</span> <span class="pre">fill)</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">commissionReportEvent(trade,</span> <span class="pre">fill,</span> <span class="pre">commissionReport)</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">filledEvent(trade)</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">cancelEvent(trade)</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">cancelledEvent(trade)</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">statusEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">modifyEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">fillEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>, fill)</li>
+<li><code class="docutils literal notranslate"><span class="pre">commissionReportEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>,
+fill: <a class="reference internal" href="#ib_insync.objects.Fill" title="ib_insync.objects.Fill"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fill</span></code></a>, commissionReport: <a class="reference internal" href="#ib_insync.objects.CommissionReport" title="ib_insync.objects.CommissionReport"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommissionReport</span></code></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">filledEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">cancelEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">cancelledEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>)</li>
 </ul>
 </dd>
 </dl>
@@ -2000,12 +2359,12 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'Inactive', 'ApiCancelled', 'Filled', 'Cancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'ApiCancelled', 'Cancelled', 'Inactive', 'Filled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'PreSubmitted', 'ApiPending', 'PendingSubmit', 'Submitted'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'Submitted', 'PendingSubmit', 'ApiPending', 'PreSubmitted'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2077,7 +2436,7 @@ and as keyword, the keyword wins.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/available_orders.html">https://interactivebrokers.github.io/tws-api/available_orders.html</a></p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 139725743493016: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 140424173924984: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2752,6 +3111,71 @@ Some examples:</p>
 <span class="n">Bond</span><span class="p">(</span><span class="n">secIdType</span><span class="o">=</span><span class="s1">&#39;ISIN&#39;</span><span class="p">,</span> <span class="n">secId</span><span class="o">=</span><span class="s1">&#39;US03076KAA60&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>conId</strong> (<em>int</em>) – The unique IB contract identifier.</li>
+<li><strong>symbol</strong> (<em>str</em>) – The contract (or its underlying) symbol.</li>
+<li><strong>secType</strong> (<em>str</em>) – <p>The security type:</p>
+<ul>
+<li>’STK’ = Stock (or ETF)</li>
+<li>’OPT’ = Option</li>
+<li>’FUT’ = Future</li>
+<li>’IND’ = Index</li>
+<li>’FOP’ = Futures option</li>
+<li>’CASH’ = Forex pair</li>
+<li>’BAG’ = Combo</li>
+<li>’WAR’ = Warrant</li>
+<li>’BOND’= Bond</li>
+<li>’CMDTY’= Commodity</li>
+<li>’NEWS’ = News</li>
+<li>’FUND’= Mutual fund</li>
+</ul>
+</li>
+<li><strong>lastTradeDateOrContractMonth</strong> (<em>str</em>) – The contract’s last trading
+day or contract month (for Options and Futures).
+Strings with format YYYYMM will be interpreted as the
+Contract Month whereas YYYYMMDD will be interpreted as
+Last Trading Day.</li>
+<li><strong>strike</strong> (<em>float</em>) – The option’s strike price.</li>
+<li><strong>right</strong> (<em>str</em>) – Put or Call.
+Valid values are ‘P’, ‘PUT’, ‘C’, ‘CALL’, or ‘’ for non-options.</li>
+<li><strong>multiplier</strong> (<em>str</em>) – he instrument’s multiplier (i.e. options, futures).</li>
+<li><strong>exchange</strong> (<em>str</em>) – The destination exchange.</li>
+<li><strong>currency</strong> (<em>str</em>) – The underlying’s currency.</li>
+<li><strong>localSymbol</strong> (<em>str</em>) – The contract’s symbol within its primary exchange.
+For options, this will be the OCC symbol.</li>
+<li><strong>primaryExchange</strong> (<em>str</em>) – The contract’s primary exchange.
+For smart routed contracts, used to define contract in case
+of ambiguity. Should be defined as native exchange of contract,
+e.g. ISLAND for MSFT. For exchanges which contain a period in name,
+will only be part of exchange name prior to period, i.e. ENEXT
+for ENEXT.BE.</li>
+<li><strong>tradingClass</strong> (<em>str</em>) – The trading class name for this contract.
+Available in TWS contract description window as well.
+For example, GBL Dec ‘13 future’s trading class is “FGBL”.</li>
+<li><strong>includeExpired</strong> (<em>bool</em>) – If set to true, contract details requests
+and historical data queries can be performed pertaining to
+expired futures contracts. Expired options or other instrument
+types are not available.</li>
+<li><strong>secIdType</strong> (<em>str</em>) – <p>Security identifier type. Examples for Apple:</p>
+<ul>
+<li>secIdType=’ISIN’, secId=’US0378331005’</li>
+<li>secIdType=’CUSIP’, secId=‘037833100’</li>
+</ul>
+</li>
+<li><strong>secId</strong> (<em>str</em>) – Security identifier.</li>
+<li><strong>comboLegsDescription</strong> (<em>str</em>) – Description of the combo legs.</li>
+<li><strong>comboLegs</strong> (<em>List</em><em>[</em><a class="reference internal" href="#ib_insync.objects.ComboLeg" title="ib_insync.objects.ComboLeg"><em>ComboLeg</em></a><em>]</em>) – The legs of a combined contract definition.</li>
+<li><strong>deltaNeutralContract</strong> (<a class="reference internal" href="#ib_insync.objects.DeltaNeutralContract" title="ib_insync.objects.DeltaNeutralContract"><em>DeltaNeutralContract</em></a>) – Delta and underlying
+price for Delta-Neutral combo orders.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <p>Attribute values can be given positionally or as keyword.
 If an attribute is not given it will take its value from the
 ‘defaults’ class member. If an attribute is given both positionally
@@ -2892,72 +3316,245 @@ not hashable.</p>
 <dl class="class">
 <dt id="ib_insync.contract.Stock">
 <em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">Stock</code><span class="sig-paren">(</span><em>symbol=''</em>, <em>exchange=''</em>, <em>currency=''</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#Stock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.Stock" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Stock contract.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>symbol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Symbol name.</li>
+<li><strong>exchange</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Destination exchange.</li>
+<li><strong>currency</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Underlying currency.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="class">
 <dt id="ib_insync.contract.Option">
-<em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">Option</code><span class="sig-paren">(</span><em>symbol=''</em>, <em>lastTradeDateOrContractMonth=''</em>, <em>strike=''</em>, <em>right=''</em>, <em>exchange=''</em>, <em>multiplier=''</em>, <em>currency=''</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#Option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.Option" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">Option</code><span class="sig-paren">(</span><em>symbol=''</em>, <em>lastTradeDateOrContractMonth=''</em>, <em>strike=0.0</em>, <em>right=''</em>, <em>exchange=''</em>, <em>multiplier=''</em>, <em>currency=''</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#Option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.Option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Option contract.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>symbol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Symbol name.</li>
+<li><strong>lastTradeDateOrContractMonth</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>The option’s last trading day
+or contract month.</p>
+<ul>
+<li>YYYYMM format: To specify last month</li>
+<li>YYYYMMDD format: To specify last trading day</li>
+</ul>
+</li>
+<li><strong>strike</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The option’s strike price.</li>
+<li><strong>right</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Put or call option.
+Valid values are ‘P’, ‘PUT’, ‘C’ or ‘CALL’.</li>
+<li><strong>exchange</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Destination exchange.</li>
+<li><strong>multiplier</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The contract multiplier.</li>
+<li><strong>currency</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Underlying currency.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="class">
 <dt id="ib_insync.contract.Future">
 <em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">Future</code><span class="sig-paren">(</span><em>symbol=''</em>, <em>lastTradeDateOrContractMonth=''</em>, <em>exchange=''</em>, <em>localSymbol=''</em>, <em>multiplier=''</em>, <em>currency=''</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#Future"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.Future" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Future contract.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>symbol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Symbol name.</li>
+<li><strong>lastTradeDateOrContractMonth</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>The option’s last trading day
+or contract month.</p>
+<ul>
+<li>YYYYMM format: To specify last month</li>
+<li>YYYYMMDD format: To specify last trading day</li>
+</ul>
+</li>
+<li><strong>exchange</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Destination exchange.</li>
+<li><strong>localSymbol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The contract’s symbol within its primary exchange.</li>
+<li><strong>multiplier</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The contract multiplier.</li>
+<li><strong>currency</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Underlying currency.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="class">
 <dt id="ib_insync.contract.ContFuture">
 <em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">ContFuture</code><span class="sig-paren">(</span><em>symbol=''</em>, <em>exchange=''</em>, <em>localSymbol=''</em>, <em>multiplier=''</em>, <em>currency=''</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#ContFuture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.ContFuture" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Continuous future contract.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>symbol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Symbol name.</li>
+<li><strong>exchange</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Destination exchange.</li>
+<li><strong>localSymbol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The contract’s symbol within its primary exchange.</li>
+<li><strong>multiplier</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The contract multiplier.</li>
+<li><strong>currency</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Underlying currency.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="class">
 <dt id="ib_insync.contract.Forex">
 <em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">Forex</code><span class="sig-paren">(</span><em>pair=''</em>, <em>exchange='IDEALPRO'</em>, <em>symbol=''</em>, <em>currency=''</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#Forex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.Forex" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Foreign exchange currency pair.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pair</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Shortcut for specifying symbol and currency, like ‘EURUSD’.</li>
+<li><strong>exchange</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Destination exchange.</li>
+<li><strong>symbol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Base currency.</li>
+<li><strong>currency</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Quote currency.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
 <dt id="ib_insync.contract.Forex.pair">
 <code class="descname">pair</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#Forex.pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.Forex.pair" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Short name of pair.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="ib_insync.contract.Index">
 <em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">Index</code><span class="sig-paren">(</span><em>symbol=''</em>, <em>exchange=''</em>, <em>currency=''</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#Index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.Index" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>symbol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Symbol name.</li>
+<li><strong>exchange</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Destination exchange.</li>
+<li><strong>currency</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Underlying currency.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="class">
 <dt id="ib_insync.contract.CFD">
 <em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">CFD</code><span class="sig-paren">(</span><em>symbol=''</em>, <em>exchange=''</em>, <em>currency=''</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#CFD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.CFD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Contract For Difference.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>symbol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Symbol name.</li>
+<li><strong>exchange</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Destination exchange.</li>
+<li><strong>currency</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Underlying currency.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="class">
 <dt id="ib_insync.contract.Commodity">
 <em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">Commodity</code><span class="sig-paren">(</span><em>symbol=''</em>, <em>exchange=''</em>, <em>currency=''</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#Commodity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.Commodity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Commodity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>symbol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Symbol name.</li>
+<li><strong>exchange</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Destination exchange.</li>
+<li><strong>currency</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Underlying currency.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="class">
 <dt id="ib_insync.contract.Bond">
 <em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">Bond</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#Bond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.Bond" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Bond.</p>
+</dd></dl>
 
 <dl class="class">
 <dt id="ib_insync.contract.FuturesOption">
-<em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">FuturesOption</code><span class="sig-paren">(</span><em>symbol=''</em>, <em>lastTradeDateOrContractMonth=''</em>, <em>strike=''</em>, <em>right=''</em>, <em>exchange=''</em>, <em>multiplier=''</em>, <em>currency=''</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#FuturesOption"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.FuturesOption" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">FuturesOption</code><span class="sig-paren">(</span><em>symbol=''</em>, <em>lastTradeDateOrContractMonth=''</em>, <em>strike=0.0</em>, <em>right=''</em>, <em>exchange=''</em>, <em>multiplier=''</em>, <em>currency=''</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#FuturesOption"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.FuturesOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Option on a futures contract.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>symbol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Symbol name.</li>
+<li><strong>lastTradeDateOrContractMonth</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>The option’s last trading day
+or contract month.</p>
+<ul>
+<li>YYYYMM format: To specify last month</li>
+<li>YYYYMMDD format: To specify last trading day</li>
+</ul>
+</li>
+<li><strong>strike</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The option’s strike price.</li>
+<li><strong>right</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Put or call option.
+Valid values are ‘P’, ‘PUT’, ‘C’ or ‘CALL’.</li>
+<li><strong>exchange</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Destination exchange.</li>
+<li><strong>multiplier</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The contract multiplier.</li>
+<li><strong>currency</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Underlying currency.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="class">
 <dt id="ib_insync.contract.MutualFund">
 <em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">MutualFund</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#MutualFund"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.MutualFund" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Mutual fund.</p>
+</dd></dl>
 
 <dl class="class">
 <dt id="ib_insync.contract.Warrant">
 <em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">Warrant</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#Warrant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.Warrant" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Warrant option.</p>
+</dd></dl>
 
 <dl class="class">
 <dt id="ib_insync.contract.Bag">
 <em class="property">class </em><code class="descclassname">ib_insync.contract.</code><code class="descname">Bag</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#Bag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.contract.Bag" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Bag contract.</p>
+</dd></dl>
 
 </div>
 <div class="section" id="module-ib_insync.ticker">
@@ -2966,20 +3563,20 @@ not hashable.</p>
 <dt id="ib_insync.ticker.Ticker">
 <em class="property">class </em><code class="descclassname">ib_insync.ticker.</code><code class="descname">Ticker</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ticker.html#Ticker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ticker.Ticker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current market data such as bid, ask, last price, etc. for a contract.</p>
-<p>Streaming level-1 ticks of type <code class="docutils literal notranslate"><span class="pre">TickData</span></code> are stored in
+<p>Streaming level-1 ticks of type <a class="reference internal" href="#ib_insync.objects.TickData" title="ib_insync.objects.TickData"><code class="xref py py-class docutils literal notranslate"><span class="pre">TickData</span></code></a> are stored in
 the <code class="docutils literal notranslate"><span class="pre">ticks</span></code> list.</p>
-<p>Streaming level-2 ticks of type <code class="docutils literal notranslate"><span class="pre">MktDepthData</span></code> are stored in the
+<p>Streaming level-2 ticks of type <a class="reference internal" href="#ib_insync.objects.MktDepthData" title="ib_insync.objects.MktDepthData"><code class="xref py py-class docutils literal notranslate"><span class="pre">MktDepthData</span></code></a> are stored in the
 <code class="docutils literal notranslate"><span class="pre">domTicks</span></code> list. The order book (DOM) is available as lists of
-<code class="docutils literal notranslate"><span class="pre">DOMLevel</span></code> in <code class="docutils literal notranslate"><span class="pre">domBids</span></code> and <code class="docutils literal notranslate"><span class="pre">domAsks</span></code>.</p>
+<a class="reference internal" href="#ib_insync.objects.DOMLevel" title="ib_insync.objects.DOMLevel"><code class="xref py py-class docutils literal notranslate"><span class="pre">DOMLevel</span></code></a> in <code class="docutils literal notranslate"><span class="pre">domBids</span></code> and <code class="docutils literal notranslate"><span class="pre">domAsks</span></code>.</p>
 <p>Streaming tick-by-tick ticks are stored in <code class="docutils literal notranslate"><span class="pre">tickByTicks</span></code>.</p>
-<p>For options the <code class="docutils literal notranslate"><span class="pre">OptionComputation</span></code> values for the bid, ask, resp.
+<p>For options the <a class="reference internal" href="#ib_insync.objects.OptionComputation" title="ib_insync.objects.OptionComputation"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptionComputation</span></code></a> values for the bid, ask, resp.
 last price are stored in the <code class="docutils literal notranslate"><span class="pre">bidGreeks</span></code>, <code class="docutils literal notranslate"><span class="pre">askGreeks</span></code> resp.
 <code class="docutils literal notranslate"><span class="pre">lastGreeks</span></code> attributes. There is also <code class="docutils literal notranslate"><span class="pre">modelGreeks</span></code> that conveys
 the greeks as calculated by Interactive Brokers’ option model.</p>
 <dl class="docutils">
 <dt>Events:</dt>
 <dd><ul class="first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">updateEvent(ticker)</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">updateEvent</span></code> (ticker: <a class="reference internal" href="#ib_insync.ticker.Ticker" title="ib_insync.ticker.Ticker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ticker</span></code></a>)</li>
 </ul>
 </dd>
 </dl>
@@ -4478,7 +5075,7 @@ and as keyword, the keyword wins.</p>
 <dd><dl class="docutils">
 <dt>Events:</dt>
 <dd><ul class="first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">updateEvent(bars,</span> <span class="pre">hasNewBar)</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">updateEvent</span></code> (bars, hasNewBar: bool)</li>
 </ul>
 </dd>
 </dl>
@@ -5703,22 +6300,47 @@ called in order when the event is emitted.</p>
 <dl class="method">
 <dt id="ib_insync.event.Event.connect">
 <code class="descname">connect</code><span class="sig-paren">(</span><em>c</em>, <em>weakRef=True</em>, <em>hiPriority=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/event.html#Event.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.event.Event.connect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connect the callable c to this event.
+<dd><p>Connect a callable this event.
 The <code class="docutils literal notranslate"><span class="pre">+=</span></code> operator can be used as a synonym for this method.</p>
-<p>When <code class="docutils literal notranslate"><span class="pre">weakRef=True</span></code> the callable can be garbage collected upon which
-it will be automatically disconnected from this event;
-When <code class="docutils literal notranslate"><span class="pre">weakRef=False</span></code> a strong reference to the callable will be kept.</p>
-<p>With <code class="docutils literal notranslate"><span class="pre">hiPriority=True</span></code> the callable will be placed in the first slot,
-otherwise it will be placed last.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>c</strong> – The callable to connect.</li>
+<li><strong>weakRef</strong> – <ul>
+<li>True: The callable can be garbage collected
+upon which it will be automatically disconnected from this
+event</li>
+<li>False: A strong reference to the callable will be kept</li>
+</ul>
+</li>
+<li><strong>hiPriority</strong> – <ul>
+<li>True: The callable will be placed in the first slot</li>
+<li>False The callable will be placed last</li>
+</ul>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.event.Event.disconnect">
 <code class="descname">disconnect</code><span class="sig-paren">(</span><em>c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/event.html#Event.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.event.Event.disconnect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Disconnect the callable from this event.
+<dd><p>Disconnect a callable from this event.
 The <code class="docutils literal notranslate"><span class="pre">-=</span></code> operator can be used as a synonym for this method.</p>
-<p>It’s okay (i.e. not considered an error) if the callable is
-already not connected.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>c</strong> – The callable to disconnect. It is valid if the callable is
+already not connected.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -5859,6 +6481,20 @@ timeout period.</p>
 <code class="descclassname">ib_insync.util.</code><code class="descname">schedule</code><span class="sig-paren">(</span><em>time</em>, <em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#schedule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Schedule the callback to be run at the given time with
 the given arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>time</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">time</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code>]) – Time to run callback. If given as <code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.time</span></code>
+then use today as date.</li>
+<li><strong>callback</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – Callable scheduled to run.</li>
+<li><strong>args</strong> – Arguments for to call callback with.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -6050,118 +6686,59 @@ Order, etc.</p>
 <em class="property">class </em><code class="descclassname">ib_insync.ibcontroller.</code><code class="descname">IBC</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#IBC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.IBC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Programmatic control over starting and stopping TWS/Gateway
 using IBC (<a class="reference external" href="https://github.com/IbcAlpha/IBC">https://github.com/IbcAlpha/IBC</a>).</p>
-<p>This is not intended to be run in a notebook.</p>
-<p>Arguments:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>twsVersion</strong> (<em>int</em>) – (required) The major version number for
+TWS or gateway.</li>
+<li><strong>tradingMode</strong> (<em>str</em>) – ‘live’ or ‘paper’.</li>
+<li><strong>userid</strong> (<em>str</em>) – IB account username. It is recommended to set the real
+username/password in a secured IBC config file.</li>
+<li><strong>password</strong> (<em>str</em>) – IB account password.</li>
+<li><strong>twsPath</strong> (<em>str</em>) – <p>Path to the TWS installation folder.
+Defaults:</p>
 <ul>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">twsVersion</span></code> (required): The major version number for TWS or gateway.</p>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">tradingMode</span></code>: ‘live’ or ‘paper’.</p>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">userid</span></code>: IB account username. It is recommended to set the real
-username/password in a secured IBC config file.</p>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">password</span></code>: IB account password.</p>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">twsPath</span></code>: Path to the TWS installation folder.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="33%" />
-<col width="67%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="2">Default</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>Linux</td>
-<td>~/Jts</td>
-</tr>
-<tr class="row-odd"><td>OS X</td>
-<td>~/Applications</td>
-</tr>
-<tr class="row-even"><td>Windows</td>
-<td>C:\Jts</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">twsSettingsPath</span></code>: Path to the TWS settings folder.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="38%" />
-<col width="62%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="2">Default</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>Linux</td>
-<td>~/Jts</td>
-</tr>
-<tr class="row-odd"><td>OS X</td>
-<td>~/Jts</td>
-</tr>
-<tr class="row-even"><td>Windows</td>
-<td>Not available</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ibcPath</span></code>: Path to the IBC installation folder.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="38%" />
-<col width="62%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="2">Default</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>Linux</td>
-<td>/opt/ibc</td>
-</tr>
-<tr class="row-odd"><td>OS X</td>
-<td>/opt/ibc</td>
-</tr>
-<tr class="row-even"><td>Windows</td>
-<td>C:\IBC</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ibcIni</span></code>: Path to the IBC configuration file.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="17%" />
-<col width="83%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head" colspan="2">Default</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>Linux</td>
-<td>~/ibc/config.ini</td>
-</tr>
-<tr class="row-odd"><td>OS X</td>
-<td>~/ibc/config.ini</td>
-</tr>
-<tr class="row-even"><td>Windows</td>
-<td>%%HOMEPATH%%\Documents\IBC\config.ini</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">javaPath</span></code>: Path to Java executable.
-Default is to use the Java VM included with TWS/gateway.</p>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">fixuserid</span></code>: FIX account user id (gateway only).</p>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">fixpassword</span></code>: FIX account password (gateway only).</p>
-</li>
+<li>Linux:    ~/Jts</li>
+<li>OS X:     ~/Applications</li>
+<li>Windows:  C:\Jts</li>
 </ul>
+</li>
+<li><strong>twsSettingsPath</strong> (<em>str</em>) – <p>Path to the TWS settings folder.
+Defaults:</p>
+<ul>
+<li>Linux:     ~/Jts</li>
+<li>OS X:      ~/Jts</li>
+<li>Windows:   Not available</li>
+</ul>
+</li>
+<li><strong>ibcPath</strong> (<em>str</em>) – <p>Path to the IBC installation folder.
+Defaults:</p>
+<ul>
+<li>Linux:     /opt/ibc</li>
+<li>OS X:      /opt/ibc</li>
+<li>Windows:   C:\IBC</li>
+</ul>
+</li>
+<li><strong>ibcIni</strong> (<em>str</em>) – <p>Path to the IBC configuration file.
+Defaults:</p>
+<ul>
+<li>Linux:     ~/ibc/config.ini</li>
+<li>OS X:      ~/ibc/config.ini</li>
+<li>Windows:   %%HOMEPATH%%\Documents\IBC\config.ini</li>
+</ul>
+</li>
+<li><strong>javaPath</strong> (<em>str</em>) – Path to Java executable.
+Default is to use the Java VM included with TWS/gateway.</li>
+<li><strong>fixuserid</strong> (<em>str</em>) – FIX account user id (gateway only).</li>
+<li><strong>fixpassword</strong> (<em>str</em>) – FIX account password (gateway only).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This is not intended to be run in a notebook.</p>
 <p>To use IBC on Windows, the proactor (or quamash) event loop
 must have been set:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
@@ -6397,24 +6974,34 @@ using IBController (<a class="reference external" href="https://github.com/ib-co
 <em class="property">class </em><code class="descclassname">ib_insync.ibcontroller.</code><code class="descname">Watchdog</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#Watchdog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start, connect and watch over the TWS or gateway app and try to keep it
 up and running.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>controller</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#ib_insync.ibcontroller.IBC" title="ib_insync.ibcontroller.IBC"><em>IBC</em></a><em>, </em><a class="reference internal" href="#ib_insync.ibcontroller.IBController" title="ib_insync.ibcontroller.IBController"><em>IBController</em></a><em>]</em>) – (required) IBC or IBController
+instance.</li>
+<li><strong>ib</strong> (<a class="reference internal" href="#ib_insync.ib.IB" title="ib_insync.ib.IB"><em>IB</em></a>) – (required) IB instance to be used. Do no connect this
+instance as Watchdog takes care of that.</li>
+<li><strong>host</strong> (<em>str</em>) – Used for connecting IB instance.</li>
+<li><strong>port</strong> (<em>int</em>) – Used for connecting IB instance.</li>
+<li><strong>clientId</strong> (<em>int</em>) – Used for connecting IB instance.</li>
+<li><strong>connectTimeout</strong> (<em>float</em>) – Used for connecting IB instance.</li>
+<li><strong>appStartupTime</strong> (<em>float</em>) – Time (in seconds) that the app is given
+to start up. Make sure that it is given ample time.</li>
+<li><strong>appTimeout</strong> (<em>float</em>) – Timeout (in seconds) for network traffic idle time.</li>
+<li><strong>retryDelay</strong> (<em>float</em>) – Time (in seconds) to restart app after a
+previous failure.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <p>The idea is to wait until there is no traffic coming from the app for
 a certain amount of time (the <code class="docutils literal notranslate"><span class="pre">appTimeout</span></code> parameter). This triggers
 a historical request to be placed just to see if the app is still alive
 and well. If yes, then continue, if no then restart the whole app
 and reconnect. Restarting will also occur directly on error 1100.</p>
-<p>Arguments:</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">controller</span></code> (required): IBC or IBController instance;</li>
-<li><code class="docutils literal notranslate"><span class="pre">ib</span></code> (required): IB instance to be used. Do no connect this
-instance as Watchdog takes care of that.</li>
-<li><code class="docutils literal notranslate"><span class="pre">host</span></code>, <code class="docutils literal notranslate"><span class="pre">port</span></code>, <code class="docutils literal notranslate"><span class="pre">clientId</span></code> and <code class="docutils literal notranslate"><span class="pre">connectTimeout</span></code>: Used for
-connecting to the app;</li>
-<li><code class="docutils literal notranslate"><span class="pre">appStartupTime</span></code>: Time (in seconds) that the app is given to start up;
-Make sure that it is given ample time;</li>
-<li><code class="docutils literal notranslate"><span class="pre">appTimeout</span></code>: Timeout (in seconds) for network traffic idle time;</li>
-<li><code class="docutils literal notranslate"><span class="pre">retryDelay</span></code>: Time (in seconds) to restart app after a
-previous failure;</li>
-</ul>
 <p>Note: <code class="docutils literal notranslate"><span class="pre">util.patchAsyncio()</span></code> must have been called before.</p>
 <p>This is not intended to be run in a notebook.</p>
 <p>Example usage:</p>
@@ -6431,12 +7018,12 @@ previous failure;</li>
 <dl class="docutils">
 <dt>Events:</dt>
 <dd><ul class="first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">startingEvent(watchdog)</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">startedEvent(watchdog)</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">stoppingEvent(watchdog)</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">stoppedEvent(watchdog)</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">softTimeoutEvent(watchdog)</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">hardTimeoutEvent(watchdog)</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">startingEvent</span></code> (watchdog: <a class="reference internal" href="#ib_insync.ibcontroller.Watchdog" title="ib_insync.ibcontroller.Watchdog"><code class="xref py py-class docutils literal notranslate"><span class="pre">Watchdog</span></code></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">startedEvent</span></code> (watchdog: <a class="reference internal" href="#ib_insync.ibcontroller.Watchdog" title="ib_insync.ibcontroller.Watchdog"><code class="xref py py-class docutils literal notranslate"><span class="pre">Watchdog</span></code></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">stoppingEvent</span></code> (watchdog: <a class="reference internal" href="#ib_insync.ibcontroller.Watchdog" title="ib_insync.ibcontroller.Watchdog"><code class="xref py py-class docutils literal notranslate"><span class="pre">Watchdog</span></code></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">stoppedEvent</span></code> (watchdog: <a class="reference internal" href="#ib_insync.ibcontroller.Watchdog" title="ib_insync.ibcontroller.Watchdog"><code class="xref py py-class docutils literal notranslate"><span class="pre">Watchdog</span></code></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">softTimeoutEvent</span></code> (watchdog: <a class="reference internal" href="#ib_insync.ibcontroller.Watchdog" title="ib_insync.ibcontroller.Watchdog"><code class="xref py py-class docutils literal notranslate"><span class="pre">Watchdog</span></code></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">hardTimeoutEvent</span></code> (watchdog: <a class="reference internal" href="#ib_insync.ibcontroller.Watchdog" title="ib_insync.ibcontroller.Watchdog"><code class="xref py py-class docutils literal notranslate"><span class="pre">Watchdog</span></code></a>)</li>
 </ul>
 </dd>
 </dl>

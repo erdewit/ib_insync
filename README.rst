@@ -78,7 +78,9 @@ too.
 Documentation
 -------------
 
-`API docs <http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html>`_
+The complete `API documentation <http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html>`_.
+
+`Changelog <http://rawgit.com/erdewit/ib_insync/master/docs/html/changelog.html>`_.
 
 Discussion
 ----------

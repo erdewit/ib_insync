@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.util &#8212; IB-insync 0.9.30 documentation</title>
+    <title>ib_insync.util &#8212; IB-insync 0.9.31 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -82,7 +82,7 @@
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Awaitable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="n">Object</span><span class="p">,</span> <span class="n">DynamicObject</span>
 
@@ -199,6 +199,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a log handler that logs to the given file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ibapi&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">ibapiLevel</span><span class="p">)</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">RootLogFilter</span><span class="p">(</span><span class="n">ibapiLevel</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">addFilter</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -214,6 +215,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a log handler that logs to the console.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ibapi&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">ibapiLevel</span><span class="p">)</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">RootLogFilter</span><span class="p">(</span><span class="n">ibapiLevel</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">addFilter</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -332,10 +334,18 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="schedule"><a class="viewcode-back" href="../../api.html#ib_insync.ib.schedule">[docs]</a><span class="k">def</span> <span class="nf">schedule</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="schedule"><a class="viewcode-back" href="../../api.html#ib_insync.ib.schedule">[docs]</a><span class="k">def</span> <span class="nf">schedule</span><span class="p">(</span>
+        <span class="n">time</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">],</span>
+        <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Schedule the callback to be run at the given time with</span>
 <span class="sd">    the given arguments.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        time: Time to run callback. If given as :py:class:`datetime.time`</span>
+<span class="sd">            then use today as date.</span>
+<span class="sd">        callback: Callable scheduled to run.</span>
+<span class="sd">        args: Arguments for to call callback with.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">):</span>

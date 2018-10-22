@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ibcontroller &#8212; IB-insync 0.9.30 documentation</title>
+    <title>ib_insync.ibcontroller &#8212; IB-insync 0.9.31 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -95,59 +95,44 @@
 <span class="sd">    Programmatic control over starting and stopping TWS/Gateway</span>
 <span class="sd">    using IBC (https://github.com/IbcAlpha/IBC).</span>
 
+<span class="sd">    Args:</span>
+
+<span class="sd">        twsVersion (int): (required) The major version number for</span>
+<span class="sd">            TWS or gateway.</span>
+<span class="sd">        tradingMode (str): &#39;live&#39; or &#39;paper&#39;.</span>
+<span class="sd">        userid (str): IB account username. It is recommended to set the real</span>
+<span class="sd">            username/password in a secured IBC config file.</span>
+<span class="sd">        password (str): IB account password.</span>
+<span class="sd">        twsPath (str): Path to the TWS installation folder.</span>
+<span class="sd">            Defaults:</span>
+
+<span class="sd">            * Linux:    ~/Jts</span>
+<span class="sd">            * OS X:     ~/Applications</span>
+<span class="sd">            * Windows:  C:\\\\Jts</span>
+<span class="sd">        twsSettingsPath (str): Path to the TWS settings folder.</span>
+<span class="sd">            Defaults:</span>
+
+<span class="sd">            * Linux:     ~/Jts</span>
+<span class="sd">            * OS X:      ~/Jts</span>
+<span class="sd">            * Windows:   Not available</span>
+<span class="sd">        ibcPath (str): Path to the IBC installation folder.</span>
+<span class="sd">            Defaults:</span>
+
+<span class="sd">            * Linux:     /opt/ibc</span>
+<span class="sd">            * OS X:      /opt/ibc</span>
+<span class="sd">            * Windows:   C:\\\\IBC</span>
+<span class="sd">        ibcIni (str): Path to the IBC configuration file.</span>
+<span class="sd">            Defaults:</span>
+
+<span class="sd">            * Linux:     ~/ibc/config.ini</span>
+<span class="sd">            * OS X:      ~/ibc/config.ini</span>
+<span class="sd">            * Windows:   %%HOMEPATH%%\\\\Documents\\\\IBC\\\\config.ini</span>
+<span class="sd">        javaPath (str): Path to Java executable.</span>
+<span class="sd">            Default is to use the Java VM included with TWS/gateway.</span>
+<span class="sd">        fixuserid (str): FIX account user id (gateway only).</span>
+<span class="sd">        fixpassword (str): FIX account password (gateway only).</span>
+
 <span class="sd">    This is not intended to be run in a notebook.</span>
-
-<span class="sd">    Arguments:</span>
-
-<span class="sd">    * ``twsVersion`` (required): The major version number for TWS or gateway.</span>
-<span class="sd">    * ``tradingMode``: &#39;live&#39; or &#39;paper&#39;.</span>
-<span class="sd">    * ``userid``: IB account username. It is recommended to set the real</span>
-<span class="sd">      username/password in a secured IBC config file.</span>
-<span class="sd">    * ``password``: IB account password.</span>
-<span class="sd">    * ``twsPath``: Path to the TWS installation folder.</span>
-
-<span class="sd">      =======  ==============</span>
-<span class="sd">      Default</span>
-<span class="sd">      =======================</span>
-<span class="sd">      Linux    ~/Jts</span>
-<span class="sd">      OS X     ~/Applications</span>
-<span class="sd">      Windows  C:\\\\Jts</span>
-<span class="sd">      =======  ==============</span>
-
-<span class="sd">    * ``twsSettingsPath``: Path to the TWS settings folder.</span>
-
-<span class="sd">      ========  =============</span>
-<span class="sd">      Default</span>
-<span class="sd">      =======================</span>
-<span class="sd">      Linux     ~/Jts</span>
-<span class="sd">      OS X      ~/Jts</span>
-<span class="sd">      Windows   Not available</span>
-<span class="sd">      ========  =============</span>
-
-<span class="sd">    * ``ibcPath``: Path to the IBC installation folder.</span>
-
-<span class="sd">      ========  =============</span>
-<span class="sd">      Default</span>
-<span class="sd">      =======================</span>
-<span class="sd">      Linux     /opt/ibc</span>
-<span class="sd">      OS X      /opt/ibc</span>
-<span class="sd">      Windows   C:\\\\IBC</span>
-<span class="sd">      ========  =============</span>
-
-<span class="sd">    * ``ibcIni``: Path to the IBC configuration file.</span>
-
-<span class="sd">      ========  =============</span>
-<span class="sd">      Default</span>
-<span class="sd">      =======================</span>
-<span class="sd">      Linux     ~/ibc/config.ini</span>
-<span class="sd">      OS X      ~/ibc/config.ini</span>
-<span class="sd">      Windows   %%HOMEPATH%%\\\\Documents\\\\IBC\\\\config.ini</span>
-<span class="sd">      ========  =============</span>
-
-<span class="sd">    * ``javaPath``: Path to Java executable.</span>
-<span class="sd">      Default is to use the Java VM included with TWS/gateway.</span>
-<span class="sd">    * ``fixuserid``: FIX account user id (gateway only).</span>
-<span class="sd">    * ``fixpassword``: FIX account password (gateway only).</span>
 
 <span class="sd">    To use IBC on Windows, the proactor (or quamash) event loop</span>
 <span class="sd">    must have been set:</span>
@@ -387,24 +372,26 @@
 <span class="sd">    Start, connect and watch over the TWS or gateway app and try to keep it</span>
 <span class="sd">    up and running.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        controller (Union[IBC, IBController]): (required) IBC or IBController</span>
+<span class="sd">            instance.</span>
+<span class="sd">        ib (IB): (required) IB instance to be used. Do no connect this</span>
+<span class="sd">            instance as Watchdog takes care of that.</span>
+<span class="sd">        host (str): Used for connecting IB instance.</span>
+<span class="sd">        port (int):  Used for connecting IB instance.</span>
+<span class="sd">        clientId (int):  Used for connecting IB instance.</span>
+<span class="sd">        connectTimeout (float):  Used for connecting IB instance.</span>
+<span class="sd">        appStartupTime (float): Time (in seconds) that the app is given</span>
+<span class="sd">            to start up. Make sure that it is given ample time.</span>
+<span class="sd">        appTimeout (float): Timeout (in seconds) for network traffic idle time.</span>
+<span class="sd">        retryDelay (float): Time (in seconds) to restart app after a</span>
+<span class="sd">            previous failure.</span>
+
 <span class="sd">    The idea is to wait until there is no traffic coming from the app for</span>
 <span class="sd">    a certain amount of time (the ``appTimeout`` parameter). This triggers</span>
 <span class="sd">    a historical request to be placed just to see if the app is still alive</span>
 <span class="sd">    and well. If yes, then continue, if no then restart the whole app</span>
 <span class="sd">    and reconnect. Restarting will also occur directly on error 1100.</span>
-
-<span class="sd">    Arguments:</span>
-
-<span class="sd">    * ``controller`` (required): IBC or IBController instance;</span>
-<span class="sd">    * ``ib`` (required): IB instance to be used. Do no connect this</span>
-<span class="sd">      instance as Watchdog takes care of that.</span>
-<span class="sd">    * ``host``, ``port``, ``clientId`` and ``connectTimeout``: Used for</span>
-<span class="sd">      connecting to the app;</span>
-<span class="sd">    * ``appStartupTime``: Time (in seconds) that the app is given to start up;</span>
-<span class="sd">      Make sure that it is given ample time;</span>
-<span class="sd">    * ``appTimeout``: Timeout (in seconds) for network traffic idle time;</span>
-<span class="sd">    * ``retryDelay``: Time (in seconds) to restart app after a</span>
-<span class="sd">      previous failure;</span>
 
 <span class="sd">    Note: ``util.patchAsyncio()`` must have been called before.</span>
 
@@ -424,12 +411,12 @@
 <span class="sd">        IB.run()</span>
 
 <span class="sd">    Events:</span>
-<span class="sd">        * ``startingEvent(watchdog)``</span>
-<span class="sd">        * ``startedEvent(watchdog)``</span>
-<span class="sd">        * ``stoppingEvent(watchdog)``</span>
-<span class="sd">        * ``stoppedEvent(watchdog)``</span>
-<span class="sd">        * ``softTimeoutEvent(watchdog)``</span>
-<span class="sd">        * ``hardTimeoutEvent(watchdog)``</span>
+<span class="sd">        * ``startingEvent`` (watchdog: :class:`.Watchdog`)</span>
+<span class="sd">        * ``startedEvent`` (watchdog: :class:`.Watchdog`)</span>
+<span class="sd">        * ``stoppingEvent`` (watchdog: :class:`.Watchdog`)</span>
+<span class="sd">        * ``stoppedEvent`` (watchdog: :class:`.Watchdog`)</span>
+<span class="sd">        * ``softTimeoutEvent`` (watchdog: :class:`.Watchdog`)</span>
+<span class="sd">        * ``hardTimeoutEvent`` (watchdog: :class:`.Watchdog`)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">events</span> <span class="o">=</span> <span class="p">[</span>
@@ -478,7 +465,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_connect</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">appTimeout</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">startedEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_scheduleRestart</span><span class="p">()</span></div>
 

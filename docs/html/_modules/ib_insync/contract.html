@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.contract &#8212; IB-insync 0.9.30 documentation</title>
+    <title>ib_insync.contract &#8212; IB-insync 0.9.31 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -99,6 +99,59 @@
 <span class="sd">        Future(&#39;ES&#39;, &#39;20180921&#39;, &#39;GLOBEX&#39;)</span>
 <span class="sd">        Option(&#39;SPY&#39;, &#39;20170721&#39;, 240, &#39;C&#39;, &#39;SMART&#39;)</span>
 <span class="sd">        Bond(secIdType=&#39;ISIN&#39;, secId=&#39;US03076KAA60&#39;)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        conId (int): The unique IB contract identifier.</span>
+<span class="sd">        symbol (str): The contract (or its underlying) symbol.</span>
+<span class="sd">        secType (str): The security type:</span>
+
+<span class="sd">            * &#39;STK&#39; = Stock (or ETF)</span>
+<span class="sd">            * &#39;OPT&#39; = Option</span>
+<span class="sd">            * &#39;FUT&#39; = Future</span>
+<span class="sd">            * &#39;IND&#39; = Index</span>
+<span class="sd">            * &#39;FOP&#39; = Futures option</span>
+<span class="sd">            * &#39;CASH&#39; = Forex pair</span>
+<span class="sd">            * &#39;BAG&#39; = Combo</span>
+<span class="sd">            * &#39;WAR&#39; = Warrant</span>
+<span class="sd">            * &#39;BOND&#39;= Bond</span>
+<span class="sd">            * &#39;CMDTY&#39;= Commodity</span>
+<span class="sd">            * &#39;NEWS&#39; = News</span>
+<span class="sd">            * &#39;FUND&#39;= Mutual fund</span>
+<span class="sd">        lastTradeDateOrContractMonth (str): The contract&#39;s last trading</span>
+<span class="sd">            day or contract month (for Options and Futures).</span>
+<span class="sd">            Strings with format YYYYMM will be interpreted as the</span>
+<span class="sd">            Contract Month whereas YYYYMMDD will be interpreted as</span>
+<span class="sd">            Last Trading Day.</span>
+<span class="sd">        strike (float): The option&#39;s strike price.</span>
+<span class="sd">        right (str): Put or Call.</span>
+<span class="sd">            Valid values are &#39;P&#39;, &#39;PUT&#39;, &#39;C&#39;, &#39;CALL&#39;, or &#39;&#39; for non-options.</span>
+<span class="sd">        multiplier (str): he instrument&#39;s multiplier (i.e. options, futures).</span>
+<span class="sd">        exchange (str): The destination exchange.</span>
+<span class="sd">        currency (str): The underlying&#39;s currency.</span>
+<span class="sd">        localSymbol (str): The contract&#39;s symbol within its primary exchange.</span>
+<span class="sd">            For options, this will be the OCC symbol.</span>
+<span class="sd">        primaryExchange (str): The contract&#39;s primary exchange.</span>
+<span class="sd">            For smart routed contracts, used to define contract in case</span>
+<span class="sd">            of ambiguity. Should be defined as native exchange of contract,</span>
+<span class="sd">            e.g. ISLAND for MSFT. For exchanges which contain a period in name,</span>
+<span class="sd">            will only be part of exchange name prior to period, i.e. ENEXT</span>
+<span class="sd">            for ENEXT.BE.</span>
+<span class="sd">        tradingClass (str): The trading class name for this contract.</span>
+<span class="sd">            Available in TWS contract description window as well.</span>
+<span class="sd">            For example, GBL Dec &#39;13 future&#39;s trading class is &quot;FGBL&quot;.</span>
+<span class="sd">        includeExpired (bool): If set to true, contract details requests</span>
+<span class="sd">            and historical data queries can be performed pertaining to</span>
+<span class="sd">            expired futures contracts. Expired options or other instrument</span>
+<span class="sd">            types are not available.</span>
+<span class="sd">        secIdType (str): Security identifier type. Examples for Apple:</span>
+
+<span class="sd">                * secIdType=&#39;ISIN&#39;, secId=&#39;US0378331005&#39;</span>
+<span class="sd">                * secIdType=&#39;CUSIP&#39;, secId=&#39;037833100&#39;</span>
+<span class="sd">        secId (str): Security identifier.</span>
+<span class="sd">        comboLegsDescription (str): Description of the combo legs.</span>
+<span class="sd">        comboLegs (List[ComboLeg]): The legs of a combined contract definition.</span>
+<span class="sd">        deltaNeutralContract (DeltaNeutralContract): Delta and underlying</span>
+<span class="sd">            price for Delta-Neutral combo orders.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;secType&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">ibapi</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">Contract</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">}</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> \
@@ -165,7 +218,17 @@
 <div class="viewcode-block" id="Stock"><a class="viewcode-back" href="../../api.html#ib_insync.contract.Stock">[docs]</a><span class="k">class</span> <span class="nc">Stock</span><span class="p">(</span><span class="n">Contract</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stock contract.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            symbol: Symbol name.</span>
+<span class="sd">            exchange: Destination exchange.</span>
+<span class="sd">            currency: Underlying currency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">secType</span><span class="o">=</span><span class="s1">&#39;STK&#39;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span>
             <span class="n">exchange</span><span class="o">=</span><span class="n">exchange</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="n">currency</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -175,9 +238,26 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">lastTradeDateOrContractMonth</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="n">strike</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">multiplier</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">lastTradeDateOrContractMonth</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">strike</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">multiplier</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Option contract.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            symbol: Symbol name.</span>
+<span class="sd">            lastTradeDateOrContractMonth: The option&#39;s last trading day</span>
+<span class="sd">                or contract month.</span>
+
+<span class="sd">                * YYYYMM format: To specify last month</span>
+<span class="sd">                * YYYYMMDD format: To specify last trading day</span>
+<span class="sd">            strike: The option&#39;s strike price.</span>
+<span class="sd">            right: Put or call option.</span>
+<span class="sd">                Valid values are &#39;P&#39;, &#39;PUT&#39;, &#39;C&#39; or &#39;CALL&#39;.</span>
+<span class="sd">            exchange: Destination exchange.</span>
+<span class="sd">            multiplier: The contract multiplier.</span>
+<span class="sd">            currency: Underlying currency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;OPT&#39;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span>
                 <span class="n">lastTradeDateOrContractMonth</span><span class="o">=</span><span class="n">lastTradeDateOrContractMonth</span><span class="p">,</span>
@@ -189,9 +269,24 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">lastTradeDateOrContractMonth</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">localSymbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">multiplier</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">lastTradeDateOrContractMonth</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">localSymbol</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Future contract.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            symbol: Symbol name.</span>
+<span class="sd">            lastTradeDateOrContractMonth: The option&#39;s last trading day</span>
+<span class="sd">                or contract month.</span>
+
+<span class="sd">                * YYYYMM format: To specify last month</span>
+<span class="sd">                * YYYYMMDD format: To specify last trading day</span>
+<span class="sd">            exchange: Destination exchange.</span>
+<span class="sd">            localSymbol: The contract&#39;s symbol within its primary exchange.</span>
+<span class="sd">            multiplier: The contract multiplier.</span>
+<span class="sd">            currency: Underlying currency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;FUT&#39;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span>
                 <span class="n">lastTradeDateOrContractMonth</span><span class="o">=</span><span class="n">lastTradeDateOrContractMonth</span><span class="p">,</span>
@@ -203,8 +298,18 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">localSymbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">multiplier</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">localSymbol</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">multiplier</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Continuous future contract.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            symbol: Symbol name.</span>
+<span class="sd">            exchange: Destination exchange.</span>
+<span class="sd">            localSymbol: The contract&#39;s symbol within its primary exchange.</span>
+<span class="sd">            multiplier: The contract multiplier.</span>
+<span class="sd">            currency: Underlying currency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;CONTFUT&#39;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span>
                 <span class="n">exchange</span><span class="o">=</span><span class="n">exchange</span><span class="p">,</span> <span class="n">localSymbol</span><span class="o">=</span><span class="n">localSymbol</span><span class="p">,</span>
@@ -215,8 +320,17 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;IDEALPRO&#39;</span><span class="p">,</span>
-            <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;IDEALPRO&#39;</span><span class="p">,</span>
+            <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Foreign exchange currency pair.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pair: Shortcut for specifying symbol and currency, like &#39;EURUSD&#39;.</span>
+<span class="sd">            exchange: Destination exchange.</span>
+<span class="sd">            symbol: Base currency.</span>
+<span class="sd">            currency: Quote currency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">pair</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
             <span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span> <span class="ow">or</span> <span class="n">pair</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
@@ -239,14 +353,27 @@
 
     <span class="fm">__str__</span> <span class="o">=</span> <span class="fm">__repr__</span>
 
-<div class="viewcode-block" id="Forex.pair"><a class="viewcode-back" href="../../api.html#ib_insync.contract.Forex.pair">[docs]</a>    <span class="k">def</span> <span class="nf">pair</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Forex.pair"><a class="viewcode-back" href="../../api.html#ib_insync.contract.Forex.pair">[docs]</a>    <span class="k">def</span> <span class="nf">pair</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Short name of pair.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">currency</span></div></div>
 
 
 <div class="viewcode-block" id="Index"><a class="viewcode-back" href="../../api.html#ib_insync.contract.Index">[docs]</a><span class="k">class</span> <span class="nc">Index</span><span class="p">(</span><span class="n">Contract</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Index.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            symbol: Symbol name.</span>
+<span class="sd">            exchange: Destination exchange.</span>
+<span class="sd">            currency: Underlying currency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;IND&#39;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span>
                 <span class="n">exchange</span><span class="o">=</span><span class="n">exchange</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="n">currency</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -255,7 +382,17 @@
 <div class="viewcode-block" id="CFD"><a class="viewcode-back" href="../../api.html#ib_insync.contract.CFD">[docs]</a><span class="k">class</span> <span class="nc">CFD</span><span class="p">(</span><span class="n">Contract</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Contract For Difference.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            symbol: Symbol name.</span>
+<span class="sd">            exchange: Destination exchange.</span>
+<span class="sd">            currency: Underlying currency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;CFD&#39;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span>
                 <span class="n">exchange</span><span class="o">=</span><span class="n">exchange</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="n">currency</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -264,7 +401,17 @@
 <div class="viewcode-block" id="Commodity"><a class="viewcode-back" href="../../api.html#ib_insync.contract.Commodity">[docs]</a><span class="k">class</span> <span class="nc">Commodity</span><span class="p">(</span><span class="n">Contract</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Commodity.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            symbol: Symbol name.</span>
+<span class="sd">            exchange: Destination exchange.</span>
+<span class="sd">            currency: Underlying currency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;CMDTY&#39;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span>
                 <span class="n">exchange</span><span class="o">=</span><span class="n">exchange</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="n">currency</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -274,6 +421,9 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bond.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;BOND&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
@@ -281,9 +431,26 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">lastTradeDateOrContractMonth</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="n">strike</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">multiplier</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">lastTradeDateOrContractMonth</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">strike</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">multiplier</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Option on a futures contract.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            symbol: Symbol name.</span>
+<span class="sd">            lastTradeDateOrContractMonth: The option&#39;s last trading day</span>
+<span class="sd">                or contract month.</span>
+
+<span class="sd">                * YYYYMM format: To specify last month</span>
+<span class="sd">                * YYYYMMDD format: To specify last trading day</span>
+<span class="sd">            strike: The option&#39;s strike price.</span>
+<span class="sd">            right: Put or call option.</span>
+<span class="sd">                Valid values are &#39;P&#39;, &#39;PUT&#39;, &#39;C&#39; or &#39;CALL&#39;.</span>
+<span class="sd">            exchange: Destination exchange.</span>
+<span class="sd">            multiplier: The contract multiplier.</span>
+<span class="sd">            currency: Underlying currency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;FOP&#39;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span>
                 <span class="n">lastTradeDateOrContractMonth</span><span class="o">=</span><span class="n">lastTradeDateOrContractMonth</span><span class="p">,</span>
@@ -295,6 +462,9 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mutual fund.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;FUND&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
@@ -302,6 +472,9 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Warrant option.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;IOPT&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
@@ -309,6 +482,9 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bag contract.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;BAG&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 

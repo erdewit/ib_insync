@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.event &#8212; IB-insync 0.9.30 documentation</title>
+    <title>ib_insync.event &#8212; IB-insync 0.9.31 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -96,15 +96,19 @@
 
 <div class="viewcode-block" id="Event.connect"><a class="viewcode-back" href="../../api.html#ib_insync.event.Event.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">weakRef</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hiPriority</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Connect the callable c to this event.</span>
+<span class="sd">        Connect a callable this event.</span>
 <span class="sd">        The ``+=`` operator can be used as a synonym for this method.</span>
 
-<span class="sd">        When ``weakRef=True`` the callable can be garbage collected upon which</span>
-<span class="sd">        it will be automatically disconnected from this event;</span>
-<span class="sd">        When ``weakRef=False`` a strong reference to the callable will be kept.</span>
-
-<span class="sd">        With ``hiPriority=True`` the callable will be placed in the first slot,</span>
-<span class="sd">        otherwise it will be placed last.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            c: The callable to connect.</span>
+<span class="sd">            weakRef:</span>
+<span class="sd">                * True: The callable can be garbage collected</span>
+<span class="sd">                  upon which it will be automatically disconnected from this</span>
+<span class="sd">                  event</span>
+<span class="sd">                * False: A strong reference to the callable will be kept</span>
+<span class="sd">            hiPriority:</span>
+<span class="sd">                * True: The callable will be placed in the first slot</span>
+<span class="sd">                * False The callable will be placed last</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Duplicate callback: </span><span class="si">{c}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -124,11 +128,12 @@
 
 <div class="viewcode-block" id="Event.disconnect"><a class="viewcode-back" href="../../api.html#ib_insync.event.Event.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Disconnect the callable from this event.</span>
+<span class="sd">        Disconnect a callable from this event.</span>
 <span class="sd">        The ``-=`` operator can be used as a synonym for this method.</span>
 
-<span class="sd">        It&#39;s okay (i.e. not considered an error) if the callable is</span>
-<span class="sd">        already not connected.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            c: The callable to disconnect. It is valid if the callable is</span>
+<span class="sd">                already not connected.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj</span><span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">:</span>

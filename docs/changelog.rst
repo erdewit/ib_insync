@@ -4,6 +4,22 @@ Changelog
 0.9
 ---
 
+Version 0.9.31
+^^^^^^^^^^^^^^
+
+* Requst results will return specialized contract types (like Stock)
+  instead of generic Contract.
+* ``IB.scannerDataEvent`` added.
+* ContractDetails field ``summary`` renamed to ``contract``.
+* ``isSmartDepth`` parameter added for ``reqMktDepth``.
+* Event loop nesting is now handled by the
+  `nest_asyncio project <https://github.com/erdewit/nest_asyncio>`_.
+* ``util.useQt`` is rewritten so that it can be used with any asyncio
+  event loop, with support for both PyQt5 and PySide2.
+  It does not use quamash any more.
+* Various fixes, extensive documentation overhaul and
+  flake8-compliant code formatting.
+
 Version 0.9.30
 ^^^^^^^^^^^^^^
 
@@ -44,7 +60,7 @@ Version 0.9.24
 
 Version 0.9.23
 ^^^^^^^^^^^^^^
-* Compatability with Tornado 5 as used in new Jupyter notebook server  
+* Compatability with Tornado 5 as used in new Jupyter notebook server
 
 Version 0.9.22
 ^^^^^^^^^^^^^^
@@ -110,7 +126,7 @@ Version 0.9.11
 
 * Fixed bug when collecting ticks using ib.waitOnUpdate()
 * Added ContFuture class (continuous futures)
-* Added Ticker.midpoint() 
+* Added Ticker.midpoint()
 
 Version 0.9.10
 ^^^^^^^^^^^^^^
@@ -287,7 +303,7 @@ Version 0.8.0
 * new IB.waitUntil and IB.timeRange scheduling methods
 * notebooks no longer depend on PyQt5 for live updates
 * notebooks can be run in one go ('run all')
-* tick handling bypasses ibapi decoder for more efficiency 
+* tick handling bypasses ibapi decoder for more efficiency
 
 0.7
 ---
@@ -301,7 +317,7 @@ Version 0.7.3
 Version 0.7.2
 ^^^^^^^^^^^^^
 
-* Removed import from ipykernel 
+* Removed import from ipykernel
 
 Version 0.7.1
 ^^^^^^^^^^^^^
