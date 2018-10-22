@@ -13,13 +13,14 @@ class Trade(Object):
     Trade keeps track of an order, its status and all its fills.
 
     Events:
-        * ``statusEvent(trade)``
-        * ``modifyEvent(trade)``
-        * ``fillEvent(trade, fill)``
-        * ``commissionReportEvent(trade, fill, commissionReport)``
-        * ``filledEvent(trade)``
-        * ``cancelEvent(trade)``
-        * ``cancelledEvent(trade)``
+        * ``statusEvent`` (trade: :class:`.Trade`)
+        * ``modifyEvent`` (trade: :class:`.Trade`)
+        * ``fillEvent`` (trade: :class:`.Trade`, fill)
+        * ``commissionReportEvent`` (trade: :class:`.Trade`,
+          fill: :class:`.Fill`, commissionReport: :class:`.CommissionReport`)
+        * ``filledEvent`` (trade: :class:`.Trade`)
+        * ``cancelEvent`` (trade: :class:`.Trade`)
+        * ``cancelledEvent`` (trade: :class:`.Trade`)
     """
     events = (
         'statusEvent', 'modifyEvent', 'fillEvent',

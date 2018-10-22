@@ -11,22 +11,22 @@ class Ticker(Object):
     """
     Current market data such as bid, ask, last price, etc. for a contract.
 
-    Streaming level-1 ticks of type ``TickData`` are stored in
+    Streaming level-1 ticks of type :class:`.TickData` are stored in
     the ``ticks`` list.
 
-    Streaming level-2 ticks of type ``MktDepthData`` are stored in the
+    Streaming level-2 ticks of type :class:`.MktDepthData` are stored in the
     ``domTicks`` list. The order book (DOM) is available as lists of
-    ``DOMLevel`` in ``domBids`` and ``domAsks``.
+    :class:`.DOMLevel` in ``domBids`` and ``domAsks``.
 
     Streaming tick-by-tick ticks are stored in ``tickByTicks``.
 
-    For options the ``OptionComputation`` values for the bid, ask, resp.
+    For options the :class:`.OptionComputation` values for the bid, ask, resp.
     last price are stored in the ``bidGreeks``, ``askGreeks`` resp.
     ``lastGreeks`` attributes. There is also ``modelGreeks`` that conveys
     the greeks as calculated by Interactive Brokers' option model.
 
     Events:
-        * ``updateEvent(ticker)``
+        * ``updateEvent`` (ticker: :class:`.Ticker`)
     """
 
     events = ('updateEvent',)

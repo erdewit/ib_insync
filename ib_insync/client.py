@@ -62,9 +62,9 @@ class Client(EClient):
       one batch instead of item by item.
 
     * Events:
-        * ``apiStart()``
-        * ``apiEnd()``
-        * ``apiError(errorMsg)``
+        * ``apiStart`` ()
+        * ``apiEnd`` ()
+        * ``apiError`` (errorMsg: str)
     """
 
     events = ('apiStart', 'apiEnd', 'apiError')
@@ -137,14 +137,18 @@ class Client(EClient):
             raise ConnectionError('Not connected')
         return self._accounts
 
-    def connect(self, host, port, clientId, timeout=2):
+    def connect(self, host: str, port: int, clientId: int, timeout: float=2):
         """
-        Connect to TWS/IBG at given host and port and with a clientId
-        that is not in use elsewhere.
+        Connect to a running TWS or IB gateway application.
 
-        When timeout is not zero, asyncio.TimeoutError
-        is raised if the connection is not established
-        within the timeout period.
+        Args:
+            host: Host name or IP address.
+            port: Port number.
+            clientId: ID number to use for this client; must be unique per
+                connection.
+            timeout: If establishing the connection takes longer than
+                ``timeout`` seconds then the ``asyncio.TimeoutError`` exception
+                is raised. Set to 0 to disable timeout.
         """
         util.run(self.connectAsync(host, port, clientId, timeout))
 

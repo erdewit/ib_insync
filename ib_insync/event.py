@@ -19,15 +19,19 @@ class Event:
 
     def connect(self, c, weakRef=True, hiPriority=False):
         """
-        Connect the callable c to this event.
+        Connect a callable this event.
         The ``+=`` operator can be used as a synonym for this method.
 
-        When ``weakRef=True`` the callable can be garbage collected upon which
-        it will be automatically disconnected from this event;
-        When ``weakRef=False`` a strong reference to the callable will be kept.
-
-        With ``hiPriority=True`` the callable will be placed in the first slot,
-        otherwise it will be placed last.
+        Args:
+            c: The callable to connect.
+            weakRef:
+                * True: The callable can be garbage collected
+                  upon which it will be automatically disconnected from this
+                  event
+                * False: A strong reference to the callable will be kept
+            hiPriority:
+                * True: The callable will be placed in the first slot
+                * False The callable will be placed last
         """
         if c in self:
             raise ValueError(f'Duplicate callback: {c}')
@@ -47,11 +51,12 @@ class Event:
 
     def disconnect(self, c):
         """
-        Disconnect the callable from this event.
+        Disconnect a callable from this event.
         The ``-=`` operator can be used as a synonym for this method.
 
-        It's okay (i.e. not considered an error) if the callable is
-        already not connected.
+        Args:
+            c: The callable to disconnect. It is valid if the callable is
+                already not connected.
         """
         obj, func = self._split(c)
         for slot in self.slots:

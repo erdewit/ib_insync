@@ -257,7 +257,7 @@ class PnLSingle(Object):
 class BarList(list):
     """
     Events:
-        * ``updateEvent(bars, hasNewBar)``
+        * ``updateEvent`` (bars, hasNewBar: bool)
     """
     events = ('updateEvent',)
 

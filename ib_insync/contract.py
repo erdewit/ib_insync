@@ -22,6 +22,59 @@ class Contract(Object):
         Future('ES', '20180921', 'GLOBEX')
         Option('SPY', '20170721', 240, 'C', 'SMART')
         Bond(secIdType='ISIN', secId='US03076KAA60')
+
+    Args:
+        conId (int): The unique IB contract identifier.
+        symbol (str): The contract (or its underlying) symbol.
+        secType (str): The security type:
+
+            * 'STK' = Stock (or ETF)
+            * 'OPT' = Option
+            * 'FUT' = Future
+            * 'IND' = Index
+            * 'FOP' = Futures option
+            * 'CASH' = Forex pair
+            * 'BAG' = Combo
+            * 'WAR' = Warrant
+            * 'BOND'= Bond
+            * 'CMDTY'= Commodity
+            * 'NEWS' = News
+            * 'FUND'= Mutual fund
+        lastTradeDateOrContractMonth (str): The contract's last trading
+            day or contract month (for Options and Futures).
+            Strings with format YYYYMM will be interpreted as the
+            Contract Month whereas YYYYMMDD will be interpreted as
+            Last Trading Day.
+        strike (float): The option's strike price.
+        right (str): Put or Call.
+            Valid values are 'P', 'PUT', 'C', 'CALL', or '' for non-options.
+        multiplier (str): he instrument's multiplier (i.e. options, futures).
+        exchange (str): The destination exchange.
+        currency (str): The underlying's currency.
+        localSymbol (str): The contract's symbol within its primary exchange.
+            For options, this will be the OCC symbol.
+        primaryExchange (str): The contract's primary exchange.
+            For smart routed contracts, used to define contract in case
+            of ambiguity. Should be defined as native exchange of contract,
+            e.g. ISLAND for MSFT. For exchanges which contain a period in name,
+            will only be part of exchange name prior to period, i.e. ENEXT
+            for ENEXT.BE.
+        tradingClass (str): The trading class name for this contract.
+            Available in TWS contract description window as well.
+            For example, GBL Dec '13 future's trading class is "FGBL".
+        includeExpired (bool): If set to true, contract details requests
+            and historical data queries can be performed pertaining to
+            expired futures contracts. Expired options or other instrument
+            types are not available.
+        secIdType (str): Security identifier type. Examples for Apple:
+
+                * secIdType='ISIN', secId='US0378331005'
+                * secIdType='CUSIP', secId='037833100'
+        secId (str): Security identifier.
+        comboLegsDescription (str): Description of the combo legs.
+        comboLegs (List[ComboLeg]): The legs of a combined contract definition.
+        deltaNeutralContract (DeltaNeutralContract): Delta and underlying
+            price for Delta-Neutral combo orders.
     """
     defaults = {'secType': '', **ibapi.contract.Contract().__dict__}
     __slots__ = list(defaults.keys()) + \
@@ -88,7 +141,17 @@ class Contract(Object):
 class Stock(Contract):
     __slots__ = ()
 
-    def __init__(self, symbol='', exchange='', currency='', **kwargs):
+    def __init__(
+            self, symbol: str='', exchange: str='', currency: str='',
+            **kwargs):
+        """
+        Stock contract.
+
+        Args:
+            symbol: Symbol name.
+            exchange: Destination exchange.
+            currency: Underlying currency.
+        """
         Contract.__init__(
             self, secType='STK', symbol=symbol,
             exchange=exchange, currency=currency, **kwargs)
@@ -98,9 +161,26 @@ class Option(Contract):
     __slots__ = ()
 
     def __init__(
-            self, symbol='', lastTradeDateOrContractMonth='',
-            strike='', right='', exchange='', multiplier='',
-            currency='', **kwargs):
+            self, symbol: str='', lastTradeDateOrContractMonth: str='',
+            strike: float=0.0, right: str='', exchange: str='',
+            multiplier: str='', currency: str='', **kwargs):
+        """
+        Option contract.
+
+        Args:
+            symbol: Symbol name.
+            lastTradeDateOrContractMonth: The option's last trading day
+                or contract month.
+
+                * YYYYMM format: To specify last month
+                * YYYYMMDD format: To specify last trading day
+            strike: The option's strike price.
+            right: Put or call option.
+                Valid values are 'P', 'PUT', 'C' or 'CALL'.
+            exchange: Destination exchange.
+            multiplier: The contract multiplier.
+            currency: Underlying currency.
+        """
         Contract.__init__(
                 self, 'OPT', symbol=symbol,
                 lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
@@ -112,9 +192,24 @@ class Future(Contract):
     __slots__ = ()
 
     def __init__(
-            self, symbol='', lastTradeDateOrContractMonth='',
-            exchange='', localSymbol='', multiplier='',
-            currency='', **kwargs):
+            self, symbol: str='', lastTradeDateOrContractMonth: str='',
+            exchange: str='', localSymbol: str='', multiplier: str='',
+            currency: str='', **kwargs):
+        """
+        Future contract.
+
+        Args:
+            symbol: Symbol name.
+            lastTradeDateOrContractMonth: The option's last trading day
+                or contract month.
+
+                * YYYYMM format: To specify last month
+                * YYYYMMDD format: To specify last trading day
+            exchange: Destination exchange.
+            localSymbol: The contract's symbol within its primary exchange.
+            multiplier: The contract multiplier.
+            currency: Underlying currency.
+        """
         Contract.__init__(
                 self, 'FUT', symbol=symbol,
                 lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
@@ -126,8 +221,18 @@ class ContFuture(Contract):
     __slots__ = ()
 
     def __init__(
-            self, symbol='', exchange='', localSymbol='', multiplier='',
-            currency='', **kwargs):
+            self, symbol: str='', exchange: str='', localSymbol: str='',
+            multiplier: str='', currency: str='', **kwargs):
+        """
+        Continuous future contract.
+
+        Args:
+            symbol: Symbol name.
+            exchange: Destination exchange.
+            localSymbol: The contract's symbol within its primary exchange.
+            multiplier: The contract multiplier.
+            currency: Underlying currency.
+        """
         Contract.__init__(
                 self, 'CONTFUT', symbol=symbol,
                 exchange=exchange, localSymbol=localSymbol,
@@ -138,8 +243,17 @@ class Forex(Contract):
     __slots__ = ()
 
     def __init__(
-            self, pair='', exchange='IDEALPRO',
-            symbol='', currency='', **kwargs):
+            self, pair: str='', exchange: str='IDEALPRO',
+            symbol: str='', currency: str='', **kwargs):
+        """
+        Foreign exchange currency pair.
+
+        Args:
+            pair: Shortcut for specifying symbol and currency, like 'EURUSD'.
+            exchange: Destination exchange.
+            symbol: Base currency.
+            currency: Quote currency.
+        """
         if pair:
             assert len(pair) == 6
             symbol = symbol or pair[:3]
@@ -162,14 +276,27 @@ class Forex(Contract):
 
     __str__ = __repr__
 
-    def pair(self):
+    def pair(self) -> str:
+        '''
+        Short name of pair.
+        '''
         return self.symbol + self.currency
 
 
 class Index(Contract):
     __slots__ = ()
 
-    def __init__(self, symbol='', exchange='', currency='', **kwargs):
+    def __init__(
+            self, symbol: str='', exchange: str='', currency: str='',
+            **kwargs):
+        """
+        Index.
+
+        Args:
+            symbol: Symbol name.
+            exchange: Destination exchange.
+            currency: Underlying currency.
+        """
         Contract.__init__(
                 self, 'IND', symbol=symbol,
                 exchange=exchange, currency=currency, **kwargs)
@@ -178,7 +305,17 @@ class Index(Contract):
 class CFD(Contract):
     __slots__ = ()
 
-    def __init__(self, symbol='', exchange='', currency='', **kwargs):
+    def __init__(
+            self, symbol: str='', exchange: str='', currency: str='',
+            **kwargs):
+        """
+        Contract For Difference.
+
+        Args:
+            symbol: Symbol name.
+            exchange: Destination exchange.
+            currency: Underlying currency.
+        """
         Contract.__init__(
                 self, 'CFD', symbol=symbol,
                 exchange=exchange, currency=currency, **kwargs)
@@ -187,7 +324,17 @@ class CFD(Contract):
 class Commodity(Contract):
     __slots__ = ()
 
-    def __init__(self, symbol='', exchange='', currency='', **kwargs):
+    def __init__(
+            self, symbol: str='', exchange: str='', currency: str='',
+            **kwargs):
+        """
+        Commodity.
+
+        Args:
+            symbol: Symbol name.
+            exchange: Destination exchange.
+            currency: Underlying currency.
+        """
         Contract.__init__(
                 self, 'CMDTY', symbol=symbol,
                 exchange=exchange, currency=currency, **kwargs)
@@ -197,6 +344,9 @@ class Bond(Contract):
     __slots__ = ()
 
     def __init__(self, **kwargs):
+        """
+        Bond.
+        """
         Contract.__init__(self, 'BOND', **kwargs)
 
 
@@ -204,9 +354,26 @@ class FuturesOption(Contract):
     __slots__ = ()
 
     def __init__(
-            self, symbol='', lastTradeDateOrContractMonth='',
-            strike='', right='', exchange='', multiplier='',
-            currency='', **kwargs):
+            self, symbol: str='', lastTradeDateOrContractMonth: str='',
+            strike: float=0.0, right: str='', exchange: str='',
+            multiplier: str='', currency: str='', **kwargs):
+        """
+        Option on a futures contract.
+
+        Args:
+            symbol: Symbol name.
+            lastTradeDateOrContractMonth: The option's last trading day
+                or contract month.
+
+                * YYYYMM format: To specify last month
+                * YYYYMMDD format: To specify last trading day
+            strike: The option's strike price.
+            right: Put or call option.
+                Valid values are 'P', 'PUT', 'C' or 'CALL'.
+            exchange: Destination exchange.
+            multiplier: The contract multiplier.
+            currency: Underlying currency.
+        """
         Contract.__init__(
                 self, 'FOP', symbol=symbol,
                 lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
@@ -218,6 +385,9 @@ class MutualFund(Contract):
     __slots__ = ()
 
     def __init__(self, **kwargs):
+        """
+        Mutual fund.
+        """
         Contract.__init__(self, 'FUND', **kwargs)
 
 
@@ -225,6 +395,9 @@ class Warrant(Contract):
     __slots__ = ()
 
     def __init__(self, **kwargs):
+        """
+        Warrant option.
+        """
         Contract.__init__(self, 'IOPT', **kwargs)
 
 
@@ -232,4 +405,7 @@ class Bag(Contract):
     __slots__ = ()
 
     def __init__(self, **kwargs):
+        """
+        Bag contract.
+        """
         Contract.__init__(self, 'BAG', **kwargs)

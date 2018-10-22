@@ -5,7 +5,7 @@ import sys
 import signal
 import asyncio
 import time
-from typing import List, Iterator, Awaitable
+from typing import List, Iterator, Awaitable, Callable, Union
 
 from ib_insync.objects import Object, DynamicObject
 
@@ -255,10 +255,18 @@ def run(*awaitables: List[Awaitable], timeout=None):
     return result
 
 
-def schedule(time, callback, *args):
+def schedule(
+        time: Union[datetime.time, datetime.datetime],
+        callback: Callable, *args):
     """
     Schedule the callback to be run at the given time with
     the given arguments.
+
+    Args:
+        time: Time to run callback. If given as :py:class:`datetime.time`
+            then use today as date.
+        callback: Callable scheduled to run.
+        args: Arguments for to call callback with.
     """
     loop = asyncio.get_event_loop()
     if isinstance(time, datetime.time):
