@@ -1323,8 +1323,9 @@ class IB:
 
         This method is blocking.
 
-        For a non-blocking subscription, use ``ib.client.reqScannerData()``
-        directly and subscribe to ``scannerDataEvent``.
+        For a non-blocking subscription, use
+        ``ib.client.reqScannerSubscription()`` directly and subscribe to
+        ``scannerDataEvent``.
 
         https://interactivebrokers.github.io/tws-api/market_scanners.html
 
