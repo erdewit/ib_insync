@@ -51,6 +51,12 @@
 <li class="toctree-l1"><a class="reference internal" href="notebooks.html">Notebooks</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Code recipes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#fetching-consecutive-historical-data">Fetching consecutive historical data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scanner-data">Scanner data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#option-calculations">Option calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#order-book">Order book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#minimum-price-increments">Minimum price increments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#news-articles">News articles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#news-bulletins">News bulletins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#integration-with-pyqt5-or-pyside2">Integration with PyQt5 or PySide2</a></li>
 </ul>
 </li>
@@ -113,9 +119,86 @@ and further back in time until there is no more data returned.</p>
     <span class="n">dt</span> <span class="o">=</span> <span class="n">bars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">date</span>
     <span class="k">print</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
 
+<span class="c1"># save to CSV file</span>
 <span class="n">allBars</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">bars</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">barsList</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bars</span><span class="p">]</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">df</span><span class="p">(</span><span class="n">allBars</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">contract</span><span class="o">.</span><span class="n">symbol</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="scanner-data">
+<h2>Scanner data<a class="headerlink" href="#scanner-data" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">allParams</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqScannerParameters</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="n">allParams</span><span class="p">)</span>
+
+<span class="n">sub</span> <span class="o">=</span> <span class="n">ScannerSubscription</span><span class="p">(</span>
+    <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;FUT.US&#39;</span><span class="p">,</span>
+    <span class="n">locationCode</span><span class="o">=</span><span class="s1">&#39;FUT.GLOBEX&#39;</span><span class="p">,</span>
+    <span class="n">scanCode</span><span class="o">=</span><span class="s1">&#39;TOP_PERC_GAIN&#39;</span><span class="p">)</span>
+<span class="n">scanData</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqScannerData</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="p">[])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">scanData</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="option-calculations">
+<h2>Option calculations<a class="headerlink" href="#option-calculations" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">option</span> <span class="o">=</span> <span class="n">Option</span><span class="p">(</span><span class="s1">&#39;EOE&#39;</span><span class="p">,</span> <span class="s1">&#39;20171215&#39;</span><span class="p">,</span> <span class="mi">490</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;FTA&#39;</span><span class="p">,</span> <span class="n">multiplier</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">calc</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">calculateImpliedVolatility</span><span class="p">(</span>
+    <span class="n">option</span><span class="p">,</span> <span class="n">optionPrice</span><span class="o">=</span><span class="mf">6.1</span><span class="p">,</span> <span class="n">underPrice</span><span class="o">=</span><span class="mi">525</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">calc</span><span class="p">)</span>
+
+<span class="n">calc</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">calculateOptionPrice</span><span class="p">(</span>
+    <span class="n">option</span><span class="p">,</span> <span class="n">volatility</span><span class="o">=</span><span class="mf">0.14</span><span class="p">,</span> <span class="n">underPrice</span><span class="o">=</span><span class="mi">525</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">calc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="order-book">
+<h2>Order book<a class="headerlink" href="#order-book" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eurusd</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;EURUSD&#39;</span><span class="p">)</span>
+<span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktDepth</span><span class="p">(</span><span class="n">eurusd</span><span class="p">)</span>
+<span class="k">while</span> <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">price</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ticker</span><span class="o">.</span><span class="n">domBids</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">price</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ticker</span><span class="o">.</span><span class="n">domAsks</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="minimum-price-increments">
+<h2>Minimum price increments<a class="headerlink" href="#minimum-price-increments" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">usdjpy</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;USDJPY&#39;</span><span class="p">)</span>
+<span class="n">cd</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqContractDetails</span><span class="p">(</span><span class="n">usdjpy</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">cd</span><span class="o">.</span><span class="n">marketRuleIds</span><span class="p">)</span>
+
+<span class="n">rules</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ib</span><span class="o">.</span><span class="n">reqMarketRule</span><span class="p">(</span><span class="n">ruleId</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ruleId</span> <span class="ow">in</span> <span class="n">cd</span><span class="o">.</span><span class="n">marketRuleIds</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="news-articles">
+<h2>News articles<a class="headerlink" href="#news-articles" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">newsProviders</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqNewsProviders</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">newsProviders</span><span class="p">)</span>
+<span class="n">codes</span> <span class="o">=</span> <span class="s1">&#39;+&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">code</span> <span class="k">for</span> <span class="n">np</span> <span class="ow">in</span> <span class="n">newsProviders</span><span class="p">)</span>
+
+<span class="n">amd</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;AMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">qualifyContracts</span><span class="p">(</span><span class="n">amd</span><span class="p">)</span>
+<span class="n">headlines</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalNews</span><span class="p">(</span><span class="n">amd</span><span class="o">.</span><span class="n">conId</span><span class="p">,</span> <span class="n">codes</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">latest</span> <span class="o">=</span> <span class="n">headlines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span>
+<span class="n">article</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqNewsArticle</span><span class="p">(</span><span class="n">latest</span><span class="o">.</span><span class="n">providerCode</span><span class="p">,</span> <span class="n">latest</span><span class="o">.</span><span class="n">articleId</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">article</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="news-bulletins">
+<h2>News bulletins<a class="headerlink" href="#news-bulletins" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ib</span><span class="o">.</span><span class="n">reqNewsBulletins</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">newsBulletins</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -136,7 +219,6 @@ possible to have multiple outstanding requests at the same time.</p>
 <p>It’s also possible to use PySide2 instead; To do so uncomment the PySide2
 import and <code class="docutils literal notranslate"><span class="pre">util.useQt</span></code> lines in the example and comment out their PyQt5
 counterparts.</p>
-<p>More to be added…</p>
 </div>
 </div>
 

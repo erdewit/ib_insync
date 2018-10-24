@@ -87,8 +87,7 @@
 <span class="kn">from</span> <span class="nn">ib_insync.wrapper</span> <span class="k">import</span> <span class="n">Wrapper</span>
 <span class="kn">from</span> <span class="nn">ib_insync.contract</span> <span class="k">import</span> <span class="n">Contract</span>
 <span class="kn">from</span> <span class="nn">ib_insync.ticker</span> <span class="k">import</span> <span class="n">Ticker</span>
-<span class="kn">from</span> <span class="nn">ib_insync.order</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">Order</span><span class="p">,</span> <span class="n">OrderStatus</span><span class="p">,</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">LimitOrder</span><span class="p">,</span> <span class="n">StopOrder</span><span class="p">,</span> <span class="n">MarketOrder</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ib_insync.order</span> <span class="k">import</span> <span class="n">Order</span><span class="p">,</span> <span class="n">OrderStatus</span><span class="p">,</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">LimitOrder</span><span class="p">,</span> <span class="n">StopOrder</span>
 <span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">AccountValue</span><span class="p">,</span> <span class="n">PortfolioItem</span><span class="p">,</span> <span class="n">Position</span><span class="p">,</span> <span class="n">Fill</span><span class="p">,</span> <span class="n">Execution</span><span class="p">,</span> <span class="n">BracketOrder</span><span class="p">,</span>
     <span class="n">TradeLogEntry</span><span class="p">,</span> <span class="n">OrderState</span><span class="p">,</span> <span class="n">ExecutionFilter</span><span class="p">,</span> <span class="n">TagValue</span><span class="p">,</span> <span class="n">PnL</span><span class="p">,</span> <span class="n">PnLSingle</span><span class="p">,</span>
@@ -100,10 +99,6 @@
 <span class="kn">from</span> <span class="nn">ib_insync.event</span> <span class="k">import</span> <span class="n">Event</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IB&#39;</span><span class="p">]</span>
-
-
-<span class="k">def</span> <span class="nf">api</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">f</span>  <span class="c1"># visual marker for API request methods</span>
 
 
 <div class="viewcode-block" id="IB"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB">[docs]</a><span class="k">class</span> <span class="nc">IB</span><span class="p">:</span>
@@ -379,7 +374,7 @@
 <div class="viewcode-block" id="IB.setTimeout"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.setTimeout">[docs]</a>    <span class="k">def</span> <span class="nf">setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set a timeout for receiving messages from TWS/IBG, emitting</span>
-<span class="sd">        the ``timeout`` callback if there is no incoming data for too long.</span>
+<span class="sd">        ``timeoutEvent`` if there is no incoming data for too long.</span>
 
 <span class="sd">        The timeout fires once per connected session but can be set again</span>
 <span class="sd">        after firing or after a reconnect.</span>
@@ -668,8 +663,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">whatIfOrderAsync</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="n">order</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.placeOrder"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.placeOrder">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">placeOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Trade</span><span class="p">:</span>
+<div class="viewcode-block" id="IB.placeOrder"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.placeOrder">[docs]</a>    <span class="k">def</span> <span class="nf">placeOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Trade</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Place a new order or modify an existing order.</span>
 <span class="sd">        Returns a Trade that is kept live updated with</span>
@@ -706,8 +700,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">newOrderEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">trade</span></div>
 
-<div class="viewcode-block" id="IB.cancelOrder"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelOrder">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">cancelOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Trade</span><span class="p">:</span>
+<div class="viewcode-block" id="IB.cancelOrder"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelOrder">[docs]</a>    <span class="k">def</span> <span class="nf">cancelOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Trade</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel the order and return the Trade it belongs to.</span>
 
@@ -741,8 +734,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;cancelOrder: Unknown orderId </span><span class="si">{order.orderId}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">trade</span></div>
 
-<div class="viewcode-block" id="IB.reqGlobalCancel"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqGlobalCancel">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqGlobalCancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.reqGlobalCancel"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqGlobalCancel">[docs]</a>    <span class="k">def</span> <span class="nf">reqGlobalCancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel all active trades including those placed by other</span>
 <span class="sd">        clients or TWS/IB gateway.</span>
@@ -750,8 +742,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqGlobalCancel</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;reqGlobalCancel&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.reqCurrentTime"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqCurrentTime">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqCurrentTime</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span>
+<div class="viewcode-block" id="IB.reqCurrentTime"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqCurrentTime">[docs]</a>    <span class="k">def</span> <span class="nf">reqCurrentTime</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request TWS current time.</span>
 
@@ -759,8 +750,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqCurrentTimeAsync</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="IB.reqAccountUpdates"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAccountUpdates">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqAccountUpdates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.reqAccountUpdates"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAccountUpdates">[docs]</a>    <span class="k">def</span> <span class="nf">reqAccountUpdates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This is called at startup - no need to call again.</span>
 
@@ -775,8 +765,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqAccountUpdatesAsync</span><span class="p">(</span><span class="n">account</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqAccountUpdatesMulti"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAccountUpdatesMulti">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqAccountUpdatesMulti</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqAccountUpdatesMulti"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAccountUpdatesMulti">[docs]</a>    <span class="k">def</span> <span class="nf">reqAccountUpdatesMulti</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        It is recommended to use :py:meth:`.accountValues` instead.</span>
@@ -791,8 +780,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqAccountUpdatesMultiAsync</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqAccountSummary"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAccountSummary">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqAccountSummary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.reqAccountSummary"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAccountSummary">[docs]</a>    <span class="k">def</span> <span class="nf">reqAccountSummary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        It is recommended to use :py:meth:`.accountSummary` instead.</span>
 
@@ -803,8 +791,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqAccountSummaryAsync</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="IB.reqAutoOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAutoOpenOrders">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqAutoOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">autoBind</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.reqAutoOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAutoOpenOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqAutoOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">autoBind</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Bind manual TWS orders so that they can be managed from this client.</span>
 <span class="sd">        The clientId must be 0 and the TWS API setting &quot;Use negative numbers</span>
@@ -820,8 +807,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqAutoOpenOrders</span><span class="p">(</span><span class="n">autoBind</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.reqOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqOpenOrders">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]:</span>
+<div class="viewcode-block" id="IB.reqOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqOpenOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request and return a list a list of open orders.</span>
 
@@ -834,8 +820,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqOpenOrdersAsync</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="IB.reqExecutions"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqExecutions">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqExecutions</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqExecutions"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqExecutions">[docs]</a>    <span class="k">def</span> <span class="nf">reqExecutions</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">execFilter</span><span class="p">:</span> <span class="n">ExecutionFilter</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Fill</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        It is recommended to use :py:meth:`.fills`  or</span>
@@ -850,8 +835,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqExecutionsAsync</span><span class="p">(</span><span class="n">execFilter</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqPositions"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqPositions">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqPositions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Position</span><span class="p">]:</span>
+<div class="viewcode-block" id="IB.reqPositions"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqPositions">[docs]</a>    <span class="k">def</span> <span class="nf">reqPositions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Position</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        It is recommended to use :py:meth:`.positions` instead.</span>
 
@@ -861,8 +845,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqPositionsAsync</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="IB.reqPnL"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqPnL">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqPnL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PnL</span><span class="p">:</span>
+<div class="viewcode-block" id="IB.reqPnL"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqPnL">[docs]</a>    <span class="k">def</span> <span class="nf">reqPnL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PnL</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start a subscription for profit and loss events.</span>
 
@@ -884,8 +867,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqPnL</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pnl</span></div>
 
-<div class="viewcode-block" id="IB.cancelPnL"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelPnL">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">cancelPnL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.cancelPnL"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelPnL">[docs]</a>    <span class="k">def</span> <span class="nf">cancelPnL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel PnL subscription.</span>
 
@@ -903,8 +885,7 @@
                 <span class="s1">&#39;cancelPnL: No subscription for &#39;</span>
                 <span class="n">f</span><span class="s1">&#39;account </span><span class="si">{account}</span><span class="s1">, modelCode </span><span class="si">{modelCode}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.reqPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqPnLSingle">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqPnLSingle</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqPnLSingle">[docs]</a>    <span class="k">def</span> <span class="nf">reqPnLSingle</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">conId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PnLSingle</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start a subscription for profit and loss events for single positions.</span>
@@ -928,8 +909,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqPnLSingle</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">conId</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pnlSingle</span></div>
 
-<div class="viewcode-block" id="IB.cancelPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelPnLSingle">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">cancelPnLSingle</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.cancelPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelPnLSingle">[docs]</a>    <span class="k">def</span> <span class="nf">cancelPnLSingle</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">conId</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel PnLSingle subscription for the given account, modelCode</span>
@@ -950,8 +930,7 @@
                 <span class="s1">&#39;cancelPnLSingle: No subscription for &#39;</span>
                 <span class="n">f</span><span class="s1">&#39;account </span><span class="si">{account}</span><span class="s1">, modelCode </span><span class="si">{modelCode}</span><span class="s1">, conId </span><span class="si">{conId}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.reqContractDetails"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqContractDetails">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqContractDetails</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ContractDetails</span><span class="p">]:</span>
+<div class="viewcode-block" id="IB.reqContractDetails"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqContractDetails">[docs]</a>    <span class="k">def</span> <span class="nf">reqContractDetails</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ContractDetails</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a list of contract details that match the given contract.</span>
 <span class="sd">        If the returned list is empty then the contract is not known;</span>
@@ -969,8 +948,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqContractDetailsAsync</span><span class="p">(</span><span class="n">contract</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqMatchingSymbols"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMatchingSymbols">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqMatchingSymbols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ContractDescription</span><span class="p">]:</span>
+<div class="viewcode-block" id="IB.reqMatchingSymbols"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMatchingSymbols">[docs]</a>    <span class="k">def</span> <span class="nf">reqMatchingSymbols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ContractDescription</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request contract descriptions of contracts that match a pattern.</span>
 
@@ -1000,8 +978,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqMarketRuleAsync</span><span class="p">(</span><span class="n">marketRuleId</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqRealTimeBars"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqRealTimeBars">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqRealTimeBars</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqRealTimeBars"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqRealTimeBars">[docs]</a>    <span class="k">def</span> <span class="nf">reqRealTimeBars</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">barSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">whatToShow</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">useRTH</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
             <span class="n">realTimeBarsOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RealTimeBarList</span><span class="p">:</span>
@@ -1032,8 +1009,7 @@
             <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">barSize</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span> <span class="n">useRTH</span><span class="p">,</span> <span class="n">realTimeBarsOptions</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">bars</span></div>
 
-<div class="viewcode-block" id="IB.cancelRealTimeBars"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelRealTimeBars">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">cancelRealTimeBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bars</span><span class="p">:</span> <span class="n">RealTimeBarList</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.cancelRealTimeBars"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelRealTimeBars">[docs]</a>    <span class="k">def</span> <span class="nf">cancelRealTimeBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bars</span><span class="p">:</span> <span class="n">RealTimeBarList</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel the realtime bars subscription.</span>
 
@@ -1043,8 +1019,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelRealTimeBars</span><span class="p">(</span><span class="n">bars</span><span class="o">.</span><span class="n">reqId</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">endBars</span><span class="p">(</span><span class="n">bars</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.reqHistoricalData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHistoricalData">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqHistoricalData</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqHistoricalData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHistoricalData">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistoricalData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
             <span class="n">durationStr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">barSizeSetting</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">whatToShow</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">useRTH</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
@@ -1093,8 +1068,7 @@
                 <span class="n">contract</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">,</span> <span class="n">durationStr</span><span class="p">,</span> <span class="n">barSizeSetting</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span>
                 <span class="n">useRTH</span><span class="p">,</span> <span class="n">formatDate</span><span class="p">,</span> <span class="n">keepUpToDate</span><span class="p">,</span> <span class="n">chartOptions</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.cancelHistoricalData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelHistoricalData">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">cancelHistoricalData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bars</span><span class="p">:</span> <span class="n">BarDataList</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.cancelHistoricalData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelHistoricalData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelHistoricalData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bars</span><span class="p">:</span> <span class="n">BarDataList</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel the update subscription for the historical bars.</span>
 
@@ -1106,8 +1080,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelHistoricalData</span><span class="p">(</span><span class="n">bars</span><span class="o">.</span><span class="n">reqId</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">endBars</span><span class="p">(</span><span class="n">bars</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.reqHistoricalTicks"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHistoricalTicks">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqHistoricalTicks</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqHistoricalTicks"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHistoricalTicks">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistoricalTicks</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span>
             <span class="n">startDateTime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">],</span>
             <span class="n">endDateTime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">],</span>
@@ -1143,8 +1116,7 @@
                 <span class="n">contract</span><span class="p">,</span> <span class="n">startDateTime</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">,</span> <span class="n">numberOfTicks</span><span class="p">,</span>
                 <span class="n">whatToShow</span><span class="p">,</span> <span class="n">useRth</span><span class="p">,</span> <span class="n">ignoreSize</span><span class="p">,</span> <span class="n">miscOptions</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqMarketDataType"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMarketDataType">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqMarketDataType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marketDataType</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.reqMarketDataType"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMarketDataType">[docs]</a>    <span class="k">def</span> <span class="nf">reqMarketDataType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marketDataType</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the market data type used throughout.</span>
 
@@ -1160,8 +1132,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqMarketDataType</span><span class="p">(</span><span class="n">marketDataType</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.reqHeadTimeStamp"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHeadTimeStamp">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqHeadTimeStamp</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqHeadTimeStamp"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHeadTimeStamp">[docs]</a>    <span class="k">def</span> <span class="nf">reqHeadTimeStamp</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">useRTH</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">formatDate</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1179,8 +1150,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">reqHeadTimeStampAsync</span><span class="p">(</span>
                 <span class="n">contract</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span> <span class="n">useRTH</span><span class="p">,</span> <span class="n">formatDate</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqMktData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMktData">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqMktData</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqMktData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMktData">[docs]</a>    <span class="k">def</span> <span class="nf">reqMktData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">genericTickList</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
             <span class="n">snapshot</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">regulatorySnapshot</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">mktDataOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ticker</span><span class="p">:</span>
@@ -1242,8 +1212,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="s1">&#39;cancelMktData: &#39;</span> <span class="n">f</span><span class="s1">&#39;No reqId found for contract </span><span class="si">{contract}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.reqTickByTickData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqTickByTickData">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqTickByTickData</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqTickByTickData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqTickByTickData">[docs]</a>    <span class="k">def</span> <span class="nf">reqTickByTickData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">tickType</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">numberOfTicks</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignoreSize</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ticker</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1283,16 +1252,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="n">f</span><span class="s1">&#39;cancelMktData: No reqId found for contract </span><span class="si">{contract}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.reqMktDepthExchanges"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMktDepthExchanges">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqMktDepthExchanges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DepthMktDataDescription</span><span class="p">]:</span>
+<div class="viewcode-block" id="IB.reqMktDepthExchanges"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMktDepthExchanges">[docs]</a>    <span class="k">def</span> <span class="nf">reqMktDepthExchanges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DepthMktDataDescription</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get those exchanges that have have multiple market makers</span>
 <span class="sd">        (and have ticks returned with marketMaker info).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqMktDepthExchangesAsync</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="IB.reqMktDepth"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMktDepth">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqMktDepth</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqMktDepth"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMktDepth">[docs]</a>    <span class="k">def</span> <span class="nf">reqMktDepth</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">numRows</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
             <span class="n">isSmartDepth</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mktDepthOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ticker</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1321,8 +1288,7 @@
                 <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">numRows</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="p">,</span> <span class="n">mktDepthOptions</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ticker</span></div>
 
-<div class="viewcode-block" id="IB.cancelMktDepth"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelMktDepth">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">cancelMktDepth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.cancelMktDepth"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelMktDepth">[docs]</a>    <span class="k">def</span> <span class="nf">cancelMktDepth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Unsubscribe from market depth data.</span>
 
@@ -1341,8 +1307,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="n">f</span><span class="s1">&#39;cancelMktDepth: No reqId found for contract </span><span class="si">{contract}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.reqHistogramData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHistogramData">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqHistogramData</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqHistogramData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHistogramData">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistogramData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span>
             <span class="n">useRTH</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">period</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">HistogramData</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1362,8 +1327,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reqHistogramDataAsync</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="n">useRTH</span><span class="p">,</span> <span class="n">period</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqFundamentalData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqFundamentalData">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqFundamentalData</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqFundamentalData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqFundamentalData">[docs]</a>    <span class="k">def</span> <span class="nf">reqFundamentalData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">reportType</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">fundamentalDataOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1389,8 +1353,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">reqFundamentalDataAsync</span><span class="p">(</span>
                 <span class="n">contract</span><span class="p">,</span> <span class="n">reportType</span><span class="p">,</span> <span class="n">fundamentalDataOptions</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqScannerData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqScannerData">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqScannerData</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqScannerData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqScannerData">[docs]</a>    <span class="k">def</span> <span class="nf">reqScannerData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">subscription</span><span class="p">:</span> <span class="n">ScannerSubscription</span><span class="p">,</span>
             <span class="n">scannerSubscriptionOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">scannerSubscriptionFilterOptions</span><span class="p">:</span>
@@ -1400,8 +1363,9 @@
 
 <span class="sd">        This method is blocking.</span>
 
-<span class="sd">        For a non-blocking subscription, use ``ib.client.reqScannerData()``</span>
-<span class="sd">        directly and subscribe to ``scannerDataEvent``.</span>
+<span class="sd">        For a non-blocking subscription, use</span>
+<span class="sd">        ``ib.client.reqScannerSubscription()`` directly and subscribe to</span>
+<span class="sd">        ``scannerDataEvent``.</span>
 
 <span class="sd">        https://interactivebrokers.github.io/tws-api/market_scanners.html</span>
 
@@ -1414,8 +1378,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">reqScannerSubscriptionAsync</span><span class="p">(</span>
                 <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqScannerParameters"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqScannerParameters">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqScannerParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="IB.reqScannerParameters"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqScannerParameters">[docs]</a>    <span class="k">def</span> <span class="nf">reqScannerParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Requests an XML list of scanner parameters.</span>
 
@@ -1423,8 +1386,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqScannerParametersAsync</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="IB.calculateImpliedVolatility"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.calculateImpliedVolatility">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">calculateImpliedVolatility</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.calculateImpliedVolatility"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.calculateImpliedVolatility">[docs]</a>    <span class="k">def</span> <span class="nf">calculateImpliedVolatility</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span>
             <span class="n">optionPrice</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">underPrice</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
             <span class="n">implVolOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OptionComputation</span><span class="p">:</span>
@@ -1445,8 +1407,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">calculateImpliedVolatilityAsync</span><span class="p">(</span>
                 <span class="n">contract</span><span class="p">,</span> <span class="n">optionPrice</span><span class="p">,</span> <span class="n">underPrice</span><span class="p">,</span> <span class="n">implVolOptions</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.calculateOptionPrice"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.calculateOptionPrice">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">calculateOptionPrice</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.calculateOptionPrice"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.calculateOptionPrice">[docs]</a>    <span class="k">def</span> <span class="nf">calculateOptionPrice</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span>
             <span class="n">volatility</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">underPrice</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
             <span class="n">optPrcOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OptionComputation</span><span class="p">:</span>
@@ -1467,8 +1428,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">calculateOptionPriceAsync</span><span class="p">(</span>
                 <span class="n">contract</span><span class="p">,</span> <span class="n">volatility</span><span class="p">,</span> <span class="n">underPrice</span><span class="p">,</span> <span class="n">optPrcOptions</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqSecDefOptParams"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqSecDefOptParams">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqSecDefOptParams</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqSecDefOptParams"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqSecDefOptParams">[docs]</a>    <span class="k">def</span> <span class="nf">reqSecDefOptParams</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">underlyingSymbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">futFopExchange</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">underlyingSecType</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">underlyingConId</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">OptionChain</span><span class="p">]:</span>
@@ -1492,8 +1452,7 @@
                 <span class="n">underlyingSymbol</span><span class="p">,</span> <span class="n">futFopExchange</span><span class="p">,</span>
                 <span class="n">underlyingSecType</span><span class="p">,</span> <span class="n">underlyingConId</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.exerciseOptions"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.exerciseOptions">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">exerciseOptions</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.exerciseOptions"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.exerciseOptions">[docs]</a>    <span class="k">def</span> <span class="nf">exerciseOptions</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">exerciseAction</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">exerciseQuantity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">override</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1517,8 +1476,7 @@
             <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">exerciseAction</span><span class="p">,</span> <span class="n">exerciseQuantity</span><span class="p">,</span>
             <span class="n">account</span><span class="p">,</span> <span class="n">override</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.reqNewsProviders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqNewsProviders">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqNewsProviders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NewsProvider</span><span class="p">]:</span>
+<div class="viewcode-block" id="IB.reqNewsProviders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqNewsProviders">[docs]</a>    <span class="k">def</span> <span class="nf">reqNewsProviders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NewsProvider</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a list of news providers.</span>
 
@@ -1526,8 +1484,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqNewsProvidersAsync</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="IB.reqNewsArticle"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqNewsArticle">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqNewsArticle</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqNewsArticle"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqNewsArticle">[docs]</a>    <span class="k">def</span> <span class="nf">reqNewsArticle</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">providerCode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">articleId</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">newsArticleOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NewsArticle</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1546,8 +1503,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">reqNewsArticleAsync</span><span class="p">(</span>
                 <span class="n">providerCode</span><span class="p">,</span> <span class="n">articleId</span><span class="p">,</span> <span class="n">newsArticleOptions</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqHistoricalNews"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHistoricalNews">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqHistoricalNews</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqHistoricalNews"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHistoricalNews">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistoricalNews</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">conId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">providerCodes</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">startDateTime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">],</span>
             <span class="n">endDateTime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">],</span>
@@ -1580,8 +1536,7 @@
                 <span class="n">conId</span><span class="p">,</span> <span class="n">providerCodes</span><span class="p">,</span> <span class="n">startDateTime</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">,</span>
                 <span class="n">totalResults</span><span class="p">,</span> <span class="n">historicalNewsOptions</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.reqNewsBulletins"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqNewsBulletins">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">reqNewsBulletins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allMessages</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.reqNewsBulletins"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqNewsBulletins">[docs]</a>    <span class="k">def</span> <span class="nf">reqNewsBulletins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allMessages</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Subscribe to IB news bulletins.</span>
 
@@ -1592,15 +1547,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqNewsBulletins</span><span class="p">(</span><span class="n">allMessages</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.cancelNewsBulletins"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelNewsBulletins">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">cancelNewsBulletins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.cancelNewsBulletins"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelNewsBulletins">[docs]</a>    <span class="k">def</span> <span class="nf">cancelNewsBulletins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel subscription to IB news bulletins.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelNewsBulletins</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="IB.requestFA"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.requestFA">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">requestFA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">faDataType</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.requestFA"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.requestFA">[docs]</a>    <span class="k">def</span> <span class="nf">requestFA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">faDataType</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Requests to change the FA configuration.</span>
 
@@ -1620,8 +1573,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requestFAAsync</span><span class="p">(</span><span class="n">faDataType</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.replaceFA"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.replaceFA">[docs]</a>    <span class="nd">@api</span>
-    <span class="k">def</span> <span class="nf">replaceFA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">faDataType</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">xml</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.replaceFA"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.replaceFA">[docs]</a>    <span class="k">def</span> <span class="nf">replaceFA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">faDataType</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">xml</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Replaces Financial Advisor&#39;s settings.</span>
 
@@ -1925,140 +1877,10 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="c1"># import uvloop</span>
-    <span class="c1"># asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())</span>
-    <span class="kn">from</span> <span class="nn">ib_insync.contract</span> <span class="k">import</span> <span class="n">Stock</span><span class="p">,</span> <span class="n">Forex</span><span class="p">,</span> <span class="n">Index</span><span class="p">,</span> <span class="n">Option</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">set_debug</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">util</span><span class="o">.</span><span class="n">logToConsole</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
     <span class="n">ib</span> <span class="o">=</span> <span class="n">IB</span><span class="p">()</span>
-    <span class="n">ib</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">7497</span><span class="p">,</span> <span class="n">clientId</span><span class="o">=</span><span class="mi">21</span><span class="p">)</span>
-
-    <span class="n">aex</span> <span class="o">=</span> <span class="n">Index</span><span class="p">(</span><span class="s1">&#39;EOE&#39;</span><span class="p">,</span> <span class="s1">&#39;FTA&#39;</span><span class="p">)</span>
-    <span class="n">eurusd</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;EURUSD&#39;</span><span class="p">)</span>
-    <span class="n">intc</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;INTC&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="n">primaryExchange</span><span class="o">=</span><span class="s1">&#39;NASDAQ&#39;</span><span class="p">)</span>
-    <span class="n">amd</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;AMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
-    <span class="n">aapl</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;AAPL&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
-    <span class="n">tsla</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;TSLA&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
-    <span class="n">spy</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;SPY&#39;</span><span class="p">,</span> <span class="s1">&#39;ARCA&#39;</span><span class="p">)</span>
-    <span class="n">wrongContract</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;lalala&#39;</span><span class="p">)</span>
-    <span class="n">option</span> <span class="o">=</span> <span class="n">Option</span><span class="p">(</span><span class="s1">&#39;EOE&#39;</span><span class="p">,</span> <span class="s1">&#39;20171215&#39;</span><span class="p">,</span> <span class="mi">490</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;FTA&#39;</span><span class="p">,</span> <span class="n">multiplier</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">cds</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqContractDetails</span><span class="p">(</span><span class="n">aex</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">cds</span><span class="p">)</span>
-        <span class="n">cd</span> <span class="o">=</span> <span class="n">cds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">cd</span><span class="p">)</span>
-        <span class="n">conId</span> <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">conId</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">qualifyContracts</span><span class="p">(</span><span class="n">aex</span><span class="p">,</span> <span class="n">eurusd</span><span class="p">,</span> <span class="n">intc</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">aex</span><span class="p">,</span> <span class="n">eurusd</span><span class="p">,</span> <span class="n">intc</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqContractDetails</span><span class="p">(</span><span class="n">wrongContract</span><span class="p">))</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">sub</span> <span class="o">=</span> <span class="n">ScannerSubscription</span><span class="p">(</span>
-            <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;FUT.US&#39;</span><span class="p">,</span> <span class="n">locationCode</span><span class="o">=</span><span class="s1">&#39;FUT.GLOBEX&#39;</span><span class="p">,</span>
-            <span class="n">scanCode</span><span class="o">=</span><span class="s1">&#39;TOP_PERC_GAIN&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqScannerData</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="p">[]))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqScannerParameters</span><span class="p">()))</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span>
-            <span class="n">ib</span><span class="o">.</span><span class="n">calculateImpliedVolatility</span><span class="p">(</span>
-                <span class="n">option</span><span class="p">,</span> <span class="n">optionPrice</span><span class="o">=</span><span class="mf">6.1</span><span class="p">,</span> <span class="n">underPrice</span><span class="o">=</span><span class="mi">525</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span>
-            <span class="n">ib</span><span class="o">.</span><span class="n">calculateOptionPrice</span><span class="p">(</span>
-                <span class="n">option</span><span class="p">,</span> <span class="n">volatility</span><span class="o">=</span><span class="mf">0.14</span><span class="p">,</span> <span class="n">underPrice</span><span class="o">=</span><span class="mi">525</span><span class="p">))</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">qualifyContracts</span><span class="p">(</span><span class="n">amd</span><span class="p">)</span>
-        <span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqTickers</span><span class="p">(</span><span class="n">amd</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">qualifyContracts</span><span class="p">(</span><span class="n">aex</span><span class="p">)</span>
-        <span class="n">chains</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqSecDefOptParams</span><span class="p">(</span><span class="n">aex</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">aex</span><span class="o">.</span><span class="n">secType</span><span class="p">,</span> <span class="n">aex</span><span class="o">.</span><span class="n">conId</span><span class="p">)</span>
-        <span class="n">chain</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">chains</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">tradingClass</span> <span class="o">==</span> <span class="s1">&#39;AEX&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqContractDetails</span><span class="p">(</span><span class="n">aapl</span><span class="p">))</span>
-        <span class="n">bars</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalData</span><span class="p">(</span>
-            <span class="n">aapl</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;1 D&#39;</span><span class="p">,</span> <span class="s1">&#39;1 hour&#39;</span><span class="p">,</span> <span class="s1">&#39;MIDPOINT&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bars</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">bars</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">bars</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalData</span><span class="p">(</span>
-            <span class="n">aapl</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;1 D&#39;</span><span class="p">,</span> <span class="s1">&#39;1 hour&#39;</span><span class="p">,</span> <span class="s1">&#39;MIDPOINT&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">prevBar</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">while</span> <span class="n">ib</span><span class="o">.</span><span class="n">waitOnUpdate</span><span class="p">():</span>
-            <span class="n">currBar</span> <span class="o">=</span> <span class="n">bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">bars</span> <span class="k">else</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="n">prevBar</span> <span class="o">!=</span> <span class="n">currBar</span><span class="p">:</span>
-                <span class="n">prevBar</span> <span class="o">=</span> <span class="n">currBar</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">currBar</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktData</span><span class="p">(</span><span class="n">aapl</span><span class="p">,</span> <span class="s1">&#39;165,233&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-            <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">reqMarketDataType</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqTickers</span><span class="p">(</span><span class="n">amd</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqTickers</span><span class="p">(</span><span class="n">eurusd</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqTickers</span><span class="p">(</span><span class="n">amd</span><span class="p">,</span> <span class="n">eurusd</span><span class="p">,</span> <span class="n">aex</span><span class="p">))</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqMarketRule</span><span class="p">(</span><span class="mi">145</span><span class="p">))</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMatchingSymbols</span><span class="p">(</span><span class="s1">&#39;Intel&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">requestFA</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqHeadTimeStamp</span><span class="p">(</span><span class="n">intc</span><span class="p">,</span> <span class="s1">&#39;TRADES&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">reqFundamentalData</span><span class="p">(</span><span class="n">intc</span><span class="p">,</span> <span class="s1">&#39;ReportsFinSummary&#39;</span><span class="p">))</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">newsProviders</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqNewsProviders</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">newsProviders</span><span class="p">)</span>
-        <span class="n">codes</span> <span class="o">=</span> <span class="s1">&#39;+&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">code</span> <span class="k">for</span> <span class="n">np</span> <span class="ow">in</span> <span class="n">newsProviders</span><span class="p">)</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">qualifyContracts</span><span class="p">(</span><span class="n">intc</span><span class="p">)</span>
-        <span class="n">headlines</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalNews</span><span class="p">(</span><span class="n">intc</span><span class="o">.</span><span class="n">conId</span><span class="p">,</span> <span class="n">codes</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="n">latest</span> <span class="o">=</span> <span class="n">headlines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">latest</span><span class="p">)</span>
-        <span class="n">article</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqNewsArticle</span><span class="p">(</span><span class="n">latest</span><span class="o">.</span><span class="n">providerCode</span><span class="p">,</span> <span class="n">latest</span><span class="o">.</span><span class="n">articleId</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">article</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">reqNewsBulletins</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">newsBulletins</span><span class="p">())</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktDepth</span><span class="p">(</span><span class="n">eurusd</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-        <span class="k">while</span> <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">price</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ticker</span><span class="o">.</span><span class="n">domBids</span><span class="p">],</span>
-                  <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">price</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ticker</span><span class="o">.</span><span class="n">domAsks</span><span class="p">])</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">MarketOrder</span><span class="p">(</span><span class="s1">&#39;BUY&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">whatIfOrder</span><span class="p">(</span><span class="n">amd</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="n">ticks</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalTicks</span><span class="p">(</span>
-            <span class="n">eurusd</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;MIDPOINT&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ib</span><span class="o">.</span><span class="n">timeRange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">histo</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqHistogramData</span><span class="p">(</span><span class="n">amd</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;1 week&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">histo</span><span class="p">)</span>
-    <span class="k">if</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">qualifyContracts</span><span class="p">(</span><span class="n">eurusd</span><span class="p">)</span>
-        <span class="n">account</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">managedAccounts</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">reqPnL</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">reqPnLSingle</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">eurusd</span><span class="o">.</span><span class="n">conId</span><span class="p">)</span>
-        <span class="n">IB</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">pnl</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">pnlSingle</span><span class="p">())</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">cancelPnL</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="n">ib</span><span class="o">.</span><span class="n">cancelPnLSingle</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">eurusd</span><span class="o">.</span><span class="n">conId</span><span class="p">)</span>
-        <span class="n">IB</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
+    <span class="n">ib</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">7497</span><span class="p">,</span> <span class="n">clientId</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ib</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 </pre></div>
 

@@ -34,6 +34,7 @@ class Contract(Object):
             * 'IND' = Index
             * 'FOP' = Futures option
             * 'CASH' = Forex pair
+            * 'CFD' = CFD
             * 'BAG' = Combo
             * 'WAR' = Warrant
             * 'BOND'= Bond

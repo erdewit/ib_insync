@@ -10,8 +10,7 @@ from ib_insync.client import Client
 from ib_insync.wrapper import Wrapper
 from ib_insync.contract import Contract
 from ib_insync.ticker import Ticker
-from ib_insync.order import (
-    Order, OrderStatus, Trade, LimitOrder, StopOrder, MarketOrder)
+from ib_insync.order import Order, OrderStatus, Trade, LimitOrder, StopOrder
 from ib_insync.objects import (
     AccountValue, PortfolioItem, Position, Fill, Execution, BracketOrder,
     TradeLogEntry, OrderState, ExecutionFilter, TagValue, PnL, PnLSingle,
@@ -23,10 +22,6 @@ import ib_insync.util as util
 from ib_insync.event import Event
 
 __all__ = ['IB']
-
-
-def api(f):
-    return f  # visual marker for API request methods
 
 
 class IB:
@@ -302,7 +297,7 @@ class IB:
     def setTimeout(self, timeout: float=60):
         """
         Set a timeout for receiving messages from TWS/IBG, emitting
-        the ``timeout`` callback if there is no incoming data for too long.
+        ``timeoutEvent`` if there is no incoming data for too long.
 
         The timeout fires once per connected session but can be set again
         after firing or after a reconnect.
@@ -591,7 +586,6 @@ class IB:
         """
         return self._run(self.whatIfOrderAsync(contract, order))
 
-    @api
     def placeOrder(self, contract: Contract, order: Order) -> Trade:
         """
         Place a new order or modify an existing order.
@@ -629,7 +623,6 @@ class IB:
             self.newOrderEvent.emit(trade)
         return trade
 
-    @api
     def cancelOrder(self, order: Order) -> Trade:
         """
         Cancel the order and return the Trade it belongs to.
@@ -664,7 +657,6 @@ class IB:
             self._logger.error(f'cancelOrder: Unknown orderId {order.orderId}')
         return trade
 
-    @api
     def reqGlobalCancel(self):
         """
         Cancel all active trades including those placed by other
@@ -673,7 +665,6 @@ class IB:
         self.client.reqGlobalCancel()
         self._logger.info(f'reqGlobalCancel')
 
-    @api
     def reqCurrentTime(self) -> datetime.datetime:
         """
         Request TWS current time.
@@ -682,7 +673,6 @@ class IB:
         """
         return self._run(self.reqCurrentTimeAsync())
 
-    @api
     def reqAccountUpdates(self, account: str=''):
         """
         This is called at startup - no need to call again.
@@ -698,7 +688,6 @@ class IB:
         """
         self._run(self.reqAccountUpdatesAsync(account))
 
-    @api
     def reqAccountUpdatesMulti(
             self, account: str='', modelCode: str=''):
         """
@@ -714,7 +703,6 @@ class IB:
         """
         self._run(self.reqAccountUpdatesMultiAsync(account, modelCode))
 
-    @api
     def reqAccountSummary(self):
         """
         It is recommended to use :py:meth:`.accountSummary` instead.
@@ -726,7 +714,6 @@ class IB:
         """
         self._run(self.reqAccountSummaryAsync())
 
-    @api
     def reqAutoOpenOrders(self, autoBind: bool=True):
         """
         Bind manual TWS orders so that they can be managed from this client.
@@ -743,7 +730,6 @@ class IB:
         """
         self.client.reqAutoOpenOrders(autoBind)
 
-    @api
     def reqOpenOrders(self) -> List[Order]:
         """
         Request and return a list a list of open orders.
@@ -757,7 +743,6 @@ class IB:
         """
         return self._run(self.reqOpenOrdersAsync())
 
-    @api
     def reqExecutions(
             self, execFilter: ExecutionFilter=None) -> List[Fill]:
         """
@@ -773,7 +758,6 @@ class IB:
         """
         return self._run(self.reqExecutionsAsync(execFilter))
 
-    @api
     def reqPositions(self) -> List[Position]:
         """
         It is recommended to use :py:meth:`.positions` instead.
@@ -784,7 +768,6 @@ class IB:
         """
         return self._run(self.reqPositionsAsync())
 
-    @api
     def reqPnL(self, account: str, modelCode: str='') -> PnL:
         """
         Start a subscription for profit and loss events.
@@ -807,7 +790,6 @@ class IB:
         self.client.reqPnL(reqId, account, modelCode)
         return pnl
 
-    @api
     def cancelPnL(self, account, modelCode: str=''):
         """
         Cancel PnL subscription.
@@ -826,7 +808,6 @@ class IB:
                 'cancelPnL: No subscription for '
                 f'account {account}, modelCode {modelCode}')
 
-    @api
     def reqPnLSingle(
             self, account: str, modelCode: str, conId: int) -> PnLSingle:
         """
@@ -851,7 +832,6 @@ class IB:
         self.client.reqPnLSingle(reqId, account, modelCode, conId)
         return pnlSingle
 
-    @api
     def cancelPnLSingle(
             self, account: str, modelCode: str, conId: int):
         """
@@ -873,7 +853,6 @@ class IB:
                 'cancelPnLSingle: No subscription for '
                 f'account {account}, modelCode {modelCode}, conId {conId}')
 
-    @api
     def reqContractDetails(self, contract: Contract) -> List[ContractDetails]:
         """
         Get a list of contract details that match the given contract.
@@ -892,7 +871,6 @@ class IB:
         """
         return self._run(self.reqContractDetailsAsync(contract))
 
-    @api
     def reqMatchingSymbols(self, pattern: str) -> List[ContractDescription]:
         """
         Request contract descriptions of contracts that match a pattern.
@@ -923,7 +901,6 @@ class IB:
         """
         return self._run(self.reqMarketRuleAsync(marketRuleId))
 
-    @api
     def reqRealTimeBars(
             self, contract: Contract, barSize: int,
             whatToShow: str, useRTH: bool,
@@ -955,7 +932,6 @@ class IB:
             reqId, contract, barSize, whatToShow, useRTH, realTimeBarsOptions)
         return bars
 
-    @api
     def cancelRealTimeBars(self, bars: RealTimeBarList):
         """
         Cancel the realtime bars subscription.
@@ -966,7 +942,6 @@ class IB:
         self.client.cancelRealTimeBars(bars.reqId)
         self.wrapper.endBars(bars)
 
-    @api
     def reqHistoricalData(
             self, contract: Contract, endDateTime: object,
             durationStr: str, barSizeSetting: str,
@@ -1016,7 +991,6 @@ class IB:
                 contract, endDateTime, durationStr, barSizeSetting, whatToShow,
                 useRTH, formatDate, keepUpToDate, chartOptions))
 
-    @api
     def cancelHistoricalData(self, bars: BarDataList):
         """
         Cancel the update subscription for the historical bars.
@@ -1029,7 +1003,6 @@ class IB:
         self.client.cancelHistoricalData(bars.reqId)
         self.wrapper.endBars(bars)
 
-    @api
     def reqHistoricalTicks(
             self, contract: Contract,
             startDateTime: Union[str, datetime.date],
@@ -1066,7 +1039,6 @@ class IB:
                 contract, startDateTime, endDateTime, numberOfTicks,
                 whatToShow, useRth, ignoreSize, miscOptions))
 
-    @api
     def reqMarketDataType(self, marketDataType: int):
         """
         Set the market data type used throughout.
@@ -1083,7 +1055,6 @@ class IB:
         """
         self.client.reqMarketDataType(marketDataType)
 
-    @api
     def reqHeadTimeStamp(
             self, contract: Contract, whatToShow: str,
             useRTH: bool, formatDate: int=1) -> datetime.datetime:
@@ -1102,7 +1073,6 @@ class IB:
             self.reqHeadTimeStampAsync(
                 contract, whatToShow, useRTH, formatDate))
 
-    @api
     def reqMktData(
             self, contract: Contract, genericTickList: str='',
             snapshot: bool=False, regulatorySnapshot: bool=False,
@@ -1165,7 +1135,6 @@ class IB:
             self._logger.error(
                 'cancelMktData: ' f'No reqId found for contract {contract}')
 
-    @api
     def reqTickByTickData(
             self, contract: Contract, tickType: str,
             numberOfTicks: int=0, ignoreSize: bool=False) -> Ticker:
@@ -1206,7 +1175,6 @@ class IB:
             self._logger.error(
                 f'cancelMktData: No reqId found for contract {contract}')
 
-    @api
     def reqMktDepthExchanges(self) -> List[DepthMktDataDescription]:
         """
         Get those exchanges that have have multiple market makers
@@ -1214,7 +1182,6 @@ class IB:
         """
         return self._run(self.reqMktDepthExchangesAsync())
 
-    @api
     def reqMktDepth(
             self, contract: Contract, numRows: int=5,
             isSmartDepth: bool=False, mktDepthOptions=None) -> Ticker:
@@ -1244,7 +1211,6 @@ class IB:
                 reqId, contract, numRows, isSmartDepth, mktDepthOptions)
         return ticker
 
-    @api
     def cancelMktDepth(self, contract: Contract, isSmartDepth=False):
         """
         Unsubscribe from market depth data.
@@ -1264,7 +1230,6 @@ class IB:
             self._logger.error(
                 f'cancelMktDepth: No reqId found for contract {contract}')
 
-    @api
     def reqHistogramData(
             self, contract: Contract,
             useRTH: bool, period: str) -> List[HistogramData]:
@@ -1285,7 +1250,6 @@ class IB:
         return self._run(
             self.reqHistogramDataAsync(contract, useRTH, period))
 
-    @api
     def reqFundamentalData(
             self, contract: Contract, reportType: str,
             fundamentalDataOptions: List[TagValue]=None) -> str:
@@ -1312,7 +1276,6 @@ class IB:
             self.reqFundamentalDataAsync(
                 contract, reportType, fundamentalDataOptions))
 
-    @api
     def reqScannerData(
             self, subscription: ScannerSubscription,
             scannerSubscriptionOptions: List[TagValue]=None,
@@ -1338,7 +1301,6 @@ class IB:
             self.reqScannerSubscriptionAsync(
                 subscription, scannerSubscriptionOptions))
 
-    @api
     def reqScannerParameters(self) -> str:
         """
         Requests an XML list of scanner parameters.
@@ -1347,7 +1309,6 @@ class IB:
         """
         return self._run(self.reqScannerParametersAsync())
 
-    @api
     def calculateImpliedVolatility(
             self, contract: Contract,
             optionPrice: float, underPrice: float,
@@ -1369,7 +1330,6 @@ class IB:
             self.calculateImpliedVolatilityAsync(
                 contract, optionPrice, underPrice, implVolOptions))
 
-    @api
     def calculateOptionPrice(
             self, contract: Contract,
             volatility: float, underPrice: float,
@@ -1391,7 +1351,6 @@ class IB:
             self.calculateOptionPriceAsync(
                 contract, volatility, underPrice, optPrcOptions))
 
-    @api
     def reqSecDefOptParams(
             self, underlyingSymbol: str,
             futFopExchange: str, underlyingSecType: str,
@@ -1416,7 +1375,6 @@ class IB:
                 underlyingSymbol, futFopExchange,
                 underlyingSecType, underlyingConId))
 
-    @api
     def exerciseOptions(
             self, contract: Contract, exerciseAction: int,
             exerciseQuantity: int, account: str, override: int):
@@ -1441,7 +1399,6 @@ class IB:
             reqId, contract, exerciseAction, exerciseQuantity,
             account, override)
 
-    @api
     def reqNewsProviders(self) -> List[NewsProvider]:
         """
         Get a list of news providers.
@@ -1450,7 +1407,6 @@ class IB:
         """
         return self._run(self.reqNewsProvidersAsync())
 
-    @api
     def reqNewsArticle(
             self, providerCode: str, articleId: str,
             newsArticleOptions: List[TagValue]=None) -> NewsArticle:
@@ -1470,7 +1426,6 @@ class IB:
             self.reqNewsArticleAsync(
                 providerCode, articleId, newsArticleOptions))
 
-    @api
     def reqHistoricalNews(
             self, conId: int, providerCodes: str,
             startDateTime: Union[str, datetime.date],
@@ -1504,7 +1459,6 @@ class IB:
                 conId, providerCodes, startDateTime, endDateTime,
                 totalResults, historicalNewsOptions))
 
-    @api
     def reqNewsBulletins(self, allMessages: bool):
         """
         Subscribe to IB news bulletins.
@@ -1516,14 +1470,12 @@ class IB:
         """
         self.client.reqNewsBulletins(allMessages)
 
-    @api
     def cancelNewsBulletins(self):
         """
         Cancel subscription to IB news bulletins.
         """
         self.client.cancelNewsBulletins()
 
-    @api
     def requestFA(self, faDataType: int):
         """
         Requests to change the FA configuration.
@@ -1544,7 +1496,6 @@ class IB:
         """
         self._run(self.requestFAAsync(faDataType))
 
-    @api
     def replaceFA(self, faDataType: int, xml: str):
         """
         Replaces Financial Advisor's settings.
@@ -1849,138 +1800,8 @@ class IB:
 
 
 if __name__ == '__main__':
-    # import uvloop
-    # asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    from ib_insync.contract import Stock, Forex, Index, Option
     asyncio.get_event_loop().set_debug(True)
     util.logToConsole(logging.DEBUG)
     ib = IB()
-    ib.connect('127.0.0.1', 7497, clientId=21)
-
-    aex = Index('EOE', 'FTA')
-    eurusd = Forex('EURUSD')
-    intc = Stock('INTC', 'SMART', 'USD', primaryExchange='NASDAQ')
-    amd = Stock('AMD', 'SMART', 'USD')
-    aapl = Stock('AAPL', 'SMART', 'USD')
-    tsla = Stock('TSLA', 'SMART', 'USD')
-    spy = Stock('SPY', 'ARCA')
-    wrongContract = Forex('lalala')
-    option = Option('EOE', '20171215', 490, 'P', 'FTA', multiplier=100)
-
-    if 0:
-        cds = ib.reqContractDetails(aex)
-        print(cds)
-        cd = cds[0]
-        print(cd)
-        conId = cd.contract.conId
-        ib.qualifyContracts(aex, eurusd, intc)
-        print(aex, eurusd, intc)
-        print(ib.reqContractDetails(wrongContract))
-    if 0:
-        sub = ScannerSubscription(
-            instrument='FUT.US', locationCode='FUT.GLOBEX',
-            scanCode='TOP_PERC_GAIN')
-        print(ib.reqScannerData(sub, []))
-        print(len(ib.reqScannerParameters()))
-    if 0:
-        print(
-            ib.calculateImpliedVolatility(
-                option, optionPrice=6.1, underPrice=525))
-        print(
-            ib.calculateOptionPrice(
-                option, volatility=0.14, underPrice=525))
-    if 0:
-        ib.qualifyContracts(amd)
-        ticker = ib.reqTickers(amd)
-        print(ticker)
-    if 0:
-        ib.qualifyContracts(aex)
-        chains = ib.reqSecDefOptParams(aex.symbol, '', aex.secType, aex.conId)
-        chain = next(c for c in chains if c.tradingClass == 'AEX')
-        print(chain)
-    if 0:
-        print(ib.reqContractDetails(aapl))
-        bars = ib.reqHistoricalData(
-            aapl, '', '1 D', '1 hour', 'MIDPOINT', False, 1, False, None)
-        print(len(bars))
-        print(bars[0])
-    if 0:
-        bars = ib.reqHistoricalData(
-            aapl, '', '1 D', '1 hour', 'MIDPOINT', False, 1, True, None)
-        prevBar = None
-        while ib.waitOnUpdate():
-            currBar = bars[-1] if bars else None
-            if prevBar != currBar:
-                prevBar = currBar
-                print(currBar)
-    if 0:
-        ticker = ib.reqMktData(aapl, '165,233', False, False, None)
-        for i in range(100):
-            ib.sleep(5)
-            print(ticker)
-    if 0:
-        ib.reqMarketDataType(2)
-        print(ib.reqTickers(amd))
-        print(ib.reqTickers(eurusd))
-        print(ib.reqTickers(amd, eurusd, aex))
-    if 0:
-        print(ib.reqMarketRule(145))
-    if 0:
-        m = ib.reqMatchingSymbols('Intel')
-        print(m)
-    if 0:
-        print(ib.requestFA(1))
-    if 0:
-        print(ib.reqHeadTimeStamp(intc, 'TRADES', True, 1))
-    if 0:
-        print(ib.reqFundamentalData(intc, 'ReportsFinSummary'))
-    if 0:
-        newsProviders = ib.reqNewsProviders()
-        print(newsProviders)
-        codes = '+'.join(np.code for np in newsProviders)
-        ib.qualifyContracts(intc)
-        headlines = ib.reqHistoricalNews(intc.conId, codes, "", "", 10)
-        latest = headlines[0]
-        print(latest)
-        article = ib.reqNewsArticle(latest.providerCode, latest.articleId)
-        print(article)
-    if 0:
-        ib.reqNewsBulletins(True)
-        ib.sleep(5)
-        print(ib.newsBulletins())
-    if 0:
-        ticker = ib.reqMktDepth(eurusd, 5)
-        while ib.sleep(5):
-            print([d.price for d in ticker.domBids],
-                  [d.price for d in ticker.domAsks])
-    if 0:
-        order = MarketOrder('BUY', 100)
-        state = ib.whatIfOrder(amd, order)
-        print(state)
-    if 0:
-        start = datetime.datetime(2018, 7, 24, 16, 0, 0)
-        end = ''
-        ticks = ib.reqHistoricalTicks(
-            eurusd, start, end, 100, 'MIDPOINT', True, False, [])
-        print(ticks)
-    if 0:
-        start = datetime.time(10, 10, 10)
-        end = datetime.time(14, 13)
-        for t in ib.timeRange(start, end, 5):
-            print(t)
-    if 0:
-        histo = ib.reqHistogramData(amd, True, '1 week')
-        print(histo)
-    if 0:
-        ib.qualifyContracts(eurusd)
-        account = ib.managedAccounts()[0]
-        ib.reqPnL(account, '')
-        ib.reqPnLSingle(account, '', eurusd.conId)
-        IB.sleep(8)
-        print(ib.pnl())
-        print(ib.pnlSingle())
-        ib.cancelPnL(account, '')
-        ib.cancelPnLSingle(account, '', eurusd.conId)
-        IB.sleep(1)
-
+    ib.connect('127.0.0.1', 7497, clientId=1)
     ib.disconnect()

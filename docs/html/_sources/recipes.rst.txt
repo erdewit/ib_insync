@@ -40,10 +40,92 @@ and further back in time until there is no more data returned.
         dt = bars[0].date
         print(dt)
 
+    # save to CSV file
     allBars = [b for bars in reversed(barsList) for b in bars]
     df = util.df(allBars)
     df.to_csv(contract.symbol + '.csv')
 
+Scanner data
+^^^^^^^^^^^^
+
+.. code-block:: python
+
+    allParams = ib.reqScannerParameters())
+    print(allParams)
+
+    sub = ScannerSubscription(
+        instrument='FUT.US',
+        locationCode='FUT.GLOBEX',
+        scanCode='TOP_PERC_GAIN')
+    scanData = ib.reqScannerData(sub, [])
+    print(scanData)
+
+Option calculations
+^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    option = Option('EOE', '20171215', 490, 'P', 'FTA', multiplier=100)
+
+    calc = ib.calculateImpliedVolatility(
+        option, optionPrice=6.1, underPrice=525))
+    print(calc)
+
+    calc = ib.calculateOptionPrice(
+        option, volatility=0.14, underPrice=525))
+    print(calc)
+
+Order book
+^^^^^^^^^^
+
+.. code-block:: python
+
+    eurusd = Forex('EURUSD')
+    ticker = ib.reqMktDepth(eurusd)
+    while ib.sleep(5):
+        print(
+            [d.price for d in ticker.domBids],
+            [d.price for d in ticker.domAsks])
+
+Minimum price increments
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+        usdjpy = Forex('USDJPY')
+        cd = ib.reqContractDetails(usdjpy)[0]
+        print(cd.marketRuleIds)
+
+        rules = [
+            ib.reqMarketRule(ruleId)
+            for ruleId in cd.marketRuleIds.split(',')]
+        print(rules)
+
+News articles
+^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    newsProviders = ib.reqNewsProviders()
+    print(newsProviders)
+    codes = '+'.join(np.code for np in newsProviders)
+
+    amd = Stock('AMD', 'SMART', 'USD')
+    ib.qualifyContracts(amd)
+    headlines = ib.reqHistoricalNews(amd.conId, codes, '', '', 10)
+    latest = headlines[0]
+    print(latest)
+    article = ib.reqNewsArticle(latest.providerCode, latest.articleId)
+    print(article)
+
+News bulletins
+^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    ib.reqNewsBulletins(True)
+    ib.sleep(5)
+    print(ib.newsBulletins())
 
 Integration with PyQt5 or PySide2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -68,6 +150,3 @@ This example depends on PyQt5:
 It's also possible to use PySide2 instead; To do so uncomment the PySide2
 import and ``util.useQt`` lines in the example and comment out their PyQt5
 counterparts.
-
-
-More to be added...
