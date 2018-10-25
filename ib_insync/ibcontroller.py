@@ -22,6 +22,9 @@ class IBC(Object):
 
         twsVersion (int): (required) The major version number for
             TWS or gateway.
+        gateway (bool):
+            * True = gateway
+            * False = TWS
         tradingMode (str): 'live' or 'paper'.
         userid (str): IB account username. It is recommended to set the real
             username/password in a secured IBC config file.
@@ -70,7 +73,7 @@ class IBC(Object):
     .. code-block:: python
 
         ibc = IBC(969, gateway=True, tradingMode='live',
-                userid='edemo', password='demouser')
+            userid='edemo', password='demouser')
         ibc.start()
         IB.run()
     """

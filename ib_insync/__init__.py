@@ -20,13 +20,25 @@ if util.ibapiVersionInfo() < (9, 73, 6):
         'The newest version from http://interactivebrokers.github.io '
         'is required')
 
+
+from .version import __version__, __version_info__  # noqa
+from .objects import *  # noqa
+from .event import *  # noqa
+from .contract import *  # noqa
+from .order import *  # noqa
+from .ticker import *  # noqa
+from .ib import *  # noqa
+from .client import *  # noqa
+from .wrapper import *  # noqa
+from .flexreport import *  # noqa
+from .ibcontroller import *  # noqa
+from . import util  # noqa
+
 __all__ = ['util']
-for _name in (
-        'objects', 'event', 'contract', 'order', 'ticker', 'ib',
-        'client', 'wrapper', 'flexreport', 'ibcontroller'):
-    _mod = importlib.import_module(f'ib_insync.{_name}')
-    __all__ += _mod.__all__
-    locals().update((k, getattr(_mod, k)) for k in _mod.__all__)
+for _m in (
+        objects, event, contract, order, ticker, ib,  # noqa
+        client, wrapper, flexreport, ibcontroller):  # noqa
+    __all__ += _m.__all__
 
 del sys
 del importlib

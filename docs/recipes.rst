@@ -27,13 +27,13 @@ and further back in time until there is no more data returned.
     barsList = []
     while True:
         bars = ib.reqHistoricalData(
-                contract,
-                endDateTime=dt,
-                durationStr='10 D',
-                barSizeSetting='1 min',
-                whatToShow='MIDPOINT',
-                useRTH=True,
-                formatDate=1)
+            contract,
+            endDateTime=dt,
+            durationStr='10 D',
+            barSizeSetting='1 min',
+            whatToShow='MIDPOINT',
+            useRTH=True,
+            formatDate=1)
         if not bars:
             break
         barsList.append(bars)

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ibcontroller &#8212; IB-insync 0.9.31 documentation</title>
+    <title>ib_insync.ibcontroller &#8212; IB-insync 0.9.32 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -99,6 +99,9 @@
 
 <span class="sd">        twsVersion (int): (required) The major version number for</span>
 <span class="sd">            TWS or gateway.</span>
+<span class="sd">        gateway (bool):</span>
+<span class="sd">            * True = gateway</span>
+<span class="sd">            * False = TWS</span>
 <span class="sd">        tradingMode (str): &#39;live&#39; or &#39;paper&#39;.</span>
 <span class="sd">        userid (str): IB account username. It is recommended to set the real</span>
 <span class="sd">            username/password in a secured IBC config file.</span>
@@ -147,7 +150,7 @@
 <span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        ibc = IBC(969, gateway=True, tradingMode=&#39;live&#39;,</span>
-<span class="sd">                userid=&#39;edemo&#39;, password=&#39;demouser&#39;)</span>
+<span class="sd">            userid=&#39;edemo&#39;, password=&#39;demouser&#39;)</span>
 <span class="sd">        ibc.start()</span>
 <span class="sd">        IB.run()</span>
 <span class="sd">    &quot;&quot;&quot;</span>

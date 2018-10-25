@@ -4,6 +4,11 @@ Changelog
 0.9
 ---
 
+Version 0.9.32
+^^^^^^^^^^^^^^
+
+* Autocompletion with Jedi plugin as used in Spyder and VS Code working again.
+
 Version 0.9.31
 ^^^^^^^^^^^^^^
 
