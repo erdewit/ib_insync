@@ -45,8 +45,8 @@ and further back in time until there is no more data returned.
     df = util.df(allBars)
     df.to_csv(contract.symbol + '.csv')
 
-Scanner data
-^^^^^^^^^^^^
+Scanner data (blocking)
+^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -57,8 +57,26 @@ Scanner data
         instrument='FUT.US',
         locationCode='FUT.GLOBEX',
         scanCode='TOP_PERC_GAIN')
-    scanData = ib.reqScannerData(sub, [])
+    scanData = ib.reqScannerData(sub)
     print(scanData)
+
+Scanner data (streaming)
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    def onScanData(scanData):
+        print(scanData[0])
+        print(len(scanData))
+
+    sub = ScannerSubscription(
+        instrument='FUT.US',
+        locationCode='FUT.GLOBEX',
+        scanCode='TOP_PERC_GAIN')
+    scanData = ib.reqScannerSubscription(sub)
+    scanData.updateEvent += onScanData
+    ib.sleep(60)
+    ib.cancelScannerSubscription(scanData)
 
 Option calculations
 ^^^^^^^^^^^^^^^^^^^

@@ -89,12 +89,13 @@
 <span class="kn">from</span> <span class="nn">ib_insync.ticker</span> <span class="k">import</span> <span class="n">Ticker</span>
 <span class="kn">from</span> <span class="nn">ib_insync.order</span> <span class="k">import</span> <span class="n">Order</span><span class="p">,</span> <span class="n">OrderStatus</span><span class="p">,</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">LimitOrder</span><span class="p">,</span> <span class="n">StopOrder</span>
 <span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">BarList</span><span class="p">,</span> <span class="n">BarDataList</span><span class="p">,</span> <span class="n">RealTimeBarList</span><span class="p">,</span>
     <span class="n">AccountValue</span><span class="p">,</span> <span class="n">PortfolioItem</span><span class="p">,</span> <span class="n">Position</span><span class="p">,</span> <span class="n">Fill</span><span class="p">,</span> <span class="n">Execution</span><span class="p">,</span> <span class="n">BracketOrder</span><span class="p">,</span>
     <span class="n">TradeLogEntry</span><span class="p">,</span> <span class="n">OrderState</span><span class="p">,</span> <span class="n">ExecutionFilter</span><span class="p">,</span> <span class="n">TagValue</span><span class="p">,</span> <span class="n">PnL</span><span class="p">,</span> <span class="n">PnLSingle</span><span class="p">,</span>
     <span class="n">ContractDetails</span><span class="p">,</span> <span class="n">ContractDescription</span><span class="p">,</span> <span class="n">OptionChain</span><span class="p">,</span> <span class="n">OptionComputation</span><span class="p">,</span>
     <span class="n">NewsTick</span><span class="p">,</span> <span class="n">NewsBulletin</span><span class="p">,</span> <span class="n">NewsArticle</span><span class="p">,</span> <span class="n">NewsProvider</span><span class="p">,</span> <span class="n">HistoricalNews</span><span class="p">,</span>
-    <span class="n">BarList</span><span class="p">,</span> <span class="n">BarDataList</span><span class="p">,</span> <span class="n">RealTimeBarList</span><span class="p">,</span> <span class="n">DepthMktDataDescription</span><span class="p">,</span>
-    <span class="n">ScannerSubscription</span><span class="p">,</span> <span class="n">ScanData</span><span class="p">,</span> <span class="n">HistogramData</span><span class="p">,</span> <span class="n">PriceIncrement</span><span class="p">)</span>
+    <span class="n">ScannerSubscription</span><span class="p">,</span> <span class="n">ScanDataList</span><span class="p">,</span> <span class="n">HistogramData</span><span class="p">,</span> <span class="n">PriceIncrement</span><span class="p">,</span>
+    <span class="n">DepthMktDataDescription</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">ib_insync.util</span> <span class="k">as</span> <span class="nn">util</span>
 <span class="kn">from</span> <span class="nn">ib_insync.event</span> <span class="k">import</span> <span class="n">Event</span>
 
@@ -155,7 +156,7 @@
 <span class="sd">    that the current state may have been updated during the sleep(0) call.</span>
 
 <span class="sd">    For introducing a delay, never use time.sleep() but use</span>
-<span class="sd">    :py:meth:`.sleep` instead.</span>
+<span class="sd">    :meth:`.sleep` instead.</span>
 
 <span class="sd">    Events:</span>
 <span class="sd">        * ``connectedEvent`` ():</span>
@@ -219,7 +220,7 @@
 <span class="sd">        * ``tickNewsEvent`` (news: :class:`.NewsTick`):</span>
 <span class="sd">          Emit a new news headline.</span>
 
-<span class="sd">        * ``scannerDataEvent`` (data: :class:`.ScanData`):</span>
+<span class="sd">        * ``scannerDataEvent`` (data: :class:`.ScanDataList`):</span>
 <span class="sd">          Emit data from a scanner subscription.</span>
 
 <span class="sd">        * ``errorEvent`` (reqId: int, errorCode: int, errorString: str,</span>
@@ -521,7 +522,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get ticker of the given contract. It must have been requested before</span>
 <span class="sd">        with reqMktData with the same contract object. The ticker may not be</span>
-<span class="sd">        ready yet if called directly after :py:meth:`.reqMktData`.</span>
+<span class="sd">        ready yet if called directly after :meth:`.reqMktData`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            contract: Contract to get ticker for.</span>
@@ -545,12 +546,12 @@
 <span class="sd">        Get a list of all live updated bars. These can be 5 second realtime</span>
 <span class="sd">        bars or live updated historical bars.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">reqId2Bars</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">reqId2Subscriber</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IB.newsTicks"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.newsTicks">[docs]</a>    <span class="k">def</span> <span class="nf">newsTicks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NewsTick</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        List of ticks with headline news.</span>
-<span class="sd">        The article itself can be retrieved with :py:meth:`.reqNewsArticle`.</span>
+<span class="sd">        The article itself can be retrieved with :meth:`.reqNewsArticle`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">newsTicks</span></div>
 
@@ -768,7 +769,7 @@
 <div class="viewcode-block" id="IB.reqAccountUpdatesMulti"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAccountUpdatesMulti">[docs]</a>    <span class="k">def</span> <span class="nf">reqAccountUpdatesMulti</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        It is recommended to use :py:meth:`.accountValues` instead.</span>
+<span class="sd">        It is recommended to use :meth:`.accountValues` instead.</span>
 
 <span class="sd">        Request account values of multiple accounts and keep updated.</span>
 
@@ -782,7 +783,7 @@
 
 <div class="viewcode-block" id="IB.reqAccountSummary"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAccountSummary">[docs]</a>    <span class="k">def</span> <span class="nf">reqAccountSummary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        It is recommended to use :py:meth:`.accountSummary` instead.</span>
+<span class="sd">        It is recommended to use :meth:`.accountSummary` instead.</span>
 
 <span class="sd">        Request account values for all accounts and keep them updated.</span>
 <span class="sd">        Returns when account summary is filled.</span>
@@ -814,7 +815,7 @@
 <span class="sd">        This method can give stale information where a new open order is not</span>
 <span class="sd">        reported or an already filled or cancelled order is reported as open.</span>
 <span class="sd">        It is recommended to use the more reliable and much faster</span>
-<span class="sd">        :py:meth:`.openTrades` or :py:meth:`.openOrders` methods instead.</span>
+<span class="sd">        :meth:`.openTrades` or :meth:`.openOrders` methods instead.</span>
 
 <span class="sd">        This method is blocking.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -823,8 +824,8 @@
 <div class="viewcode-block" id="IB.reqExecutions"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqExecutions">[docs]</a>    <span class="k">def</span> <span class="nf">reqExecutions</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">execFilter</span><span class="p">:</span> <span class="n">ExecutionFilter</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Fill</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        It is recommended to use :py:meth:`.fills`  or</span>
-<span class="sd">        :py:meth:`.executions` instead.</span>
+<span class="sd">        It is recommended to use :meth:`.fills`  or</span>
+<span class="sd">        :meth:`.executions` instead.</span>
 
 <span class="sd">        Request and return a list a list of fills.</span>
 
@@ -837,7 +838,7 @@
 
 <div class="viewcode-block" id="IB.reqPositions"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqPositions">[docs]</a>    <span class="k">def</span> <span class="nf">reqPositions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Position</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        It is recommended to use :py:meth:`.positions` instead.</span>
+<span class="sd">        It is recommended to use :meth:`.positions` instead.</span>
 
 <span class="sd">        Request and return a list of positions for all accounts.</span>
 
@@ -850,7 +851,7 @@
 <span class="sd">        Start a subscription for profit and loss events.</span>
 
 <span class="sd">        Returns a :class:`.PnL` object that is kept live updated.</span>
-<span class="sd">        The result can also be queried from :py:meth:`.pnl`.</span>
+<span class="sd">        The result can also be queried from :meth:`.pnl`.</span>
 
 <span class="sd">        https://interactivebrokers.github.io/tws-api/pnl.html</span>
 
@@ -891,7 +892,7 @@
 <span class="sd">        Start a subscription for profit and loss events for single positions.</span>
 
 <span class="sd">        Returns a :class:`.PnLSingle` object that is kept live updated.</span>
-<span class="sd">        The result can also be queried from :py:meth:`.pnlSingle`.</span>
+<span class="sd">        The result can also be queried from :meth:`.pnlSingle`.</span>
 
 <span class="sd">        https://interactivebrokers.github.io/tws-api/pnl.html</span>
 
@@ -1004,7 +1005,7 @@
         <span class="n">bars</span><span class="o">.</span><span class="n">whatToShow</span> <span class="o">=</span> <span class="n">whatToShow</span>
         <span class="n">bars</span><span class="o">.</span><span class="n">useRTH</span> <span class="o">=</span> <span class="n">useRTH</span>
         <span class="n">bars</span><span class="o">.</span><span class="n">realTimeBarsOptions</span> <span class="o">=</span> <span class="n">realTimeBarsOptions</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startBars</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">bars</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startSubscription</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">bars</span><span class="p">,</span> <span class="n">contract</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqRealTimeBars</span><span class="p">(</span>
             <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">barSize</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span> <span class="n">useRTH</span><span class="p">,</span> <span class="n">realTimeBarsOptions</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">bars</span></div>
@@ -1017,7 +1018,7 @@
 <span class="sd">            bars: The bar list that was obtained from ``reqRealTimeBars``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelRealTimeBars</span><span class="p">(</span><span class="n">bars</span><span class="o">.</span><span class="n">reqId</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">endBars</span><span class="p">(</span><span class="n">bars</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">endSubscription</span><span class="p">(</span><span class="n">bars</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="IB.reqHistoricalData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHistoricalData">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistoricalData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
@@ -1078,7 +1079,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelHistoricalData</span><span class="p">(</span><span class="n">bars</span><span class="o">.</span><span class="n">reqId</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">endBars</span><span class="p">(</span><span class="n">bars</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">endSubscription</span><span class="p">(</span><span class="n">bars</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="IB.reqHistoricalTicks"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHistoricalTicks">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistoricalTicks</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span>
@@ -1357,15 +1358,12 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">subscription</span><span class="p">:</span> <span class="n">ScannerSubscription</span><span class="p">,</span>
             <span class="n">scannerSubscriptionOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">scannerSubscriptionFilterOptions</span><span class="p">:</span>
-            <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ScanData</span><span class="p">]:</span>
+            <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScanDataList</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Do a market scan.</span>
+<span class="sd">        Do a blocking market scan by starting a subscription and canceling it</span>
+<span class="sd">        after the initial list of results are in.</span>
 
 <span class="sd">        This method is blocking.</span>
-
-<span class="sd">        For a non-blocking subscription, use</span>
-<span class="sd">        ``ib.client.reqScannerSubscription()`` directly and subscribe to</span>
-<span class="sd">        ``scannerDataEvent``.</span>
 
 <span class="sd">        https://interactivebrokers.github.io/tws-api/market_scanners.html</span>
 
@@ -1375,8 +1373,52 @@
 <span class="sd">            scannerSubscriptionFilterOptions: Unknown.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reqScannerSubscriptionAsync</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reqScannerDataAsync</span><span class="p">(</span>
                 <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="IB.reqScannerSubscription"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqScannerSubscription">[docs]</a>    <span class="k">def</span> <span class="nf">reqScannerSubscription</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">subscription</span><span class="p">:</span> <span class="n">ScannerSubscription</span><span class="p">,</span>
+            <span class="n">scannerSubscriptionOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">scannerSubscriptionFilterOptions</span><span class="p">:</span>
+            <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScanDataList</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Subscribe to market scan data.</span>
+
+<span class="sd">        https://interactivebrokers.github.io/tws-api/market_scanners.html</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            subscription: What to scan for.</span>
+<span class="sd">            scannerSubscriptionOptions: Unknown.</span>
+<span class="sd">            scannerSubscriptionFilterOptions: Unknown.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">ScanDataList</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">reqId</span> <span class="o">=</span> <span class="n">reqId</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">subscription</span> <span class="o">=</span> <span class="n">subscription</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">scannerSubscriptionOptions</span> <span class="o">=</span> <span class="n">scannerSubscriptionOptions</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">scannerSubscriptionFilterOptions</span> <span class="o">=</span> \
+            <span class="n">scannerSubscriptionFilterOptions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startSubscription</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">ibapiVersionInfo</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqScannerSubscription</span><span class="p">(</span>
+                <span class="n">reqId</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqScannerSubscription</span><span class="p">(</span>
+                <span class="n">reqId</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">,</span>
+                <span class="n">scannerSubscriptionFilterOptions</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="IB.cancelScannerSubscription"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelScannerSubscription">[docs]</a>    <span class="k">def</span> <span class="nf">cancelScannerSubscription</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataList</span><span class="p">:</span> <span class="n">ScanDataList</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cancel market data subscription.</span>
+
+<span class="sd">        https://interactivebrokers.github.io/tws-api/market_scanners.html</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dataList: The scan data list that was obtained from</span>
+<span class="sd">                :meth:`.reqScannerSubscription`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelScannerSubscription</span><span class="p">(</span><span class="n">dataList</span><span class="o">.</span><span class="n">reqId</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="IB.reqScannerParameters"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqScannerParameters">[docs]</a>    <span class="k">def</span> <span class="nf">reqScannerParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1578,7 +1620,7 @@
 <span class="sd">        Replaces Financial Advisor&#39;s settings.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            faDataType: See :py:meth:`.requestFA`.</span>
+<span class="sd">            faDataType: See :meth:`.requestFA`.</span>
 <span class="sd">            xml: The XML-formatted configuration string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">replaceFA</span><span class="p">(</span><span class="n">faDataType</span><span class="p">,</span> <span class="n">xml</span><span class="p">)</span></div>
@@ -1729,7 +1771,7 @@
         <span class="n">bars</span><span class="o">.</span><span class="n">chartOptions</span> <span class="o">=</span> <span class="n">chartOptions</span>
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">container</span><span class="o">=</span><span class="n">bars</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">keepUpToDate</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startBars</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">bars</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startSubscription</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">bars</span><span class="p">,</span> <span class="n">contract</span><span class="p">)</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">formatIBDatetime</span><span class="p">(</span><span class="n">endDateTime</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqHistoricalData</span><span class="p">(</span>
             <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">durationStr</span><span class="p">,</span> <span class="n">barSizeSetting</span><span class="p">,</span>
@@ -1776,20 +1818,15 @@
             <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">reportType</span><span class="p">,</span> <span class="n">fundamentalDataOptions</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span></div>
 
-<div class="viewcode-block" id="IB.reqScannerSubscriptionAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqScannerSubscriptionAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">reqScannerSubscriptionAsync</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqScannerDataAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqScannerDataAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">reqScannerDataAsync</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">scannerSubscriptionFilterOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
-        <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">ibapiVersionInfo</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqScannerSubscription</span><span class="p">(</span>
-                <span class="n">reqId</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqScannerSubscription</span><span class="p">(</span>
-                <span class="n">reqId</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">,</span>
-                <span class="n">scannerSubscriptionFilterOptions</span><span class="p">)</span>
+        <span class="n">dataList</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqScannerSubscription</span><span class="p">(</span>
+            <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">,</span>
+            <span class="n">scannerSubscriptionFilterOptions</span><span class="p">)</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="n">dataList</span><span class="o">.</span><span class="n">reqId</span><span class="p">,</span> <span class="n">container</span><span class="o">=</span><span class="n">dataList</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">future</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelScannerSubscription</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelScannerSubscription</span><span class="p">(</span><span class="n">dataList</span><span class="o">.</span><span class="n">reqId</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="IB.reqScannerParametersAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqScannerParametersAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqScannerParametersAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

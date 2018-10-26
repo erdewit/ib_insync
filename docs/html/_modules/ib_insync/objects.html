@@ -96,14 +96,14 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s1">&#39;Object ContractDetails ContractDescription &#39;</span>
     <span class="s1">&#39;ComboLeg UnderComp DeltaNeutralContract OrderComboLeg OrderState &#39;</span>
-    <span class="s1">&#39;ScannerSubscription SoftDollarTier PriceIncrement &#39;</span>
-    <span class="s1">&#39;Execution CommissionReport ExecutionFilter &#39;</span>
+    <span class="s1">&#39;SoftDollarTier PriceIncrement Execution CommissionReport ExecutionFilter &#39;</span>
     <span class="s1">&#39;BarList BarDataList RealTimeBarList BarData RealTimeBar &#39;</span>
     <span class="s1">&#39;HistogramData TickAttrib NewsProvider DepthMktDataDescription &#39;</span>
-    <span class="s1">&#39;PnL PnLSingle AccountValue RealTimeBar TickData &#39;</span>
+    <span class="s1">&#39;ScannerSubscription ScanData ScanDataList &#39;</span>
+    <span class="s1">&#39;PnL PnLSingle AccountValue TickData &#39;</span>
     <span class="s1">&#39;TickByTickAllLast TickByTickBidAsk TickByTickMidPoint &#39;</span>
     <span class="s1">&#39;HistoricalTick HistoricalTickBidAsk HistoricalTickLast &#39;</span>
-    <span class="s1">&#39;MktDepthData DOMLevel BracketOrder TradeLogEntry ScanData TagValue &#39;</span>
+    <span class="s1">&#39;MktDepthData DOMLevel BracketOrder TradeLogEntry TagValue &#39;</span>
     <span class="s1">&#39;PortfolioItem Position Fill OptionComputation OptionChain Dividends &#39;</span>
     <span class="s1">&#39;NewsArticle HistoricalNews NewsTick NewsBulletin ConnectionStats &#39;</span>
     <span class="s1">&#39;OrderCondition ExecutionCondition OperatorCondition MarginCondition &#39;</span>
@@ -333,8 +333,7 @@
 
 <div class="viewcode-block" id="BarList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarList">[docs]</a><span class="k">class</span> <span class="nc">BarList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Events:</span>
-<span class="sd">        * ``updateEvent`` (bars, hasNewBar: bool)</span>
+<span class="sd">    Base class for bar lists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">,)</span>
 
@@ -352,6 +351,14 @@
 
 
 <div class="viewcode-block" id="BarDataList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarDataList">[docs]</a><span class="k">class</span> <span class="nc">BarDataList</span><span class="p">(</span><span class="n">BarList</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of :class:`.BarData` that also stores all request parameters.</span>
+
+<span class="sd">    Events:</span>
+
+<span class="sd">        * ``updateEvent``</span>
+<span class="sd">          (bars: :class:`.BarDataList`, hasNewBar: bool)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;reqId&#39;</span><span class="p">,</span> <span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;endDateTime&#39;</span><span class="p">,</span> <span class="s1">&#39;durationStr&#39;</span><span class="p">,</span>
         <span class="s1">&#39;barSizeSetting&#39;</span><span class="p">,</span> <span class="s1">&#39;whatToShow&#39;</span><span class="p">,</span> <span class="s1">&#39;useRTH&#39;</span><span class="p">,</span> <span class="s1">&#39;formatDate&#39;</span><span class="p">,</span>
@@ -359,9 +366,41 @@
 
 
 <div class="viewcode-block" id="RealTimeBarList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBarList">[docs]</a><span class="k">class</span> <span class="nc">RealTimeBarList</span><span class="p">(</span><span class="n">BarList</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of :class:`.RealTimeBar` that also stores all request parameters.</span>
+
+<span class="sd">    Events:</span>
+
+<span class="sd">        * ``updateEvent``</span>
+<span class="sd">          (bars: :class:`.RealTimeBarList`, hasNewBar: True)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;reqId&#39;</span><span class="p">,</span> <span class="s1">&#39;contract&#39;</span><span class="p">,</span> <span class="s1">&#39;barSize&#39;</span><span class="p">,</span> <span class="s1">&#39;whatToShow&#39;</span><span class="p">,</span> <span class="s1">&#39;useRTH&#39;</span><span class="p">,</span>
         <span class="s1">&#39;realTimeBarsOptions&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ScanDataList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ScanDataList">[docs]</a><span class="k">class</span> <span class="nc">ScanDataList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of :class:`.ScanData` that also stores all request parameters.</span>
+
+<span class="sd">    Events:</span>
+<span class="sd">        * ``updateEvent`` (:class:`.ScanDataList`)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">,)</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">events</span> <span class="o">+</span> <span class="p">(</span>
+        <span class="s1">&#39;reqId&#39;</span><span class="p">,</span> <span class="s1">&#39;subscription&#39;</span><span class="p">,</span> <span class="s1">&#39;scannerSubscriptionOptions&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;scannerSubscriptionFilterOptions&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="nb">list</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">Event</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ScanDataList</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>
+
+    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
 <span class="n">AccountValue</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>

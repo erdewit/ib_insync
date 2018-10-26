@@ -51,7 +51,8 @@
 <li class="toctree-l1"><a class="reference internal" href="notebooks.html">Notebooks</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Code recipes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#fetching-consecutive-historical-data">Fetching consecutive historical data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#scanner-data">Scanner data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scanner-data-blocking">Scanner data (blocking)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scanner-data-streaming">Scanner data (streaming)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#option-calculations">Option calculations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#order-book">Order book</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#minimum-price-increments">Minimum price increments</a></li>
@@ -126,8 +127,8 @@ and further back in time until there is no more data returned.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="scanner-data">
-<h2>Scanner data<a class="headerlink" href="#scanner-data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="scanner-data-blocking">
+<h2>Scanner data (blocking)<a class="headerlink" href="#scanner-data-blocking" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">allParams</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqScannerParameters</span><span class="p">())</span>
 <span class="k">print</span><span class="p">(</span><span class="n">allParams</span><span class="p">)</span>
 
@@ -135,8 +136,25 @@ and further back in time until there is no more data returned.</p>
     <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;FUT.US&#39;</span><span class="p">,</span>
     <span class="n">locationCode</span><span class="o">=</span><span class="s1">&#39;FUT.GLOBEX&#39;</span><span class="p">,</span>
     <span class="n">scanCode</span><span class="o">=</span><span class="s1">&#39;TOP_PERC_GAIN&#39;</span><span class="p">)</span>
-<span class="n">scanData</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqScannerData</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="p">[])</span>
+<span class="n">scanData</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqScannerData</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="n">scanData</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="scanner-data-streaming">
+<h2>Scanner data (streaming)<a class="headerlink" href="#scanner-data-streaming" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">onScanData</span><span class="p">(</span><span class="n">scanData</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">scanData</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scanData</span><span class="p">))</span>
+
+<span class="n">sub</span> <span class="o">=</span> <span class="n">ScannerSubscription</span><span class="p">(</span>
+    <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;FUT.US&#39;</span><span class="p">,</span>
+    <span class="n">locationCode</span><span class="o">=</span><span class="s1">&#39;FUT.GLOBEX&#39;</span><span class="p">,</span>
+    <span class="n">scanCode</span><span class="o">=</span><span class="s1">&#39;TOP_PERC_GAIN&#39;</span><span class="p">)</span>
+<span class="n">scanData</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqScannerSubscription</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
+<span class="n">scanData</span><span class="o">.</span><span class="n">updateEvent</span> <span class="o">+=</span> <span class="n">onScanData</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">cancelScannerSubscription</span><span class="p">(</span><span class="n">scanData</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

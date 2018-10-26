@@ -191,7 +191,7 @@ A profit- and loss entry is updated.</li>
 A profit- and loss entry for a single position is updated.</li>
 <li><code class="docutils literal notranslate"><span class="pre">tickNewsEvent</span></code> (news: <a class="reference internal" href="#ib_insync.objects.NewsTick" title="ib_insync.objects.NewsTick"><code class="xref py py-class docutils literal notranslate"><span class="pre">NewsTick</span></code></a>):
 Emit a new news headline.</li>
-<li><code class="docutils literal notranslate"><span class="pre">scannerDataEvent</span></code> (data: <a class="reference internal" href="#ib_insync.objects.ScanData" title="ib_insync.objects.ScanData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanData</span></code></a>):
+<li><code class="docutils literal notranslate"><span class="pre">scannerDataEvent</span></code> (data: <a class="reference internal" href="#ib_insync.objects.ScanDataList" title="ib_insync.objects.ScanDataList"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanDataList</span></code></a>):
 Emit data from a scanner subscription.</li>
 <li><code class="docutils literal notranslate"><span class="pre">errorEvent</span></code> (reqId: int, errorCode: int, errorString: str,
 contract: <a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>):
@@ -1557,11 +1557,9 @@ Trading Hours, if False then show all data.</li>
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqScannerData">
 <code class="descname">reqScannerData</code><span class="sig-paren">(</span><em>subscription</em>, <em>scannerSubscriptionOptions=None</em>, <em>scannerSubscriptionFilterOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqScannerData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqScannerData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do a market scan.</p>
+<dd><p>Do a blocking market scan by starting a subscription and canceling it
+after the initial list of results are in.</p>
 <p>This method is blocking.</p>
-<p>For a non-blocking subscription, use
-<code class="docutils literal notranslate"><span class="pre">ib.client.reqScannerSubscription()</span></code> directly and subscribe to
-<code class="docutils literal notranslate"><span class="pre">scannerDataEvent</span></code>.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/market_scanners.html">https://interactivebrokers.github.io/tws-api/market_scanners.html</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1574,8 +1572,47 @@ Trading Hours, if False then show all data.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.ScanData" title="ib_insync.objects.ScanData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanData</span></code></a>]</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.objects.ScanDataList" title="ib_insync.objects.ScanDataList"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanDataList</span></code></a></p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.reqScannerSubscription">
+<code class="descname">reqScannerSubscription</code><span class="sig-paren">(</span><em>subscription</em>, <em>scannerSubscriptionOptions=None</em>, <em>scannerSubscriptionFilterOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqScannerSubscription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqScannerSubscription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subscribe to market scan data.</p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/market_scanners.html">https://interactivebrokers.github.io/tws-api/market_scanners.html</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>subscription</strong> (<a class="reference internal" href="#ib_insync.objects.ScannerSubscription" title="ib_insync.objects.ScannerSubscription"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScannerSubscription</span></code></a>) – What to scan for.</li>
+<li><strong>scannerSubscriptionOptions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.TagValue" title="ib_insync.objects.TagValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagValue</span></code></a>]]) – Unknown.</li>
+<li><strong>scannerSubscriptionFilterOptions</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.objects.TagValue" title="ib_insync.objects.TagValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">TagValue</span></code></a>]]) – Unknown.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ib_insync.objects.ScanDataList" title="ib_insync.objects.ScanDataList"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanDataList</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.cancelScannerSubscription">
+<code class="descname">cancelScannerSubscription</code><span class="sig-paren">(</span><em>dataList</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelScannerSubscription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelScannerSubscription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel market data subscription.</p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/market_scanners.html">https://interactivebrokers.github.io/tws-api/market_scanners.html</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dataList</strong> (<a class="reference internal" href="#ib_insync.objects.ScanDataList" title="ib_insync.objects.ScanDataList"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanDataList</span></code></a>) – The scan data list that was obtained from
+<a class="reference internal" href="#ib_insync.ib.IB.reqScannerSubscription" title="ib_insync.ib.IB.reqScannerSubscription"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reqScannerSubscription()</span></code></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -1953,6 +1990,11 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.ib.IB.reqScannerParametersAsync">
+<code class="descname">reqScannerParametersAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqScannerParametersAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqScannerParametersAsync" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.ib.IB.calculateImpliedVolatilityAsync">
 <code class="descname">calculateImpliedVolatilityAsync</code><span class="sig-paren">(</span><em>contract</em>, <em>optionPrice</em>, <em>underPrice</em>, <em>implVolOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.calculateImpliedVolatilityAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.calculateImpliedVolatilityAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1983,13 +2025,8 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="ib_insync.ib.IB.reqScannerParametersAsync">
-<code class="descname">reqScannerParametersAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqScannerParametersAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqScannerParametersAsync" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.ib.IB.reqScannerSubscriptionAsync">
-<code class="descname">reqScannerSubscriptionAsync</code><span class="sig-paren">(</span><em>subscription</em>, <em>scannerSubscriptionOptions=None</em>, <em>scannerSubscriptionFilterOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqScannerSubscriptionAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqScannerSubscriptionAsync" title="Permalink to this definition">¶</a></dt>
+<dt id="ib_insync.ib.IB.reqScannerDataAsync">
+<code class="descname">reqScannerDataAsync</code><span class="sig-paren">(</span><em>subscription</em>, <em>scannerSubscriptionOptions=None</em>, <em>scannerSubscriptionFilterOptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqScannerDataAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqScannerDataAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2196,7 +2233,7 @@ is raised. Set to 0 to disable timeout.</li>
 <dd><ul class="first last simple">
 <li><code class="docutils literal notranslate"><span class="pre">statusEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>)</li>
 <li><code class="docutils literal notranslate"><span class="pre">modifyEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>)</li>
-<li><code class="docutils literal notranslate"><span class="pre">fillEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>, fill)</li>
+<li><code class="docutils literal notranslate"><span class="pre">fillEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>, fill: <a class="reference internal" href="#ib_insync.objects.Fill" title="ib_insync.objects.Fill"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fill</span></code></a>)</li>
 <li><code class="docutils literal notranslate"><span class="pre">commissionReportEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>,
 fill: <a class="reference internal" href="#ib_insync.objects.Fill" title="ib_insync.objects.Fill"><code class="xref py py-class docutils literal notranslate"><span class="pre">Fill</span></code></a>, commissionReport: <a class="reference internal" href="#ib_insync.objects.CommissionReport" title="ib_insync.objects.CommissionReport"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommissionReport</span></code></a>)</li>
 <li><code class="docutils literal notranslate"><span class="pre">filledEvent</span></code> (trade: <a class="reference internal" href="#ib_insync.order.Trade" title="ib_insync.order.Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trade</span></code></a>)</li>
@@ -2360,7 +2397,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'Inactive', 'ApiCancelled', 'Filled', 'Cancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'Cancelled', 'Filled', 'ApiCancelled', 'Inactive'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2437,7 +2474,7 @@ and as keyword, the keyword wins.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/available_orders.html">https://interactivebrokers.github.io/tws-api/available_orders.html</a></p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 140561122630400: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 139825931086424: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4804,65 +4841,6 @@ and as keyword, the keyword wins.</p>
 </dd></dl>
 
 <dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">RealTimeBar</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#RealTimeBar"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Attribute values can be given positionally or as keyword.
-If an attribute is not given it will take its value from the
-‘defaults’ class member. If an attribute is given both positionally
-and as keyword, the keyword wins.</p>
-<dl class="attribute">
-<dt>
-<code class="descname">defaults</code><em class="property"> = {'close': 0.0, 'count': 0, 'endTime': -1, 'high': 0.0, 'low': 0.0, 'open_': 0.0, 'time': 0, 'volume': 0.0, 'wap': 0.0}</em></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">close</code></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">count</code></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">endTime</code></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">high</code></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">low</code></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">open_</code></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">time</code></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">volume</code></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">wap</code></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="ib_insync.objects.TickAttrib">
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">TickAttrib</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#TickAttrib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.TickAttrib" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute values can be given positionally or as keyword.
@@ -5074,13 +5052,7 @@ and as keyword, the keyword wins.</p>
 <dl class="class">
 <dt id="ib_insync.objects.BarList">
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">BarList</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#BarList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.BarList" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Events:</dt>
-<dd><ul class="first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">updateEvent</span></code> (bars, hasNewBar: bool)</li>
-</ul>
-</dd>
-</dl>
+<dd><p>Base class for bar lists.</p>
 <dl class="attribute">
 <dt id="ib_insync.objects.BarList.events">
 <code class="descname">events</code><em class="property"> = ('updateEvent',)</em><a class="headerlink" href="#ib_insync.objects.BarList.events" title="Permalink to this definition">¶</a></dt>
@@ -5096,7 +5068,15 @@ and as keyword, the keyword wins.</p>
 <dl class="class">
 <dt id="ib_insync.objects.BarDataList">
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">BarDataList</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#BarDataList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.BarDataList" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
+<dd><p>List of <a class="reference internal" href="#ib_insync.objects.BarData" title="ib_insync.objects.BarData"><code class="xref py py-class docutils literal notranslate"><span class="pre">BarData</span></code></a> that also stores all request parameters.</p>
+<p>Events:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">updateEvent</span></code>
+(bars: <a class="reference internal" href="#ib_insync.objects.BarDataList" title="ib_insync.objects.BarDataList"><code class="xref py py-class docutils literal notranslate"><span class="pre">BarDataList</span></code></a>, hasNewBar: bool)</li>
+</ul>
+</div></blockquote>
+<dl class="attribute">
 <dt id="ib_insync.objects.BarDataList.barSizeSetting">
 <code class="descname">barSizeSetting</code><a class="headerlink" href="#ib_insync.objects.BarDataList.barSizeSetting" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -5151,7 +5131,15 @@ and as keyword, the keyword wins.</p>
 <dl class="class">
 <dt id="ib_insync.objects.RealTimeBarList">
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">RealTimeBarList</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#RealTimeBarList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.RealTimeBarList" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
+<dd><p>List of <a class="reference internal" href="#ib_insync.objects.RealTimeBar" title="ib_insync.objects.RealTimeBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">RealTimeBar</span></code></a> that also stores all request parameters.</p>
+<p>Events:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">updateEvent</span></code>
+(bars: <a class="reference internal" href="#ib_insync.objects.RealTimeBarList" title="ib_insync.objects.RealTimeBarList"><code class="xref py py-class docutils literal notranslate"><span class="pre">RealTimeBarList</span></code></a>, hasNewBar: True)</li>
+</ul>
+</div></blockquote>
+<dl class="attribute">
 <dt id="ib_insync.objects.RealTimeBarList.barSize">
 <code class="descname">barSize</code><a class="headerlink" href="#ib_insync.objects.RealTimeBarList.barSize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -5179,6 +5167,49 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.objects.RealTimeBarList.whatToShow">
 <code class="descname">whatToShow</code><a class="headerlink" href="#ib_insync.objects.RealTimeBarList.whatToShow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.objects.ScanDataList">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">ScanDataList</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/objects.html#ScanDataList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.ScanDataList" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of <a class="reference internal" href="#ib_insync.objects.ScanData" title="ib_insync.objects.ScanData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanData</span></code></a> that also stores all request parameters.</p>
+<dl class="docutils">
+<dt>Events:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">updateEvent</span></code> (<a class="reference internal" href="#ib_insync.objects.ScanDataList" title="ib_insync.objects.ScanDataList"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanDataList</span></code></a>)</li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="ib_insync.objects.ScanDataList.events">
+<code class="descname">events</code><em class="property"> = ('updateEvent',)</em><a class="headerlink" href="#ib_insync.objects.ScanDataList.events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.ScanDataList.reqId">
+<code class="descname">reqId</code><a class="headerlink" href="#ib_insync.objects.ScanDataList.reqId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.ScanDataList.scannerSubscriptionFilterOptions">
+<code class="descname">scannerSubscriptionFilterOptions</code><a class="headerlink" href="#ib_insync.objects.ScanDataList.scannerSubscriptionFilterOptions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.ScanDataList.scannerSubscriptionOptions">
+<code class="descname">scannerSubscriptionOptions</code><a class="headerlink" href="#ib_insync.objects.ScanDataList.scannerSubscriptionOptions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.ScanDataList.subscription">
+<code class="descname">subscription</code><a class="headerlink" href="#ib_insync.objects.ScanDataList.subscription" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.ScanDataList.updateEvent">
+<code class="descname">updateEvent</code><a class="headerlink" href="#ib_insync.objects.ScanDataList.updateEvent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

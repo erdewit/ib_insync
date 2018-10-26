@@ -12,12 +12,13 @@ from ib_insync.contract import Contract
 from ib_insync.ticker import Ticker
 from ib_insync.order import Order, OrderStatus, Trade, LimitOrder, StopOrder
 from ib_insync.objects import (
+    BarList, BarDataList, RealTimeBarList,
     AccountValue, PortfolioItem, Position, Fill, Execution, BracketOrder,
     TradeLogEntry, OrderState, ExecutionFilter, TagValue, PnL, PnLSingle,
     ContractDetails, ContractDescription, OptionChain, OptionComputation,
     NewsTick, NewsBulletin, NewsArticle, NewsProvider, HistoricalNews,
-    BarList, BarDataList, RealTimeBarList, DepthMktDataDescription,
-    ScannerSubscription, ScanData, HistogramData, PriceIncrement)
+    ScannerSubscription, ScanDataList, HistogramData, PriceIncrement,
+    DepthMktDataDescription)
 import ib_insync.util as util
 from ib_insync.event import Event
 
@@ -78,7 +79,7 @@ class IB:
     that the current state may have been updated during the sleep(0) call.
 
     For introducing a delay, never use time.sleep() but use
-    :py:meth:`.sleep` instead.
+    :meth:`.sleep` instead.
 
     Events:
         * ``connectedEvent`` ():
@@ -142,7 +143,7 @@ class IB:
         * ``tickNewsEvent`` (news: :class:`.NewsTick`):
           Emit a new news headline.
 
-        * ``scannerDataEvent`` (data: :class:`.ScanData`):
+        * ``scannerDataEvent`` (data: :class:`.ScanDataList`):
           Emit data from a scanner subscription.
 
         * ``errorEvent`` (reqId: int, errorCode: int, errorString: str,
@@ -444,7 +445,7 @@ class IB:
         """
         Get ticker of the given contract. It must have been requested before
         with reqMktData with the same contract object. The ticker may not be
-        ready yet if called directly after :py:meth:`.reqMktData`.
+        ready yet if called directly after :meth:`.reqMktData`.
 
         Args:
             contract: Contract to get ticker for.
@@ -468,12 +469,12 @@ class IB:
         Get a list of all live updated bars. These can be 5 second realtime
         bars or live updated historical bars.
         """
-        return list(self.wrapper.reqId2Bars.values())
+        return list(self.wrapper.reqId2Subscriber.values())
 
     def newsTicks(self) -> List[NewsTick]:
         """
         List of ticks with headline news.
-        The article itself can be retrieved with :py:meth:`.reqNewsArticle`.
+        The article itself can be retrieved with :meth:`.reqNewsArticle`.
         """
         return self.wrapper.newsTicks
 
@@ -691,7 +692,7 @@ class IB:
     def reqAccountUpdatesMulti(
             self, account: str='', modelCode: str=''):
         """
-        It is recommended to use :py:meth:`.accountValues` instead.
+        It is recommended to use :meth:`.accountValues` instead.
 
         Request account values of multiple accounts and keep updated.
 
@@ -705,7 +706,7 @@ class IB:
 
     def reqAccountSummary(self):
         """
-        It is recommended to use :py:meth:`.accountSummary` instead.
+        It is recommended to use :meth:`.accountSummary` instead.
 
         Request account values for all accounts and keep them updated.
         Returns when account summary is filled.
@@ -737,7 +738,7 @@ class IB:
         This method can give stale information where a new open order is not
         reported or an already filled or cancelled order is reported as open.
         It is recommended to use the more reliable and much faster
-        :py:meth:`.openTrades` or :py:meth:`.openOrders` methods instead.
+        :meth:`.openTrades` or :meth:`.openOrders` methods instead.
 
         This method is blocking.
         """
@@ -746,8 +747,8 @@ class IB:
     def reqExecutions(
             self, execFilter: ExecutionFilter=None) -> List[Fill]:
         """
-        It is recommended to use :py:meth:`.fills`  or
-        :py:meth:`.executions` instead.
+        It is recommended to use :meth:`.fills`  or
+        :meth:`.executions` instead.
 
         Request and return a list a list of fills.
 
@@ -760,7 +761,7 @@ class IB:
 
     def reqPositions(self) -> List[Position]:
         """
-        It is recommended to use :py:meth:`.positions` instead.
+        It is recommended to use :meth:`.positions` instead.
 
         Request and return a list of positions for all accounts.
 
@@ -773,7 +774,7 @@ class IB:
         Start a subscription for profit and loss events.
 
         Returns a :class:`.PnL` object that is kept live updated.
-        The result can also be queried from :py:meth:`.pnl`.
+        The result can also be queried from :meth:`.pnl`.
 
         https://interactivebrokers.github.io/tws-api/pnl.html
 
@@ -814,7 +815,7 @@ class IB:
         Start a subscription for profit and loss events for single positions.
 
         Returns a :class:`.PnLSingle` object that is kept live updated.
-        The result can also be queried from :py:meth:`.pnlSingle`.
+        The result can also be queried from :meth:`.pnlSingle`.
 
         https://interactivebrokers.github.io/tws-api/pnl.html
 
@@ -927,7 +928,7 @@ class IB:
         bars.whatToShow = whatToShow
         bars.useRTH = useRTH
         bars.realTimeBarsOptions = realTimeBarsOptions
-        self.wrapper.startBars(reqId, contract, bars)
+        self.wrapper.startSubscription(reqId, bars, contract)
         self.client.reqRealTimeBars(
             reqId, contract, barSize, whatToShow, useRTH, realTimeBarsOptions)
         return bars
@@ -940,7 +941,7 @@ class IB:
             bars: The bar list that was obtained from ``reqRealTimeBars``.
         """
         self.client.cancelRealTimeBars(bars.reqId)
-        self.wrapper.endBars(bars)
+        self.wrapper.endSubscription(bars)
 
     def reqHistoricalData(
             self, contract: Contract, endDateTime: object,
@@ -1001,7 +1002,7 @@ class IB:
 
         """
         self.client.cancelHistoricalData(bars.reqId)
-        self.wrapper.endBars(bars)
+        self.wrapper.endSubscription(bars)
 
     def reqHistoricalTicks(
             self, contract: Contract,
@@ -1280,15 +1281,12 @@ class IB:
             self, subscription: ScannerSubscription,
             scannerSubscriptionOptions: List[TagValue]=None,
             scannerSubscriptionFilterOptions:
-            List[TagValue]=None) -> List[ScanData]:
+            List[TagValue]=None) -> ScanDataList:
         """
-        Do a market scan.
+        Do a blocking market scan by starting a subscription and canceling it
+        after the initial list of results are in.
 
         This method is blocking.
-
-        For a non-blocking subscription, use
-        ``ib.client.reqScannerSubscription()`` directly and subscribe to
-        ``scannerDataEvent``.
 
         https://interactivebrokers.github.io/tws-api/market_scanners.html
 
@@ -1298,8 +1296,52 @@ class IB:
             scannerSubscriptionFilterOptions: Unknown.
         """
         return self._run(
-            self.reqScannerSubscriptionAsync(
+            self.reqScannerDataAsync(
                 subscription, scannerSubscriptionOptions))
+
+    def reqScannerSubscription(
+            self, subscription: ScannerSubscription,
+            scannerSubscriptionOptions: List[TagValue]=None,
+            scannerSubscriptionFilterOptions:
+            List[TagValue]=None) -> ScanDataList:
+        """
+        Subscribe to market scan data.
+
+        https://interactivebrokers.github.io/tws-api/market_scanners.html
+
+        Args:
+            subscription: What to scan for.
+            scannerSubscriptionOptions: Unknown.
+            scannerSubscriptionFilterOptions: Unknown.
+        """
+        reqId = self.client.getReqId()
+        data = ScanDataList()
+        data.reqId = reqId
+        data.subscription = subscription
+        data.scannerSubscriptionOptions = scannerSubscriptionOptions
+        data.scannerSubscriptionFilterOptions = \
+            scannerSubscriptionFilterOptions
+        self.wrapper.startSubscription(reqId, data)
+        if util.ibapiVersionInfo() <= (9, 73, 7):
+            self.client.reqScannerSubscription(
+                reqId, subscription, scannerSubscriptionOptions)
+        else:
+            self.client.reqScannerSubscription(
+                reqId, subscription, scannerSubscriptionOptions,
+                scannerSubscriptionFilterOptions)
+        return data
+
+    def cancelScannerSubscription(self, dataList: ScanDataList):
+        """
+        Cancel market data subscription.
+
+        https://interactivebrokers.github.io/tws-api/market_scanners.html
+
+        Args:
+            dataList: The scan data list that was obtained from
+                :meth:`.reqScannerSubscription`.
+        """
+        self.client.cancelScannerSubscription(dataList.reqId)
 
     def reqScannerParameters(self) -> str:
         """
@@ -1501,7 +1543,7 @@ class IB:
         Replaces Financial Advisor's settings.
 
         Args:
-            faDataType: See :py:meth:`.requestFA`.
+            faDataType: See :meth:`.requestFA`.
             xml: The XML-formatted configuration string.
         """
         self.client.replaceFA(faDataType, xml)
@@ -1652,7 +1694,7 @@ class IB:
         bars.chartOptions = chartOptions
         future = self.wrapper.startReq(reqId, contract, container=bars)
         if keepUpToDate:
-            self.wrapper.startBars(reqId, contract, bars)
+            self.wrapper.startSubscription(reqId, bars, contract)
         end = util.formatIBDatetime(endDateTime)
         self.client.reqHistoricalData(
             reqId, contract, end, durationStr, barSizeSetting,
@@ -1699,20 +1741,15 @@ class IB:
             reqId, contract, reportType, fundamentalDataOptions)
         return future
 
-    async def reqScannerSubscriptionAsync(
+    async def reqScannerDataAsync(
             self, subscription, scannerSubscriptionOptions=None,
             scannerSubscriptionFilterOptions=None):
-        reqId = self.client.getReqId()
-        future = self.wrapper.startReq(reqId)
-        if util.ibapiVersionInfo() <= (9, 73, 7):
-            self.client.reqScannerSubscription(
-                reqId, subscription, scannerSubscriptionOptions)
-        else:
-            self.client.reqScannerSubscription(
-                reqId, subscription, scannerSubscriptionOptions,
-                scannerSubscriptionFilterOptions)
+        dataList = self.reqScannerSubscription(
+            subscription, scannerSubscriptionOptions,
+            scannerSubscriptionFilterOptions)
+        future = self.wrapper.startReq(dataList.reqId, container=dataList)
         await future
-        self.client.cancelScannerSubscription(reqId)
+        self.client.cancelScannerSubscription(dataList.reqId)
         return future.result()
 
     def reqScannerParametersAsync(self):

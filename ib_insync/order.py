@@ -15,7 +15,7 @@ class Trade(Object):
     Events:
         * ``statusEvent`` (trade: :class:`.Trade`)
         * ``modifyEvent`` (trade: :class:`.Trade`)
-        * ``fillEvent`` (trade: :class:`.Trade`, fill)
+        * ``fillEvent`` (trade: :class:`.Trade`, fill: :class:`.Fill`)
         * ``commissionReportEvent`` (trade: :class:`.Trade`,
           fill: :class:`.Fill`, commissionReport: :class:`.CommissionReport`)
         * ``filledEvent`` (trade: :class:`.Trade`)

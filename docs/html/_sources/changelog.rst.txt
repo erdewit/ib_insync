@@ -4,6 +4,13 @@ Changelog
 0.9
 ---
 
+Version 0.9.33
+^^^^^^^^^^^^^^
+
+* Market scanner subscription improved.
+* IB.scannerDataEvent now emits the full list of ScanData.
+* ScanDataList added.
+
 Version 0.9.32
 ^^^^^^^^^^^^^^
 

@@ -53,7 +53,7 @@ class Wrapper(EWrapper):
         self.reqId2Ticker = {}
         self.ticker2ReqId = defaultdict(dict)  # tickType -> Ticker -> reqId
 
-        self.reqId2Bars = {}  # realtime bars + keepUpToDate historical bars
+        self.reqId2Subscriber = {}  # live subscribers (live bars, scan data)
 
         self.pnls = {}  # reqId -> PnL
         self.pnlSingles = {}  # reqId -> PnLSingle
@@ -133,13 +133,19 @@ class Wrapper(EWrapper):
         self._reqId2Contract.pop(reqId, None)
         return reqId
 
-    def startBars(self, reqId, contract, bars):
+    def startSubscription(self, reqId, subscriber, contract=None):
+        """
+        Register a live subscription.
+        """
         self._reqId2Contract[reqId] = contract
-        self.reqId2Bars[reqId] = bars
+        self.reqId2Subscriber[reqId] = subscriber
 
-    def endBars(self, bars):
-        self._reqId2Contract.pop(bars.reqId, None)
-        self.reqId2Bars.pop(bars.reqId, None)
+    def endSubscription(self, subscriber):
+        """
+        Unregister a live subscription.
+        """
+        self._reqId2Contract.pop(subscriber.reqId, None)
+        self.reqId2Subscriber.pop(subscriber.reqId, None)
 
     def orderKey(self, clientId, orderId, permId):
         if orderId <= 0:
@@ -491,11 +497,11 @@ class Wrapper(EWrapper):
             self, reqId, time, open_, high, low, close, volume, wap, count):
         dt = datetime.datetime.fromtimestamp(time, datetime.timezone.utc)
         bar = RealTimeBar(dt, -1, open_, high, low, close, volume, wap, count)
-        bars = self.reqId2Bars.get(reqId)
+        bars = self.reqId2Subscriber.get(reqId)
         if bars is not None:
             bars.append(bar)
             self.handleEvent('barUpdateEvent', bars, True)
-            bars.updateEvent(bars, True)
+            bars.updateEvent.emit(bars, True)
 
     @iswrapper
     def historicalData(self, reqId, bar):
@@ -510,7 +516,7 @@ class Wrapper(EWrapper):
     @iswrapper
     def historicalDataUpdate(self, reqId, bar):
         bar = BarData(**bar.__dict__)
-        bars = self.reqId2Bars.get(reqId)
+        bars = self.reqId2Subscriber.get(reqId)
         if not bars:
             return
         bar.date = util.parseIBDatetime(bar.date)
@@ -522,7 +528,7 @@ class Wrapper(EWrapper):
         else:
             return
         self.handleEvent('barUpdateEvent', bars, hasNewBar)
-        bars.updateEvent(bars, hasNewBar)
+        bars.updateEvent.emit(bars, hasNewBar)
 
     @iswrapper
     def headTimestamp(self, reqId, headTimestamp):
@@ -851,14 +857,24 @@ class Wrapper(EWrapper):
         if cd.contract:
             cd.contract = self._getContract(cd.contract)
         data = ScanData(rank, cd, distance, benchmark, projection, legsStr)
-        self.handleEvent('scannerDataEvent', data)
-        results = self._results.get(reqId)
-        if results is not None:
-            results.append(data)
+        dataList = self.reqId2Subscriber.get(reqId)
+        if dataList is None:
+            dataList = self._results.get(reqId)
+        if dataList is not None:
+            if rank == 0:
+                dataList.clear()
+            dataList.append(data)
 
     @iswrapper
     def scannerDataEnd(self, reqId):
-        self._endReq(reqId)
+        dataList = self._results.get(reqId)
+        if dataList:
+            self._endReq(reqId)
+        else:
+            dataList = self.reqId2Subscriber.get(reqId)
+        if dataList is not None:
+            self.handleEvent('scannerDataEvent', dataList)
+            dataList.updateEvent.emit(dataList)
 
     @iswrapper
     def histogramData(self, reqId, items):
