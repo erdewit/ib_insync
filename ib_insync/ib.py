@@ -1315,13 +1315,13 @@ class IB:
             scannerSubscriptionFilterOptions: Unknown.
         """
         reqId = self.client.getReqId()
-        data = ScanDataList()
-        data.reqId = reqId
-        data.subscription = subscription
-        data.scannerSubscriptionOptions = scannerSubscriptionOptions
-        data.scannerSubscriptionFilterOptions = \
+        dataList = ScanDataList()
+        dataList.reqId = reqId
+        dataList.subscription = subscription
+        dataList.scannerSubscriptionOptions = scannerSubscriptionOptions
+        dataList.scannerSubscriptionFilterOptions = \
             scannerSubscriptionFilterOptions
-        self.wrapper.startSubscription(reqId, data)
+        self.wrapper.startSubscription(reqId, dataList)
         if util.ibapiVersionInfo() <= (9, 73, 7):
             self.client.reqScannerSubscription(
                 reqId, subscription, scannerSubscriptionOptions)
@@ -1329,7 +1329,7 @@ class IB:
             self.client.reqScannerSubscription(
                 reqId, subscription, scannerSubscriptionOptions,
                 scannerSubscriptionFilterOptions)
-        return data
+        return dataList
 
     def cancelScannerSubscription(self, dataList: ScanDataList):
         """
@@ -1342,6 +1342,7 @@ class IB:
                 :meth:`.reqScannerSubscription`.
         """
         self.client.cancelScannerSubscription(dataList.reqId)
+        self.wrapper.endSubscription(dataList)
 
     def reqScannerParameters(self) -> str:
         """
