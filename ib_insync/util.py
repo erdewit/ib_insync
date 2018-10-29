@@ -5,7 +5,7 @@ import sys
 import signal
 import asyncio
 import time
-from typing import List, Iterator, Awaitable, Callable, Union
+from typing import Iterator, Callable, Union
 
 from ib_insync.objects import Object, DynamicObject
 
@@ -224,7 +224,7 @@ class timeit:
         print(self.title + ' took ' + formatSI(time.time() - self.t0) + 's')
 
 
-def run(*awaitables: List[Awaitable], timeout=None):
+def run(*awaitables, timeout: float=None):
     """
     By default run the event loop forever.
 
@@ -239,9 +239,10 @@ def run(*awaitables: List[Awaitable], timeout=None):
     if not awaitables:
         if loop.is_running():
             return
-        result = loop.run_forever()
+        loop.run_forever()
         f = asyncio.gather(*asyncio.Task.all_tasks())
         f.cancel()
+        result = None
         try:
             loop.run_until_complete(f)
         except asyncio.CancelledError:
@@ -280,7 +281,7 @@ def schedule(
     loop.call_later(delay, callback, *args)
 
 
-def sleep(secs: float=0.02) -> True:
+def sleep(secs: float=0.02) -> bool:
     """
     Wait for the given amount of seconds while everything still keeps
     processing in the background. Never use time.sleep().
@@ -320,7 +321,7 @@ def timeRange(start: datetime.time, end: datetime.time,
         t += delta
 
 
-def waitUntil(t: datetime.time) -> True:
+def waitUntil(t: datetime.time) -> bool:
     """
     Wait until the given time t is reached.
 
@@ -406,7 +407,7 @@ def useQt(qtLib: str='PyQt5', period: float=0.01):
     global qApp
     qApp = QApplication.instance() or QApplication(sys.argv)
     loop = asyncio.get_event_loop()
-    stack = []
+    stack: list = []
     qt_step()
 
 

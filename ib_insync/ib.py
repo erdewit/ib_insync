@@ -2,7 +2,7 @@ import asyncio
 import logging
 import datetime
 import time
-from typing import List, Iterator, Callable, Awaitable, Union
+from typing import List, Iterator, Awaitable, Union
 
 import ibapi
 
@@ -172,6 +172,8 @@ class IB:
         'accountSummaryEvent', 'pnlEvent', 'pnlSingleEvent',
         'scannerDataEvent', 'tickNewsEvent', 'errorEvent', 'timeoutEvent')
 
+    __slots__ = ('wrapper', 'client', '_logger') + events
+
     RequestTimeout = None  # timeout in seconds for requests
 
     def __init__(self):
@@ -197,7 +199,7 @@ class IB:
         return f'<{self.__class__.__name__} {conn}>'
 
     def connect(
-            self, host: str='127.0.0.1', port: int='7497',
+            self, host: str='127.0.0.1', port: int=7497,
             clientId: int=1, timeout: float=2):
         """
         Connect to a running TWS or IB gateway application.
@@ -252,7 +254,7 @@ class IB:
     def _run(self, *awaitables: List[Awaitable]):
         return util.run(*awaitables, timeout=self.RequestTimeout)
 
-    def waitOnUpdate(self, timeout: float=0) -> True:
+    def waitOnUpdate(self, timeout: float=0) -> bool:
         """
         Wait on any new update to arrive from the network.
 
@@ -285,15 +287,6 @@ class IB:
             else:
                 yield test
             self.waitOnUpdate(endTime - time.time() if timeout else 0)
-
-    def setCallback(self, eventName: str, callback: Callable):
-        """
-        Depreciated: Use events instead.
-
-        Set an optional callback to be invoked after an event.
-        Unsetting is done by supplying None as callback.
-        """
-        self.wrapper.setCallback(eventName, callback)
 
     def setTimeout(self, timeout: float=60):
         """
@@ -385,7 +378,7 @@ class IB:
 
     def pnlSingle(
             self, account: str='', modelCode: str='',
-            conId: int='') -> List[PnLSingle]:
+            conId: int=0) -> List[PnLSingle]:
         """
         List of subscribed :class:`.PnLSingle` objects (profit and loss for
         single positions).
@@ -1564,7 +1557,7 @@ class IB:
             # autobind manual orders
             self.reqAutoOpenOrders(True)
         self._logger.info('Synchronization complete')
-        self.wrapper.handleEvent('connectedEvent')
+        self.connectedEvent.emit()
 
     async def qualifyContractsAsync(self, *contracts):
         detailsLists = await asyncio.gather(

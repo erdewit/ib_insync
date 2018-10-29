@@ -47,7 +47,7 @@ class Object:
     * A default equality testing that compares attributes.
     """
     __slots__ = ()
-    defaults = {}
+    defaults: dict = {}
 
     def __init__(self, *args, **kwargs):
         """
@@ -295,7 +295,7 @@ class RealTimeBarList(BarList):
     Events:
 
         * ``updateEvent``
-          (bars: :class:`.RealTimeBarList`, hasNewBar: True)
+          (bars: :class:`.RealTimeBarList`, hasNewBar: bool)
     """
     __slots__ = (
         'reqId', 'contract', 'barSize', 'whatToShow', 'useRTH',
