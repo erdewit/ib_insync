@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.34
+^^^^^^^^^^^^^^
+
+* Old event system (ib.setCallback) removed.
+* Compatability fix with previous ibapi version.
+
 Version 0.9.33
 ^^^^^^^^^^^^^^
 

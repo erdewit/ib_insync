@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.client &#8212; IB-insync 0.9.33 documentation</title>
+    <title>ib_insync.client &#8212; IB-insync 0.9.34 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -150,6 +150,8 @@
     <span class="n">MaxRequests</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">RequestsInterval</span> <span class="o">=</span> <span class="mi">2</span>
 
+    <span class="n">MaxClientVersion</span> <span class="o">=</span> <span class="mi">142</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
         <span class="n">EClient</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">)</span>
@@ -191,10 +193,10 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s1">&#39;Not connected&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ConnectionStats</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span><span class="p">,</span>
-                <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_numBytesRecv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">numBytesSent</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_numMsgRecv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">numMsgSent</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span><span class="p">,</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_numBytesRecv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">numBytesSent</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_numMsgRecv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">numMsgSent</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.getReqId"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.getReqId">[docs]</a>    <span class="k">def</span> <span class="nf">getReqId</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -290,7 +292,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connected&#39;</span><span class="p">)</span>
         <span class="c1"># start handshake</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;API</span><span class="se">\0</span><span class="s1">&#39;</span>
-        <span class="n">versionRange</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">142</span><span class="p">)</span>
+        <span class="n">versionRange</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ibapi</span><span class="o">.</span><span class="n">server_versions</span><span class="o">.</span><span class="n">MIN_CLIENT_VER</span><span class="p">,</span>
+            <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MaxClientVersion</span><span class="p">,</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">server_versions</span><span class="o">.</span><span class="n">MAX_CLIENT_VER</span><span class="p">))</span>
         <span class="n">msg</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;v</span><span class="si">%d</span><span class="s1">..</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">versionRange</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">Decoder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -330,7 +334,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">startApi</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">connectAck</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                        <span class="n">f</span><span class="s1">&#39;Logged on to server version </span><span class="si">{self.serverVersion_}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">f</span><span class="s1">&#39;Logged on to server version </span><span class="si">{self.serverVersion_}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># decode and handle the message</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -371,12 +375,12 @@
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">Contract</span><span class="p">):</span>
                 <span class="n">c</span> <span class="o">=</span> <span class="n">field</span>
                 <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span>
-                        <span class="n">c</span><span class="o">.</span><span class="n">conId</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">secType</span><span class="p">,</span>
-                        <span class="n">c</span><span class="o">.</span><span class="n">lastTradeDateOrContractMonth</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">strike</span><span class="p">,</span>
-                        <span class="n">c</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">multiplier</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">exchange</span><span class="p">,</span>
-                        <span class="n">c</span><span class="o">.</span><span class="n">primaryExchange</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">currency</span><span class="p">,</span>
-                        <span class="n">c</span><span class="o">.</span><span class="n">localSymbol</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">tradingClass</span><span class="p">,</span>
-                        <span class="mi">1</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">includeExpired</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">conId</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">secType</span><span class="p">,</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">lastTradeDateOrContractMonth</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">strike</span><span class="p">,</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">multiplier</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">exchange</span><span class="p">,</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">primaryExchange</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">currency</span><span class="p">,</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">localSymbol</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">tradingClass</span><span class="p">,</span>
+                    <span class="mi">1</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">includeExpired</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
             <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
                 <span class="c1"># list of TagValue</span>
                 <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{v.tag}</span><span class="s1">=</span><span class="si">{v.value}</span><span class="s1">;&#39;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">field</span><span class="p">)</span>
@@ -400,25 +404,25 @@
         <span class="k">if</span> <span class="n">msgId</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">fields</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">tickSize</span><span class="p">(</span>
-                    <span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
             <span class="k">return</span>
         <span class="k">elif</span> <span class="n">msgId</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_priceSizeTick</span><span class="p">:</span>
                 <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fields</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_priceSizeTick</span><span class="p">(</span>
-                        <span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span>
-                        <span class="nb">float</span><span class="p">(</span><span class="n">price</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span>
+                    <span class="nb">float</span><span class="p">(</span><span class="n">price</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
                 <span class="k">return</span>
         <span class="k">elif</span> <span class="n">msgId</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">fields</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">updateMktDepth</span><span class="p">(</span>
-                    <span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">position</span><span class="p">),</span>
-                    <span class="nb">int</span><span class="p">(</span><span class="n">operation</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">side</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">price</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">position</span><span class="p">),</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">operation</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">side</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">price</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
             <span class="k">return</span>
         <span class="k">elif</span> <span class="n">msgId</span> <span class="o">==</span> <span class="mi">46</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">fields</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">tickString</span><span class="p">(</span>
-                    <span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span> <span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">reqId</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tickType</span><span class="p">),</span> <span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
             <span class="k">return</span>
 
         <span class="c1"># snoop for nextValidId and managedAccounts response,</span>
@@ -462,8 +466,8 @@
 
     <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-        <span class="n">coro</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">create_connection</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Socket</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+        <span class="n">coro</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">create_connection</span><span class="p">(</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="n">Socket</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">coro</span><span class="p">)</span>
         <span class="n">future</span><span class="o">.</span><span class="n">add_done_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_onConnectionCreated</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span>
