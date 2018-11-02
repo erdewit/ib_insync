@@ -62,7 +62,7 @@ class Object:
             setattr(self, k, v)
 
     def __repr__(self):
-        clsName = self.__class__.__name__
+        clsName = self.__class__.__qualname__
         kwargs = ', '.join(f'{k}={v!r}' for k, v in self.nonDefaults().items())
         return f'{clsName}({kwargs})'
 

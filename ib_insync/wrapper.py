@@ -1000,7 +1000,7 @@ class Wrapper(EWrapper):
 
     def _clearPendingTickers(self):
         for ticker in self.pendingTickers:
-            del ticker.ticks[:]
-            del ticker.tickByTicks[:]
-            del ticker.domTicks[:]
+            ticker.ticks.clear()
+            ticker.tickByTicks.clear()
+            ticker.domTicks.clear()
         self.pendingTickers.clear()

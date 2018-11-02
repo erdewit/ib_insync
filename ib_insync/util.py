@@ -52,7 +52,7 @@ def tree(obj):
     elif isinstance(obj, (list, tuple, set)):
         return [tree(i) for i in obj]
     elif isinstance(obj, Object):
-        return {obj.__class__.__name__: tree(obj.nonDefaults())}
+        return {obj.__class__.__qualname__: tree(obj.nonDefaults())}
     else:
         return str(obj)
 

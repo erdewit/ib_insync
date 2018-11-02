@@ -73,6 +73,8 @@ class Client(EClient):
     MaxRequests = 100
     RequestsInterval = 2
 
+    MaxClientVersion = 142
+
     def __init__(self, wrapper):
         self._readyEvent = asyncio.Event()
         EClient.__init__(self, wrapper)
@@ -114,10 +116,10 @@ class Client(EClient):
         if not self.isReady():
             raise ConnectionError('Not connected')
         return ConnectionStats(
-                self._startTime,
-                time.time() - self._startTime,
-                self._numBytesRecv, self.conn.numBytesSent,
-                self._numMsgRecv, self.conn.numMsgSent)
+            self._startTime,
+            time.time() - self._startTime,
+            self._numBytesRecv, self.conn.numBytesSent,
+            self._numMsgRecv, self.conn.numMsgSent)
 
     def getReqId(self) -> int:
         """
@@ -213,7 +215,9 @@ class Client(EClient):
         self._logger.info('Connected')
         # start handshake
         msg = b'API\0'
-        versionRange = (100, 142)
+        versionRange = (
+            ibapi.server_versions.MIN_CLIENT_VER,
+            min(self.MaxClientVersion, ibapi.server_versions.MAX_CLIENT_VER))
         msg += self._prefix(b'v%d..%d' % versionRange)
         self.conn.sendMsg(msg)
         self.decoder = ibapi.decoder.Decoder(self.wrapper, None)
@@ -253,7 +257,7 @@ class Client(EClient):
                 self.startApi()
                 self.wrapper.connectAck()
                 self._logger.info(
-                        f'Logged on to server version {self.serverVersion_}')
+                    f'Logged on to server version {self.serverVersion_}')
             else:
                 # decode and handle the message
                 try:
@@ -294,12 +298,12 @@ class Client(EClient):
             elif isinstance(field, Contract):
                 c = field
                 s = '\0'.join(str(f) for f in (
-                        c.conId, c.symbol, c.secType,
-                        c.lastTradeDateOrContractMonth, c.strike,
-                        c.right, c.multiplier, c.exchange,
-                        c.primaryExchange, c.currency,
-                        c.localSymbol, c.tradingClass,
-                        1 if c.includeExpired else 0))
+                    c.conId, c.symbol, c.secType,
+                    c.lastTradeDateOrContractMonth, c.strike,
+                    c.right, c.multiplier, c.exchange,
+                    c.primaryExchange, c.currency,
+                    c.localSymbol, c.tradingClass,
+                    1 if c.includeExpired else 0))
             elif type(field) is list:
                 # list of TagValue
                 s = ''.join(f'{v.tag}={v.value};' for v in field)
@@ -323,25 +327,25 @@ class Client(EClient):
         if msgId == 2:
             _, _, reqId, tickType, size = fields
             self.wrapper.tickSize(
-                    int(reqId), int(tickType), int(size))
+                int(reqId), int(tickType), int(size))
             return
         elif msgId == 1:
             if self._priceSizeTick:
                 _, _, reqId, tickType, price, size, _ = fields
                 self._priceSizeTick(
-                        int(reqId), int(tickType),
-                        float(price), int(size))
+                    int(reqId), int(tickType),
+                    float(price), int(size))
                 return
         elif msgId == 12:
             _, _, reqId, position, operation, side, price, size = fields
             self.wrapper.updateMktDepth(
-                    int(reqId), int(position),
-                    int(operation), int(side), float(price), int(size))
+                int(reqId), int(position),
+                int(operation), int(side), float(price), int(size))
             return
         elif msgId == 46:
             _, _, reqId, tickType, value = fields
             self.wrapper.tickString(
-                    int(reqId), int(tickType), value.decode())
+                int(reqId), int(tickType), value.decode())
             return
 
         # snoop for nextValidId and managedAccounts response,
@@ -385,8 +389,8 @@ class Connection:
 
     def connect(self):
         loop = asyncio.get_event_loop()
-        coro = loop.create_connection(lambda: Socket(self),
-                                      self.host, self.port)
+        coro = loop.create_connection(
+            lambda: Socket(self), self.host, self.port)
         future = asyncio.ensure_future(coro)
         future.add_done_callback(self._onConnectionCreated)
         return future

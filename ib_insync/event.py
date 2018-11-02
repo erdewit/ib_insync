@@ -6,7 +6,7 @@ __all__ = ['Event']
 
 class Event:
     """
-    Enable event passing between loosely coupled compenents.
+    Enable event passing between loosely coupled components.
 
     An event contains a list of callables (the listener slots) that are
     called in order when the event is emitted.

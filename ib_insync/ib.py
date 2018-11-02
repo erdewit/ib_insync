@@ -196,7 +196,7 @@ class IB:
         conn = (f'connected to {self.client.host}:'
                 f'{self.client.port} clientId={self.client.clientId}' if
                 self.client.isConnected() else 'not connected')
-        return f'<{self.__class__.__name__} {conn}>'
+        return f'<{self.__class__.__qualname__} {conn}>'
 
     def connect(
             self, host: str='127.0.0.1', port: int=7497,

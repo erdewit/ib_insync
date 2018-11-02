@@ -132,7 +132,7 @@ class Contract(Object):
         attrs = self.nonDefaults()
         if self.__class__ is not Contract:
             attrs.pop('secType', '')
-        clsName = self.__class__.__name__
+        clsName = self.__class__.__qualname__
         kwargs = ', '.join(f'{k}={v!r}' for k, v in attrs.items())
         return f'{clsName}({kwargs})'
 
