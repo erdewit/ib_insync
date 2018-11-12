@@ -170,12 +170,12 @@ class Client(EClient):
             fut = asyncio.gather(self.conn.connect(), self._readyEvent.wait())
             await asyncio.wait_for(fut, timeout)
             self._logger.info('API connection ready')
-            self.apiStart()
+            self.apiStart.emit()
         except Exception as e:
             self.reset()
             msg = f'API connection failed: {e!r}'
             self._logger.error(msg)
-            self.apiError(msg)
+            self.apiError.emit(msg)
             if isinstance(e, ConnectionRefusedError):
                 msg = 'Make sure API port on TWS/IBG is open'
                 self._logger.error(msg)
@@ -275,16 +275,16 @@ class Client(EClient):
             if not self.isReady():
                 msg = f'clientId {self.clientId} already in use?'
                 self._logger.error(msg)
-            self.apiError(msg)
+            self.apiError.emit(msg)
         else:
             self._logger.info('Disconnected')
         self.reset()
-        self.apiEnd()
+        self.apiEnd.emit()
 
     def _onSocketHasError(self, msg):
         self._logger.error(msg)
         self.reset()
-        self.apiError(msg)
+        self.apiError.emit(msg)
 
     def _encode(self, *fields):
         """
