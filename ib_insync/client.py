@@ -139,7 +139,7 @@ class Client(EClient):
             raise ConnectionError('Not connected')
         return self._accounts
 
-    def connect(self, host: str, port: int, clientId: int, timeout: float=2):
+    def connect(self, host: str, port: int, clientId: int, timeout: float = 2):
         """
         Connect to a running TWS or IB gateway application.
 

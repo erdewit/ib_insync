@@ -143,7 +143,7 @@ class Stock(Contract):
     __slots__ = ()
 
     def __init__(
-            self, symbol: str='', exchange: str='', currency: str='',
+            self, symbol: str = '', exchange: str = '', currency: str = '',
             **kwargs):
         """
         Stock contract.
@@ -162,9 +162,9 @@ class Option(Contract):
     __slots__ = ()
 
     def __init__(
-            self, symbol: str='', lastTradeDateOrContractMonth: str='',
-            strike: float=0.0, right: str='', exchange: str='',
-            multiplier: str='', currency: str='', **kwargs):
+            self, symbol: str = '', lastTradeDateOrContractMonth: str = '',
+            strike: float = 0.0, right: str = '', exchange: str = '',
+            multiplier: str = '', currency: str = '', **kwargs):
         """
         Option contract.
 
@@ -193,9 +193,9 @@ class Future(Contract):
     __slots__ = ()
 
     def __init__(
-            self, symbol: str='', lastTradeDateOrContractMonth: str='',
-            exchange: str='', localSymbol: str='', multiplier: str='',
-            currency: str='', **kwargs):
+            self, symbol: str = '', lastTradeDateOrContractMonth: str = '',
+            exchange: str = '', localSymbol: str = '', multiplier: str = '',
+            currency: str = '', **kwargs):
         """
         Future contract.
 
@@ -222,8 +222,8 @@ class ContFuture(Contract):
     __slots__ = ()
 
     def __init__(
-            self, symbol: str='', exchange: str='', localSymbol: str='',
-            multiplier: str='', currency: str='', **kwargs):
+            self, symbol: str = '', exchange: str = '', localSymbol: str = '',
+            multiplier: str = '', currency: str = '', **kwargs):
         """
         Continuous future contract.
 
@@ -244,8 +244,8 @@ class Forex(Contract):
     __slots__ = ()
 
     def __init__(
-            self, pair: str='', exchange: str='IDEALPRO',
-            symbol: str='', currency: str='', **kwargs):
+            self, pair: str = '', exchange: str = 'IDEALPRO',
+            symbol: str = '', currency: str = '', **kwargs):
         """
         Foreign exchange currency pair.
 
@@ -288,7 +288,7 @@ class Index(Contract):
     __slots__ = ()
 
     def __init__(
-            self, symbol: str='', exchange: str='', currency: str='',
+            self, symbol: str = '', exchange: str = '', currency: str = '',
             **kwargs):
         """
         Index.
@@ -307,7 +307,7 @@ class CFD(Contract):
     __slots__ = ()
 
     def __init__(
-            self, symbol: str='', exchange: str='', currency: str='',
+            self, symbol: str = '', exchange: str = '', currency: str = '',
             **kwargs):
         """
         Contract For Difference.
@@ -326,7 +326,7 @@ class Commodity(Contract):
     __slots__ = ()
 
     def __init__(
-            self, symbol: str='', exchange: str='', currency: str='',
+            self, symbol: str = '', exchange: str = '', currency: str = '',
             **kwargs):
         """
         Commodity.
@@ -355,9 +355,9 @@ class FuturesOption(Contract):
     __slots__ = ()
 
     def __init__(
-            self, symbol: str='', lastTradeDateOrContractMonth: str='',
-            strike: float=0.0, right: str='', exchange: str='',
-            multiplier: str='', currency: str='', **kwargs):
+            self, symbol: str = '', lastTradeDateOrContractMonth: str = '',
+            strike: float = 0.0, right: str = '', exchange: str = '',
+            multiplier: str = '', currency: str = '', **kwargs):
         """
         Option on a futures contract.
 

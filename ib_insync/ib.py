@@ -4,8 +4,6 @@ import datetime
 import time
 from typing import List, Iterator, Awaitable, Union
 
-import ibapi
-
 from ib_insync.client import Client
 from ib_insync.wrapper import Wrapper
 from ib_insync.contract import Contract
@@ -199,8 +197,8 @@ class IB:
         return f'<{self.__class__.__qualname__} {conn}>'
 
     def connect(
-            self, host: str='127.0.0.1', port: int=7497,
-            clientId: int=1, timeout: float=2):
+            self, host: str = '127.0.0.1', port: int = 7497,
+            clientId: int = 1, timeout: float = 2):
         """
         Connect to a running TWS or IB gateway application.
         After the connection is made the client is fully synchronized
@@ -254,7 +252,7 @@ class IB:
     def _run(self, *awaitables: List[Awaitable]):
         return util.run(*awaitables, timeout=self.RequestTimeout)
 
-    def waitOnUpdate(self, timeout: float=0) -> bool:
+    def waitOnUpdate(self, timeout: float = 0) -> bool:
         """
         Wait on any new update to arrive from the network.
 
@@ -264,7 +262,8 @@ class IB:
         """
         return self.wrapper.waitOnUpdate(timeout)
 
-    def loopUntil(self, condition=None, timeout: float=0) -> Iterator[object]:
+    def loopUntil(
+            self, condition=None, timeout: float = 0) -> Iterator[object]:
         """
         Iteratate until condition is met, with optional timeout in seconds.
         The yielded value is that of the condition or False when timed out.
@@ -288,7 +287,7 @@ class IB:
                 yield test
             self.waitOnUpdate(endTime - time.time() if timeout else 0)
 
-    def setTimeout(self, timeout: float=60):
+    def setTimeout(self, timeout: float = 60):
         """
         Set a timeout for receiving messages from TWS/IBG, emitting
         ``timeoutEvent`` if there is no incoming data for too long.
@@ -307,7 +306,7 @@ class IB:
         """
         return list(self.wrapper.accounts)
 
-    def accountValues(self, account: str='') -> List[AccountValue]:
+    def accountValues(self, account: str = '') -> List[AccountValue]:
         """
         List of account values for the given account,
         or of all accounts if account is left blank.
@@ -321,7 +320,7 @@ class IB:
         else:
             return list(self.wrapper.accountValues.values())
 
-    def accountSummary(self, account: str='') -> List[AccountValue]:
+    def accountSummary(self, account: str = '') -> List[AccountValue]:
         """
         List of account values for the given account,
         or of all accounts if account is left blank.
@@ -347,7 +346,7 @@ class IB:
         account = self.wrapper.accounts[0]
         return [v for v in self.wrapper.portfolio[account].values()]
 
-    def positions(self, account: str='') -> List[Position]:
+    def positions(self, account: str = '') -> List[Position]:
         """
         List of positions for the given account,
         or of all accounts if account is left blank.
@@ -377,8 +376,8 @@ class IB:
                 (not modelCode or v.modelCode == modelCode)]
 
     def pnlSingle(
-            self, account: str='', modelCode: str='',
-            conId: int=0) -> List[PnLSingle]:
+            self, account: str = '', modelCode: str = '',
+            conId: int = 0) -> List[PnLSingle]:
         """
         List of subscribed :class:`.PnLSingle` objects (profit and loss for
         single positions).
@@ -479,7 +478,7 @@ class IB:
 
     def reqTickers(
             self, *contracts: List[Contract],
-            regulatorySnapshot: bool=False) -> List[Ticker]:
+            regulatorySnapshot: bool = False) -> List[Ticker]:
         """
         Request and return a list of snapshot tickers.
         The list is returned when all tickers are ready.
@@ -667,7 +666,7 @@ class IB:
         """
         return self._run(self.reqCurrentTimeAsync())
 
-    def reqAccountUpdates(self, account: str=''):
+    def reqAccountUpdates(self, account: str = ''):
         """
         This is called at startup - no need to call again.
 
@@ -683,7 +682,7 @@ class IB:
         self._run(self.reqAccountUpdatesAsync(account))
 
     def reqAccountUpdatesMulti(
-            self, account: str='', modelCode: str=''):
+            self, account: str = '', modelCode: str = ''):
         """
         It is recommended to use :meth:`.accountValues` instead.
 
@@ -708,7 +707,7 @@ class IB:
         """
         self._run(self.reqAccountSummaryAsync())
 
-    def reqAutoOpenOrders(self, autoBind: bool=True):
+    def reqAutoOpenOrders(self, autoBind: bool = True):
         """
         Bind manual TWS orders so that they can be managed from this client.
         The clientId must be 0 and the TWS API setting "Use negative numbers
@@ -738,7 +737,7 @@ class IB:
         return self._run(self.reqOpenOrdersAsync())
 
     def reqExecutions(
-            self, execFilter: ExecutionFilter=None) -> List[Fill]:
+            self, execFilter: ExecutionFilter = None) -> List[Fill]:
         """
         It is recommended to use :meth:`.fills`  or
         :meth:`.executions` instead.
@@ -762,7 +761,7 @@ class IB:
         """
         return self._run(self.reqPositionsAsync())
 
-    def reqPnL(self, account: str, modelCode: str='') -> PnL:
+    def reqPnL(self, account: str, modelCode: str = '') -> PnL:
         """
         Start a subscription for profit and loss events.
 
@@ -784,7 +783,7 @@ class IB:
         self.client.reqPnL(reqId, account, modelCode)
         return pnl
 
-    def cancelPnL(self, account, modelCode: str=''):
+    def cancelPnL(self, account, modelCode: str = ''):
         """
         Cancel PnL subscription.
 
@@ -898,7 +897,7 @@ class IB:
     def reqRealTimeBars(
             self, contract: Contract, barSize: int,
             whatToShow: str, useRTH: bool,
-            realTimeBarsOptions: List[TagValue]=None) -> RealTimeBarList:
+            realTimeBarsOptions: List[TagValue] = None) -> RealTimeBarList:
         """
         Request realtime 5 second bars.
 
@@ -940,8 +939,8 @@ class IB:
             self, contract: Contract, endDateTime: object,
             durationStr: str, barSizeSetting: str,
             whatToShow: str, useRTH: bool,
-            formatDate: int=1, keepUpToDate: bool=False,
-            chartOptions: List[TagValue]=None) -> BarDataList:
+            formatDate: int = 1, keepUpToDate: bool = False,
+            chartOptions: List[TagValue] = None) -> BarDataList:
         """
         Request historical bar data.
 
@@ -1002,7 +1001,8 @@ class IB:
             startDateTime: Union[str, datetime.date],
             endDateTime: Union[str, datetime.date],
             numberOfTicks: int, whatToShow: str, useRth: bool,
-            ignoreSize: bool=False, miscOptions: List[TagValue]=None) -> List:
+            ignoreSize: bool = False,
+            miscOptions: List[TagValue] = None) -> List:
         """
         Request historical ticks. The time resolution of the ticks
         is one second.
@@ -1051,7 +1051,7 @@ class IB:
 
     def reqHeadTimeStamp(
             self, contract: Contract, whatToShow: str,
-            useRTH: bool, formatDate: int=1) -> datetime.datetime:
+            useRTH: bool, formatDate: int = 1) -> datetime.datetime:
         """
         Get the datetime of earliest available historical data
         for the contract.
@@ -1068,9 +1068,9 @@ class IB:
                 contract, whatToShow, useRTH, formatDate))
 
     def reqMktData(
-            self, contract: Contract, genericTickList: str='',
-            snapshot: bool=False, regulatorySnapshot: bool=False,
-            mktDataOptions: List[TagValue]=None) -> Ticker:
+            self, contract: Contract, genericTickList: str = '',
+            snapshot: bool = False, regulatorySnapshot: bool = False,
+            mktDataOptions: List[TagValue] = None) -> Ticker:
         """
         Subscribe to tick data or request a snapshot.
         Returns the Ticker that holds the market data. The ticker will
@@ -1131,7 +1131,7 @@ class IB:
 
     def reqTickByTickData(
             self, contract: Contract, tickType: str,
-            numberOfTicks: int=0, ignoreSize: bool=False) -> Ticker:
+            numberOfTicks: int = 0, ignoreSize: bool = False) -> Ticker:
         """
         Subscribe to tick-by-tick data and return the Ticker that
         holds the ticks in ticker.tickByTicks.
@@ -1177,8 +1177,8 @@ class IB:
         return self._run(self.reqMktDepthExchangesAsync())
 
     def reqMktDepth(
-            self, contract: Contract, numRows: int=5,
-            isSmartDepth: bool=False, mktDepthOptions=None) -> Ticker:
+            self, contract: Contract, numRows: int = 5,
+            isSmartDepth: bool = False, mktDepthOptions=None) -> Ticker:
         """
         Subscribe to market depth data (a.k.a. DOM, L2 or order book).
 
@@ -1246,7 +1246,7 @@ class IB:
 
     def reqFundamentalData(
             self, contract: Contract, reportType: str,
-            fundamentalDataOptions: List[TagValue]=None) -> str:
+            fundamentalDataOptions: List[TagValue] = None) -> str:
         """
         Get fundamental data of a contract in XML format.
 
@@ -1272,9 +1272,9 @@ class IB:
 
     def reqScannerData(
             self, subscription: ScannerSubscription,
-            scannerSubscriptionOptions: List[TagValue]=None,
+            scannerSubscriptionOptions: List[TagValue] = None,
             scannerSubscriptionFilterOptions:
-            List[TagValue]=None) -> ScanDataList:
+            List[TagValue] = None) -> ScanDataList:
         """
         Do a blocking market scan by starting a subscription and canceling it
         after the initial list of results are in.
@@ -1294,9 +1294,9 @@ class IB:
 
     def reqScannerSubscription(
             self, subscription: ScannerSubscription,
-            scannerSubscriptionOptions: List[TagValue]=None,
+            scannerSubscriptionOptions: List[TagValue] = None,
             scannerSubscriptionFilterOptions:
-            List[TagValue]=None) -> ScanDataList:
+            List[TagValue] = None) -> ScanDataList:
         """
         Subscribe to market scan data.
 
@@ -1348,7 +1348,7 @@ class IB:
     def calculateImpliedVolatility(
             self, contract: Contract,
             optionPrice: float, underPrice: float,
-            implVolOptions: List[TagValue]=None) -> OptionComputation:
+            implVolOptions: List[TagValue] = None) -> OptionComputation:
         """
         Calculate the volatility given the option price.
 
@@ -1445,7 +1445,7 @@ class IB:
 
     def reqNewsArticle(
             self, providerCode: str, articleId: str,
-            newsArticleOptions: List[TagValue]=None) -> NewsArticle:
+            newsArticleOptions: List[TagValue] = None) -> NewsArticle:
         """
         Get the body of a news article.
 
@@ -1467,7 +1467,7 @@ class IB:
             startDateTime: Union[str, datetime.date],
             endDateTime: Union[str, datetime.date],
             totalResults: int,
-            historicalNewsOptions: List[TagValue]=None) -> HistoricalNews:
+            historicalNewsOptions: List[TagValue] = None) -> HistoricalNews:
         """
         Get historical news headline.
 

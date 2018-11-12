@@ -224,7 +224,7 @@ class timeit:
         print(self.title + ' took ' + formatSI(time.time() - self.t0) + 's')
 
 
-def run(*awaitables, timeout: float=None):
+def run(*awaitables, timeout: float = None):
     """
     By default run the event loop forever.
 
@@ -281,7 +281,7 @@ def schedule(
     loop.call_later(delay, callback, *args)
 
 
-def sleep(secs: float=0.02) -> bool:
+def sleep(secs: float = 0.02) -> bool:
     """
     Wait for the given amount of seconds while everything still keeps
     processing in the background. Never use time.sleep().
@@ -376,7 +376,7 @@ def startLoop():
         enable_gui('asyncio')
 
 
-def useQt(qtLib: str='PyQt5', period: float=0.01):
+def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
     """
     Run combined Qt5/asyncio event loop.
 
