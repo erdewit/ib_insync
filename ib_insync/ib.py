@@ -1625,6 +1625,7 @@ class IB:
         return future
 
     def reqAccountSummaryAsync(self):
+        import ibapi.account_summary_tags
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqAccountSummary(
