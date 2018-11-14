@@ -103,7 +103,8 @@ class Contract(Object):
             'FOP': FuturesOption,
             'FUND': MutualFund,
             'IOPT': Warrant,
-            'BAG': Bag
+            'BAG': Bag,
+            'NEWS': Contract
         }[secType]
         return cls(**kwargs)
 
