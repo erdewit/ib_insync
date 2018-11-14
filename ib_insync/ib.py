@@ -4,6 +4,10 @@ import datetime
 import time
 from typing import List, Iterator, Awaitable, Union
 
+import ibapi.account_summary_tags
+
+import ib_insync.util as util
+from ib_insync.event import Event
 from ib_insync.client import Client
 from ib_insync.wrapper import Wrapper
 from ib_insync.contract import Contract
@@ -17,8 +21,6 @@ from ib_insync.objects import (
     NewsTick, NewsBulletin, NewsArticle, NewsProvider, HistoricalNews,
     ScannerSubscription, ScanDataList, HistogramData, PriceIncrement,
     DepthMktDataDescription)
-import ib_insync.util as util
-from ib_insync.event import Event
 
 __all__ = ['IB']
 
@@ -1625,7 +1627,6 @@ class IB:
         return future
 
     def reqAccountSummaryAsync(self):
-        import ibapi.account_summary_tags
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqAccountSummary(
