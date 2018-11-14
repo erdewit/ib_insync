@@ -332,9 +332,10 @@ class Client(EClient):
         elif msgId == 1:
             if self._priceSizeTick:
                 _, _, reqId, tickType, price, size, _ = fields
-                self._priceSizeTick(
-                    int(reqId), int(tickType),
-                    float(price), int(size))
+                if price:
+                    self._priceSizeTick(
+                        int(reqId), int(tickType),
+                        float(price), int(size))
                 return
         elif msgId == 12:
             _, _, reqId, position, operation, side, price, size = fields
