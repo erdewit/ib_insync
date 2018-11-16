@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.util &#8212; IB-insync 0.9.34 documentation</title>
+    <title>ib_insync.util &#8212; IB-insync 0.9.35 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -66,6 +66,14 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="documentwrapper">
@@ -301,7 +309,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s1">&#39; took &#39;</span> <span class="o">+</span> <span class="n">formatSI</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../api.html#ib_insync.ib.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="o">*</span><span class="n">awaitables</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../api.html#ib_insync.ib.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="o">*</span><span class="n">awaitables</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    By default run the event loop forever.</span>
 
@@ -358,7 +366,7 @@
     <span class="n">loop</span><span class="o">.</span><span class="n">call_later</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="sleep"><a class="viewcode-back" href="../../api.html#ib_insync.ib.sleep">[docs]</a><span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">secs</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="sleep"><a class="viewcode-back" href="../../api.html#ib_insync.ib.sleep">[docs]</a><span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">secs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wait for the given amount of seconds while everything still keeps</span>
 <span class="sd">    processing in the background. Never use time.sleep().</span>
@@ -453,7 +461,7 @@
         <span class="n">enable_gui</span><span class="p">(</span><span class="s1">&#39;asyncio&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="useQt"><a class="viewcode-back" href="../../api.html#ib_insync.ib.useQt">[docs]</a><span class="k">def</span> <span class="nf">useQt</span><span class="p">(</span><span class="n">qtLib</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;PyQt5&#39;</span><span class="p">,</span> <span class="n">period</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<div class="viewcode-block" id="useQt"><a class="viewcode-back" href="../../api.html#ib_insync.ib.useQt">[docs]</a><span class="k">def</span> <span class="nf">useQt</span><span class="p">(</span><span class="n">qtLib</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;PyQt5&#39;</span><span class="p">,</span> <span class="n">period</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run combined Qt5/asyncio event loop.</span>
 
@@ -534,8 +542,8 @@
       &copy;2018, Ewald de Wit.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

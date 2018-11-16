@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.9.34 documentation</title>
+    <title>API docs &#8212; IB-insync 0.9.35 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -82,6 +82,14 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="documentwrapper">
@@ -92,7 +100,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.34.</p>
+<p>Release 0.9.35.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -191,6 +199,8 @@ A profit- and loss entry is updated.</li>
 A profit- and loss entry for a single position is updated.</li>
 <li><code class="docutils literal notranslate"><span class="pre">tickNewsEvent</span></code> (news: <a class="reference internal" href="#ib_insync.objects.NewsTick" title="ib_insync.objects.NewsTick"><code class="xref py py-class docutils literal notranslate"><span class="pre">NewsTick</span></code></a>):
 Emit a new news headline.</li>
+<li><code class="docutils literal notranslate"><span class="pre">newsBulletinEvent</span></code> (bulletin: <a class="reference internal" href="#ib_insync.objects.NewsBulletin" title="ib_insync.objects.NewsBulletin"><code class="xref py py-class docutils literal notranslate"><span class="pre">NewsBulletin</span></code></a>):
+Emit a new news bulletin.</li>
 <li><code class="docutils literal notranslate"><span class="pre">scannerDataEvent</span></code> (data: <a class="reference internal" href="#ib_insync.objects.ScanDataList" title="ib_insync.objects.ScanDataList"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanDataList</span></code></a>):
 Emit data from a scanner subscription.</li>
 <li><code class="docutils literal notranslate"><span class="pre">errorEvent</span></code> (reqId: int, errorCode: int, errorString: str,
@@ -210,7 +220,7 @@ handler as it may lead to too much recursion.</p>
 </dl>
 <dl class="attribute">
 <dt id="ib_insync.ib.IB.events">
-<code class="descname">events</code><em class="property"> = ('connectedEvent', 'disconnectedEvent', 'updateEvent', 'pendingTickersEvent', 'barUpdateEvent', 'newOrderEvent', 'orderModifyEvent', 'cancelOrderEvent', 'openOrderEvent', 'orderStatusEvent', 'execDetailsEvent', 'commissionReportEvent', 'updatePortfolioEvent', 'positionEvent', 'accountValueEvent', 'accountSummaryEvent', 'pnlEvent', 'pnlSingleEvent', 'scannerDataEvent', 'tickNewsEvent', 'errorEvent', 'timeoutEvent')</em><a class="headerlink" href="#ib_insync.ib.IB.events" title="Permalink to this definition">¶</a></dt>
+<code class="descname">events</code><em class="property"> = ('connectedEvent', 'disconnectedEvent', 'updateEvent', 'pendingTickersEvent', 'barUpdateEvent', 'newOrderEvent', 'orderModifyEvent', 'cancelOrderEvent', 'openOrderEvent', 'orderStatusEvent', 'execDetailsEvent', 'commissionReportEvent', 'updatePortfolioEvent', 'positionEvent', 'accountValueEvent', 'accountSummaryEvent', 'pnlEvent', 'pnlSingleEvent', 'scannerDataEvent', 'tickNewsEvent', 'newsBulletinEvent', 'errorEvent', 'timeoutEvent')</em><a class="headerlink" href="#ib_insync.ib.IB.events" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -278,7 +288,7 @@ This will clear all session state.</p>
 
 <dl class="staticmethod">
 <dt id="ib_insync.ib.IB.run">
-<em class="property">static </em><code class="descname">run</code><span class="sig-paren">(</span><em>*awaitables</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.ib.IB.run" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">run</code><span class="sig-paren">(</span><em>*</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.ib.IB.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>By default run the event loop forever.</p>
 <p>When awaitables (like Tasks, Futures or coroutines) are given then
 run the event loop until each has completed and return their results.</p>
@@ -2062,6 +2072,11 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="ib_insync.ib.IB.newsBulletinEvent">
+<code class="descname">newsBulletinEvent</code><a class="headerlink" href="#ib_insync.ib.IB.newsBulletinEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="ib_insync.ib.IB.openOrderEvent">
 <code class="descname">openOrderEvent</code><a class="headerlink" href="#ib_insync.ib.IB.openOrderEvent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2514,12 +2529,12 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'Filled', 'Inactive', 'ApiCancelled', 'Cancelled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'ApiCancelled', 'Cancelled', 'Filled', 'Inactive'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.ActiveStates">
-<code class="descname">ActiveStates</code><em class="property"> = {'PreSubmitted', 'Submitted', 'PendingSubmit', 'ApiPending'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ActiveStates</code><em class="property"> = {'ApiPending', 'PendingSubmit', 'PreSubmitted', 'Submitted'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.ActiveStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2591,7 +2606,7 @@ and as keyword, the keyword wins.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/available_orders.html">https://interactivebrokers.github.io/tws-api/available_orders.html</a></p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'discretionaryUpToLimitPrice': False, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 139958577331056: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'discretionaryUpToLimitPrice': False, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 140252375367976: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -3752,9 +3767,32 @@ the greeks as calculated by Interactive Brokers’ option model.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.ticker.Ticker.hasBidAsk">
+<code class="descname">hasBidAsk</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ticker.html#Ticker.hasBidAsk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ticker.Ticker.hasBidAsk" title="Permalink to this definition">¶</a></dt>
+<dd><p>See if this ticker has a valid bid and ask.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.ticker.Ticker.midpoint">
 <code class="descname">midpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ticker.html#Ticker.midpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ticker.Ticker.midpoint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return average of bid and ask.</p>
+<dd><p>Return average of bid and ask, or NaN if no valid bid and ask
+are available.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -3766,6 +3804,14 @@ the greeks as calculated by Interactive Brokers’ option model.</p>
 <li>average of bid and ask (midpoint);</li>
 <li>close price.</li>
 </ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -7298,8 +7344,8 @@ and reconnect. Restarting will also occur directly on error 1100.</p>
       &copy;2018, Ewald de Wit.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/api.rst.txt"
