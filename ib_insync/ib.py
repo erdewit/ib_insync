@@ -143,6 +143,9 @@ class IB:
         * ``tickNewsEvent`` (news: :class:`.NewsTick`):
           Emit a new news headline.
 
+        * ``newsBulletinEvent`` (bulletin: :class:`.NewsBulletin`):
+          Emit a new news bulletin.
+
         * ``scannerDataEvent`` (data: :class:`.ScanDataList`):
           Emit data from a scanner subscription.
 
@@ -170,7 +173,8 @@ class IB:
         'execDetailsEvent', 'commissionReportEvent',
         'updatePortfolioEvent', 'positionEvent', 'accountValueEvent',
         'accountSummaryEvent', 'pnlEvent', 'pnlSingleEvent',
-        'scannerDataEvent', 'tickNewsEvent', 'errorEvent', 'timeoutEvent')
+        'scannerDataEvent', 'tickNewsEvent', 'newsBulletinEvent',
+        'errorEvent', 'timeoutEvent')
 
     __slots__ = ('wrapper', 'client', '_logger') + events
 

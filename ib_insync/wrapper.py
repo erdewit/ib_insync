@@ -907,6 +907,7 @@ class Wrapper(EWrapper):
     def updateNewsBulletin(self, msgId, msgType, message, origExchange):
         bulletin = NewsBulletin(msgId, msgType, message, origExchange)
         self.newsBulletins[msgId] = bulletin
+        self._ib.newsBulletinEvent.emit(bulletin)
 
     @iswrapper
     def receiveFA(self, _faDataType, faXmlData):

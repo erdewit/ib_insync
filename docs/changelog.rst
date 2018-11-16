@@ -4,11 +4,18 @@ Changelog
 0.9
 ---
 
+Version 0.9.35
+^^^^^^^^^^^^^^
+
+* ``Ticker.hasBidAsk()`` added.
+* ``IB.newsBulletinEvent`` added.
+* Various small fixes.
+
 Version 0.9.34
 ^^^^^^^^^^^^^^
 
 * Old event system (ib.setCallback) removed.
-* Compatability fix with previous ibapi version.
+* Compatibility fix with previous ibapi version.
 
 Version 0.9.33
 ^^^^^^^^^^^^^^
