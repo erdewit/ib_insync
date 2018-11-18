@@ -90,6 +90,7 @@ class Client(EClient):
         EClient.reset(self)
         self._readyEvent.clear()
         self._data = b''
+        self._paceApi = False
         self._reqIdSeq = 0
         self._accounts = None
         self._startTime = time.time()
@@ -139,7 +140,9 @@ class Client(EClient):
             raise ConnectionError('Not connected')
         return self._accounts
 
-    def connect(self, host: str, port: int, clientId: int, timeout: float = 2):
+    def connect(
+            self, host: str, port: int, clientId: int,
+            timeout: float = 2, paceApi: bool = False):
         """
         Connect to a running TWS or IB gateway application.
 
@@ -151,10 +154,12 @@ class Client(EClient):
             timeout: If establishing the connection takes longer than
                 ``timeout`` seconds then the ``asyncio.TimeoutError`` exception
                 is raised. Set to 0 to disable timeout.
+            paceApi: Use request pacing built into TWS/gateway 974+.
         """
-        util.run(self.connectAsync(host, port, clientId, timeout))
+        util.run(self.connectAsync(host, port, clientId, timeout, paceApi))
 
-    async def connectAsync(self, host, port, clientId, timeout=2):
+    async def connectAsync(
+            self, host, port, clientId, timeout=2, paceApi=False):
         self._logger.info(
             f'Connecting to {host}:{port} with clientId {clientId}...')
         self.host = host
@@ -166,6 +171,7 @@ class Client(EClient):
         self.conn.hasData = self._onSocketHasData
         self.conn.disconnected = self._onSocketDisconnected
         self.conn.hasError = self._onSocketHasError
+        self._paceApi = paceApi
         try:
             fut = asyncio.gather(self.conn.connect(), self._readyEvent.wait())
             await asyncio.wait_for(fut, timeout)
@@ -215,10 +221,11 @@ class Client(EClient):
         self._logger.info('Connected')
         # start handshake
         msg = b'API\0'
-        versionRange = (
-            ibapi.server_versions.MIN_CLIENT_VER,
-            min(self.MaxClientVersion, ibapi.server_versions.MAX_CLIENT_VER))
-        msg += self._prefix(b'v%d..%d' % versionRange)
+        minVer = ibapi.server_versions.MIN_CLIENT_VER
+        maxVer = min(
+            self.MaxClientVersion, ibapi.server_versions.MAX_CLIENT_VER)
+        connectOptions = b' +PACEAPI' if self._paceApi else b''
+        msg += self._prefix(b'v%d..%d%s' % (minVer, maxVer, connectOptions))
         self.conn.sendMsg(msg)
         self.decoder = ibapi.decoder.Decoder(self.wrapper, None)
 

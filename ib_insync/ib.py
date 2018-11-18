@@ -204,7 +204,7 @@ class IB:
 
     def connect(
             self, host: str = '127.0.0.1', port: int = 7497,
-            clientId: int = 1, timeout: float = 2):
+            clientId: int = 1, timeout: float = 2, paceApi: bool = False):
         """
         Connect to a running TWS or IB gateway application.
         After the connection is made the client is fully synchronized
@@ -221,6 +221,7 @@ class IB:
             timeout: If establishing the connection takes longer than
                 ``timeout`` seconds then the ``asyncio.TimeoutError`` exception
                 is raised. Set to 0 to disable timeout.
+            paceApi: Use request pacing built into TWS/gateway 974+.
         """
         self._run(self.connectAsync(host, port, clientId, timeout))
         return self
@@ -1550,9 +1551,10 @@ class IB:
 
     # now entering the parallel async universe
 
-    async def connectAsync(self, host, port, clientId, timeout=2):
+    async def connectAsync(
+            self, host, port, clientId, timeout=2, paceApi=False):
         self.wrapper.clientId = clientId
-        await self.client.connectAsync(host, port, clientId, timeout)
+        await self.client.connectAsync(host, port, clientId, timeout, paceApi)
         accounts = self.client.getAccounts()
         await asyncio.gather(
             self.reqAccountUpdatesAsync(accounts[0]),
