@@ -168,3 +168,9 @@ This example depends on PyQt5:
 It's also possible to use PySide2 instead; To do so uncomment the PySide2
 import and ``util.useQt`` lines in the example and comment out their PyQt5
 counterparts.
+
+Integration with Tkinter
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+To integrate with the Tkinter event loop, take a look at
+`this example <https://github.com/erdewit/ib_insync/blob/master/examples/tk.py>`_.
