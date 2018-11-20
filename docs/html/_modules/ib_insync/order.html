@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.order &#8212; IB-insync 0.8.14 documentation</title>
+    <title>ib_insync.order &#8212; IB-insync 0.9.35 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.8.14',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -29,8 +21,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -58,43 +49,81 @@
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks.html">Notebooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../recipes.html">Code recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../code.html">Source code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../links.html">Links</a></li>
 </ul>
 
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for ib_insync.order</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
-
-<span class="kn">import</span> <span class="nn">ibapi</span>
+<span></span><span class="kn">import</span> <span class="nn">ibapi</span>
 
 <span class="kn">from</span> <span class="nn">.objects</span> <span class="k">import</span> <span class="n">Object</span>
+<span class="kn">from</span> <span class="nn">ib_insync.event</span> <span class="k">import</span> <span class="n">Event</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Trade OrderStatus Order &#39;</span>
-        <span class="s1">&#39;LimitOrder MarketOrder StopOrder StopLimitOrder&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;Trade OrderStatus Order &#39;</span>
+    <span class="s1">&#39;LimitOrder MarketOrder StopOrder StopLimitOrder&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="Trade"><a class="viewcode-back" href="../../api.html#ib_insync.order.Trade">[docs]</a><span class="k">class</span> <span class="nc">Trade</span><span class="p">(</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Trade&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;contract order orderStatus fills log&#39;</span><span class="p">)):</span>
+<div class="viewcode-block" id="Trade"><a class="viewcode-back" href="../../api.html#ib_insync.order.Trade">[docs]</a><span class="k">class</span> <span class="nc">Trade</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Trade keeps track of an order, its status and all its fills.</span>
+
+<span class="sd">    Events:</span>
+<span class="sd">        * ``statusEvent`` (trade: :class:`.Trade`)</span>
+<span class="sd">        * ``modifyEvent`` (trade: :class:`.Trade`)</span>
+<span class="sd">        * ``fillEvent`` (trade: :class:`.Trade`, fill: :class:`.Fill`)</span>
+<span class="sd">        * ``commissionReportEvent`` (trade: :class:`.Trade`,</span>
+<span class="sd">          fill: :class:`.Fill`, commissionReport: :class:`.CommissionReport`)</span>
+<span class="sd">        * ``filledEvent`` (trade: :class:`.Trade`)</span>
+<span class="sd">        * ``cancelEvent`` (trade: :class:`.Trade`)</span>
+<span class="sd">        * ``cancelledEvent`` (trade: :class:`.Trade`)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;statusEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;modifyEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;fillEvent&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;commissionReportEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;filledEvent&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;cancelEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;cancelledEvent&#39;</span><span class="p">)</span>
+
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">contract</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orderStatus</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">fills</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">log</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="n">events</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">Event</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Trade</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Trade.isActive"><a class="viewcode-back" href="../../api.html#ib_insync.order.Trade.isActive">[docs]</a>    <span class="k">def</span> <span class="nf">isActive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -106,8 +135,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        True if completely filled or cancelled, false otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">(</span>
-                <span class="n">OrderStatus</span><span class="o">.</span><span class="n">Filled</span><span class="p">,</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">Cancelled</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">DoneStates</span></div>
 
 <div class="viewcode-block" id="Trade.filled"><a class="viewcode-back" href="../../api.html#ib_insync.order.Trade.filled">[docs]</a>    <span class="k">def</span> <span class="nf">filled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -123,48 +151,53 @@
 
 
 <div class="viewcode-block" id="OrderStatus"><a class="viewcode-back" href="../../api.html#ib_insync.order.OrderStatus">[docs]</a><span class="k">class</span> <span class="nc">OrderStatus</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;orderId&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;filled&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;remaining&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;avgFillPrice&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="s1">&#39;permId&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;parentId&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;lastFillPrice&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="s1">&#39;clientId&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;whyHeld&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;mktCapPrice&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="s1">&#39;lastLiquidity&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="p">}</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">orderId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">status</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">filled</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">remaining</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">avgFillPrice</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">permId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">parentId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">lastFillPrice</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">clientId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">whyHeld</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">mktCapPrice</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">lastLiquidity</span><span class="o">=</span><span class="mi">0</span>
+    <span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-    <span class="fm">__init__</span> <span class="o">=</span> <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span>
 
     <span class="n">PendingSubmit</span> <span class="o">=</span> <span class="s1">&#39;PendingSubmit&#39;</span>
     <span class="n">PendingCancel</span> <span class="o">=</span> <span class="s1">&#39;PendingCancel&#39;</span>
     <span class="n">PreSubmitted</span> <span class="o">=</span> <span class="s1">&#39;PreSubmitted&#39;</span>
     <span class="n">Submitted</span> <span class="o">=</span> <span class="s1">&#39;Submitted&#39;</span>
-    <span class="n">ApiPending</span> <span class="o">=</span> <span class="s1">&#39;ApiPending&#39;</span>  <span class="c1"># undocumented, can be returned from req(All)OpenOrders</span>
+    <span class="c1"># ApiPending is undocumented, can be returned from req(All)OpenOrders</span>
+    <span class="n">ApiPending</span> <span class="o">=</span> <span class="s1">&#39;ApiPending&#39;</span>
     <span class="n">ApiCancelled</span> <span class="o">=</span> <span class="s1">&#39;ApiCancelled&#39;</span>
     <span class="n">Cancelled</span> <span class="o">=</span> <span class="s1">&#39;Cancelled&#39;</span>
     <span class="n">Filled</span> <span class="o">=</span> <span class="s1">&#39;Filled&#39;</span>
     <span class="n">Inactive</span> <span class="o">=</span> <span class="s1">&#39;Inactive&#39;</span>
 
-    <span class="n">DoneStates</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Cancelled&#39;</span><span class="p">,</span> <span class="s1">&#39;Filled&#39;</span><span class="p">,</span> <span class="s1">&#39;ApiCancelled&#39;</span><span class="p">}</span>
+    <span class="n">DoneStates</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Cancelled&#39;</span><span class="p">,</span> <span class="s1">&#39;Filled&#39;</span><span class="p">,</span> <span class="s1">&#39;ApiCancelled&#39;</span><span class="p">,</span> <span class="s1">&#39;Inactive&#39;</span><span class="p">}</span>
     <span class="n">ActiveStates</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;PendingSubmit&#39;</span><span class="p">,</span> <span class="s1">&#39;ApiPending&#39;</span><span class="p">,</span> <span class="s1">&#39;PreSubmitted&#39;</span><span class="p">,</span> <span class="s1">&#39;Submitted&#39;</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="Order"><a class="viewcode-back" href="../../api.html#ib_insync.order.Order">[docs]</a><span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Order for trading contracts.</span>
-<span class="sd">    </span>
+
 <span class="sd">    https://interactivebrokers.github.io/tws-api/available_orders.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">Order</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> \
-            <span class="p">[</span><span class="s1">&#39;sharesAllocation&#39;</span><span class="p">,</span> <span class="s1">&#39;orderComboLegsCount&#39;</span><span class="p">,</span> <span class="s1">&#39;algoParamsCount&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;smartComboRoutingParamsCount&#39;</span><span class="p">,</span> <span class="s1">&#39;conditionsSize&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;conditionType&#39;</span><span class="p">]</span>  <span class="c1"># bugs in decoder.py</span>
-    <span class="fm">__init__</span> <span class="o">=</span> <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="p">[</span>
+        <span class="s1">&#39;sharesAllocation&#39;</span><span class="p">,</span> <span class="s1">&#39;orderComboLegsCount&#39;</span><span class="p">,</span> <span class="s1">&#39;algoParamsCount&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;smartComboRoutingParamsCount&#39;</span><span class="p">,</span> <span class="s1">&#39;conditionsSize&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;conditionType&#39;</span><span class="p">]</span>  <span class="c1"># bugs in decoder.py</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">conditions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conditions</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nonDefaults</span><span class="p">()</span>
@@ -187,47 +220,51 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">totalQuantity</span><span class="p">,</span> <span class="n">lmtPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">Order</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderType</span><span class="o">=</span><span class="s1">&#39;LMT&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
-                <span class="n">totalQuantity</span><span class="o">=</span><span class="n">totalQuantity</span><span class="p">,</span> <span class="n">lmtPrice</span><span class="o">=</span><span class="n">lmtPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">Order</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">orderType</span><span class="o">=</span><span class="s1">&#39;LMT&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+            <span class="n">totalQuantity</span><span class="o">=</span><span class="n">totalQuantity</span><span class="p">,</span> <span class="n">lmtPrice</span><span class="o">=</span><span class="n">lmtPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MarketOrder"><a class="viewcode-back" href="../../api.html#ib_insync.order.MarketOrder">[docs]</a><span class="k">class</span> <span class="nc">MarketOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">totalQuantity</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">Order</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderType</span><span class="o">=</span><span class="s1">&#39;MKT&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
-                <span class="n">totalQuantity</span><span class="o">=</span><span class="n">totalQuantity</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">Order</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">orderType</span><span class="o">=</span><span class="s1">&#39;MKT&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+            <span class="n">totalQuantity</span><span class="o">=</span><span class="n">totalQuantity</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="StopOrder"><a class="viewcode-back" href="../../api.html#ib_insync.order.StopOrder">[docs]</a><span class="k">class</span> <span class="nc">StopOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">totalQuantity</span><span class="p">,</span> <span class="n">stopPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">Order</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderType</span><span class="o">=</span><span class="s1">&#39;STP&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
-                <span class="n">totalQuantity</span><span class="o">=</span><span class="n">totalQuantity</span><span class="p">,</span> <span class="n">auxPrice</span><span class="o">=</span><span class="n">stopPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">Order</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">orderType</span><span class="o">=</span><span class="s1">&#39;STP&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+            <span class="n">totalQuantity</span><span class="o">=</span><span class="n">totalQuantity</span><span class="p">,</span> <span class="n">auxPrice</span><span class="o">=</span><span class="n">stopPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="StopLimitOrder"><a class="viewcode-back" href="../../api.html#ib_insync.order.StopLimitOrder">[docs]</a><span class="k">class</span> <span class="nc">StopLimitOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">totalQuantity</span><span class="p">,</span> <span class="n">lmtPrice</span><span class="p">,</span> <span class="n">stopPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">Order</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderType</span><span class="o">=</span><span class="s1">&#39;STP LMT&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
-                <span class="n">totalQuantity</span><span class="o">=</span><span class="n">totalQuantity</span><span class="p">,</span> <span class="n">lmtPrice</span><span class="o">=</span><span class="n">lmtPrice</span><span class="p">,</span>
-                <span class="n">auxPrice</span><span class="o">=</span><span class="n">stopPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
+        <span class="n">Order</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">orderType</span><span class="o">=</span><span class="s1">&#39;STP LMT&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+            <span class="n">totalQuantity</span><span class="o">=</span><span class="n">totalQuantity</span><span class="p">,</span> <span class="n">lmtPrice</span><span class="o">=</span><span class="n">lmtPrice</span><span class="p">,</span>
+            <span class="n">auxPrice</span><span class="o">=</span><span class="n">stopPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
+          
         </div>
       </div>
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2017, Ewald de Wit.
+      &copy;2018, Ewald de Wit.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

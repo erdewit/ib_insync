@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.flexreport &#8212; IB-insync 0.8.14 documentation</title>
+    <title>ib_insync.flexreport &#8212; IB-insync 0.9.35 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.8.14',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -29,8 +21,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   <div class="document">
     
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -58,24 +49,37 @@
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks.html">Notebooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../recipes.html">Code recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../code.html">Source code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../links.html">Links</a></li>
 </ul>
 
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for ib_insync.flexreport</h1><div class="highlight"><pre>
@@ -92,23 +96,24 @@
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.flexreport&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="FlexError"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexError">[docs]</a><span class="k">class</span> <span class="nc">FlexError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span> <span class="k">pass</span></div>
+<div class="viewcode-block" id="FlexError"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexError">[docs]</a><span class="k">class</span> <span class="nc">FlexError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="FlexReport"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport">[docs]</a><span class="k">class</span> <span class="nc">FlexReport</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Download and parse IB account statements via the Flex Web Service.</span>
 <span class="sd">    https://www.interactivebrokers.com/en/software/am/am/reports/flex_web_service_version_3.htm</span>
-<span class="sd">    </span>
-<span class="sd">    To obtain a ``token`` in account managment, go to</span>
+
+<span class="sd">    To obtain a ``token`` in account management, go to</span>
 <span class="sd">    Reports -&gt; Settings -&gt; Flex Web Service.</span>
 <span class="sd">    Tip: choose a 1 year expiry.</span>
-<span class="sd">    </span>
+
 <span class="sd">    To obtain a ``queryId``: Create and save a query with</span>
 <span class="sd">    Report -&gt; Activity -&gt; Flex Queries or</span>
 <span class="sd">    Report -&gt; Trade Confirmations -&gt; Flex Queries.</span>
 <span class="sd">    Find the query ID (not the query name).</span>
-<span class="sd">    </span>
+
 <span class="sd">    A large query can take a few minutes. In the weekends the query servers</span>
 <span class="sd">    can be down.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -134,7 +139,7 @@
 <div class="viewcode-block" id="FlexReport.extract"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parseNumbers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract items of given topic and return as list of objects.</span>
-<span class="sd">        </span>
+
 <span class="sd">        The topic is a string like TradeConfirm, ChangeInDividendAccrual,</span>
 <span class="sd">        Order, etc.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -153,17 +158,18 @@
                             <span class="k">pass</span>
         <span class="k">return</span> <span class="n">results</span></div>
 
-<div class="viewcode-block" id="FlexReport.df"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport.df">[docs]</a>    <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topics</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parseNumbers</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="FlexReport.df"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport.df">[docs]</a>    <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parseNumbers</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Same as extract but return the result as a pandas DataFrame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">topics</span><span class="p">,</span> <span class="n">parseNumbers</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">parseNumbers</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="FlexReport.download"><a class="viewcode-back" href="../../api.html#ib_insync.flexreport.FlexReport.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">queryId</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Download report for the given ``token`` and ``queryId``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://gdcdyn.interactivebrokers.com&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s1">&#39;https://gdcdyn.interactivebrokers.com&#39;</span>
                 <span class="n">f</span><span class="s1">&#39;/Universal/servlet/FlexStatementService.SendRequest?&#39;</span>
                 <span class="n">f</span><span class="s1">&#39;t=</span><span class="si">{token}</span><span class="s1">&amp;q=</span><span class="si">{queryId}</span><span class="s1">&amp;v=3&#39;</span><span class="p">)</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
@@ -220,16 +226,17 @@
 </pre></div>
 
           </div>
+          
         </div>
       </div>
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2017, Ewald de Wit.
+      &copy;2018, Ewald de Wit.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

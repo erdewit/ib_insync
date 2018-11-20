@@ -9,6 +9,7 @@ Contents
    notebooks
    recipes
    code
+   changelog
    links
 
 .. include:: ../README.rst

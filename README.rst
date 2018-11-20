@@ -26,12 +26,14 @@ Installation
 Requirements:
 
 * Python_ version 3.6 or higher;
-* The `Interactive Brokers Python API`_ version 9.73.03 or higher;
-* A running TWS or IB gateway application (version 967 or higher).
+* The `Interactive Brokers Python API`_ version 9.73.06 or higher. If using
+  Python 3.7, then comment out line 60 of ibapi/client.py that reads
+  ``self.async = False``.
+* A running TWS or IB gateway application (version 969 or higher).
   Make sure the
   `API port is enabled <https://interactivebrokers.github.io/tws-api/initial_setup.html>`_
   and 'Download open orders on connection' is checked.
-  
+
 To install packages needed for the examples and notebooks::
 
     pip3 install -U jupyter numpy pandas
@@ -44,20 +46,21 @@ This is a complete script to download historical data:
 .. code-block:: python
 
     from ib_insync import *
-      
+    # util.startLoop()  # uncomment this line when in a notebook
+
     ib = IB()
     ib.connect('127.0.0.1', 7497, clientId=1)
-    
+
     contract = Forex('EURUSD')
     bars = ib.reqHistoricalData(contract, endDateTime='', durationStr='30 D',
             barSizeSetting='1 hour', whatToShow='MIDPOINT', useRTH=True)
-    
+
     # convert to pandas dataframe:
     df = util.df(bars)
     print(df[['date', 'open', 'high', 'low', 'close']])
-        
+
 Output::
-    
+
                        date      open      high       low     close
     0   2017-08-13 23:15:00  1.182850  1.183100  1.182100  1.182400
     1   2017-08-14 00:00:00  1.182400  1.182450  1.181875  1.182175
@@ -67,12 +70,17 @@ Output::
 
 
 Be sure to take a look at the
-`example notebooks <http://rawgit.com/erdewit/ib_insync/master/docs/html/notebooks.html>`_ too.
+`notebooks <http://rawgit.com/erdewit/ib_insync/master/docs/html/notebooks.html>`_
+and the
+`recipes <http://rawgit.com/erdewit/ib_insync/master/docs/html/recipes.html>`_
+too.
 
 Documentation
 -------------
 
-`API docs <http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html>`_
+The complete `API documentation <http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html>`_.
+
+`Changelog <http://rawgit.com/erdewit/ib_insync/master/docs/html/changelog.html>`_.
 
 Discussion
 ----------
@@ -87,130 +95,7 @@ The software is provided on the conditions of the simplified BSD license.
 
 This project is not affiliated with Interactive Brokers Group, Inc.'s.
 
-Changelog
----------
 
-Version 0.8.14
-^^^^^^^^^^^^^^
-
-* Fix for ib.schedule()
-
-Version 0.8.13
-^^^^^^^^^^^^^^
-
-* Import order conditions into ib_insync namespace
-* util.useQtAlt() added for using nested event loops on Windows with Qt
-* ib.schedule() added
-
-Version 0.8.12
-^^^^^^^^^^^^^^
-
-* Fixed conditional orders
-
-Version 0.8.11
-^^^^^^^^^^^^^^
-
-* FlexReport added
-
-Version 0.8.10
-^^^^^^^^^^^^^^
-
-* Fixed issue #22
-
-Version 0.8.9
-^^^^^^^^^^^^^
-* Ticker.vwap field added (for use with generic tick 233)
-* Client with master clientId can now monitor orders and trades of other clients
-
-Version 0.8.8
-^^^^^^^^^^^^^
-* ``barUpdate`` event now used also for reqRealTimeBars responses
-* ``reqRealTimeBars`` will return RealTimeBarList instead of list
-* realtime bars example added to bar data notebook
-* fixed event handling bug in Wrapper.execDetails
-
-Version 0.8.7
-^^^^^^^^^^^^^
-* BarDataList now used with reqHistoricalData; it also stores the request parameters
-* updated the typing annotations
-* added ``barUpdate`` event to ``IB``
-* bar- and tick-data notebooks updated to use callbacks for realtime data
-
-Version 0.8.6
-^^^^^^^^^^^^^
-* ticker.marketPrice adjusted to ignore price of -1
-* ticker.avVolume handling fixed
-
-Version 0.8.5
-^^^^^^^^^^^^^
-* realtimeBar wrapper fix
-* context manager for IB and IB.connect()
-
-Version 0.8.4
-^^^^^^^^^^^^^
-* compatibility with upcoming ibapi changes
-* added ``error`` event to ``IB``
-* notebooks updated to use ``loopUntil``
-* small fixes and performance improvements
-
-Version 0.8.3
-^^^^^^^^^^^^^
-* new IB.reqHistoricalTicks API method
-* new IB.loopUntil method
-* fixed issues #4, #6, #7
-
-Version 0.8.2
-^^^^^^^^^^^^^
-* fixed swapped ticker.putOpenInterest vs ticker.callOpenInterest
-
-Version 0.8.1
-^^^^^^^^^^^^^
-
-* fixed wrapper.tickSize regression
-
-Version 0.8.0
-^^^^^^^^^^^^^
-
-* support for realtime bars and keepUpToDate for historical bars
-* added option greeks to Ticker
-* new IB.waitUntil and IB.timeRange scheduling methods
-* notebooks no longer depend on PyQt5 for live updates
-* notebooks can be run in one go ('run all')
-* tick handling bypasses ibapi decoder for more efficiency 
-
-Version 0.7.3
-^^^^^^^^^^^^^
-
-* IB.whatIfOrder() added
-* Added detection and warning about common setup problems
-
-Version 0.7.2
-^^^^^^^^^^^^^
-
-* Removed import from ipykernel 
-
-Version 0.7.1
-^^^^^^^^^^^^^
-
-* Removed dependencies for installing via pip
-
-Version 0.7.0
-^^^^^^^^^^^^^
-
-* added lots of request methods
-* order book (DOM) added
-* notebooks updated
-
-Version 0.6.1
-^^^^^^^^^^^^^
-
-* Added UTC timezone to some timestamps
-* Fixed issue #1
-
-Version 0.6.0
-^^^^^^^^^^^^^
-
-* Initial release
 
 
 Good luck and enjoy,
@@ -236,5 +121,8 @@ Good luck and enjoy,
 
 .. |License| image:: https://img.shields.io/badge/license-BSD-blue.svg
    :alt:
-   
+
+.. |Docs| image:: https://readthedocs.org/projects/ib-insync/badge/?version=latest
+   :alt: Documentation Status
+   :target: http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html
 

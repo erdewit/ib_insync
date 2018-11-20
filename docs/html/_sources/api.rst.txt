@@ -11,7 +11,7 @@ Release |release|.
 
 Also see the official
 `Python API documentation <https://interactivebrokers.github.io/tws-api>`_
-from IB. 
+from IB.
 
 
 IB
@@ -44,10 +44,10 @@ Objects
 
 .. automodule:: ib_insync.objects
 
-Wrapper
--------
+Event
+-----
 
-.. automodule:: ib_insync.wrapper
+.. automodule:: ib_insync.event
 
 Utilities
 ---------
@@ -58,3 +58,16 @@ FlexReport
 ----------
 
 .. automodule:: ib_insync.flexreport
+
+IBC
+---
+.. autoclass:: ib_insync.ibcontroller.IBC
+
+IBController
+------------
+.. autoclass:: ib_insync.ibcontroller.IBController
+
+Watchdog
+--------
+.. autoclass:: ib_insync.ibcontroller.Watchdog
+
