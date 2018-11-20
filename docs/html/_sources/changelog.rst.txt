@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.36
+^^^^^^^^^^^^^^
+
+* Compatability with ibapi v7.74.0.
+* Client.setConnectOptions() added (for PACEAPI).
+
 Version 0.9.35
 ^^^^^^^^^^^^^^
 

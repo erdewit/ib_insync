@@ -173,4 +173,4 @@ Integration with Tkinter
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 To integrate with the Tkinter event loop, take a look at
-`this example <https://github.com/erdewit/ib_insync/blob/master/examples/tk.py>`_.
+`this example app <https://github.com/erdewit/ib_insync/blob/master/examples/tk.py>`_.
