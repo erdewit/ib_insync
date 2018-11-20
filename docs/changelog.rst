@@ -4,6 +4,11 @@ Changelog
 0.9
 ---
 
+Version 0.9.37
+^^^^^^^^^^^^^^
+
+* Backward compatibility with older ibapi restored.
+
 Version 0.9.36
 ^^^^^^^^^^^^^^
 

@@ -218,12 +218,16 @@ class TickAttrib(Object):
 
 
 class TickAttribBidAsk(Object):
-    defaults = ibapi.common.TickAttribBidAsk().__dict__
+    defaults = dict(
+        bidPastLow=False,
+        askPastHigh=False)
     __slots__ = defaults.keys()
 
 
 class TickAttribLast(Object):
-    defaults = ibapi.common.TickAttribLast().__dict__
+    defaults = dict(
+        pastLimit=False,
+        unreported=False)
     __slots__ = defaults.keys()
 
 
