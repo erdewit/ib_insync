@@ -15,7 +15,8 @@ from ib_insync.objects import (
     Execution, Fill, CommissionReport, RealTimeBar, BarData, Dividends,
     NewsTick, NewsArticle, NewsBulletin, NewsProvider, HistoricalNews,
     TickData, HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
-    TickAttrib, TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
+    TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
+    TickAttrib, TickAttribBidAsk, TickAttribLast,
     MktDepthData, DOMLevel, DepthMktDataDescription,
     OptionComputation, ScanData, HistogramData,
     TagValue, ComboLeg, SoftDollarTier)
@@ -443,6 +444,10 @@ class Wrapper(EWrapper):
                 'commissionReport: ' 'No execution found for %s', report)
 
     @iswrapper
+    def orderBound(self, reqId, apiClientId, apiOrderId):
+        pass
+
+    @iswrapper
     def contractDetails(self, reqId, contractDetails):
         cd = ContractDetails(**contractDetails.__dict__)
         cd.contract = self._getContract(cd.contract)
@@ -532,7 +537,8 @@ class Wrapper(EWrapper):
         self._results[reqId] += [
             HistoricalTickBidAsk(
                 datetime.datetime.fromtimestamp(t.time, datetime.timezone.utc),
-                t.mask, t.priceBid, t.priceAsk, t.sizeBid, t.sizeAsk)
+                TickAttribBidAsk(**t.tickAttribBidAsk.__dict__),
+                t.priceBid, t.priceAsk, t.sizeBid, t.sizeAsk)
             for t in ticks]
         if done:
             self._endReq(reqId)
@@ -542,7 +548,8 @@ class Wrapper(EWrapper):
         self._results[reqId] += [
             HistoricalTickLast(
                 datetime.datetime.fromtimestamp(t.time, datetime.timezone.utc),
-                t.mask, t.price, t.size, t.exchange, t.specialConditions)
+                TickAttribLast(**t.tickAttribLast.__dict__),
+                t.price, t.size, t.exchange, t.specialConditions)
             for t in ticks if t.size]
         if done:
             self._endReq(reqId)
@@ -772,7 +779,8 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def updateMktDepthL2(
-            self, reqId, position, marketMaker, operation, side, price, size):
+            self, reqId, position, marketMaker, operation,
+            side, price, size, isSmartDepth=False):
         # operation: 0 = insert, 1 = update, 2 = delete
         # side: 0 = ask, 1 = bid
         ticker = self.reqId2Ticker[reqId]

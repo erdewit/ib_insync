@@ -21,11 +21,12 @@ __all__ = (
     'ComboLeg UnderComp DeltaNeutralContract OrderComboLeg OrderState '
     'SoftDollarTier PriceIncrement Execution CommissionReport ExecutionFilter '
     'BarList BarDataList RealTimeBarList BarData RealTimeBar '
-    'HistogramData TickAttrib NewsProvider DepthMktDataDescription '
+    'HistogramData NewsProvider DepthMktDataDescription '
     'ScannerSubscription ScanData ScanDataList '
     'PnL PnLSingle AccountValue TickData '
     'TickByTickAllLast TickByTickBidAsk TickByTickMidPoint '
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
+    'TickAttrib TickAttribBidAsk TickAttribLast '
     'MktDepthData DOMLevel BracketOrder TradeLogEntry TagValue '
     'PortfolioItem Position Fill OptionComputation OptionChain Dividends '
     'NewsArticle HistoricalNews NewsTick NewsBulletin ConnectionStats '
@@ -216,6 +217,16 @@ class TickAttrib(Object):
     __slots__ = defaults.keys()
 
 
+class TickAttribBidAsk(Object):
+    defaults = ibapi.common.TickAttribBidAsk().__dict__
+    __slots__ = defaults.keys()
+
+
+class TickAttribLast(Object):
+    defaults = ibapi.common.TickAttribLast().__dict__
+    __slots__ = defaults.keys()
+
+
 class HistogramData(Object):
     defaults = ibapi.common.HistogramData().__dict__
     __slots__ = defaults.keys()
@@ -340,11 +351,11 @@ HistoricalTick = namedtuple(
 
 HistoricalTickBidAsk = namedtuple(
     'HistoricalTickBidAsk',
-    'time mask priceBid priceAsk sizeBid sizeAsk')
+    'time tickAttribBidAsk priceBid priceAsk sizeBid sizeAsk')
 
 HistoricalTickLast = namedtuple(
     'HistoricalTickLast',
-    'time mask price size exchange specialConditions')
+    'time tickAttribLast price size exchange specialConditions')
 
 TickByTickAllLast = namedtuple(
     'TickByTickAllLast',

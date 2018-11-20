@@ -171,7 +171,12 @@ def ibapiVersionInfo() -> tuple:
     Version info of ibapi module as 3-tuple.
     """
     import ibapi
-    return tuple(int(i) for i in ibapi.__version__.split('.'))
+    import ibapi.wrapper
+    version = tuple(int(i) for i in ibapi.__version__.split('.'))
+    if version == (9, 73, 7) and hasattr(ibapi.wrapper.EWrapper, 'orderBound'):
+        # IB forgot to set the friggin version info again
+        version = (9, 74, 0)
+    return version
 
 
 def isNan(x: float) -> bool:
