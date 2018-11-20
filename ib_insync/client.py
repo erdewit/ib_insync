@@ -69,7 +69,8 @@ class Client(EClient):
 
     events = ('apiStart', 'apiEnd', 'apiError')
 
-    # throttle number of requests to MaxRequests per RequestsInterval seconds
+    # throttle number of requests to MaxRequests per RequestsInterval seconds;
+    # set MaxRequests to 0 to disable throttling
     MaxRequests = 100
     RequestsInterval = 2
 
@@ -90,7 +91,7 @@ class Client(EClient):
         EClient.reset(self)
         self._readyEvent.clear()
         self._data = b''
-        self._paceApi = False
+        self._connectOptions = b''
         self._reqIdSeq = 0
         self._accounts = None
         self._startTime = time.time()
@@ -140,9 +141,18 @@ class Client(EClient):
             raise ConnectionError('Not connected')
         return self._accounts
 
+    def setConnectOptions(self, connectOptions: str):
+        """
+        Set additional connect options.
+
+        Args:
+            connectOptions: Use "+PACEAPI" to use request-pacing built
+                into TWS/gateway 974+.
+        """
+        self._connectOptions = connectOptions.encode()
+
     def connect(
-            self, host: str, port: int, clientId: int,
-            timeout: float = 2, paceApi: bool = False):
+            self, host: str, port: int, clientId: int, timeout: float = 2):
         """
         Connect to a running TWS or IB gateway application.
 
@@ -154,12 +164,10 @@ class Client(EClient):
             timeout: If establishing the connection takes longer than
                 ``timeout`` seconds then the ``asyncio.TimeoutError`` exception
                 is raised. Set to 0 to disable timeout.
-            paceApi: Use request pacing built into TWS/gateway 974+.
         """
-        util.run(self.connectAsync(host, port, clientId, timeout, paceApi))
+        util.run(self.connectAsync(host, port, clientId, timeout))
 
-    async def connectAsync(
-            self, host, port, clientId, timeout=2, paceApi=False):
+    async def connectAsync(self, host, port, clientId, timeout=2):
         self._logger.info(
             f'Connecting to {host}:{port} with clientId {clientId}...')
         self.host = host
@@ -171,7 +179,6 @@ class Client(EClient):
         self.conn.hasData = self._onSocketHasData
         self.conn.disconnected = self._onSocketDisconnected
         self.conn.hasError = self._onSocketHasError
-        self._paceApi = paceApi
         try:
             fut = asyncio.gather(self.conn.connect(), self._readyEvent.wait())
             await asyncio.wait_for(fut, timeout)
@@ -193,11 +200,11 @@ class Client(EClient):
         t = loop.time()
         times = self._timeQ
         msgs = self._msgQ
-        while times and t - times[0] > Client.RequestsInterval:
+        while times and t - times[0] > self.RequestsInterval:
             times.popleft()
         if msg:
             msgs.append(msg)
-        while msgs and len(times) < Client.MaxRequests:
+        while msgs and (len(times) < self.MaxRequests or not self.MaxRequests):
             msg = msgs.popleft()
             self.conn.sendMsg(self._prefix(msg.encode()))
             times.append(t)
@@ -206,7 +213,7 @@ class Client(EClient):
                 self._isThrottling = True
                 self._logger.warn('Started to throttle requests')
             loop.call_at(
-                times[0] + Client.RequestsInterval,
+                times[0] + self.RequestsInterval,
                 self.sendMsg, None)
         else:
             if self._isThrottling:
@@ -224,7 +231,8 @@ class Client(EClient):
         minVer = ibapi.server_versions.MIN_CLIENT_VER
         maxVer = min(
             self.MaxClientVersion, ibapi.server_versions.MAX_CLIENT_VER)
-        connectOptions = b' +PACEAPI' if self._paceApi else b''
+        connectOptions = b' ' + self._connectOptions if self._connectOptions \
+            else b''
         msg += self._prefix(b'v%d..%d%s' % (minVer, maxVer, connectOptions))
         self.conn.sendMsg(msg)
         self.decoder = ibapi.decoder.Decoder(self.wrapper, None)
