@@ -104,10 +104,7 @@ class Order(Object):
     https://interactivebrokers.github.io/tws-api/available_orders.html
     """
     defaults = ibapi.order.Order().__dict__
-    __slots__ = list(defaults.keys()) + [
-        'sharesAllocation', 'orderComboLegsCount', 'algoParamsCount',
-        'smartComboRoutingParamsCount', 'conditionsSize',
-        'conditionType']  # bugs in decoder.py
+    __slots__ = defaults.keys()
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)

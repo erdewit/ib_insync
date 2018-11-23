@@ -23,13 +23,15 @@ Installation
 
     pip3 install -U ib_insync
 
+On some systems the command is named ``pip`` instead of ``pip3``.
+If the package is to be installed for a single user,
+then add ``--user`` to the command.
+
 Requirements:
 
 * Python_ version 3.6 or higher;
-* The `Interactive Brokers Python API`_ version 9.73.06 or higher. If using
-  Python 3.7, then comment out line 60 of ibapi/client.py that reads
-  ``self.async = False``.
-* A running TWS or IB gateway application (version 969 or higher).
+* The `Interactive Brokers Python API`_ version 9.74;
+* A running TWS or IB gateway application (version 971 or higher).
   Make sure the
   `API port is enabled <https://interactivebrokers.github.io/tws-api/initial_setup.html>`_
   and 'Download open orders on connection' is checked.

@@ -1152,11 +1152,8 @@ class IB:
         """
         reqId = self.client.getReqId()
         ticker = self.wrapper.startTicker(reqId, contract, tickType)
-        if util.ibapiVersionInfo() == (9, 73, 6):
-            self.client.reqTickByTickData(reqId, contract, tickType)
-        else:
-            self.client.reqTickByTickData(
-                reqId, contract, tickType, numberOfTicks, ignoreSize)
+        self.client.reqTickByTickData(
+            reqId, contract, tickType, numberOfTicks, ignoreSize)
         return ticker
 
     def cancelTickByTickData(self, contract: Contract, tickType: str):
@@ -1204,11 +1201,8 @@ class IB:
         """
         reqId = self.client.getReqId()
         ticker = self.wrapper.startTicker(reqId, contract, 'mktDepth')
-        if util.ibapiVersionInfo() <= (9, 73, 7):
-            self.client.reqMktDepth(reqId, contract, numRows, mktDepthOptions)
-        else:
-            self.client.reqMktDepth(
-                reqId, contract, numRows, isSmartDepth, mktDepthOptions)
+        self.client.reqMktDepth(
+            reqId, contract, numRows, isSmartDepth, mktDepthOptions)
         return ticker
 
     def cancelMktDepth(self, contract: Contract, isSmartDepth=False):
@@ -1222,10 +1216,7 @@ class IB:
         ticker = self.ticker(contract)
         reqId = self.wrapper.endTicker(ticker, 'mktDepth')
         if reqId:
-            if util.ibapiVersionInfo() <= (9, 73, 7):
-                self.client.cancelMktDepth(reqId)
-            else:
-                self.client.cancelMktDepth(reqId, isSmartDepth)
+            self.client.cancelMktDepth(reqId, isSmartDepth)
         else:
             self._logger.error(
                 f'cancelMktDepth: No reqId found for contract {contract}')
@@ -1321,13 +1312,9 @@ class IB:
         dataList.scannerSubscriptionFilterOptions = \
             scannerSubscriptionFilterOptions
         self.wrapper.startSubscription(reqId, dataList)
-        if util.ibapiVersionInfo() <= (9, 73, 7):
-            self.client.reqScannerSubscription(
-                reqId, subscription, scannerSubscriptionOptions)
-        else:
-            self.client.reqScannerSubscription(
-                reqId, subscription, scannerSubscriptionOptions,
-                scannerSubscriptionFilterOptions)
+        self.client.reqScannerSubscription(
+            reqId, subscription, scannerSubscriptionOptions,
+            scannerSubscriptionFilterOptions)
         return dataList
 
     def cancelScannerSubscription(self, dataList: ScanDataList):

@@ -131,8 +131,7 @@ class ContractDetails(Object):
     defaults = ibapi.contract.ContractDetails().__dict__
     defaults['contract'] = None
     defaults.pop('summary', None)
-    __slots__ = list(defaults.keys()) + \
-        ['secIdListCount']  # bug in ibapi decoder
+    __slots__ = defaults.keys()
 
     # backwards compatibility with ibapi v9.73.06
     @property

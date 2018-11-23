@@ -11,11 +11,12 @@ except ImportError:
         'IB API from http://interactivebrokers.github.io is required')
 
 from . import util  # noqa
-if util.ibapiVersionInfo() < (9, 73, 6):
+if util.ibapiVersionInfo() < (9, 74, 0):
     raise RuntimeError(
-        f'Old version ({ibapi.__version__}) of ibapi package detected. '
-        'The newest version from http://interactivebrokers.github.io '
-        'is required')
+        f'Old version ({util.ibapiVersionInfo()} of ibapi package detected,\n'
+        f'located at {ibapi.__path__}).\n'
+        'Remove this old version and install latest from\n'
+        'http://interactivebrokers.github.io')
 
 from .version import __version__, __version_info__  # noqa
 from .objects import *  # noqa

@@ -78,9 +78,7 @@ class Contract(Object):
             price for Delta-Neutral combo orders.
     """
     defaults = {'secType': '', **ibapi.contract.Contract().__dict__}
-    __slots__ = list(defaults.keys()) + \
-        ['comboLegsCount', 'underCompPresent', 'deltaNeutralContractPresent',
-            'secIdListCount']  # bug in decoder.py
+    __slots__ = defaults.keys()
 
     @staticmethod
     def create(**kwargs):

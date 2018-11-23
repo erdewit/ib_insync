@@ -122,48 +122,22 @@ def logToFile(path, level=logging.INFO, ibapiLevel=logging.ERROR):
     """
     Create a log handler that logs to the given file.
     """
+    logging.basicConfig(
+        level=level,
+        format='%(asctime)s %(name)s %(levelname)s %(message)s',
+        handlers=[logging.FileHandler(path)])
     logging.getLogger('ibapi').setLevel(ibapiLevel)
-    logger = logging.getLogger()
-    f = RootLogFilter(ibapiLevel)
-    logger.addFilter(f)
-    logger.setLevel(level)
-    formatter = logging.Formatter(
-        '%(asctime)s %(name)s %(levelname)s %(message)s')
-    handler = logging.FileHandler(path)
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
 
 
 def logToConsole(level=logging.INFO, ibapiLevel=logging.ERROR):
     """
     Create a log handler that logs to the console.
     """
+    logging.basicConfig(
+        level=level,
+        format='%(asctime)s %(name)s %(levelname)s %(message)s',
+        handlers=[logging.StreamHandler()])
     logging.getLogger('ibapi').setLevel(ibapiLevel)
-    logger = logging.getLogger()
-    f = RootLogFilter(ibapiLevel)
-    logger.addFilter(f)
-    logger.setLevel(level)
-    formatter = logging.Formatter(
-        '%(asctime)s %(name)s %(levelname)s %(message)s')
-    handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-    logger.handlers = [
-        h for h in logger.handlers
-        if type(h) is not logging.StreamHandler]
-    logger.addHandler(handler)
-
-
-class RootLogFilter:
-
-    def __init__(self, ibapiLevel=logging.ERROR):
-        self.ibapiLevel = ibapiLevel
-
-    def filter(self, record):
-        # if it's logged on the root logger assume it's from ibapi
-        if record.name == 'root' and record.levelno < self.ibapiLevel:
-            return False
-        else:
-            return True
 
 
 def ibapiVersionInfo() -> tuple:
