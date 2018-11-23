@@ -24,6 +24,7 @@ Installation
     pip3 install -U ib_insync
 
 On some systems the command is named ``pip`` instead of ``pip3``.
+
 If the package is to be installed for a single user,
 then add ``--user`` to the command.
 
