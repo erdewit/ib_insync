@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.38
+^^^^^^^^^^^^^^
+
+* ibapi v97.4 is now required.
+* fixed tickByTick wrappers.
+
 Version 0.9.37
 ^^^^^^^^^^^^^^
 
