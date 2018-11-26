@@ -16,7 +16,7 @@ from ib_insync.objects import (
     NewsTick, NewsArticle, NewsBulletin, NewsProvider, HistoricalNews,
     TickData, HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
     TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
-    TickAttrib, TickAttribBidAsk, TickAttribLast,
+    TickAttribLast, TickAttribBidAsk,
     MktDepthData, DOMLevel, DepthMktDataDescription,
     OptionComputation, ScanData, HistogramData,
     TagValue, ComboLeg, SoftDollarTier)
@@ -666,13 +666,13 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def tickByTickAllLast(
-            self, reqId, tickType, time, price, size, attribs,
+            self, reqId, tickType, time, price, size, tickAttribLast,
             exchange, specialConditions):
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
             self._logger.error(f'tickByTickAllLast: Unknown reqId: {reqId}')
             return
-        attribs = TickAttrib(**attribs.__dict__)
+        attribs = TickAttribLast(**tickAttribLast.__dict__)
         tick = TickByTickAllLast(
             tickType, self.lastTime, price, size, attribs,
             exchange, specialConditions)
@@ -681,12 +681,13 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def tickByTickBidAsk(
-            self, reqId, time, bidPrice, askPrice, bidSize, askSize, attribs):
+            self, reqId, time, bidPrice, askPrice, bidSize, askSize,
+            tickAttribBidAsk):
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
             self._logger.error(f'tickByTickBidAsk: Unknown reqId: {reqId}')
             return
-        attribs = TickAttrib(**attribs.__dict__)
+        attribs = TickAttribBidAsk(**tickAttribBidAsk.__dict__)
         tick = TickByTickBidAsk(
             self.lastTime, bidPrice, askPrice, bidSize, askSize, attribs)
         ticker.tickByTicks.append(tick)

@@ -362,11 +362,11 @@ HistoricalTickLast = namedtuple(
 
 TickByTickAllLast = namedtuple(
     'TickByTickAllLast',
-    'tickType time price size attribs exchange specialConditions')
+    'tickType time price size tickAttribLast exchange specialConditions')
 
 TickByTickBidAsk = namedtuple(
     'TickByTickBidAsk',
-    'time bidPrice askPrice bidSize askSize attribs')
+    'time bidPrice askPrice bidSize askSize tickAttribBidAsk')
 
 TickByTickMidPoint = namedtuple(
     'TickByTickMidPoint',
