@@ -734,16 +734,15 @@ class Wrapper(EWrapper):
                     ticker.ticks.append(tick)
                     self.pendingTickers.add(ticker)
             elif tickType == 59:
+                # Dividend tick:
                 # https://interactivebrokers.github.io/tws-api/tick_types.html#ib_dividends
-                if value == ",,,":
-                    # no dividend
-                    ticker.dividends = Dividends(0, 0, None, 0)
-                else:
-                    # example value: '0.83,0.92,20130219,0.23'
-                    past12, next12, date, amount = value.split(',')
-                    ticker.dividends = Dividends(
-                        float(past12), float(next12),
-                        util.parseIBDatetime(date), float(amount))
+                # example value: '0.83,0.92,20130219,0.23'
+                past12, next12, nextDate, nextAmount = value.split(',')
+                ticker.dividends = Dividends(
+                    float(past12) if past12 else None,
+                    float(next12) if next12 else None,
+                    util.parseIBDatetime(nextDate) if nextDate else None,
+                    float(nextAmount) if nextAmount else None)
         except ValueError:
             self._logger.error(
                 f'tickString with tickType {tickType}: '
