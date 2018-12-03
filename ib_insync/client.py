@@ -74,7 +74,7 @@ class Client(EClient):
     MaxRequests = 100
     RequestsInterval = 2
 
-    MaxClientVersion = 142
+    MaxClientVersion = 148
 
     def __init__(self, wrapper):
         self._readyEvent = asyncio.Event()
