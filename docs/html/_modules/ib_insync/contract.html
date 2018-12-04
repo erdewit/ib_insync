@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.contract &#8212; IB-insync 0.9.38 documentation</title>
+    <title>ib_insync.contract &#8212; IB-insync 0.9.39 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -185,10 +185,11 @@
             <span class="s1">&#39;CMDTY&#39;</span><span class="p">:</span> <span class="n">Commodity</span><span class="p">,</span>
             <span class="s1">&#39;FOP&#39;</span><span class="p">:</span> <span class="n">FuturesOption</span><span class="p">,</span>
             <span class="s1">&#39;FUND&#39;</span><span class="p">:</span> <span class="n">MutualFund</span><span class="p">,</span>
+            <span class="s1">&#39;WAR&#39;</span><span class="p">:</span> <span class="n">Warrant</span><span class="p">,</span>
             <span class="s1">&#39;IOPT&#39;</span><span class="p">:</span> <span class="n">Warrant</span><span class="p">,</span>
             <span class="s1">&#39;BAG&#39;</span><span class="p">:</span> <span class="n">Bag</span><span class="p">,</span>
             <span class="s1">&#39;NEWS&#39;</span><span class="p">:</span> <span class="n">Contract</span>
-        <span class="p">}[</span><span class="n">secType</span><span class="p">]</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">secType</span><span class="p">,</span> <span class="n">Contract</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Contract.isHashable"><a class="viewcode-back" href="../../api.html#ib_insync.contract.Contract.isHashable">[docs]</a>    <span class="k">def</span> <span class="nf">isHashable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -483,7 +484,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Warrant option.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;IOPT&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;WAR&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Bag"><a class="viewcode-back" href="../../api.html#ib_insync.contract.Bag">[docs]</a><span class="k">class</span> <span class="nc">Bag</span><span class="p">(</span><span class="n">Contract</span><span class="p">):</span>

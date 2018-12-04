@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.39
+^^^^^^^^^^^^^^
+
+* Handle partially filled dividend data.
+* Use secType='WAR' for warrants.
+
 Version 0.9.38
 ^^^^^^^^^^^^^^
 
