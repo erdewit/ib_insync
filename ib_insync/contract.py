@@ -100,10 +100,11 @@ class Contract(Object):
             'CMDTY': Commodity,
             'FOP': FuturesOption,
             'FUND': MutualFund,
+            'WAR': Warrant,
             'IOPT': Warrant,
             'BAG': Bag,
             'NEWS': Contract
-        }[secType]
+        }.get(secType, Contract)
         return cls(**kwargs)
 
     def isHashable(self):
@@ -398,7 +399,7 @@ class Warrant(Contract):
         """
         Warrant option.
         """
-        Contract.__init__(self, 'IOPT', **kwargs)
+        Contract.__init__(self, 'WAR', **kwargs)
 
 
 class Bag(Contract):
