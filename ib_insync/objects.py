@@ -18,7 +18,7 @@ from ib_insync.event import Event
 
 __all__ = (
     'Object ContractDetails ContractDescription '
-    'ComboLeg UnderComp DeltaNeutralContract OrderComboLeg OrderState '
+    'ComboLeg DeltaNeutralContract OrderComboLeg OrderState '
     'SoftDollarTier PriceIncrement Execution CommissionReport ExecutionFilter '
     'BarList BarDataList RealTimeBarList BarData RealTimeBar '
     'HistogramData NewsProvider DepthMktDataDescription '
@@ -130,17 +130,7 @@ class DynamicObject:
 class ContractDetails(Object):
     defaults = ibapi.contract.ContractDetails().__dict__
     defaults['contract'] = None
-    defaults.pop('summary', None)
     __slots__ = defaults.keys()
-
-    # backwards compatibility with ibapi v9.73.06
-    @property
-    def summary(self):
-        return self.contract
-
-    @summary.setter
-    def summary(self, c):
-        self.contract = c
 
 
 class ContractDescription(Object):
@@ -160,10 +150,6 @@ class DeltaNeutralContract(Object):
         delta=0.0,
         price=0.0)
     __slots__ = defaults.keys()
-
-
-# backwards compatibility with ibapi v9.73.06
-UnderComp = DeltaNeutralContract
 
 
 class OrderComboLeg(Object):
