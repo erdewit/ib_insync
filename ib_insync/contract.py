@@ -86,7 +86,7 @@ class Contract(Object):
         Create and a return a specialized contract based on the given secType,
         or a general Contract if secType is not given.
         """
-        secType = kwargs.pop('secType', '')
+        secType = kwargs.get('secType', '')
         cls = {
             '': Contract,
             'STK': Stock,
@@ -105,6 +105,8 @@ class Contract(Object):
             'BAG': Bag,
             'NEWS': Contract
         }.get(secType, Contract)
+        if cls is not Contract:
+            kwargs.pop('secType', '')
         return cls(**kwargs)
 
     def isHashable(self):
