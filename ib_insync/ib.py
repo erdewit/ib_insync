@@ -176,8 +176,6 @@ class IB:
         'scannerDataEvent', 'tickNewsEvent', 'newsBulletinEvent',
         'errorEvent', 'timeoutEvent')
 
-    __slots__ = ('wrapper', 'client', '_logger') + events
-
     RequestTimeout = None  # timeout in seconds for requests
 
     def __init__(self):
@@ -1622,8 +1620,8 @@ class IB:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqAccountSummary(
-            reqId, groupName='All',
-            tags=ibapi.account_summary_tags.AccountSummaryTags.AllTags)
+            reqId, 'All',
+            ibapi.account_summary_tags.AccountSummaryTags.AllTags)
         return future
 
     def reqOpenOrdersAsync(self):
