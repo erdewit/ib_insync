@@ -709,7 +709,10 @@ class Wrapper(EWrapper):
         if not ticker:
             return
         try:
-            if tickType == 48:
+            if tickType == 47:
+                # https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html
+                ticker.fundamentalRatios = value
+            elif tickType == 48:
                 # RTVolume string format:
                 # price;size;ms since epoch;total volume;VWAP;single trade
                 # example:

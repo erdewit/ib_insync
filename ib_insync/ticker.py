@@ -69,6 +69,7 @@ class Ticker(Object):
         putVolume=nan,
         callVolume=nan,
         dividends=None,
+        fundamentalRatios=None,
         ticks=None,
         tickByTicks=None,
         domBids=None,
