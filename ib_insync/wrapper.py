@@ -528,7 +528,7 @@ class Wrapper(EWrapper):
             HistoricalTick(
                 datetime.datetime.fromtimestamp(t.time, datetime.timezone.utc),
                 t.price, t.size)
-            for t in ticks if t.size]
+            for t in ticks]
         if done:
             self._endReq(reqId)
 
