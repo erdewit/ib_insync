@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Code recipes &#8212; IB-insync 0.9.39 documentation</title>
+    <title>Code recipes &#8212; IB-insync 0.9.40 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -58,6 +58,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#minimum-price-increments">Minimum price increments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#news-articles">News articles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#news-bulletins">News bulletins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dividends">Dividends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fundemental-ratios">Fundemental ratios</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#integration-with-pyqt5-or-pyside2">Integration with PyQt5 or PySide2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#integration-with-tkinter">Integration with Tkinter</a></li>
 </ul>
@@ -226,6 +228,28 @@ and further back in time until there is no more data returned.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ib</span><span class="o">.</span><span class="n">reqNewsBulletins</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
 <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">newsBulletins</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dividends">
+<h2>Dividends<a class="headerlink" href="#dividends" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contract</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;INTC&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
+<span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktData</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="s1">&#39;456&#39;</span><span class="p">)</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">dividends</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Dividends</span><span class="p">(</span><span class="n">past12Months</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">next12Months</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">nextDate</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">nextAmount</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fundemental-ratios">
+<h2>Fundemental ratios<a class="headerlink" href="#fundemental-ratios" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contract</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;IBM&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
+<span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktData</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="s1">&#39;258&#39;</span><span class="p">)</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">fundamentalRatios</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

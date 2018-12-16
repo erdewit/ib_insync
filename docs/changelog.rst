@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.40
+^^^^^^^^^^^^^^
+
+* Ticker.fundamentalRatios added.
+* Fixed reqHistoricalTicks with MIDPOINT.
+
 Version 0.9.39
 ^^^^^^^^^^^^^^
 

@@ -145,6 +145,30 @@ News bulletins
     ib.sleep(5)
     print(ib.newsBulletins())
 
+Dividends
+^^^^^^^^^
+
+.. code-block:: python
+
+    contract = Stock('INTC', 'SMART', 'USD')
+    ticker = ib.reqMktData(contract, '456')
+    ib.sleep(2)
+    print(ticker.dividends)
+
+Output::
+
+    Dividends(past12Months=1.2, next12Months=1.2, nextDate=datetime.date(2019, 2, 6), nextAmount=0.3)
+
+Fundemental ratios
+^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    contract = Stock('IBM', 'SMART', 'USD')
+    ticker = ib.reqMktData(contract, '258')
+    ib.sleep(2)
+    print(ticker.fundamentalRatios)
+
 Integration with PyQt5 or PySide2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
