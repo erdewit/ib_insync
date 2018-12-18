@@ -158,9 +158,14 @@ class IBC(Object):
         if self._monitor:
             self._monitor.cancel()
             self._monitor = None
-        with suppress(ProcessLookupError):
-            self._proc.terminate()
-            await self._proc.wait()
+        if os.sys.platform == 'win32':
+            import subprocess
+            subprocess.call(
+                ['taskkill', '/F', '/T', '/PID', str(self._proc.pid)])
+        else:
+            with suppress(ProcessLookupError):
+                self._proc.terminate()
+                await self._proc.wait()
         self._proc = None
 
     async def monitorAsync(self):
