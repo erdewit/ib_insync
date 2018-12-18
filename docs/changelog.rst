@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.41
+^^^^^^^^^^^^^^
+
+* Fixed bug #117.
+* Fixed order modifications with TWS/gateway 974.
+
 Version 0.9.40
 ^^^^^^^^^^^^^^
 
