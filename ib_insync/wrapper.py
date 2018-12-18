@@ -310,7 +310,9 @@ class Wrapper(EWrapper):
             key = self.orderKey(order.clientId, order.orderId, order.permId)
             trade = self.trades.get(key)
             if trade:
-                trade.order.update(**order.__dict__)
+                # copy received order fields to original order, ignoring '?'
+                d = {k: v for k, v in order.__dict__.items() if v != '?'}
+                trade.order.update(**d)
             else:
                 contract = self._getContract(contract)
                 order = Order(**order.__dict__)
