@@ -19,7 +19,7 @@ class Event:
 
     def connect(self, c, weakRef=True, hiPriority=False):
         """
-        Connect a callable this event.
+        Connect a callable to this event.
         The ``+=`` operator can be used as a synonym for this method.
 
         Args:
