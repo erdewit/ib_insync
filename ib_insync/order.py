@@ -86,14 +86,13 @@ class OrderStatus(Object):
     PendingCancel = 'PendingCancel'
     PreSubmitted = 'PreSubmitted'
     Submitted = 'Submitted'
-    # ApiPending is undocumented, can be returned from req(All)OpenOrders
     ApiPending = 'ApiPending'
     ApiCancelled = 'ApiCancelled'
     Cancelled = 'Cancelled'
     Filled = 'Filled'
     Inactive = 'Inactive'
 
-    DoneStates = {'Cancelled', 'Filled', 'ApiCancelled', 'Inactive'}
+    DoneStates = {'Filled', 'Cancelled', 'ApiCancelled'}
     ActiveStates = {'PendingSubmit', 'ApiPending', 'PreSubmitted', 'Submitted'}
 
 
