@@ -740,6 +740,15 @@ class IB:
         """
         return self._run(self.reqOpenOrdersAsync())
 
+    def reqAllOpenOrders(self) -> List[Order]:
+        """
+        Request and return a list of all open orders over all clients.
+        Note that the orders of other clients will not be kept in sync,
+        use the master clientId mechanism instead to see other
+        client's orders that are kept in sync.
+        """
+        return self._run(self.reqAllOpenOrdersAsync())
+
     def reqExecutions(
             self, execFilter: ExecutionFilter = None) -> List[Fill]:
         """
@@ -1535,8 +1544,7 @@ class IB:
 
     # now entering the parallel async universe
 
-    async def connectAsync(
-            self, host, port, clientId, timeout=2):
+    async def connectAsync(self, host, port, clientId, timeout=2):
         self.wrapper.clientId = clientId
         await self.client.connectAsync(host, port, clientId, timeout)
         accounts = self.client.getAccounts()
@@ -1627,6 +1635,11 @@ class IB:
     def reqOpenOrdersAsync(self):
         future = self.wrapper.startReq('openOrders')
         self.client.reqOpenOrders()
+        return future
+
+    def reqAllOpenOrdersAsync(self):
+        future = self.wrapper.startReq('openOrders')
+        self.client.reqAllOpenOrders()
         return future
 
     def reqExecutionsAsync(self, execFilter=None):

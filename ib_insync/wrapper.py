@@ -297,7 +297,8 @@ class Wrapper(EWrapper):
         * feed in open orders at startup;
         * feed in open orders or order updates from other clients and TWS
           if clientId=master id;
-        * feed in manual orders and order updates from TWS if clientId=0.
+        * feed in manual orders and order updates from TWS if clientId=0;
+        * handle openOrders and allOpenOrders responses.
         """
         if order.whatIf:
             # response to whatIfOrder
@@ -324,7 +325,7 @@ class Wrapper(EWrapper):
             if results is None:
                 self._ib.openOrderEvent.emit(trade)
             else:
-                # response to reqOpenOrders
+                # response to reqOpenOrders or reqAllOpenOrders
                 results.append(order)
 
     @iswrapper
