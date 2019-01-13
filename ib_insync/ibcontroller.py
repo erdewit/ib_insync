@@ -301,7 +301,11 @@ class IBController(Object):
 class Watchdog(Object):
     """
     Start, connect and watch over the TWS or gateway app and try to keep it
-    up and running.
+    up and running. It is intended to be used in an event-driven
+    application that properly initializes itself upon (re-)connect.
+
+    It is not intended to be used in a notebook or in imperative-style code.
+    Do not expect Watchdog to magically shield you from reality.
 
     Args:
         controller (Union[IBC, IBController]): (required) IBC or IBController
@@ -324,17 +328,11 @@ class Watchdog(Object):
     and well. If yes, then continue, if no then restart the whole app
     and reconnect. Restarting will also occur directly on error 1100.
 
-    Note: ``util.patchAsyncio()`` must have been called before.
-
-    This is not intended to be run in a notebook.
-
     Example usage:
 
     .. code-block:: python
 
-        util.patchAsyncio()
-
-        ibc = IBC(973, gateway=True, tradingMode='paper')
+        ibc = IBC(974, gateway=True, tradingMode='paper')
         ib = IB()
         app = Watchdog(ibc, ib, port=4002)
         app.start()
@@ -364,8 +362,7 @@ class Watchdog(Object):
         appStartupTime=30,
         appTimeout=20,
         retryDelay=2)
-    __slots__ = list(defaults.keys()) + events + [
-        '_watcher', '_logger', '_isRunning', '_isRestarting']
+    __slots__ = list(defaults.keys()) + events + ['_runner', '_logger']
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
@@ -378,88 +375,83 @@ class Watchdog(Object):
             raise ValueError('IB instance must not be connected')
         assert 0 < self.appTimeout < 60
         assert self.retryDelay > 0
-        self._watcher = asyncio.ensure_future(self._watchAsync())
+        self._runner = None
         self._logger = logging.getLogger('ib_insync.Watchdog')
-        self._isRunning = False
-        self._isRestarting = False
-        self.ib.errorEvent += self._onError
-        self.ib.disconnectedEvent += self._stop
 
     def start(self):
         self._logger.info('Starting')
-        self._isRunning = True
-        self._isRestarting = False
         self.startingEvent.emit(self)
-        self.controller.start()
-        IB.sleep(self.appStartupTime)
-        try:
-            self._connect()
-            self.ib.setTimeout(self.appTimeout)
-            self.startedEvent.emit(self)
-        except Exception as e:
-            self._logger.exception(e)
-            self.controller.terminate()
-            self._scheduleRestart()
+        self._runner = asyncio.ensure_future(self.runAsync())
 
     def stop(self):
-        self._isRunning = False
-        self._stop()
-
-    def _stop(self):
         self._logger.info('Stopping')
         self.stoppingEvent.emit(self)
-        self._disconnect()
-        self.controller.terminate()
-        self.stoppedEvent.emit(self)
-        if self._isRunning:
-            self._scheduleRestart()
-
-    def _connect(self):
-        self.ib.connect(
-            self.host, self.port, self.clientId, self.connectTimeout)
-
-    def _disconnect(self):
         self.ib.disconnect()
+        self._runner = None
 
-    def _scheduleRestart(self):
-        if self._isRestarting:
-            return
-        self._isRestarting = True
-        loop = asyncio.get_event_loop()
-        loop.call_later(self.retryDelay, self.start)
-        self._logger.info(f'Schedule restart in {self.retryDelay}s')
+    async def runAsync(self):
 
-    def _onError(self, reqId, errorCode, errorString, contract):
-        if errorCode == 1100:
-            self._logger.error(f'Error 1100: {errorString}')
-            self._stop()
+        def onTimeout(idlePeriod):
+            if not waiter.done():
+                waiter.set_result(None)
 
-    async def _watchAsync(self):
-        while True:
-            await self.ib.wrapper.timeoutEv.wait()
-            # soft timeout, probe the app with a historical request
-            self._logger.debug('Soft timeout')
-            self.softTimeoutEvent.emit(self)
-            contract = Forex('EURUSD')
-            probe = self.ib.reqHistoricalDataAsync(
-                contract, '', '30 S', '5 secs', 'MIDPOINT', False)
+        def onError(reqId, errorCode, errorString, contract):
+            if errorCode == 1100 and not waiter.done():
+                waiter.set_exception(Warning('Error 1100'))
+
+        def onDisconnected():
+            if not waiter.done():
+                waiter.set_exception(Warning('Disconnected'))
+
+        while self._runner:
             try:
-                bars = await asyncio.wait_for(probe, 4)
-                if not bars:
-                    raise Exception()
+                await self.controller.startAsync()
+                await asyncio.sleep(self.appStartupTime)
+                await self.ib.connectAsync(
+                    self.host, self.port, self.clientId, self.connectTimeout)
+                self.startedEvent.emit(self)
                 self.ib.setTimeout(self.appTimeout)
-            except Exception:
-                # hard timeout, flush everything and start anew
-                self._logger.error('Hard timeout')
-                self.hardTimeoutEvent.emit(self)
-                self._stop()
+                self.ib.timeoutEvent += onTimeout
+                self.ib.errorEvent += onError
+                self.ib.disconnectedEvent += onDisconnected
+
+                while self._runner:
+                    waiter = asyncio.Future()
+                    await waiter
+                    # soft timeout, probe the app with a historical request
+                    self._logger.debug('Soft timeout')
+                    self.softTimeoutEvent.emit(self)
+                    probe = self.ib.reqHistoricalDataAsync(
+                        Forex('EURUSD'), '', '30 S', '5 secs',
+                        'MIDPOINT', False)
+                    bars = None
+                    with suppress(asyncio.TimeoutError):
+                        bars = await asyncio.wait_for(probe, 4)
+                    if not bars:
+                        self.hardTimeoutEvent.emit(self)
+                        raise Warning('Hard timeout')
+                    self.ib.setTimeout(self.appTimeout)
+
+            except ConnectionRefusedError:
+                pass
+            except Warning as w:
+                self._logger.warn(w)
+            except Exception as e:
+                self._logger.exception(e)
+            finally:
+                self.ib.timeoutEvent -= onTimeout
+                self.ib.errorEvent -= onError
+                self.ib.disconnectedEvent -= onDisconnected
+                await self.controller.terminateAsync()
+                self.stoppedEvent.emit(self)
+                if self._runner:
+                    await asyncio.sleep(self.retryDelay)
 
 
 if __name__ == '__main__':
     asyncio.get_event_loop().set_debug(True)
     util.logToConsole(logging.DEBUG)
-    util.patchAsyncio()
-    ibc = IBC(973, gateway=True, tradingMode='paper')
+    ibc = IBC(974, gateway=True, tradingMode='paper')
 #             userid='edemo', password='demouser')
     ib = IB()
     app = Watchdog(ibc, ib, port=4002, appStartupTime=15, appTimeout=10)
