@@ -305,7 +305,8 @@ class Watchdog(Object):
     application that properly initializes itself upon (re-)connect.
 
     It is not intended to be used in a notebook or in imperative-style code.
-    Do not expect Watchdog to magically shield you from reality.
+    Do not expect Watchdog to magically shield you from reality. Do not use
+    Watchdog unless you understand what it does and doesn't do.
 
     Args:
         controller (Union[IBC, IBController]): (required) IBC or IBController
@@ -332,11 +333,14 @@ class Watchdog(Object):
 
     .. code-block:: python
 
+        def onConnected():
+            print(ib.accountValues())
+
         ibc = IBC(974, gateway=True, tradingMode='paper')
         ib = IB()
-        app = Watchdog(ibc, ib, port=4002)
-        app.start()
-        print(app.ib.accountValues())
+        ib.connectedEvent += onConnected
+        watchdog = Watchdog(ibc, ib, port=4002)
+        watchdog.start()
         IB.run()
 
     Events:
