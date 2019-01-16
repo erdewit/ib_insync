@@ -1,4 +1,4 @@
-|Group| |PyVersion| |Status| |PyPiVersion| |License|
+|Group| |PyVersion| |Status| |PyPiVersion| |License| |Downloads|
 
 Introduction
 ============
@@ -129,3 +129,6 @@ Good luck and enjoy,
    :alt: Documentation Status
    :target: http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html
 
+.. |Downloads| image:: https://pepy.tech/badge/ib-insync
+   :alt: Number of downloads
+   :target: https://pepy.tech/project/ib-insync
