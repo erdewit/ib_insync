@@ -1,4 +1,4 @@
-|Group| |PyVersion| |Status| |PyPiVersion| |License| |Downloads|
+|Group| |PyVersion| |Status| |PyPiVersion| |License| |Docs| |Downloads|
 
 Introduction
 ============
