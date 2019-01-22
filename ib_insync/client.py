@@ -61,19 +61,25 @@ class Client(EClient):
       A possible use is to write or evaluate the newly arrived data in
       one batch instead of item by item.
 
-    * Events:
-        * ``apiStart`` ()
-        * ``apiEnd`` ()
-        * ``apiError`` (errorMsg: str)
+    Attributes:
+      MaxRequests (int):
+        Throttle the number of requests to ``MaxRequests`` per
+        ``RequestsInterval`` seconds. Set to 0 to disable throttling.
+      RequestsInterval (float):
+        Time interval (in seconds) for request throttling.
+      MaxClientVersion (int):
+        Client protocol version.
+
+    Events:
+      * ``apiStart`` ()
+      * ``apiEnd`` ()
+      * ``apiError`` (errorMsg: str)
     """
 
     events = ('apiStart', 'apiEnd', 'apiError')
 
-    # throttle number of requests to MaxRequests per RequestsInterval seconds;
-    # set MaxRequests to 0 to disable throttling
     MaxRequests = 100
     RequestsInterval = 2
-
     MaxClientVersion = 148
 
     def __init__(self, wrapper):

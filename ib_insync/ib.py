@@ -81,6 +81,11 @@ class IB:
     For introducing a delay, never use time.sleep() but use
     :meth:`.sleep` instead.
 
+    Attributes:
+        RequestTimeout (float): Timeout (in seconds) to wait for a request
+          to finish before raising ``asyncio.TimeoutError``.
+          The default value of 0 will wait indefinitely.
+
     Events:
         * ``connectedEvent`` ():
           Is emitted after connecting and synchronzing with TWS/gateway.
@@ -176,7 +181,7 @@ class IB:
         'scannerDataEvent', 'tickNewsEvent', 'newsBulletinEvent',
         'errorEvent', 'timeoutEvent')
 
-    RequestTimeout = None  # timeout in seconds for requests
+    RequestTimeout = 0
 
     def __init__(self):
         Event.init(self, IB.events)
