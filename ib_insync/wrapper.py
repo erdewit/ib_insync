@@ -658,6 +658,8 @@ class Wrapper(EWrapper):
             ticker.putVolume = size
         elif tickType == 86:
             ticker.futuresOpenInterest = size
+        elif tickType == 89:
+            ticker.shortableShares = size
         if price or size:
             tick = TickData(self.lastTime, tickType, price, size)
             ticker.ticks.append(tick)

@@ -63,6 +63,7 @@ class Ticker(Object):
         lastYield=nan,
         rtVolume=nan,
         avVolume=nan,
+        shortableShares=nan,
         futuresOpenInterest=nan,
         putOpenInterest=nan,
         callOpenInterest=nan,
