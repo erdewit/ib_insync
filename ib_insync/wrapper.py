@@ -564,7 +564,6 @@ class Wrapper(EWrapper):
         if not ticker:
             self._logger.error(f'priceSizeTick: Unknown reqId: {reqId}')
             return
-        ticker.time = self.lastTime
         # https://interactivebrokers.github.io/tws-api/tick_types.html
         if tickType in (1, 66):
             if price != ticker.bid:
@@ -624,7 +623,6 @@ class Wrapper(EWrapper):
         if not ticker:
             self._logger.error(f'tickSize: Unknown reqId: {reqId}')
             return
-        ticker.time = self.lastTime
         price = -1.0
         # https://interactivebrokers.github.io/tws-api/tick_types.html
         if tickType in (0, 69):
@@ -792,7 +790,6 @@ class Wrapper(EWrapper):
         # operation: 0 = insert, 1 = update, 2 = delete
         # side: 0 = ask, 1 = bid
         ticker = self.reqId2Ticker[reqId]
-        ticker.time = self.lastTime
 
         dom = ticker.domBids if side else ticker.domAsks
         if operation == 0:
@@ -1009,11 +1006,10 @@ class Wrapper(EWrapper):
         return True
 
     def _emitPendingTickers(self):
-        if self.pendingTickers:
-            self._ib.pendingTickersEvent.emit(list(self.pendingTickers))
-            for ticker in (
-                    t for t in self.pendingTickers if t.updateEvent.slots):
-                ticker.updateEvent.emit(ticker)
+        for ticker in self.pendingTickers:
+            ticker.time = self.lastTime
+            ticker.updateEvent.emit(ticker)
+        self._ib.pendingTickersEvent.emit(list(self.pendingTickers))
 
     def _clearPendingTickers(self):
         for ticker in self.pendingTickers:
