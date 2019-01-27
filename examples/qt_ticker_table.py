@@ -1,6 +1,6 @@
 import asyncio
 
-import PyQt5.Qt as qt
+import PyQt5.QtWidgets as qt
 # import PySide2.QtWidgets as qt
 
 from ib_insync import IB, util
