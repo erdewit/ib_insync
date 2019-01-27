@@ -1006,10 +1006,11 @@ class Wrapper(EWrapper):
         return True
 
     def _emitPendingTickers(self):
-        for ticker in self.pendingTickers:
-            ticker.time = self.lastTime
-            ticker.updateEvent.emit(ticker)
-        self._ib.pendingTickersEvent.emit(list(self.pendingTickers))
+        if self.pendingTickers:
+            for ticker in self.pendingTickers:
+                ticker.time = self.lastTime
+                ticker.updateEvent.emit(ticker)
+            self._ib.pendingTickersEvent.emit(list(self.pendingTickers))
 
     def _clearPendingTickers(self):
         for ticker in self.pendingTickers:
