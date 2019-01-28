@@ -675,6 +675,12 @@ class Wrapper(EWrapper):
         if not ticker:
             self._logger.error(f'tickByTickAllLast: Unknown reqId: {reqId}')
             return
+        if price != ticker.last:
+            ticker.prevLast = ticker.last
+            ticker.last = price
+        if size != ticker.lastSize:
+            ticker.prevLastSize = ticker.lastSize
+            ticker.lastSize = size
         attribs = TickAttribLast(**tickAttribLast.__dict__)
         tick = TickByTickAllLast(
             tickType, self.lastTime, price, size, attribs,
@@ -690,6 +696,18 @@ class Wrapper(EWrapper):
         if not ticker:
             self._logger.error(f'tickByTickBidAsk: Unknown reqId: {reqId}')
             return
+        if bidPrice != ticker.bid:
+            ticker.prevBid = ticker.bid
+            ticker.bid = bidPrice
+        if bidSize != ticker.bidSize:
+            ticker.prevBidSize = ticker.bidSize
+            ticker.bidSize = bidSize
+        if askPrice != ticker.ask:
+            ticker.prevAsk = ticker.ask
+            ticker.ask = askPrice
+        if askSize != ticker.askSize:
+            ticker.prevAskSize = ticker.askSize
+            ticker.askSize = askSize
         attribs = TickAttribBidAsk(**tickAttribBidAsk.__dict__)
         tick = TickByTickBidAsk(
             self.lastTime, bidPrice, askPrice, bidSize, askSize, attribs)
