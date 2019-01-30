@@ -122,10 +122,13 @@ def logToFile(path, level=logging.INFO, ibapiLevel=logging.ERROR):
     """
     Create a log handler that logs to the given file.
     """
-    logging.basicConfig(
-        level=level,
-        format='%(asctime)s %(name)s %(levelname)s %(message)s',
-        handlers=[logging.FileHandler(path)])
+    logger = logging.getLogger()
+    logger.setLevel(level)
+    formatter = logging.Formatter(
+        '%(asctime)s %(name)s %(levelname)s %(message)s')
+    handler = logging.FileHandler(path)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
     logging.getLogger('ibapi').setLevel(ibapiLevel)
 
 
@@ -133,10 +136,16 @@ def logToConsole(level=logging.INFO, ibapiLevel=logging.ERROR):
     """
     Create a log handler that logs to the console.
     """
-    logging.basicConfig(
-        level=level,
-        format='%(asctime)s %(name)s %(levelname)s %(message)s',
-        handlers=[logging.StreamHandler()])
+    logger = logging.getLogger()
+    logger.setLevel(level)
+    formatter = logging.Formatter(
+        '%(asctime)s %(name)s %(levelname)s %(message)s')
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    logger.handlers = [
+        h for h in logger.handlers
+        if type(h) is not logging.StreamHandler]
+    logger.addHandler(handler)
     logging.getLogger('ibapi').setLevel(ibapiLevel)
 
 
