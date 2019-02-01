@@ -567,6 +567,8 @@ class Wrapper(EWrapper):
             return
         # https://interactivebrokers.github.io/tws-api/tick_types.html
         if tickType in (1, 66):
+            if price == ticker.bid and size == ticker.bidSize:
+                return
             if price != ticker.bid:
                 ticker.prevBid = ticker.bid
                 ticker.bid = price
@@ -574,6 +576,8 @@ class Wrapper(EWrapper):
                 ticker.prevBidSize = ticker.bidSize
                 ticker.bidSize = size
         elif tickType in (2, 67):
+            if price == ticker.ask and size == ticker.askSize:
+                return
             if price != ticker.ask:
                 ticker.prevAsk = ticker.ask
                 ticker.ask = price
@@ -627,15 +631,17 @@ class Wrapper(EWrapper):
         price = -1.0
         # https://interactivebrokers.github.io/tws-api/tick_types.html
         if tickType in (0, 69):
+            if size == ticker.bidSize:
+                return
             price = ticker.bid
-            if size != ticker.bidSize:
-                ticker.prevBidSize = ticker.bidSize
-                ticker.bidSize = size
+            ticker.prevBidSize = ticker.bidSize
+            ticker.bidSize = size
         elif tickType in (3, 70):
+            if size == ticker.askSize:
+                return
             price = ticker.ask
-            if size != ticker.askSize:
-                ticker.prevAskSize = ticker.askSize
-                ticker.askSize = size
+            ticker.prevAskSize = ticker.askSize
+            ticker.askSize = size
         elif tickType in (5, 71):
             price = ticker.last
             if util.isNan(price):
