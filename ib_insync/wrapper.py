@@ -996,6 +996,8 @@ class Wrapper(EWrapper):
     # additional wrapper method provided by Client
     def tcpDataArrived(self):
         self.lastTime = datetime.datetime.now(datetime.timezone.utc)
+        if not self._waitingOnUpdate:
+            self._clearPendingTickers()
 
     @iswrapper
     # additional wrapper method provided by Client
@@ -1005,7 +1007,6 @@ class Wrapper(EWrapper):
             self._updateEv.clear()
         else:
             self._emitPendingTickers()
-            self._clearPendingTickers()
         self._ib.updateEvent.emit()
 
     def waitOnUpdate(self, timeout=0):
