@@ -269,7 +269,7 @@ class IB:
             timeout: Maximum time in seconds to wait.
                 If 0 then no timeout is used.
         """
-        return self.wrapper.waitOnUpdate(timeout)
+        return util.run(self.wrapper.waitOnUpdateAsync(timeout))
 
     def loopUntil(
             self, condition=None, timeout: float = 0) -> Iterator[object]:

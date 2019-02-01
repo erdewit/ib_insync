@@ -2,6 +2,7 @@ import asyncio
 import logging
 import datetime
 from collections import defaultdict
+from contextlib import suppress
 
 from ibapi.wrapper import EWrapper, iswrapper
 from ibapi.common import UNSET_DOUBLE
@@ -1009,17 +1010,15 @@ class Wrapper(EWrapper):
             self._emitPendingTickers()
         self._ib.updateEvent.emit()
 
-    def waitOnUpdate(self, timeout=0):
+    async def waitOnUpdateAsync(self, timeout=0):
         self._clearPendingTickers()
         self._waitingOnUpdate = True
         coro = self._updateEv.wait()
         if timeout:
-            try:
-                util.run(asyncio.wait_for(coro, timeout))
-            except asyncio.TimeoutError:
-                pass
+            with suppress(asyncio.TimeoutError):
+                await asyncio.wait_for(coro, timeout)
         else:
-            util.run(coro)
+            await coro
         self._waitingOnUpdate = False
         self._emitPendingTickers()
         return True
