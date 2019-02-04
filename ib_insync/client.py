@@ -379,7 +379,7 @@ class Client(EClient):
                 self._readyEvent.set()
         elif msgId == 15:
             _, _, accts = fields
-            self._accounts = accts.decode().split(',')
+            self._accounts = [a for a in accts.decode().split(',') if a]
             if self._reqIdSeq:
                 self._readyEvent.set()
 
