@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.ib &#8212; IB-insync 0.9.41 documentation</title>
+    <title>ib_insync.ib &#8212; IB-insync 0.9.42 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -166,6 +166,11 @@
 <span class="sd">    For introducing a delay, never use time.sleep() but use</span>
 <span class="sd">    :meth:`.sleep` instead.</span>
 
+<span class="sd">    Attributes:</span>
+<span class="sd">        RequestTimeout (float): Timeout (in seconds) to wait for a request</span>
+<span class="sd">          to finish before raising ``asyncio.TimeoutError``.</span>
+<span class="sd">          The default value of 0 will wait indefinitely.</span>
+
 <span class="sd">    Events:</span>
 <span class="sd">        * ``connectedEvent`` ():</span>
 <span class="sd">          Is emitted after connecting and synchronzing with TWS/gateway.</span>
@@ -261,7 +266,7 @@
         <span class="s1">&#39;scannerDataEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;tickNewsEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;newsBulletinEvent&#39;</span><span class="p">,</span>
         <span class="s1">&#39;errorEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;timeoutEvent&#39;</span><span class="p">)</span>
 
-    <span class="n">RequestTimeout</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># timeout in seconds for requests</span>
+    <span class="n">RequestTimeout</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">Event</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IB</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
@@ -349,7 +354,7 @@
 <span class="sd">            timeout: Maximum time in seconds to wait.</span>
 <span class="sd">                If 0 then no timeout is used.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">waitOnUpdate</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">waitOnUpdateAsync</span><span class="p">(</span><span class="n">timeout</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="IB.loopUntil"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.loopUntil">[docs]</a>    <span class="k">def</span> <span class="nf">loopUntil</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">object</span><span class="p">]:</span>
@@ -824,6 +829,15 @@
 <span class="sd">        This method is blocking.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqOpenOrdersAsync</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="IB.reqAllOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAllOpenOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqAllOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request and return a list of all open orders over all clients.</span>
+<span class="sd">        Note that the orders of other clients will not be kept in sync,</span>
+<span class="sd">        use the master clientId mechanism instead to see other</span>
+<span class="sd">        client&#39;s orders that are kept in sync.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqAllOpenOrdersAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IB.reqExecutions"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqExecutions">[docs]</a>    <span class="k">def</span> <span class="nf">reqExecutions</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">execFilter</span><span class="p">:</span> <span class="n">ExecutionFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Fill</span><span class="p">]:</span>
@@ -1620,8 +1634,7 @@
 
     <span class="c1"># now entering the parallel async universe</span>
 
-<div class="viewcode-block" id="IB.connectAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.connectAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">connectAsync</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<div class="viewcode-block" id="IB.connectAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.connectAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">connectAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">clientId</span> <span class="o">=</span> <span class="n">clientId</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
         <span class="n">accounts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getAccounts</span><span class="p">()</span>
@@ -1712,6 +1725,11 @@
 <div class="viewcode-block" id="IB.reqOpenOrdersAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqOpenOrdersAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqOpenOrdersAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="s1">&#39;openOrders&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqOpenOrders</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">future</span></div>
+
+<div class="viewcode-block" id="IB.reqAllOpenOrdersAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAllOpenOrdersAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqAllOpenOrdersAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="s1">&#39;openOrders&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqAllOpenOrders</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">future</span></div>
 
 <div class="viewcode-block" id="IB.reqExecutionsAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqExecutionsAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqExecutionsAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">execFilter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

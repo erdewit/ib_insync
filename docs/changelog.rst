@@ -4,6 +4,17 @@ Changelog
 0.9
 ---
 
+Version 0.9.42
+^^^^^^^^^^^^^^
+
+* Ticker.shortableShares added (for use with generic tick 236).
+* ib.reqAllOpenOrders() request added.
+* tickByTick subscription will update ticker's bid, ask, last, etc.
+* Drop redundant bid/ask ticks from reqMktData.
+* Fixed occasional "Group name cannot be null" error message on connect.
+* Watchdog code rewritten to not need util.patchAsyncio.
+* Watchdog.start() is no longer blocking.
+
 Version 0.9.41
 ^^^^^^^^^^^^^^
 
@@ -13,7 +24,7 @@ Version 0.9.41
 Version 0.9.40
 ^^^^^^^^^^^^^^
 
-* Ticker.fundamentalRatios added.
+* Ticker.fundamentalRatios added (for use with generic tick 258).
 * Fixed reqHistoricalTicks with MIDPOINT.
 
 Version 0.9.39

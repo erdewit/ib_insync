@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.client &#8212; IB-insync 0.9.41 documentation</title>
+    <title>ib_insync.client &#8212; IB-insync 0.9.42 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -146,19 +146,25 @@
 <span class="sd">      A possible use is to write or evaluate the newly arrived data in</span>
 <span class="sd">      one batch instead of item by item.</span>
 
-<span class="sd">    * Events:</span>
-<span class="sd">        * ``apiStart`` ()</span>
-<span class="sd">        * ``apiEnd`` ()</span>
-<span class="sd">        * ``apiError`` (errorMsg: str)</span>
+<span class="sd">    Attributes:</span>
+<span class="sd">      MaxRequests (int):</span>
+<span class="sd">        Throttle the number of requests to ``MaxRequests`` per</span>
+<span class="sd">        ``RequestsInterval`` seconds. Set to 0 to disable throttling.</span>
+<span class="sd">      RequestsInterval (float):</span>
+<span class="sd">        Time interval (in seconds) for request throttling.</span>
+<span class="sd">      MaxClientVersion (int):</span>
+<span class="sd">        Client protocol version.</span>
+
+<span class="sd">    Events:</span>
+<span class="sd">      * ``apiStart`` ()</span>
+<span class="sd">      * ``apiEnd`` ()</span>
+<span class="sd">      * ``apiError`` (errorMsg: str)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;apiStart&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEnd&#39;</span><span class="p">,</span> <span class="s1">&#39;apiError&#39;</span><span class="p">)</span>
 
-    <span class="c1"># throttle number of requests to MaxRequests per RequestsInterval seconds;</span>
-    <span class="c1"># set MaxRequests to 0 to disable throttling</span>
     <span class="n">MaxRequests</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">RequestsInterval</span> <span class="o">=</span> <span class="mi">2</span>
-
     <span class="n">MaxClientVersion</span> <span class="o">=</span> <span class="mi">148</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">):</span>
@@ -458,7 +464,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">msgId</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">accts</span> <span class="o">=</span> <span class="n">fields</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_accounts</span> <span class="o">=</span> <span class="n">accts</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_accounts</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">accts</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">a</span><span class="p">]</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
 

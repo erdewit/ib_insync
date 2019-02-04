@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>API docs &#8212; IB-insync 0.9.41 documentation</title>
+    <title>API docs &#8212; IB-insync 0.9.42 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -100,7 +100,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.41.</p>
+<p>Release 0.9.42.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -154,6 +154,22 @@ work and return when finished. The operation should be aware
 that the current state may have been updated during the sleep(0) call.</p>
 <p>For introducing a delay, never use time.sleep() but use
 <a class="reference internal" href="#ib_insync.ib.IB.sleep" title="ib_insync.ib.IB.sleep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sleep()</span></code></a> instead.</p>
+<dl class="attribute">
+<dt id="ib_insync.ib.IB.RequestTimeout">
+<code class="descname">RequestTimeout</code><a class="headerlink" href="#ib_insync.ib.IB.RequestTimeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timeout (in seconds) to wait for a request
+to finish before raising <code class="docutils literal notranslate"><span class="pre">asyncio.TimeoutError</span></code>.
+The default value of 0 will wait indefinitely.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="docutils">
 <dt>Events:</dt>
 <dd><ul class="first simple">
@@ -224,8 +240,8 @@ handler as it may lead to too much recursion.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ib_insync.ib.IB.RequestTimeout">
-<code class="descname">RequestTimeout</code><em class="property"> = None</em><a class="headerlink" href="#ib_insync.ib.IB.RequestTimeout" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descname">RequestTimeout</code><em class="property"> = 0</em></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -942,6 +958,23 @@ reported or an already filled or cancelled order is reported as open.
 It is recommended to use the more reliable and much faster
 <a class="reference internal" href="#ib_insync.ib.IB.openTrades" title="ib_insync.ib.IB.openTrades"><code class="xref py py-meth docutils literal notranslate"><span class="pre">openTrades()</span></code></a> or <a class="reference internal" href="#ib_insync.ib.IB.openOrders" title="ib_insync.ib.IB.openOrders"><code class="xref py py-meth docutils literal notranslate"><span class="pre">openOrders()</span></code></a> methods instead.</p>
 <p>This method is blocking.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#ib_insync.order.Order" title="ib_insync.order.Order"><code class="xref py py-class docutils literal notranslate"><span class="pre">Order</span></code></a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.reqAllOpenOrders">
+<code class="descname">reqAllOpenOrders</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqAllOpenOrders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqAllOpenOrders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request and return a list of all open orders over all clients.
+Note that the orders of other clients will not be kept in sync,
+use the master clientId mechanism instead to see other
+client’s orders that are kept in sync.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1942,6 +1975,11 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.ib.IB.reqAllOpenOrdersAsync">
+<code class="descname">reqAllOpenOrdersAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqAllOpenOrdersAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqAllOpenOrdersAsync" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.ib.IB.reqExecutionsAsync">
 <code class="descname">reqExecutionsAsync</code><span class="sig-paren">(</span><em>execFilter=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqExecutionsAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqExecutionsAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2095,35 +2133,77 @@ If the wrapper has this method it is invoked after the
 network packet’s data has been handled.
 A possible use is to write or evaluate the newly arrived data in
 one batch instead of item by item.</li>
-<li><dl class="first docutils">
+</ul>
+<dl class="attribute">
+<dt id="ib_insync.client.Client.MaxRequests">
+<code class="descname">MaxRequests</code><a class="headerlink" href="#ib_insync.client.Client.MaxRequests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Throttle the number of requests to <code class="docutils literal notranslate"><span class="pre">MaxRequests</span></code> per
+<code class="docutils literal notranslate"><span class="pre">RequestsInterval</span></code> seconds. Set to 0 to disable throttling.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.client.Client.RequestsInterval">
+<code class="descname">RequestsInterval</code><a class="headerlink" href="#ib_insync.client.Client.RequestsInterval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time interval (in seconds) for request throttling.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.client.Client.MaxClientVersion">
+<code class="descname">MaxClientVersion</code><a class="headerlink" href="#ib_insync.client.Client.MaxClientVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Client protocol version.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="docutils">
 <dt>Events:</dt>
-<dd><ul class="first last">
+<dd><ul class="first last simple">
 <li><code class="docutils literal notranslate"><span class="pre">apiStart</span></code> ()</li>
 <li><code class="docutils literal notranslate"><span class="pre">apiEnd</span></code> ()</li>
 <li><code class="docutils literal notranslate"><span class="pre">apiError</span></code> (errorMsg: str)</li>
 </ul>
 </dd>
 </dl>
-</li>
-</ul>
 <dl class="attribute">
 <dt id="ib_insync.client.Client.events">
 <code class="descname">events</code><em class="property"> = ('apiStart', 'apiEnd', 'apiError')</em><a class="headerlink" href="#ib_insync.client.Client.events" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ib_insync.client.Client.MaxRequests">
-<code class="descname">MaxRequests</code><em class="property"> = 100</em><a class="headerlink" href="#ib_insync.client.Client.MaxRequests" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descname">MaxRequests</code><em class="property"> = 100</em></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ib_insync.client.Client.RequestsInterval">
-<code class="descname">RequestsInterval</code><em class="property"> = 2</em><a class="headerlink" href="#ib_insync.client.Client.RequestsInterval" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descname">RequestsInterval</code><em class="property"> = 2</em></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="ib_insync.client.Client.MaxClientVersion">
-<code class="descname">MaxClientVersion</code><em class="property"> = 148</em><a class="headerlink" href="#ib_insync.client.Client.MaxClientVersion" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descname">MaxClientVersion</code><em class="property"> = 148</em></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2419,7 +2499,7 @@ and as keyword, the keyword wins.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.order.OrderStatus.DoneStates">
-<code class="descname">DoneStates</code><em class="property"> = {'ApiCancelled', 'Cancelled', 'Filled', 'Inactive'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DoneStates</code><em class="property"> = {'ApiCancelled', 'Cancelled', 'Filled'}</em><a class="headerlink" href="#ib_insync.order.OrderStatus.DoneStates" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2496,7 +2576,7 @@ and as keyword, the keyword wins.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/available_orders.html">https://interactivebrokers.github.io/tws-api/available_orders.html</a></p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'discretionaryUpToLimitPrice': False, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 140143926572984: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'discretionaryUpToLimitPrice': False, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 140137478122408: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -3603,7 +3683,7 @@ the greeks as calculated by Interactive Brokers’ option model.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.defaults">
-<code class="descname">defaults</code><em class="property"> = {'ask': nan, 'askGreeks': None, 'askSize': nan, 'askYield': nan, 'avVolume': nan, 'bid': nan, 'bidGreeks': None, 'bidSize': nan, 'bidYield': nan, 'callOpenInterest': nan, 'callVolume': nan, 'close': nan, 'contract': None, 'dividends': None, 'domAsks': None, 'domBids': None, 'domTicks': None, 'fundamentalRatios': None, 'futuresOpenInterest': nan, 'high': nan, 'high13week': nan, 'high26week': nan, 'high52week': nan, 'last': nan, 'lastGreeks': None, 'lastSize': nan, 'lastYield': nan, 'low': nan, 'low13week': nan, 'low26week': nan, 'low52week': nan, 'modelGreeks': None, 'open': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'putOpenInterest': nan, 'putVolume': nan, 'rtVolume': nan, 'tickByTicks': None, 'ticks': None, 'time': None, 'volume': nan, 'vwap': nan}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'ask': nan, 'askGreeks': None, 'askSize': nan, 'askYield': nan, 'avVolume': nan, 'bid': nan, 'bidGreeks': None, 'bidSize': nan, 'bidYield': nan, 'callOpenInterest': nan, 'callVolume': nan, 'close': nan, 'contract': None, 'dividends': None, 'domAsks': None, 'domBids': None, 'domTicks': None, 'fundamentalRatios': None, 'futuresOpenInterest': nan, 'high': nan, 'high13week': nan, 'high26week': nan, 'high52week': nan, 'last': nan, 'lastGreeks': None, 'lastSize': nan, 'lastYield': nan, 'low': nan, 'low13week': nan, 'low26week': nan, 'low52week': nan, 'modelGreeks': None, 'open': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'putOpenInterest': nan, 'putVolume': nan, 'rtVolume': nan, 'shortableShares': nan, 'tickByTicks': None, 'ticks': None, 'time': None, 'volume': nan, 'vwap': nan}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3862,6 +3942,11 @@ are available.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.rtVolume">
 <code class="descname">rtVolume</code><a class="headerlink" href="#ib_insync.ticker.Ticker.rtVolume" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.shortableShares">
+<code class="descname">shortableShares</code><a class="headerlink" href="#ib_insync.ticker.Ticker.shortableShares" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -6378,7 +6463,7 @@ called in order when the event is emitted.</p>
 <dl class="method">
 <dt id="ib_insync.event.Event.connect">
 <code class="descname">connect</code><span class="sig-paren">(</span><em>c</em>, <em>weakRef=True</em>, <em>hiPriority=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/event.html#Event.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.event.Event.connect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connect a callable this event.
+<dd><p>Connect a callable to this event.
 The <code class="docutils literal notranslate"><span class="pre">+=</span></code> operator can be used as a synonym for this method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -7046,7 +7131,11 @@ using IBController (<a class="reference external" href="https://github.com/ib-co
 <dt id="ib_insync.ibcontroller.Watchdog">
 <em class="property">class </em><code class="descclassname">ib_insync.ibcontroller.</code><code class="descname">Watchdog</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#Watchdog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start, connect and watch over the TWS or gateway app and try to keep it
-up and running.</p>
+up and running. It is intended to be used in an event-driven
+application that properly initializes itself upon (re-)connect.</p>
+<p>It is not intended to be used in a notebook or in imperative-style code.
+Do not expect Watchdog to magically shield you from reality. Do not use
+Watchdog unless you understand what it does and doesn’t do.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -7075,16 +7164,15 @@ a certain amount of time (the <code class="docutils literal notranslate"><span c
 a historical request to be placed just to see if the app is still alive
 and well. If yes, then continue, if no then restart the whole app
 and reconnect. Restarting will also occur directly on error 1100.</p>
-<p>Note: <code class="docutils literal notranslate"><span class="pre">util.patchAsyncio()</span></code> must have been called before.</p>
-<p>This is not intended to be run in a notebook.</p>
 <p>Example usage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">util</span><span class="o">.</span><span class="n">patchAsyncio</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">onConnected</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">accountValues</span><span class="p">())</span>
 
-<span class="n">ibc</span> <span class="o">=</span> <span class="n">IBC</span><span class="p">(</span><span class="mi">973</span><span class="p">,</span> <span class="n">gateway</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">tradingMode</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">)</span>
+<span class="n">ibc</span> <span class="o">=</span> <span class="n">IBC</span><span class="p">(</span><span class="mi">974</span><span class="p">,</span> <span class="n">gateway</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">tradingMode</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">)</span>
 <span class="n">ib</span> <span class="o">=</span> <span class="n">IB</span><span class="p">()</span>
-<span class="n">app</span> <span class="o">=</span> <span class="n">Watchdog</span><span class="p">(</span><span class="n">ibc</span><span class="p">,</span> <span class="n">ib</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">4002</span><span class="p">)</span>
-<span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">accountValues</span><span class="p">())</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">connectedEvent</span> <span class="o">+=</span> <span class="n">onConnected</span>
+<span class="n">watchdog</span> <span class="o">=</span> <span class="n">Watchdog</span><span class="p">(</span><span class="n">ibc</span><span class="p">,</span> <span class="n">ib</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">4002</span><span class="p">)</span>
+<span class="n">watchdog</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 <span class="n">IB</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -7168,6 +7256,11 @@ and reconnect. Restarting will also occur directly on error 1100.</p>
 <dl class="attribute">
 <dt id="ib_insync.ibcontroller.Watchdog.retryDelay">
 <code class="descname">retryDelay</code><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.retryDelay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ibcontroller.Watchdog.runAsync">
+<code class="descname">runAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#Watchdog.runAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.runAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
