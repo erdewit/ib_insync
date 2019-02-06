@@ -1137,7 +1137,7 @@ class IB:
 
         Args:
             contract: The exact contract object that was used to
-            subscribe with.
+                subscribe with.
         """
         ticker = self.ticker(contract)
         reqId = self.wrapper.endTicker(ticker, 'mktData')
@@ -1535,7 +1535,7 @@ class IB:
                 * 3 = Account Aliases: Let you easily identify the accounts
                   by meaningful names rather than account numbers.
         """
-        self._run(self.requestFAAsync(faDataType))
+        return self._run(self.requestFAAsync(faDataType))
 
     def replaceFA(self, faDataType: int, xml: str):
         """
