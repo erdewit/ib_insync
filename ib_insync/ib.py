@@ -225,8 +225,7 @@ class IB:
                 ``timeout`` seconds then the ``asyncio.TimeoutError`` exception
                 is raised. Set to 0 to disable timeout.
         """
-        self._run(self.connectAsync(host, port, clientId, timeout))
-        return self
+        return self._run(self.connectAsync(host, port, clientId, timeout))
 
     def disconnect(self):
         """
@@ -1563,6 +1562,7 @@ class IB:
             self.reqAutoOpenOrders(True)
         self._logger.info('Synchronization complete')
         self.connectedEvent.emit()
+        return self
 
     async def qualifyContractsAsync(self, *contracts):
         detailsLists = await asyncio.gather(
