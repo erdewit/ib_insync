@@ -100,15 +100,73 @@ class Event:
         for name in eventNames:
             setattr(obj, name, Event(name))
 
+    async def wait(self):
+        """
+        Asynchronously await the next emit of this event and return
+        the emitted data.
+
+        The bare event can be used as synonym for this method.
+        """
+        def onEvent(*args):
+            if not fut.done():
+                fut.set_result(
+                    args[0] if len(args) == 1 else args if args else None)
+
+        fut = asyncio.Future()
+        self += onEvent
+        try:
+            return await fut
+        finally:
+            self -= onEvent
+
+    async def aiter(self, skipToLast: bool = False):
+        """
+        Create an asynchronous iterator that yields the emitted data
+        from this event.
+
+        The bare event can be used as synonym for this method.
+
+        Args:
+            skipToLast:
+                * True: Backlogged events are skipped over to yield only
+                  the last event.
+                * False: All events are yielded.
+
+        Example usage:
+
+        .. code-block:: python
+
+            async for trade, fill in ib.execDetailsEvent:
+                print(fill)
+        """
+        def onEvent(*args):
+            q.put_nowait(args)
+
+        q = asyncio.Queue()
+        self += onEvent
+        try:
+            while True:
+                args = await q.get()
+                if skipToLast:
+                    while q.qsize():
+                        args = q.get_nowait()
+                yield args[0] if len(args) == 1 else args if args else None
+        finally:
+            self -= onEvent
+
     __iadd__ = connect
     __isub__ = disconnect
     __call__ = emit
+    __aiter__ = aiter
 
     def __repr__(self):
         return f'Event<{self.name}, {self.slots}>'
 
     def __len__(self):
         return len(self.slots)
+
+    def __await__(self):
+        return self.wait().__await__()
 
     def __contains__(self, c):
         """
@@ -150,39 +208,3 @@ class Event:
             if slot[1] is ref:
                 slot[0] = slot[1] = slot[2] = None
         self.slots = [s for s in self.slots if s != [None, None, None]]
-
-    def __aiter__(self):
-        return self.aiter()
-
-    async def aiter(self, skipToLast: bool = False):
-        """
-        Turn this event into an asynchronous iterator that yields the arguments
-        emitted by the event. An event with multiple arguments will be yielded
-        as a tuple.
-
-        Args:
-            skipToLast: If False then all events will be yielded, if True
-                then backlogged events will be skipped over to yield only
-                the last.
-
-        Example usage:
-
-        .. code-block:: python
-
-            async for trade, fill in ib.execDetailsEvent:
-                print(fill)
-        """
-        def onEvent(*args):
-            q.put_nowait(args)
-
-        q = asyncio.Queue()
-        self += onEvent
-        try:
-            while True:
-                args = await q.get()
-                if skipToLast:
-                    while q.qsize():
-                        args = q.get_nowait()
-                yield args[0] if len(args) == 1 else args if args else None
-        finally:
-            self -= onEvent
