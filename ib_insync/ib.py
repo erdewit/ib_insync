@@ -1548,7 +1548,8 @@ class IB:
 
     # now entering the parallel async universe
 
-    async def connectAsync(self, host, port, clientId, timeout=2):
+    async def connectAsync(
+            self, host='127.0.0.1', port=7497, clientId=1, timeout=2):
         self.wrapper.clientId = clientId
         await self.client.connectAsync(host, port, clientId, timeout)
         accounts = self.client.getAccounts()
