@@ -422,7 +422,6 @@ class Connection:
         if self.socket:
             self.socket.transport.close()
             self.socket = None
-            util.sleep(0)
 
     def isConnected(self):
         return self.socket is not None
