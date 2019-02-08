@@ -18,7 +18,7 @@ class Event:
         self.name = name
         self.slots = []  # list of [obj, weakref, func] sublists
 
-    def connect(self, c, weakRef=True, hiPriority=False):
+    def connect(self, c, weakRef: bool = True, hiPriority: bool = False):
         """
         Connect a callable to this event.
         The ``+=`` operator can be used as a synonym for this method.
@@ -34,10 +34,11 @@ class Event:
                 * True: The callable will be placed in the first slot
                 * False The callable will be placed last
         """
-        if c in self:
+        obj, func = self._split(c)
+        if [(s[0] is obj or s[1] and s[1]() is obj) and s[2] is func
+                for s in self.slots]:
             raise ValueError(f'Duplicate callback: {c}')
 
-        obj, func = self._split(c)
         if weakRef and hasattr(obj, '__weakref__'):
             ref = weakref.ref(obj, self._onFinalize)
             obj = None
@@ -113,11 +114,11 @@ class Event:
                     args[0] if len(args) == 1 else args if args else None)
 
         fut = asyncio.Future()
-        self += onEvent
+        self.connect(onEvent)
         try:
             return await fut
         finally:
-            self -= onEvent
+            self.disconnect(onEvent)
 
     async def aiter(self, skipToLast: bool = False):
         """
@@ -143,7 +144,7 @@ class Event:
             q.put_nowait(args)
 
         q = asyncio.Queue()
-        self += onEvent
+        self.connect(onEvent)
         try:
             while True:
                 args = await q.get()
@@ -152,7 +153,7 @@ class Event:
                         args = q.get_nowait()
                 yield args[0] if len(args) == 1 else args if args else None
         finally:
-            self -= onEvent
+            self.disconnect(onEvent)
 
     __iadd__ = connect
     __isub__ = disconnect
@@ -173,35 +174,29 @@ class Event:
         See if callable is already connected.
         """
         obj, func = self._split(c)
-        slots = [s for s in self.slots if s[2] is func]
-        if obj is None:
-            funcs = [s[2] for s in slots if s[0] is None and s[1] is None]
-            return func in funcs
-        else:
-            objIds = set(id(s[0]) for s in slots if s[0] is not None)
-            refdIds = set(id(s[1]()) for s in slots if s[1])
-            return id(obj) in objIds | refdIds
+        return any(
+            (s[0] is obj or s[1] and s[1]() is obj) and s[2] is func
+            for s in self.slots)
 
     def _split(self, c):
         """
         Split given callable in (object, function) tuple.
         """
         if isinstance(c, types.FunctionType):
-            t = (None, c)
+            return (None, c)
         elif isinstance(c, types.MethodType):
-            t = (c.__self__, c.__func__)
+            return (c.__self__, c.__func__)
         elif isinstance(c, types.BuiltinMethodType):
             if type(c.__self__) is type:
                 # built-in method
-                t = (c.__self__, c)
+                return (c.__self__, c)
             else:
                 # built-in function
-                t = (None, c)
+                return (None, c)
         elif hasattr(c, '__call__'):
-            t = (c, None)
+            return (c, None)
         else:
             raise ValueError(f'Invalid callable: {c}')
-        return t
 
     def _onFinalize(self, ref):
         for slot in self.slots:
