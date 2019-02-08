@@ -4,6 +4,14 @@ Changelog
 0.9
 ---
 
+Version 0.9.43
+^^^^^^^^^^^^^^
+
+# Fixed issue #132.
+# Event.aiter() added, all events can now be used as asynchronous iterators.
+# Event.wait() added, all events are now also awaitable.
+# Decreased default throttling to 95 requests per 2 sec.
+
 Version 0.9.42
 ^^^^^^^^^^^^^^
 
