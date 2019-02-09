@@ -7,10 +7,10 @@ Changelog
 Version 0.9.43
 ^^^^^^^^^^^^^^
 
-# Fixed issue #132.
-# Event.aiter() added, all events can now be used as asynchronous iterators.
-# Event.wait() added, all events are now also awaitable.
-# Decreased default throttling to 95 requests per 2 sec.
+* Fixed issue #132.
+* Event.aiter() added, all events can now be used as asynchronous iterators.
+* Event.wait() added, all events are now also awaitable.
+* Decreased default throttling to 95 requests per 2 sec.
 
 Version 0.9.42
 ^^^^^^^^^^^^^^
@@ -148,7 +148,8 @@ Version 0.9.22
 Version 0.9.21
 ^^^^^^^^^^^^^^
 
-* updated ib.reqTickByTickData signature to ibapi v9.73.07 while keeping backward compatibility
+* updated ib.reqTickByTickData signature to ibapi v9.73.07 while keeping
+  backward compatibility
 
 Version 0.9.20
 ^^^^^^^^^^^^^^
@@ -166,7 +167,8 @@ Version 0.9.18
 
 Version 0.9.17
 ^^^^^^^^^^^^^^
-* New IB events disconnectedEvent, newOrderEvent, orderModifyEvent and cancelOrderEvent
+* New IB events disconnectedEvent, newOrderEvent, orderModifyEvent and
+  cancelOrderEvent
 * Watchdog improvements
 
 
@@ -282,7 +284,8 @@ Version 0.9.0
 Version 0.8.17
 ^^^^^^^^^^^^^^
 
-* workaround for IBAPI v9.73.06 for Contract.lastTradeDateOrContractMonth format
+* workaround for IBAPI v9.73.06 for Contract.lastTradeDateOrContractMonth
+  format
 
 Version 0.8.16
 ^^^^^^^^^^^^^^
@@ -326,7 +329,8 @@ Version 0.8.10
 Version 0.8.9
 ^^^^^^^^^^^^^
 * Ticker.vwap field added (for use with generic tick 233)
-* Client with master clientId can now monitor orders and trades of other clients
+* Client with master clientId can now monitor orders and trades of
+  other clients
 
 Version 0.8.8
 ^^^^^^^^^^^^^
@@ -337,7 +341,8 @@ Version 0.8.8
 
 Version 0.8.7
 ^^^^^^^^^^^^^
-* BarDataList now used with reqHistoricalData; it also stores the request parameters
+* BarDataList now used with reqHistoricalData; it also stores the request
+  parameters
 * updated the typing annotations
 * added ``barUpdate`` event to ``IB``
 * bar- and tick-data notebooks updated to use callbacks for realtime data
