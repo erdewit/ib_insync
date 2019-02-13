@@ -1101,23 +1101,26 @@ class IB:
             genericTickList: Comma separated IDs of desired
                 generic ticks.
 
-                * 100 = Option Volume (currently for stocks)
-                * 101 = Option Open Interest (currently for stocks)
-                * 104 = Historical Volatility (currently for stocks)
-                * 105 = Average Option Volume (currently for stocks)
-                * 106 = Option Implied Volatility (currently for stocks)
+                * 100 = Put/call option volume
+                * 101 = Put/call option open interest
+                * 104 = Option historical volatility (currently for stocks)
+                * 105 = Average option volume
+                * 106 = Option implied volatility (currently for stocks)
                 * 162 = Index Future Premium
-                * 165 = Miscellaneous Stats
-                * 221 = Mark Price (used in TWS P&L computations)
+                * 165 = Highest/lowest prices for past 13, 26 and 52 weeks
+                * 221 = Mark price (used in TWS P&L computations)
                 * 225 = Auction values (volume, price and imbalance)
                 * 233 = RTVolume - contains the last trade price, last
                   trade size, last trade time, total volume, VWAP, and
                   single trade flag.
-                * 236 = Shortable
-                * 256 = Inventory
-                * 258 = Fundamental Ratios
-                * 411 = Realtime Historical Volatility
-                * 456 = IBDividends
+                * 236 = Shortable shares
+                * 258 = Fundamental ratios
+                * 293 = Trade count
+                * 294 = Trade rate (count per minute)
+                * 295 = Volume rate
+                * 411 = 30-day realtime historical volatility
+                * 456 = Dividends
+                * 588 = Futures open interest
             snapshot: If True then request a one-time snapshot, otherwise
                 subscribe to a stream of realtime tick data.
             regulatorySnapshot: Request NBBO snapshot (may incur a fee).

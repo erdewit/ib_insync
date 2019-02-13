@@ -786,6 +786,12 @@ class Wrapper(EWrapper):
             return
         try:
             value = float(value)
+            if tickType == 54:
+                ticker.tradeCount = value
+            elif tickType == 55:
+                ticker.tradeRate = value
+            elif tickType == 56:
+                ticker.volumeRate = value
             tick = TickData(self.lastTime, tickType, value, 0)
             ticker.ticks.append(tick)
             self.pendingTickers.add(ticker)
