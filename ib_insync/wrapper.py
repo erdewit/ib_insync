@@ -191,7 +191,7 @@ class Wrapper(EWrapper):
 
     @iswrapper
     def managedAccounts(self, accountsList):
-        self.accounts = accountsList.split(',')
+        self.accounts = [a for a in accountsList.split(',') if a]
 
     @iswrapper
     def updateAccountTime(self, timestamp):
