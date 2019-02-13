@@ -35,8 +35,7 @@ class Event:
                 * False The callable will be placed last
         """
         obj, func = self._split(c)
-        if [(s[0] is obj or s[1] and s[1]() is obj) and s[2] is func
-                for s in self.slots]:
+        if c in self:
             raise ValueError(f'Duplicate callback: {c}')
 
         if weakRef and hasattr(obj, '__weakref__'):
@@ -114,7 +113,7 @@ class Event:
                     args[0] if len(args) == 1 else args if args else None)
 
         fut = asyncio.Future()
-        self.connect(onEvent)
+        self.slots.append([None, None, onEvent])
         try:
             return await fut
         finally:
@@ -144,7 +143,7 @@ class Event:
             q.put_nowait(args)
 
         q = asyncio.Queue()
-        self.connect(onEvent)
+        self.slots.append([None, None, onEvent])
         try:
             while True:
                 args = await q.get()
@@ -177,6 +176,10 @@ class Event:
         return any(
             (s[0] is obj or s[1] and s[1]() is obj) and s[2] is func
             for s in self.slots)
+
+    def __reduce__(self):
+        # don't pickle slots
+        return Event, (self.name,)
 
     def _split(self, c):
         """
