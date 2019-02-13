@@ -971,7 +971,7 @@ class IB:
                 or it can be given as a datetime.date or datetime.datetime,
                 or it can be given as a string in 'yyyyMMdd HH:mm:ss' format.
                 If no timezone is given then the TWS login timezone is used.
-            durationsStr: Time span of all the bars. Examples:
+            durationStr: Time span of all the bars. Examples:
                 '60 S', '30 D', '13 W', '6 M', '10 Y'.
             barSizeSetting: Time period of one bar. Must be one of:
                 '1 secs', '5 secs', '10 secs' 15 secs', '30 secs',
