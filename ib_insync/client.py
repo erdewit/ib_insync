@@ -268,7 +268,8 @@ class Client(EClient):
 
             if debug:
                 self._logger.debug(
-                    '<<< %s', ','.join(f.decode() for f in fields))
+                    '<<< %s', ','.join(
+                        f.decode(errors='backslashreplace') for f in fields))
 
             if not self.serverVersion_ and len(fields) == 2:
                 # this concludes the handshake
