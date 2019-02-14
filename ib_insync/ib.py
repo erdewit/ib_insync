@@ -1118,7 +1118,8 @@ class IB:
                 233    ``last``, ``lastSize``, ``rtVolume``, ``vwap``
                        (Time & Sales)
                 236    ``shortableShares``
-                258    ``fundamentalRatios``
+                258    ``fundamentalRatios`` (of type
+                       :class:`ib_insync.objects.FundamentalRatios`)
                 293    ``tradeCount``
                 294    ``tradeRate``
                 295    ``volumeRate``
