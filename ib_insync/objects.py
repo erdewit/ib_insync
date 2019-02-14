@@ -22,7 +22,7 @@ __all__ = (
     'SoftDollarTier PriceIncrement Execution CommissionReport '
     'BarList BarDataList RealTimeBarList BarData RealTimeBar '
     'HistogramData NewsProvider DepthMktDataDescription '
-    'ScannerSubscription ScanData ScanDataList '
+    'ScannerSubscription ScanData ScanDataList FundamentalRatios '
     'ExecutionFilter PnL PnLSingle AccountValue TickData '
     'TickByTickAllLast TickByTickBidAsk TickByTickMidPoint '
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
@@ -252,6 +252,10 @@ class PnLSingle(Object):
         position=0,
         value=nan)
     __slots__ = defaults.keys()
+
+
+class FundamentalRatios(DynamicObject):
+    pass
 
 
 class BarList(list):

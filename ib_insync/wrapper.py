@@ -17,7 +17,7 @@ from ib_insync.objects import (
     NewsTick, NewsArticle, NewsBulletin, NewsProvider, HistoricalNews,
     TickData, HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
     TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
-    TickAttribLast, TickAttribBidAsk,
+    TickAttribLast, TickAttribBidAsk, FundamentalRatios,
     MktDepthData, DOMLevel, DepthMktDataDescription,
     OptionComputation, ScanData, HistogramData,
     TagValue, ComboLeg, SoftDollarTier)
@@ -743,7 +743,14 @@ class Wrapper(EWrapper):
         try:
             if tickType == 47:
                 # https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html
-                ticker.fundamentalRatios = value
+                d = dict(t.split('=') for t in value.split(';') if t)
+                for k, v in d.items():
+                    with suppress(ValueError):
+                        if v == '-99999.99':
+                            v = 'nan'
+                        d[k] = float(v)
+                        d[k] = int(v)
+                ticker.fundamentalRatios = FundamentalRatios(**d)
             elif tickType == 48:
                 # RTVolume string format:
                 # price;size;ms since epoch;total volume;VWAP;single trade

@@ -32,7 +32,7 @@ from .objects import (
     ExecutionFilter, PnL, PnLSingle, AccountValue, TickData,
     TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
     HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
-    TickAttrib, TickAttribBidAsk, TickAttribLast,
+    TickAttrib, TickAttribBidAsk, TickAttribLast, FundamentalRatios,
     MktDepthData, DOMLevel, BracketOrder, TradeLogEntry, TagValue,
     PortfolioItem, Position, Fill, OptionComputation, OptionChain, Dividends,
     NewsArticle, HistoricalNews, NewsTick, NewsBulletin, ConnectionStats,
