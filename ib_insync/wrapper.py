@@ -611,6 +611,8 @@ class Wrapper(EWrapper):
             ticker.low52week = price
         elif tickType == 20:
             ticker.high52week = price
+        elif tickType == 37:
+            ticker.markPrice = price
         elif tickType == 50:
             ticker.bidYield = price
         elif tickType == 51:
@@ -663,6 +665,8 @@ class Wrapper(EWrapper):
             ticker.putVolume = size
         elif tickType == 86:
             ticker.futuresOpenInterest = size
+        elif tickType == 87:
+            ticker.avOptionVolume = size
         elif tickType == 89:
             ticker.shortableShares = size
         if price or size:
@@ -786,12 +790,20 @@ class Wrapper(EWrapper):
             return
         try:
             value = float(value)
-            if tickType == 54:
+            if tickType == 23:
+                ticker.histVolatility = value
+            elif tickType == 24:
+                ticker.impliedVolatility = value
+            elif tickType == 31:
+                ticker.indexFuturePremium = value
+            elif tickType == 54:
                 ticker.tradeCount = value
             elif tickType == 55:
                 ticker.tradeRate = value
             elif tickType == 56:
                 ticker.volumeRate = value
+            elif tickType == 58:
+                ticker.rtHistVolatility = value
             tick = TickData(self.lastTime, tickType, value, 0)
             ticker.ticks.append(tick)
             self.pendingTickers.add(ticker)

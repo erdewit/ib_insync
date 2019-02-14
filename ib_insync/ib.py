@@ -1099,28 +1099,35 @@ class IB:
         Args:
             contract: Contract of interest.
             genericTickList: Comma separated IDs of desired
-                generic ticks.
+                generic ticks that will cause corresponding Ticker fields
+                to be filled:
 
-                * 100 = Put/call option volume
-                * 101 = Put/call option open interest
-                * 104 = Option historical volatility (currently for stocks)
-                * 105 = Average option volume
-                * 106 = Option implied volatility (currently for stocks)
-                * 162 = Index Future Premium
-                * 165 = Highest/lowest prices for past 13, 26 and 52 weeks
-                * 221 = Mark price (used in TWS P&L computations)
-                * 225 = Auction values (volume, price and imbalance)
-                * 233 = RTVolume - contains the last trade price, last
-                  trade size, last trade time, total volume, VWAP, and
-                  single trade flag.
-                * 236 = Shortable shares
-                * 258 = Fundamental ratios
-                * 293 = Trade count
-                * 294 = Trade rate (count per minute)
-                * 295 = Volume rate
-                * 411 = 30-day realtime historical volatility
-                * 456 = Dividends
-                * 588 = Futures open interest
+                =====  ================================================
+                ID     Ticker fields
+                =====  ================================================
+                100    ``putVolume``, ``callVolume`` (for options)
+                101    ``putOpenInterest``, ``callOpenInterest`` (for options)
+                104    ``histVolatility`` (for options)
+                105    ``avOptionVolume`` (for options)
+                106    ``impliedVolatility`` (for options)
+                162    ``indexFuturePremium``
+                165    ``low13week``, ``high13week``, ``low26week``,
+                       ``high26week``, ``low52week``, ``high52week``,
+                       ``avVolume``
+                221    ``markPrice``
+                233    ``last``, ``lastSize``, ``rtVolume``, ``vwap``
+                       (Time & Sales)
+                236    ``shortableShares``
+                258    ``fundamentalRatios``
+                293    ``tradeCount``
+                294    ``tradeRate``
+                295    ``volumeRate``
+                411    ``rtHistVolatility``
+                456    ``dividends`` (of type
+                       :class:`ib_insync.objects.Dividends`)
+                588    ``futuresOpenInterest``
+                =====  ================================================
+
             snapshot: If True then request a one-time snapshot, otherwise
                 subscribe to a stream of realtime tick data.
             regulatorySnapshot: Request NBBO snapshot (may incur a fee).
