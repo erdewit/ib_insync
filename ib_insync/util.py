@@ -5,7 +5,7 @@ import sys
 import signal
 import asyncio
 import time
-from typing import Iterator, Callable, Union
+from typing import Iterator, AsyncIterator, Callable, Union
 
 from ib_insync.objects import Object, DynamicObject
 
@@ -246,6 +246,15 @@ def run(*awaitables, timeout: float = None):
     return result
 
 
+def _fillDate(time):
+    # use today if date is absent
+    if isinstance(time, datetime.time):
+        dt = datetime.datetime.combine(datetime.date.today(), time)
+    else:
+        dt = time
+    return dt
+
+
 def schedule(
         time: Union[datetime.time, datetime.datetime],
         callback: Callable, *args):
@@ -259,13 +268,10 @@ def schedule(
         callback: Callable scheduled to run.
         args: Arguments for to call callback with.
     """
-    loop = asyncio.get_event_loop()
-    if isinstance(time, datetime.time):
-        dt = datetime.datetime.combine(datetime.date.today(), time)
-    else:
-        dt = time
+    dt = _fillDate(time)
     now = datetime.datetime.now(dt.tzinfo)
     delay = (dt - now).total_seconds()
+    loop = asyncio.get_event_loop()
     loop.call_later(delay, callback, *args)
 
 
@@ -281,8 +287,9 @@ def sleep(secs: float = 0.02) -> bool:
     return True
 
 
-def timeRange(start: datetime.time, end: datetime.time,
-              step: float) -> Iterator[datetime.datetime]:
+def timeRange(
+        start: datetime.time, end: datetime.time,
+        step: float) -> Iterator[datetime.datetime]:
     """
     Iterator that waits periodically until certain time points are
     reached while yielding those time points.
@@ -295,16 +302,35 @@ def timeRange(start: datetime.time, end: datetime.time,
         step (float): The number of seconds of each period
     """
     assert step > 0
-    if isinstance(start, datetime.time):
-        start = datetime.datetime.combine(datetime.date.today(), start)
-    if isinstance(end, datetime.time):
-        end = datetime.datetime.combine(datetime.date.today(), end)
+    start = _fillDate(start)
+    end = _fillDate(end)
     delta = datetime.timedelta(seconds=step)
     t = start
     while t < datetime.datetime.now():
         t += delta
     while t <= end:
         waitUntil(t)
+        yield t
+        t += delta
+
+
+async def timeRangeAsync(
+        start: datetime.time, end: datetime.time,
+        step: float) -> AsyncIterator[datetime.datetime]:
+    """
+    Async version of :meth:`timeRange`.
+    """
+    assert step > 0
+    start = _fillDate(start)
+    end = _fillDate(end)
+    delta = datetime.timedelta(seconds=step)
+    t = start
+    while t < datetime.datetime.now():
+        t += delta
+    while t <= end:
+        now = datetime.datetime.now(t.tzinfo)
+        secs = (t - now).total_seconds()
+        await asyncio.sleep(secs)
         yield t
         t += delta
 
@@ -317,8 +343,7 @@ def waitUntil(t: datetime.time) -> bool:
         t: The time t can be specified as datetime.datetime,
             or as datetime.time in which case today is used as the date.
     """
-    if isinstance(t, datetime.time):
-        t = datetime.datetime.combine(datetime.date.today(), t)
+    t = _fillDate(t)
     now = datetime.datetime.now(t.tzinfo)
     secs = (t - now).total_seconds()
     run(asyncio.sleep(secs))

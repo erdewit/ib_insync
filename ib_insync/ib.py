@@ -255,6 +255,7 @@ class IB:
     schedule = staticmethod(util.schedule)
     sleep = staticmethod(util.sleep)
     timeRange = staticmethod(util.timeRange)
+    timeRangeAsync = staticmethod(util.timeRangeAsync)
     waitUntil = staticmethod(util.waitUntil)
 
     def _run(self, *awaitables: List[Awaitable]):
