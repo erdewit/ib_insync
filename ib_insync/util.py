@@ -314,6 +314,21 @@ def timeRange(
         t += delta
 
 
+def waitUntil(t: datetime.time) -> bool:
+    """
+    Wait until the given time t is reached.
+
+    Args:
+        t: The time t can be specified as datetime.datetime,
+            or as datetime.time in which case today is used as the date.
+    """
+    t = _fillDate(t)
+    now = datetime.datetime.now(t.tzinfo)
+    secs = (t - now).total_seconds()
+    run(asyncio.sleep(secs))
+    return True
+
+
 async def timeRangeAsync(
         start: datetime.time, end: datetime.time,
         step: float) -> AsyncIterator[datetime.datetime]:
@@ -328,25 +343,19 @@ async def timeRangeAsync(
     while t < datetime.datetime.now():
         t += delta
     while t <= end:
-        now = datetime.datetime.now(t.tzinfo)
-        secs = (t - now).total_seconds()
-        await asyncio.sleep(secs)
+        await waitUntilAsync(t)
         yield t
         t += delta
 
 
-def waitUntil(t: datetime.time) -> bool:
+async def waitUntilAsync(t: datetime.time) -> bool:
     """
-    Wait until the given time t is reached.
-
-    Args:
-        t: The time t can be specified as datetime.datetime,
-            or as datetime.time in which case today is used as the date.
+    Async version of :meth:`waitUntil`.
     """
     t = _fillDate(t)
     now = datetime.datetime.now(t.tzinfo)
     secs = (t - now).total_seconds()
-    run(asyncio.sleep(secs))
+    await asyncio.sleep(secs)
     return True
 
 
