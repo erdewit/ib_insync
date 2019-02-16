@@ -97,7 +97,7 @@ class IB:
         * ``updateEvent`` ():
           Is emitted after a network packet has been handeled.
 
-        * ``pendingTickersEvent`` (tickers: List[:class:`.Ticker`]):
+        * ``pendingTickersEvent`` (tickers: Set[:class:`.Ticker`]):
           Emits the set of tickers that have been updated during the last
           update and for which there are new ticks, tickByTicks or domTicks.
 
@@ -272,7 +272,7 @@ class IB:
 
         .. note::
             A loop with ``waitOnUpdate`` should not be used to harvest
-            ticks from tickers, since some ticks can go missing.
+            tick data from tickers, since some ticks can go missing.
             This happens when multiple updates occur near simultaneously,
             the ticks from the first updates are then cleared.
             Use events instead to prevent this.
