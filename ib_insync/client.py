@@ -86,6 +86,7 @@ class Client(EClient):
         self._readyEvent = asyncio.Event()
         EClient.__init__(self, wrapper)
         Event.init(self, Client.events)
+        self._loop = asyncio.get_event_loop()
         self._logger = logging.getLogger('ib_insync.client')
 
         # extra optional wrapper methods
@@ -108,8 +109,7 @@ class Client(EClient):
         self._timeQ = deque()
 
     def run(self):
-        loop = asyncio.get_event_loop()
-        loop.run_forever()
+        self._loop.run_forever()
 
     def isReady(self) -> bool:
         """
@@ -203,8 +203,7 @@ class Client(EClient):
             raise
 
     def sendMsg(self, msg):
-        loop = asyncio.get_event_loop()
-        t = loop.time()
+        t = self._loop.time()
         times = self._timeQ
         msgs = self._msgQ
         while times and t - times[0] > self.RequestsInterval:
@@ -219,7 +218,7 @@ class Client(EClient):
             if not self._isThrottling:
                 self._isThrottling = True
                 self._logger.warn('Started to throttle requests')
-            loop.call_at(
+            self._loop.call_at(
                 times[0] + self.RequestsInterval,
                 self.sendMsg, None)
         else:

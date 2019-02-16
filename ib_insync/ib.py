@@ -2,6 +2,7 @@ import asyncio
 import logging
 import datetime
 import time
+from contextlib import suppress
 from typing import List, Iterator, Awaitable, Union
 
 import ibapi.account_summary_tags
@@ -268,8 +269,20 @@ class IB:
         Args:
             timeout: Maximum time in seconds to wait.
                 If 0 then no timeout is used.
+
+        .. note::
+            A loop with ``waitOnUpdate`` should not be used to harvest
+            ticks from tickers, since some ticks can go missing.
+            This happens when multiple updates occur near simultaneously,
+            the ticks from the first updates are then cleared.
+            Use events instead to prevent this.
         """
-        return util.run(self.wrapper.waitOnUpdateAsync(timeout))
+        if timeout:
+            with suppress(asyncio.TimeoutError):
+                util.run(asyncio.wait_for(self.updateEvent, timeout))
+        else:
+            util.run(self.updateEvent)
+        return True
 
     def loopUntil(
             self, condition=None, timeout: float = 0) -> Iterator[object]:

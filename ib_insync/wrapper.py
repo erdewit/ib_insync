@@ -31,9 +31,7 @@ class Wrapper(EWrapper):
     Wrapper implementation for use with the IB class.
     """
     def __init__(self, ib):
-        self.timeoutEv = asyncio.Event()
-        self._updateEv = asyncio.Event()
-        self._ib = ib
+        self.ib = ib
         self._logger = logging.getLogger('ib_insync.wrapper')
         self._timeoutHandle = None
         self.reset()
@@ -67,11 +65,8 @@ class Wrapper(EWrapper):
         self.accounts = []
         self.clientId = -1
         self.lastTime = None  # datetime (UTC) of last network packet arrival
-        self._waitingOnUpdate = False
         self._timeout = 0
-        if self._timeoutHandle:
-            self._timeoutHandle.cancel()
-            self._timeoutHandle = None
+        self.setTimeout(0)
 
     def _getContract(self, ibContract):
         """
@@ -159,6 +154,7 @@ class Wrapper(EWrapper):
         self.lastTime = datetime.datetime.now(datetime.timezone.utc)
         if self._timeoutHandle:
             self._timeoutHandle.cancel()
+        self._timeoutHandle = None
         self._timeout = timeout
         if timeout:
             self._setTimer(timeout)
@@ -175,11 +171,8 @@ class Wrapper(EWrapper):
             self._timeoutHandle = loop.call_later(delay, self._setTimer)
         else:
             self._logger.debug('Timeout')
-            self.timeoutEv.set()
-            self.timeoutEv.clear()
-            self._timeout = 0
-            self._timeoutHandle = None
-            self._ib.timeoutEvent.emit(diff)
+            self.setTimeout(0)
+            self.ib.timeoutEvent.emit(diff)
 
     @iswrapper
     def connectAck(self):
@@ -202,7 +195,7 @@ class Wrapper(EWrapper):
         key = (account, tag, currency, '')
         acctVal = AccountValue(account, tag, val, currency, '')
         self.accountValues[key] = acctVal
-        self._ib.accountValueEvent.emit(acctVal)
+        self.ib.accountValueEvent.emit(acctVal)
 
     @iswrapper
     def accountDownloadEnd(self, _account):
@@ -215,7 +208,7 @@ class Wrapper(EWrapper):
         key = (account, tag, currency, modelCode)
         acctVal = AccountValue(account, tag, val, currency, modelCode)
         self.accountValues[key] = acctVal
-        self._ib.accountValueEvent.emit(acctVal)
+        self.ib.accountValueEvent.emit(acctVal)
 
     @iswrapper
     def accountUpdateMultiEnd(self, reqId):
@@ -226,7 +219,7 @@ class Wrapper(EWrapper):
         key = (account, tag, currency)
         acctVal = AccountValue(account, tag, value, currency, '')
         self.acctSummary[key] = acctVal
-        self._ib.accountSummaryEvent.emit(acctVal)
+        self.ib.accountSummaryEvent.emit(acctVal)
 
     @iswrapper
     def accountSummaryEnd(self, reqId):
@@ -246,7 +239,7 @@ class Wrapper(EWrapper):
         else:
             portfolioItems[contract.conId] = portfItem
         self._logger.info(f'updatePortfolio: {portfItem}')
-        self._ib.updatePortfolioEvent.emit(portfItem)
+        self.ib.updatePortfolioEvent.emit(portfItem)
 
     @iswrapper
     def position(self, account, contract, posSize, avgCost):
@@ -261,7 +254,7 @@ class Wrapper(EWrapper):
         results = self._results.get('positions')
         if results is not None:
             results.append(position)
-        self._ib.positionEvent.emit(position)
+        self.ib.positionEvent.emit(position)
 
     @iswrapper
     def positionEnd(self):
@@ -275,7 +268,7 @@ class Wrapper(EWrapper):
         pnl.dailyPnL = dailyPnL
         pnl.unrealizedPnL = unrealizedPnL
         pnl.realizedPnL = realizedPnL
-        self._ib.pnlEvent.emit(pnl)
+        self.ib.pnlEvent.emit(pnl)
 
     @iswrapper
     def pnlSingle(
@@ -288,7 +281,7 @@ class Wrapper(EWrapper):
         pnlSingle.unrealizedPnL = unrealizedPnL
         pnlSingle.realizedPnL = realizedPnL
         pnlSingle.value = value
-        self._ib.pnlSingleEvent.emit(pnlSingle)
+        self.ib.pnlSingleEvent.emit(pnlSingle)
 
     @iswrapper
     def openOrder(self, orderId, contract, order, orderState):
@@ -324,7 +317,7 @@ class Wrapper(EWrapper):
                 self._logger.info(f'openOrder: {trade}')
             results = self._results.get('openOrders')
             if results is None:
-                self._ib.openOrderEvent.emit(trade)
+                self.ib.openOrderEvent.emit(trade)
             else:
                 # response to reqOpenOrders or reqAllOpenOrders
                 results.append(order)
@@ -365,7 +358,7 @@ class Wrapper(EWrapper):
                 logEntry = TradeLogEntry(self.lastTime, status, msg)
                 trade.log.append(logEntry)
                 self._logger.info(f'orderStatus: {trade}')
-                self._ib.orderStatusEvent.emit(trade)
+                self.ib.orderStatusEvent.emit(trade)
                 trade.statusEvent.emit(trade)
                 if status != oldStatus:
                     if status == OrderStatus.Filled:
@@ -411,7 +404,7 @@ class Wrapper(EWrapper):
                 trade.log.append(logEntry)
                 if isLive:
                     self._logger.info(f'execDetails: {fill}')
-                    self._ib.execDetailsEvent.emit(trade, fill)
+                    self.ib.execDetailsEvent.emit(trade, fill)
                     trade.fillEvent(trade, fill)
         if not isLive:
             self._results[reqId].append(fill)
@@ -436,7 +429,7 @@ class Wrapper(EWrapper):
                 fill.execution.orderId, fill.execution.permId)
             trade = self.trades.get(key)
             if trade:
-                self._ib.commissionReportEvent.emit(trade, fill, report)
+                self.ib.commissionReportEvent.emit(trade, fill, report)
                 trade.commissionReportEvent.emit(trade, fill, report)
             else:
                 # this is not a live execution and the order was filled
@@ -488,7 +481,7 @@ class Wrapper(EWrapper):
         bars = self.reqId2Subscriber.get(reqId)
         if bars is not None:
             bars.append(bar)
-            self._ib.barUpdateEvent.emit(bars, True)
+            self.ib.barUpdateEvent.emit(bars, True)
             bars.updateEvent.emit(bars, True)
 
     @iswrapper
@@ -515,7 +508,7 @@ class Wrapper(EWrapper):
             bars[-1] = bar
         else:
             return
-        self._ib.barUpdateEvent.emit(bars, hasNewBar)
+        self.ib.barUpdateEvent.emit(bars, hasNewBar)
         bars.updateEvent.emit(bars, hasNewBar)
 
     @iswrapper
@@ -915,7 +908,7 @@ class Wrapper(EWrapper):
         else:
             dataList = self.reqId2Subscriber.get(reqId)
         if dataList is not None:
-            self._ib.scannerDataEvent.emit(dataList)
+            self.ib.scannerDataEvent.emit(dataList)
             dataList.updateEvent.emit(dataList)
 
     @iswrapper
@@ -950,7 +943,7 @@ class Wrapper(EWrapper):
         news = NewsTick(
             timeStamp, providerCode, articleId, headline, extraData)
         self.newsTicks.append(news)
-        self._ib.tickNewsEvent.emit(news)
+        self.ib.tickNewsEvent.emit(news)
 
     @iswrapper
     def newsArticle(self, reqId, articleType, articleText):
@@ -970,7 +963,7 @@ class Wrapper(EWrapper):
     def updateNewsBulletin(self, msgId, msgType, message, origExchange):
         bulletin = NewsBulletin(msgId, msgType, message, origExchange)
         self.newsBulletins[msgId] = bulletin
-        self._ib.newsBulletinEvent.emit(bulletin)
+        self.ib.newsBulletinEvent.emit(bulletin)
 
     @iswrapper
     def receiveFA(self, _faDataType, faXmlData):
@@ -1008,7 +1001,7 @@ class Wrapper(EWrapper):
                     logEntry = TradeLogEntry(self.lastTime, status, msg)
                     trade.log.append(logEntry)
                     self._logger.warning(f'Canceled order: {trade}')
-                    self._ib.orderStatusEvent.emit(trade)
+                    self.ib.orderStatusEvent.emit(trade)
                     trade.cancelledEvent.emit(trade)
             elif errorCode == 317:
                 # Market depth data has been RESET
@@ -1022,48 +1015,20 @@ class Wrapper(EWrapper):
                                 side, level.price, 0)
                             ticker.domTicks.append(tick)
 
-        self._ib.errorEvent.emit(reqId, errorCode, errorString, contract)
+        self.ib.errorEvent.emit(reqId, errorCode, errorString, contract)
 
-    @iswrapper
-    # additional wrapper method provided by Client
     def tcpDataArrived(self):
         self.lastTime = datetime.datetime.now(datetime.timezone.utc)
-        if not self._waitingOnUpdate:
-            self._clearPendingTickers()
+        for ticker in self.pendingTickers:
+            ticker.ticks = []
+            ticker.tickByTicks = []
+            ticker.domTicks = []
+        self.pendingTickers = set()
 
-    @iswrapper
-    # additional wrapper method provided by Client
     def tcpDataProcessed(self):
-        if self._waitingOnUpdate:
-            self._updateEv.set()
-            self._updateEv.clear()
-        else:
-            self._emitPendingTickers()
-        self._ib.updateEvent.emit()
-
-    async def waitOnUpdateAsync(self, timeout=0):
-        self._clearPendingTickers()
-        self._waitingOnUpdate = True
-        coro = self._updateEv.wait()
-        if timeout:
-            with suppress(asyncio.TimeoutError):
-                await asyncio.wait_for(coro, timeout)
-        else:
-            await coro
-        self._waitingOnUpdate = False
-        self._emitPendingTickers()
-        return True
-
-    def _emitPendingTickers(self):
+        self.ib.updateEvent.emit()
         if self.pendingTickers:
             for ticker in self.pendingTickers:
                 ticker.time = self.lastTime
                 ticker.updateEvent.emit(ticker)
-            self._ib.pendingTickersEvent.emit(list(self.pendingTickers))
-
-    def _clearPendingTickers(self):
-        for ticker in self.pendingTickers:
-            ticker.ticks.clear()
-            ticker.tickByTicks.clear()
-            ticker.domTicks.clear()
-        self.pendingTickers.clear()
+            self.ib.pendingTickersEvent.emit(self.pendingTickers)
