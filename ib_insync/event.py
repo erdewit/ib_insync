@@ -67,7 +67,7 @@ class Event:
         self.slots = [s for s in self.slots if s != [None, None, None]]
         return self
 
-    def emit(self, *args, **kwargs):
+    def emit(self, *args):
         """
         Call all slots in this event with the given arguments.
         """
@@ -76,12 +76,12 @@ class Event:
                 obj = ref()
             if obj is None:
                 if func:
-                    func(*args, **kwargs)
+                    func(*args)
             else:
                 if func:
-                    func(obj, *args, **kwargs)
+                    func(obj, *args)
                 else:
-                    obj(*args, **kwargs)
+                    obj(*args)
 
     def clear(self):
         """
