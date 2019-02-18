@@ -38,7 +38,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'IB-insync'
-copyright = '2018, Ewald de Wit'
+copyright = '2019, Ewald de Wit'
 author = 'Ewald de Wit'
 
 # The version info for the project you're documenting, acts as replacement for
