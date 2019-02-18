@@ -1,6 +1,7 @@
 import types
 import weakref
 import asyncio
+from functools import partial
 
 __all__ = ['Event']
 
@@ -91,14 +92,57 @@ class Event:
             slot[0] = slot[1] = slot[2] = None
         self.slots = []
 
-    @staticmethod
-    def init(obj, eventNames):
+    @classmethod
+    def init(cls, obj, eventNames):
         """
         Convenience function for initializing events as members
         of the given object.
         """
         for name in eventNames:
-            setattr(obj, name, Event(name))
+            setattr(obj, name, cls(name))
+
+    @classmethod
+    def any(cls, events):
+        """
+        Return new Event that waits on and re-emits the first emit
+        from any of the given events.
+        """
+        def onEvent(*args):
+            for ev in events:
+                ev.disconnect(onEvent)
+            event.emit(*args)
+
+        events = list(events)
+        for ev in events:
+            ev.slots.append([None, None, onEvent])
+        event = cls('any')
+        return event
+
+    @classmethod
+    def all(cls, events):
+        """
+        Return new Event that waits on and emits a list of all first emits
+        from the given events.
+        """
+        def onEvent(i, *args):
+            if i in result:
+                return
+            result[i] = args[0] if len(args) == 1 else args if args else None
+            if len(result) == len(events):
+                for ev, cb in zip(events, callbacks):
+                    ev.disconnect(cb)
+                callbacks.clear()
+                event.emit([result[k] for k in range(len(events))])
+
+        result = {}
+        callbacks = []
+        events = list(events)
+        for i, ev in enumerate(events):
+            cb = partial(onEvent, i)
+            callbacks.append(cb)
+            ev.slots.append([cb, None, None])
+        event = cls('all')
+        return event
 
     async def wait(self):
         """
