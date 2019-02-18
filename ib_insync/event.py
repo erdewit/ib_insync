@@ -125,22 +125,20 @@ class Event:
         from the given events.
         """
         def onEvent(i, *args):
-            if i in result:
+            if i in results:
                 return
-            result[i] = args[0] if len(args) == 1 else args if args else None
-            if len(result) == len(events):
-                for ev, cb in zip(events, callbacks):
-                    ev.disconnect(cb)
-                callbacks.clear()
-                event.emit([result[k] for k in range(len(events))])
+            results[i] = args[0] if len(args) == 1 else args if args else None
+            events[i].disconnect(callbacks.pop(i))
+            if not callbacks:
+                event.emit([results[k] for k in range(len(events))])
 
-        result = {}
-        callbacks = []
+        results = {}
+        callbacks = {}
         events = list(events)
         for i, ev in enumerate(events):
             cb = partial(onEvent, i)
-            callbacks.append(cb)
             ev.slots.append([cb, None, None])
+            callbacks[i] = cb
         event = cls('all')
         return event
 
