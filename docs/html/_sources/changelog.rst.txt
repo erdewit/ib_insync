@@ -4,6 +4,20 @@ Changelog
 0.9
 ---
 
+Version 0.9.44
+^^^^^^^^^^^^^^
+
+* Event.any() and Event.all() added.
+* Ticker fields added: tradeCount, tradeRate, volumeRate, avOptionVolume,
+  markPrice, histVolatility, impliedVolatility, rtHistVolatility,
+  indexFuturePremium.
+* Parse ticker.fundamentalRatios into FundamentalRatios object.
+* util.timeRangeAsync() and waitUntilAsync() added.
+* ib.pendingTickersEvent now emits a set of Tickers instead of a list.
+* Tick handling has been streamlined.
+* For harvesting tick data, an imperative code style with a waitOnUpdate loop
+  should not be used anymore!
+
 Version 0.9.43
 ^^^^^^^^^^^^^^
 
