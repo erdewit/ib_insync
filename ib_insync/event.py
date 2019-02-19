@@ -13,7 +13,7 @@ class Event:
     An event contains a list of callables (the listener slots) that are
     called in order when the event is emitted.
     """
-    __slots__ = ('name', 'slots')
+    __slots__ = ('name', 'slots', '__weakref__')
 
     def __init__(self, name=''):
         self.name = name

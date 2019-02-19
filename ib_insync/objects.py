@@ -47,7 +47,7 @@ class Object:
     * A general string representation;
     * A default equality testing that compares attributes.
     """
-    __slots__ = ()
+    __slots__ = ('__weakref__',)
     defaults: dict = {}
 
     def __init__(self, *args, **kwargs):
@@ -267,7 +267,7 @@ class BarList(list):
     """
     events = ('updateEvent',)
 
-    __slots__ = events
+    __slots__ = events + ('__weakref__',)
 
     def __init__(self, *args):
         list.__init__(self, *args)
@@ -320,7 +320,7 @@ class ScanDataList(list):
 
     __slots__ = events + (
         'reqId', 'subscription', 'scannerSubscriptionOptions',
-        'scannerSubscriptionFilterOptions')
+        'scannerSubscriptionFilterOptions', '__weakref__')
 
     def __init__(self, *args):
         list.__init__(self, *args)
