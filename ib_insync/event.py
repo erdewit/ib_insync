@@ -133,6 +133,16 @@ class Event:
         event = cls('all')
         return event
 
+    @classmethod
+    def merge(cls, events):
+        """
+        Return new Event that re-emits everything from the given source events.
+        """
+        event = cls('merge')
+        for ev in events:
+            ev.connect(event.emit)
+        return event
+
     async def wait(self):
         """
         Asynchronously await the next emit of this event and return
