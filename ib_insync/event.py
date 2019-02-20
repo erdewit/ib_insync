@@ -19,7 +19,7 @@ class Event:
         self.name = name
         self.slots = []  # list of [obj, weakref, func] sublists
 
-    def connect(self, c, weakRef: bool = True, hiPriority: bool = False):
+    def connect(self, c, weakRef: bool = True):
         """
         Connect a callable to this event.
         The ``+=`` operator can be used as a synonym for this method.
@@ -31,9 +31,6 @@ class Event:
                   upon which it will be automatically disconnected from this
                   event
                 * False: A strong reference to the callable will be kept
-            hiPriority:
-                * True: The callable will be placed in the first slot
-                * False The callable will be placed last
         """
         obj, func = self._split(c)
         if c in self:
@@ -45,10 +42,7 @@ class Event:
         else:
             ref = None
         slot = [obj, ref, func]
-        if hiPriority:
-            self.slots.insert(0, slot)
-        else:
-            self.slots.append(slot)
+        self.slots.append(slot)
         return self
 
     def disconnect(self, c):
