@@ -86,6 +86,29 @@ class Event:
             slot[0] = slot[1] = slot[2] = None
         self.slots = []
 
+    def filter(self, predicate):
+        """
+        Create new event that re-emits when the predicate evaluates to True.
+        """
+        def onEvent(*args):
+            if predicate(*args):
+                event.emit(*args)
+
+        event = self.__class__('filter')
+        self.connect(onEvent)
+        return event
+
+    def map(self, func):
+        """
+        Create new event that applies a function.
+        """
+        def onEvent(*args):
+            event.emit(func(*args))
+
+        event = self.__class__('map')
+        self.connect(onEvent)
+        return event
+
     @classmethod
     def init(cls, obj, eventNames):
         """
@@ -222,7 +245,7 @@ class Event:
 
     def __reduce__(self):
         # don't pickle slots
-        return Event, (self.name,)
+        return self.__class__, (self.name,)
 
     def _split(self, c):
         """
