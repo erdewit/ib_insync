@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.event &#8212; IB-insync 0.9.44 documentation</title>
+    <title>ib_insync.event &#8212; IB-insync 0.9.45 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -99,13 +99,13 @@
 <span class="sd">    An event contains a list of callables (the listener slots) that are</span>
 <span class="sd">    called in order when the event is emitted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;slots&#39;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;slots&#39;</span><span class="p">,</span> <span class="s1">&#39;__weakref__&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">slots</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list of [obj, weakref, func] sublists</span>
 
-<div class="viewcode-block" id="Event.connect"><a class="viewcode-back" href="../../api.html#ib_insync.event.Event.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">weakRef</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">hiPriority</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Event.connect"><a class="viewcode-back" href="../../api.html#ib_insync.event.Event.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">weakRef</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Connect a callable to this event.</span>
 <span class="sd">        The ``+=`` operator can be used as a synonym for this method.</span>
@@ -117,9 +117,6 @@
 <span class="sd">                  upon which it will be automatically disconnected from this</span>
 <span class="sd">                  event</span>
 <span class="sd">                * False: A strong reference to the callable will be kept</span>
-<span class="sd">            hiPriority:</span>
-<span class="sd">                * True: The callable will be placed in the first slot</span>
-<span class="sd">                * False The callable will be placed last</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj</span><span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
@@ -131,10 +128,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ref</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">slot</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">func</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">hiPriority</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">slot</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slot</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="Event.disconnect"><a class="viewcode-back" href="../../api.html#ib_insync.event.Event.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
@@ -223,6 +217,16 @@
         <span class="k">for</span> <span class="n">ev</span><span class="p">,</span> <span class="n">cb</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
             <span class="n">ev</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">cb</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
         <span class="n">event</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">event</span></div>
+
+<div class="viewcode-block" id="Event.merge"><a class="viewcode-back" href="../../api.html#ib_insync.event.Event.merge">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">events</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return new Event that re-emits everything from the given source events.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="s1">&#39;merge&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ev</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+            <span class="n">ev</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">event</span></div>
 
 <div class="viewcode-block" id="Event.wait"><a class="viewcode-back" href="../../api.html#ib_insync.event.Event.wait">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

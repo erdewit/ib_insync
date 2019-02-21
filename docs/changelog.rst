@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.45
+^^^^^^^^^^^^^^
+
+* ``Event.merge()`` added.
+* ``TagValue`` serialization fixed.
+
 Version 0.9.44
 ^^^^^^^^^^^^^^
 

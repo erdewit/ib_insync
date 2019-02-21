@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ib_insync.objects &#8212; IB-insync 0.9.44 documentation</title>
+    <title>ib_insync.objects &#8212; IB-insync 0.9.45 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -133,7 +133,7 @@
 <span class="sd">    * A general string representation;</span>
 <span class="sd">    * A default equality testing that compares attributes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;__weakref__&#39;</span><span class="p">,)</span>
     <span class="n">defaults</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -353,7 +353,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">,)</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">events</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">events</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39;__weakref__&#39;</span><span class="p">,)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="nb">list</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
@@ -406,7 +406,7 @@
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">events</span> <span class="o">+</span> <span class="p">(</span>
         <span class="s1">&#39;reqId&#39;</span><span class="p">,</span> <span class="s1">&#39;subscription&#39;</span><span class="p">,</span> <span class="s1">&#39;scannerSubscriptionOptions&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;scannerSubscriptionFilterOptions&#39;</span><span class="p">)</span>
+        <span class="s1">&#39;scannerSubscriptionFilterOptions&#39;</span><span class="p">,</span> <span class="s1">&#39;__weakref__&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="nb">list</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
@@ -417,6 +417,14 @@
 
     <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TagValue"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TagValue">[docs]</a><span class="k">class</span> <span class="nc">TagValue</span><span class="p">(</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;TagValue&#39;</span><span class="p">,</span> <span class="s1">&#39;tag value&#39;</span><span class="p">)):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># ibapi serialization depends on this</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.tag}</span><span class="s1">=</span><span class="si">{self.value}</span><span class="s1">;&#39;</span></div>
 
 
 <span class="n">AccountValue</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
@@ -474,10 +482,6 @@
 <span class="n">ScanData</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
     <span class="s1">&#39;ScanData&#39;</span><span class="p">,</span>
     <span class="s1">&#39;rank contractDetails distance benchmark projection legsStr&#39;</span><span class="p">)</span>
-
-<span class="n">TagValue</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
-    <span class="s1">&#39;TagValue&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;tag value&#39;</span><span class="p">)</span>
 
 <span class="n">PortfolioItem</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
     <span class="s1">&#39;PortfolioItem&#39;</span><span class="p">,</span>
