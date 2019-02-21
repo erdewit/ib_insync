@@ -333,6 +333,14 @@ class ScanDataList(list):
         return id(self)
 
 
+class TagValue(namedtuple('TagValue', 'tag value')):
+    __slots__ = ()
+
+    def __str__(self):
+        # ibapi serialization depends on this
+        return f'{self.tag}={self.value};'
+
+
 AccountValue = namedtuple(
     'AccountValue',
     'account tag value currency modelCode')
@@ -388,10 +396,6 @@ PriceIncrement = namedtuple(
 ScanData = namedtuple(
     'ScanData',
     'rank contractDetails distance benchmark projection legsStr')
-
-TagValue = namedtuple(
-    'TagValue',
-    'tag value')
 
 PortfolioItem = namedtuple(
     'PortfolioItem',
