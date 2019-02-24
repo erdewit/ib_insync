@@ -70,6 +70,8 @@ def barplot(bars, title='', upColor='blue', downColor='red'):
     if isinstance(bars, pd.DataFrame):
         ohlcTups = [
             tuple(v) for v in bars[['open', 'high', 'low', 'close']].values]
+    elif bars and hasattr(bars[0], 'open_'):
+        ohlcTups = [(b.open_, b.high, b.low, b.close) for b in bars]
     else:
         ohlcTups = [(b.open, b.high, b.low, b.close) for b in bars]
 
