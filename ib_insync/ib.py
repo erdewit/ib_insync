@@ -1323,7 +1323,8 @@ class IB:
         """
         return self._run(
             self.reqScannerDataAsync(
-                subscription, scannerSubscriptionOptions))
+                subscription, scannerSubscriptionOptions,
+                scannerSubscriptionFilterOptions))
 
     def reqScannerSubscription(
             self, subscription: ScannerSubscription,
