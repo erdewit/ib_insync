@@ -1659,9 +1659,10 @@ class IB:
     def reqAccountSummaryAsync(self):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
-        self.client.reqAccountSummary(
-            reqId, 'All',
-            ibapi.account_summary_tags.AccountSummaryTags.AllTags)
+        tags = (
+            ibapi.account_summary_tags.AccountSummaryTags.AllTags +
+            ',$LEDGER:ALL')
+        self.client.reqAccountSummary(reqId, 'All', tags)
         return future
 
     def reqOpenOrdersAsync(self):
