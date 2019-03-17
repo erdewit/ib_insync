@@ -1,4 +1,4 @@
-|Group| |PyVersion| |Status| |PyPiVersion| |License| |Downloads| |Docs|
+|Group| |PyVersion| |Status| |PyPiVersion| |License| |Docs| |Downloads|
 
 Introduction
 ============
@@ -128,10 +128,6 @@ Good luck and enjoy,
 .. |Docs| image:: https://img.shields.io/badge/docs-ib_insync-brightgreen.svg
    :alt: Documentation
    :target: http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html
-
-.. |Docs| image:: https://readthedocs.org/projects/ib-insync/badge/?version=latest
-   :alt: Documentation
-   :target: https://ib-insync.readthedocs.io/
 
 .. |Downloads| image:: https://pepy.tech/badge/ib-insync
    :alt: Number of downloads
