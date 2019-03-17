@@ -14,7 +14,7 @@ from ibapi.order_condition import (OrderCondition, ExecutionCondition,  # noqa
         OperatorCondition, MarginCondition, ContractCondition, TimeCondition,
         PriceCondition, PercentChangeCondition, VolumeCondition)
 
-from ib_insync.event import Event
+from eventkit import Event
 
 __all__ = (
     'Object ContractDetails ContractDescription '

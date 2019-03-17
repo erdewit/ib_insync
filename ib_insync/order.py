@@ -1,7 +1,7 @@
 import ibapi
+from eventkit import Event
 
 from .objects import Object
-from ib_insync.event import Event
 
 __all__ = (
     'Trade OrderStatus Order '

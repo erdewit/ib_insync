@@ -21,6 +21,8 @@ if util.ibapiVersionInfo() < (9, 74, 0):
         'http://interactivebrokers.github.io')
 
 
+from eventkit import Event
+
 from .version import __version__, __version_info__
 from .objects import (
     Object, ContractDetails, ContractDescription,
@@ -39,7 +41,6 @@ from .objects import (
     OrderCondition, ExecutionCondition, OperatorCondition, MarginCondition,
     ContractCondition, TimeCondition, PriceCondition, PercentChangeCondition,
     VolumeCondition)
-from .event import Event
 from .contract import (
     Contract, Stock, Option, Future, ContFuture, Forex, Index, CFD,
     Commodity, Bond, FuturesOption, MutualFund, Warrant, Bag)
@@ -53,9 +54,9 @@ from .wrapper import Wrapper
 from .flexreport import FlexReport, FlexError
 from .ibcontroller import IBC, IBController, Watchdog
 
-__all__ = ['util']
+__all__ = ['util', 'Event']
 for _m in (
-        objects, event, contract, order, ticker, ib,
+        objects, contract, order, ticker, ib,
         client, wrapper, flexreport, ibcontroller):
     __all__ += _m.__all__
 

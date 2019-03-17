@@ -10,11 +10,11 @@ import ibapi
 from ibapi.client import EClient
 from ibapi.wrapper import EWrapper, iswrapper
 from ibapi.common import UNSET_INTEGER, UNSET_DOUBLE
+from eventkit import Event
 
 from ib_insync.objects import ConnectionStats
 from ib_insync.contract import Contract
 import ib_insync.util as util
-from ib_insync.event import Event
 
 __all__ = ['Client']
 

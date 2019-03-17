@@ -4,10 +4,11 @@ import logging
 import configparser
 from contextlib import suppress
 
+from eventkit import Event
+
 from ib_insync.objects import Object
 from ib_insync.contract import Forex
 from ib_insync.ib import IB
-from ib_insync.event import Event
 import ib_insync.util as util
 
 __all__ = ['IBC', 'IBController', 'Watchdog']
@@ -72,7 +73,7 @@ class IBC(Object):
 
     .. code-block:: python
 
-        ibc = IBC(969, gateway=True, tradingMode='live',
+        ibc = IBC(974, gateway=True, tradingMode='live',
             userid='edemo', password='demouser')
         ibc.start()
         IB.run()

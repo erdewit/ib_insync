@@ -6,9 +6,9 @@ from contextlib import suppress
 from typing import List, Iterator, Awaitable, Union
 
 import ibapi.account_summary_tags
+from eventkit import Event
 
 import ib_insync.util as util
-from ib_insync.event import Event
 from ib_insync.client import Client
 from ib_insync.wrapper import Wrapper
 from ib_insync.contract import Contract
@@ -167,7 +167,7 @@ class IB:
           specified with :meth:`.setTimeout`. The value emitted is the period
           in seconds since the last update.
 
-        Note that it is not advisible to place new requests inside an event
+        Note that it is not advisable to place new requests inside an event
         handler as it may lead to too much recursion.
     """
 
@@ -273,8 +273,8 @@ class IB:
         .. note::
             A loop with ``waitOnUpdate`` should not be used to harvest
             tick data from tickers, since some ticks can go missing.
-            This happens when multiple updates occur near simultaneously,
-            the ticks from the first updates are then cleared.
+            This happens when multiple updates occur almost simultaneously.
+            The ticks from the first update are then cleared.
             Use events instead to prevent this.
         """
         if timeout:
@@ -287,7 +287,7 @@ class IB:
     def loopUntil(
             self, condition=None, timeout: float = 0) -> Iterator[object]:
         """
-        Iteratate until condition is met, with optional timeout in seconds.
+        Iterate until condition is met, with optional timeout in seconds.
         The yielded value is that of the condition or False when timed out.
 
         Args:
@@ -1051,7 +1051,7 @@ class IB:
             endDateTime: One of ``startDateTime`` or ``endDateTime`` can
                 be given, the other must be blank.
             numberOfTicks: Number of ticks to request (1000 max). The actual
-                result can contain a bit more to accomodate all ticks in
+                result can contain a bit more to accommodate all ticks in
                 the latest second.
             whatToShow: One of 'Bid_Ask', 'Midpoint' or 'Trades'.
             useRTH: If True then only show data from within Regular
@@ -1105,7 +1105,7 @@ class IB:
         """
         Subscribe to tick data or request a snapshot.
         Returns the Ticker that holds the market data. The ticker will
-        inititially be empty and gradually (after a couple of seconds)
+        initially be empty and gradually (after a couple of seconds)
         be filled.
 
         https://interactivebrokers.github.io/tws-api/md_request.html
@@ -1389,7 +1389,7 @@ class IB:
         Args:
             contract: Option contract.
             optionPrice: Option price to use in calculation.
-            underPrice: Price of the underlyer to use in calculation
+            underPrice: Price of the underlier to use in calculation
             implVolOptions: Unknown
         """
         return self._run(
@@ -1410,7 +1410,7 @@ class IB:
         Args:
             contract: Option contract.
             volatility: Option volatility to use in calculation.
-            underPrice: Price of the underlyer to use in calculation
+            underPrice: Price of the underlier to use in calculation
             implVolOptions: Unknown
         """
         return self._run(
@@ -1429,7 +1429,7 @@ class IB:
         https://interactivebrokers.github.io/tws-api/options.html
 
         Args:
-            underlyingSymbol: Symbol of underlyer contract.
+            underlyingSymbol: Symbol of underlier contract.
             futFopExchange: Exchange (only for ``FuturesOption``, otherwise
                 leave blank).
             underlyingSecType: The type of the underlying security, like
