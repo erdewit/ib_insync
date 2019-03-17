@@ -129,6 +129,10 @@ Good luck and enjoy,
    :alt: Documentation
    :target: http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html
 
+.. |Docs| image:: https://readthedocs.org/projects/ib-insync/badge/?version=latest
+   :alt: Documentation
+   :target: https://ib-insync.readthedocs.io/
+
 .. |Downloads| image:: https://pepy.tech/badge/ib-insync
    :alt: Number of downloads
    :target: https://pepy.tech/project/ib-insync
