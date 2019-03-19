@@ -78,8 +78,8 @@ class Client(EClient):
 
     events = ('apiStart', 'apiEnd', 'apiError')
 
-    MaxRequests = 95
-    RequestsInterval = 2
+    MaxRequests = 48
+    RequestsInterval = 1
     MaxClientVersion = 148
 
     def __init__(self, wrapper):
