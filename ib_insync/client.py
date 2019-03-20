@@ -78,7 +78,7 @@ class Client(EClient):
 
     events = ('apiStart', 'apiEnd', 'apiError')
 
-    MaxRequests = 48
+    MaxRequests = 45
     RequestsInterval = 1
     MaxClientVersion = 148
 
