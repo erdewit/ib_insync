@@ -34,7 +34,7 @@ class Trade(Object):
         fills=None,
         log=None
     )
-    __slots__ = tuple(defaults.keys()) + events
+    __slots__ = tuple(defaults.keys()) + events + ('__dict__',)
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
