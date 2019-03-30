@@ -42,7 +42,7 @@ class Trade(Object):
 
     def isActive(self):
         """
-        True if eliglible for execution, false otherwise.
+        True if eligible for execution, false otherwise.
         """
         return self.orderStatus.status in OrderStatus.ActiveStates
 

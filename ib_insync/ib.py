@@ -1021,7 +1021,7 @@ class IB:
 
         Args:
             bars: The bar list that was obtained from ``reqHistoricalData``
-            with a keepUpToDate subscription.
+                with a keepUpToDate subscription.
 
         """
         self.client.cancelHistoricalData(bars.reqId)
