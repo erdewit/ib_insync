@@ -388,6 +388,10 @@
 <span class="sd">        Disconnect from a TWS or IB gateway application.</span>
 <span class="sd">        This will clear all session state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">tickers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">ticker</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">set_done</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">reqId2Subscriber</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">sub</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">set_done</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">isConnected</span><span class="p">():</span>
             <span class="k">return</span>
@@ -1176,7 +1180,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            bars: The bar list that was obtained from ``reqHistoricalData``</span>
-<span class="sd">            with a keepUpToDate subscription.</span>
+<span class="sd">                with a keepUpToDate subscription.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelHistoricalData</span><span class="p">(</span><span class="n">bars</span><span class="o">.</span><span class="n">reqId</span><span class="p">)</span>

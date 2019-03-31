@@ -4,6 +4,16 @@ Changelog
 0.9
 ---
 
+Version 0.9.46
+^^^^^^^^^^^^^^
+
+* ``Event`` class has been replaced with the one from
+  `eventkit <https://github.com/erdewit/eventkit>`_.
+* Event-driven bar construction from ticks added (via ``Ticker.updateEvent``)
+* Fixed bug #136.
+* Default request throttling is now 45 requests/s for compatibility with
+  TWS/gateway 974 and higher.
+
 Version 0.9.45
 ^^^^^^^^^^^^^^
 
