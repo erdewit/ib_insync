@@ -233,6 +233,10 @@ class IB:
         Disconnect from a TWS or IB gateway application.
         This will clear all session state.
         """
+        for ticker in self.wrapper.tickers.values():
+            ticker.updateEvent.set_done()
+        for sub in self.wrapper.reqId2Subscriber.values():
+            sub.updateEvent.set_done()
         self.wrapper.reset()
         if not self.client.isConnected():
             return
