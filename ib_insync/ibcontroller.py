@@ -440,7 +440,7 @@ class Watchdog(Object):
             except ConnectionRefusedError:
                 pass
             except Warning as w:
-                self._logger.warn(w)
+                self._logger.warning(w)
             except Exception as e:
                 self._logger.exception(e)
             finally:
