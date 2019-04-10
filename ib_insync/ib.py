@@ -189,6 +189,7 @@ class IB:
         self.wrapper = Wrapper(self)
         self.client = Client(self.wrapper)
         self.client.apiEnd += self.disconnectedEvent
+        self.client.apiEnd += self.wrapper.setDisconnected
         self._logger = logging.getLogger('ib_insync.ib')
 
     def __del__(self):
@@ -233,11 +234,6 @@ class IB:
         Disconnect from a TWS or IB gateway application.
         This will clear all session state.
         """
-        for ticker in self.wrapper.tickers.values():
-            ticker.updateEvent.set_done()
-        for sub in self.wrapper.reqId2Subscriber.values():
-            sub.updateEvent.set_done()
-        self.wrapper.reset()
         if not self.client.isConnected():
             return
         stats = self.client.connectionStats()

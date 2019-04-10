@@ -68,6 +68,16 @@ class Wrapper(EWrapper):
         self._timeout = 0
         self.setTimeout(0)
 
+    def setDisconnected(self):
+        for ticker in self.tickers.values():
+            ticker.updateEvent.set_done()
+        for sub in self.reqId2Subscriber.values():
+            sub.updateEvent.set_done()
+        for future in self._futures.values():
+            future.set_exception(
+                ConnectionError('Disconnected during request'))
+        self.reset()
+
     def _getContract(self, ibContract):
         """
         Create contract that corresponds to the given ibapi contract.
