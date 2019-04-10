@@ -73,9 +73,10 @@ class Wrapper(EWrapper):
             ticker.updateEvent.set_done()
         for sub in self.reqId2Subscriber.values():
             sub.updateEvent.set_done()
+        error = ConnectionError('Socket disconnect')
         for future in self._futures.values():
-            future.set_exception(
-                ConnectionError('Disconnected during request'))
+            future.set_exception(error)
+        util.globalErrorEvent.emit(error)
         self.reset()
 
     def _getContract(self, ibContract):

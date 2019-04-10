@@ -7,7 +7,15 @@ import asyncio
 import time
 from typing import Iterator, AsyncIterator, Callable, Union
 
+import eventkit as ev
+
 from ib_insync.objects import Object, DynamicObject
+
+
+globalErrorEvent = ev.Event()
+"""
+Event to emit global exceptions.
+"""
 
 
 def df(objs, labels=None):
@@ -244,7 +252,19 @@ def run(*awaitables, timeout: float = None):
             future = asyncio.gather(*awaitables)
         if timeout:
             future = asyncio.wait_for(future, timeout)
-        result = loop.run_until_complete(future)
+        task = loop.create_task(future)
+
+        def onError(_):
+            task.cancel()
+
+        globalErrorEvent.connect(onError)
+        try:
+            result = loop.run_until_complete(task)
+        except asyncio.CancelledError:
+            raise globalErrorEvent.value()
+        finally:
+            globalErrorEvent.disconnect(onError)
+
     return result
 
 
