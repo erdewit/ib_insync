@@ -1,5 +1,6 @@
 import time
 import logging
+from contextlib import suppress
 from urllib.request import urlopen
 import xml.etree.ElementTree as et
 
@@ -64,13 +65,9 @@ class FlexReport:
             for obj in results:
                 d = obj.__dict__
                 for k, v in d.items():
-                    try:
+                    with suppress(ValueError):
+                        d[k] = float(v)
                         d[k] = int(v)
-                    except ValueError:
-                        try:
-                            d[k] = float(v)
-                        except ValueError:
-                            pass
         return results
 
     def df(self, topic: str, parseNumbers=True):

@@ -1,7 +1,14 @@
-build:
-  image: latest
+# .readthedocs.yml
+
+version: 2
 
 python:
-  version: 3.6
-  setup_py_install: true
+  version: 3.7
+  install:
+    - method: pip
+      path: .
+    - requirements: requirements.txt
+    - requirements: docs/requirements.txt
 
+# Build all formats
+formats: all

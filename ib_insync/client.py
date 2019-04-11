@@ -10,11 +10,11 @@ import ibapi
 from ibapi.client import EClient
 from ibapi.wrapper import EWrapper, iswrapper
 from ibapi.common import UNSET_INTEGER, UNSET_DOUBLE
+from eventkit import Event
 
 from ib_insync.objects import ConnectionStats
 from ib_insync.contract import Contract
 import ib_insync.util as util
-from ib_insync.event import Event
 
 __all__ = ['Client']
 
@@ -61,25 +61,32 @@ class Client(EClient):
       A possible use is to write or evaluate the newly arrived data in
       one batch instead of item by item.
 
-    * Events:
-        * ``apiStart`` ()
-        * ``apiEnd`` ()
-        * ``apiError`` (errorMsg: str)
+    Attributes:
+      MaxRequests (int):
+        Throttle the number of requests to ``MaxRequests`` per
+        ``RequestsInterval`` seconds. Set to 0 to disable throttling.
+      RequestsInterval (float):
+        Time interval (in seconds) for request throttling.
+      MaxClientVersion (int):
+        Client protocol version.
+
+    Events:
+      * ``apiStart`` ()
+      * ``apiEnd`` ()
+      * ``apiError`` (errorMsg: str)
     """
 
     events = ('apiStart', 'apiEnd', 'apiError')
 
-    # throttle number of requests to MaxRequests per RequestsInterval seconds;
-    # set MaxRequests to 0 to disable throttling
-    MaxRequests = 100
-    RequestsInterval = 2
-
+    MaxRequests = 45
+    RequestsInterval = 1
     MaxClientVersion = 148
 
     def __init__(self, wrapper):
         self._readyEvent = asyncio.Event()
         EClient.__init__(self, wrapper)
         Event.init(self, Client.events)
+        self._loop = asyncio.get_event_loop()
         self._logger = logging.getLogger('ib_insync.client')
 
         # extra optional wrapper methods
@@ -102,8 +109,7 @@ class Client(EClient):
         self._timeQ = deque()
 
     def run(self):
-        loop = asyncio.get_event_loop()
-        loop.run_forever()
+        self._loop.run_forever()
 
     def isReady(self) -> bool:
         """
@@ -180,6 +186,7 @@ class Client(EClient):
         self.conn.disconnected = self._onSocketDisconnected
         self.conn.hasError = self._onSocketHasError
         try:
+            await asyncio.sleep(0)  # in case of a not yet finished disconnect
             fut = asyncio.gather(self.conn.connect(), self._readyEvent.wait())
             await asyncio.wait_for(fut, timeout)
             self._logger.info('API connection ready')
@@ -196,8 +203,7 @@ class Client(EClient):
             raise
 
     def sendMsg(self, msg):
-        loop = asyncio.get_event_loop()
-        t = loop.time()
+        t = self._loop.time()
         times = self._timeQ
         msgs = self._msgQ
         while times and t - times[0] > self.RequestsInterval:
@@ -211,14 +217,14 @@ class Client(EClient):
         if msgs:
             if not self._isThrottling:
                 self._isThrottling = True
-                self._logger.warn('Started to throttle requests')
-            loop.call_at(
+                self._logger.warning('Started to throttle requests')
+            self._loop.call_at(
                 times[0] + self.RequestsInterval,
                 self.sendMsg, None)
         else:
             if self._isThrottling:
                 self._isThrottling = False
-                self._logger.warn('Stopped to throttle requests')
+                self._logger.warning('Stopped to throttle requests')
 
     def _prefix(self, msg):
         # prefix a message with its length
@@ -261,7 +267,8 @@ class Client(EClient):
 
             if debug:
                 self._logger.debug(
-                    '<<< %s', ','.join(f.decode() for f in fields))
+                    '<<< %s', ','.join(
+                        f.decode(errors='backslashreplace') for f in fields))
 
             if not self.serverVersion_ and len(fields) == 2:
                 # this concludes the handshake
@@ -373,7 +380,7 @@ class Client(EClient):
                 self._readyEvent.set()
         elif msgId == 15:
             _, _, accts = fields
-            self._accounts = accts.decode().split(',')
+            self._accounts = [a for a in accts.decode().split(',') if a]
             if self._reqIdSeq:
                 self._readyEvent.set()
 
@@ -415,7 +422,6 @@ class Connection:
         if self.socket:
             self.socket.transport.close()
             self.socket = None
-            util.sleep(0)
 
     def isConnected(self):
         return self.socket is not None

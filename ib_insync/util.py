@@ -5,9 +5,17 @@ import sys
 import signal
 import asyncio
 import time
-from typing import Iterator, Callable, Union
+from typing import Iterator, AsyncIterator, Callable, Union
+
+import eventkit as ev
 
 from ib_insync.objects import Object, DynamicObject
+
+
+globalErrorEvent = ev.Event()
+"""
+Event to emit global exceptions.
+"""
 
 
 def df(objs, labels=None):
@@ -70,6 +78,8 @@ def barplot(bars, title='', upColor='blue', downColor='red'):
     if isinstance(bars, pd.DataFrame):
         ohlcTups = [
             tuple(v) for v in bars[['open', 'high', 'low', 'close']].values]
+    elif bars and hasattr(bars[0], 'open_'):
+        ohlcTups = [(b.open_, b.high, b.low, b.close) for b in bars]
     else:
         ohlcTups = [(b.open, b.high, b.low, b.close) for b in bars]
 
@@ -122,10 +132,13 @@ def logToFile(path, level=logging.INFO, ibapiLevel=logging.ERROR):
     """
     Create a log handler that logs to the given file.
     """
-    logging.basicConfig(
-        level=level,
-        format='%(asctime)s %(name)s %(levelname)s %(message)s',
-        handlers=[logging.FileHandler(path)])
+    logger = logging.getLogger()
+    logger.setLevel(level)
+    formatter = logging.Formatter(
+        '%(asctime)s %(name)s %(levelname)s %(message)s')
+    handler = logging.FileHandler(path)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
     logging.getLogger('ibapi').setLevel(ibapiLevel)
 
 
@@ -133,10 +146,16 @@ def logToConsole(level=logging.INFO, ibapiLevel=logging.ERROR):
     """
     Create a log handler that logs to the console.
     """
-    logging.basicConfig(
-        level=level,
-        format='%(asctime)s %(name)s %(levelname)s %(message)s',
-        handlers=[logging.StreamHandler()])
+    logger = logging.getLogger()
+    logger.setLevel(level)
+    formatter = logging.Formatter(
+        '%(asctime)s %(name)s %(levelname)s %(message)s')
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    logger.handlers = [
+        h for h in logger.handlers
+        if type(h) is not logging.StreamHandler]
+    logger.addHandler(handler)
     logging.getLogger('ibapi').setLevel(ibapiLevel)
 
 
@@ -233,8 +252,29 @@ def run(*awaitables, timeout: float = None):
             future = asyncio.gather(*awaitables)
         if timeout:
             future = asyncio.wait_for(future, timeout)
-        result = loop.run_until_complete(future)
+        task = loop.create_task(future)
+
+        def onError(_):
+            task.cancel()
+
+        globalErrorEvent.connect(onError)
+        try:
+            result = loop.run_until_complete(task)
+        except asyncio.CancelledError:
+            raise globalErrorEvent.value()
+        finally:
+            globalErrorEvent.disconnect(onError)
+
     return result
+
+
+def _fillDate(time):
+    # use today if date is absent
+    if isinstance(time, datetime.time):
+        dt = datetime.datetime.combine(datetime.date.today(), time)
+    else:
+        dt = time
+    return dt
 
 
 def schedule(
@@ -250,13 +290,10 @@ def schedule(
         callback: Callable scheduled to run.
         args: Arguments for to call callback with.
     """
-    loop = asyncio.get_event_loop()
-    if isinstance(time, datetime.time):
-        dt = datetime.datetime.combine(datetime.date.today(), time)
-    else:
-        dt = time
+    dt = _fillDate(time)
     now = datetime.datetime.now(dt.tzinfo)
     delay = (dt - now).total_seconds()
+    loop = asyncio.get_event_loop()
     loop.call_later(delay, callback, *args)
 
 
@@ -272,8 +309,9 @@ def sleep(secs: float = 0.02) -> bool:
     return True
 
 
-def timeRange(start: datetime.time, end: datetime.time,
-              step: float) -> Iterator[datetime.datetime]:
+def timeRange(
+        start: datetime.time, end: datetime.time,
+        step: float) -> Iterator[datetime.datetime]:
     """
     Iterator that waits periodically until certain time points are
     reached while yielding those time points.
@@ -286,10 +324,8 @@ def timeRange(start: datetime.time, end: datetime.time,
         step (float): The number of seconds of each period
     """
     assert step > 0
-    if isinstance(start, datetime.time):
-        start = datetime.datetime.combine(datetime.date.today(), start)
-    if isinstance(end, datetime.time):
-        end = datetime.datetime.combine(datetime.date.today(), end)
+    start = _fillDate(start)
+    end = _fillDate(end)
     delta = datetime.timedelta(seconds=step)
     t = start
     while t < datetime.datetime.now():
@@ -308,11 +344,40 @@ def waitUntil(t: datetime.time) -> bool:
         t: The time t can be specified as datetime.datetime,
             or as datetime.time in which case today is used as the date.
     """
-    if isinstance(t, datetime.time):
-        t = datetime.datetime.combine(datetime.date.today(), t)
+    t = _fillDate(t)
     now = datetime.datetime.now(t.tzinfo)
     secs = (t - now).total_seconds()
     run(asyncio.sleep(secs))
+    return True
+
+
+async def timeRangeAsync(
+        start: datetime.time, end: datetime.time,
+        step: float) -> AsyncIterator[datetime.datetime]:
+    """
+    Async version of :meth:`timeRange`.
+    """
+    assert step > 0
+    start = _fillDate(start)
+    end = _fillDate(end)
+    delta = datetime.timedelta(seconds=step)
+    t = start
+    while t < datetime.datetime.now():
+        t += delta
+    while t <= end:
+        await waitUntilAsync(t)
+        yield t
+        t += delta
+
+
+async def waitUntilAsync(t: datetime.time) -> bool:
+    """
+    Async version of :meth:`waitUntil`.
+    """
+    t = _fillDate(t)
+    now = datetime.datetime.now(t.tzinfo)
+    secs = (t - now).total_seconds()
+    await asyncio.sleep(secs)
     return True
 
 

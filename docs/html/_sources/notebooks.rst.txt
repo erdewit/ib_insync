@@ -18,5 +18,3 @@ Here are some recipe notebooks:
    Market depth <https://github.com/erdewit/ib_insync/tree/master/notebooks/market_depth.ipynb>
    Ordering <https://github.com/erdewit/ib_insync/tree/master/notebooks/ordering.ipynb>
 
-Jupyter can be started with the command ``jupyter notebook``.
-

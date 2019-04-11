@@ -14,16 +14,16 @@ from ibapi.order_condition import (OrderCondition, ExecutionCondition,  # noqa
         OperatorCondition, MarginCondition, ContractCondition, TimeCondition,
         PriceCondition, PercentChangeCondition, VolumeCondition)
 
-from ib_insync.event import Event
+from eventkit import Event
 
 __all__ = (
     'Object ContractDetails ContractDescription '
-    'ComboLeg UnderComp DeltaNeutralContract OrderComboLeg OrderState '
-    'SoftDollarTier PriceIncrement Execution CommissionReport ExecutionFilter '
+    'ComboLeg DeltaNeutralContract OrderComboLeg OrderState '
+    'SoftDollarTier PriceIncrement Execution CommissionReport '
     'BarList BarDataList RealTimeBarList BarData RealTimeBar '
     'HistogramData NewsProvider DepthMktDataDescription '
-    'ScannerSubscription ScanData ScanDataList '
-    'PnL PnLSingle AccountValue TickData '
+    'ScannerSubscription ScanData ScanDataList FundamentalRatios '
+    'ExecutionFilter PnL PnLSingle AccountValue TickData '
     'TickByTickAllLast TickByTickBidAsk TickByTickMidPoint '
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
     'TickAttrib TickAttribBidAsk TickAttribLast '
@@ -47,7 +47,7 @@ class Object:
     * A general string representation;
     * A default equality testing that compares attributes.
     """
-    __slots__ = ()
+    __slots__ = ('__weakref__',)
     defaults: dict = {}
 
     def __init__(self, *args, **kwargs):
@@ -130,17 +130,7 @@ class DynamicObject:
 class ContractDetails(Object):
     defaults = ibapi.contract.ContractDetails().__dict__
     defaults['contract'] = None
-    defaults.pop('summary', None)
     __slots__ = defaults.keys()
-
-    # backwards compatibility with ibapi v9.73.06
-    @property
-    def summary(self):
-        return self.contract
-
-    @summary.setter
-    def summary(self, c):
-        self.contract = c
 
 
 class ContractDescription(Object):
@@ -160,10 +150,6 @@ class DeltaNeutralContract(Object):
         delta=0.0,
         price=0.0)
     __slots__ = defaults.keys()
-
-
-# backwards compatibility with ibapi v9.73.06
-UnderComp = DeltaNeutralContract
 
 
 class OrderComboLeg(Object):
@@ -268,13 +254,20 @@ class PnLSingle(Object):
     __slots__ = defaults.keys()
 
 
+class FundamentalRatios(DynamicObject):
+    """
+    https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html
+    """
+    pass
+
+
 class BarList(list):
     """
     Base class for bar lists.
     """
     events = ('updateEvent',)
 
-    __slots__ = events
+    __slots__ = events + ('__weakref__',)
 
     def __init__(self, *args):
         list.__init__(self, *args)
@@ -327,7 +320,7 @@ class ScanDataList(list):
 
     __slots__ = events + (
         'reqId', 'subscription', 'scannerSubscriptionOptions',
-        'scannerSubscriptionFilterOptions')
+        'scannerSubscriptionFilterOptions', '__weakref__')
 
     def __init__(self, *args):
         list.__init__(self, *args)
@@ -338,6 +331,14 @@ class ScanDataList(list):
 
     def __hash__(self):
         return id(self)
+
+
+class TagValue(namedtuple('TagValue', 'tag value')):
+    __slots__ = ()
+
+    def __str__(self):
+        # ibapi serialization depends on this
+        return f'{self.tag}={self.value};'
 
 
 AccountValue = namedtuple(
@@ -395,10 +396,6 @@ PriceIncrement = namedtuple(
 ScanData = namedtuple(
     'ScanData',
     'rank contractDetails distance benchmark projection legsStr')
-
-TagValue = namedtuple(
-    'TagValue',
-    'tag value')
 
 PortfolioItem = namedtuple(
     'PortfolioItem',

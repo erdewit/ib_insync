@@ -1,7 +1,7 @@
 import ibapi
+from eventkit import Event
 
 from .objects import Object
-from ib_insync.event import Event
 
 __all__ = (
     'Trade OrderStatus Order '
@@ -34,7 +34,7 @@ class Trade(Object):
         fills=None,
         log=None
     )
-    __slots__ = tuple(defaults.keys()) + events
+    __slots__ = tuple(defaults.keys()) + events + ('__dict__',)
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
@@ -42,7 +42,7 @@ class Trade(Object):
 
     def isActive(self):
         """
-        True if eliglible for execution, false otherwise.
+        True if eligible for execution, false otherwise.
         """
         return self.orderStatus.status in OrderStatus.ActiveStates
 
@@ -86,14 +86,13 @@ class OrderStatus(Object):
     PendingCancel = 'PendingCancel'
     PreSubmitted = 'PreSubmitted'
     Submitted = 'Submitted'
-    # ApiPending is undocumented, can be returned from req(All)OpenOrders
     ApiPending = 'ApiPending'
     ApiCancelled = 'ApiCancelled'
     Cancelled = 'Cancelled'
     Filled = 'Filled'
     Inactive = 'Inactive'
 
-    DoneStates = {'Cancelled', 'Filled', 'ApiCancelled', 'Inactive'}
+    DoneStates = {'Filled', 'Cancelled', 'ApiCancelled'}
     ActiveStates = {'PendingSubmit', 'ApiPending', 'PreSubmitted', 'Submitted'}
 
 
