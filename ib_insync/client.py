@@ -308,6 +308,10 @@ class Client(EClient):
         self.reset()
         self.apiError.emit(msg)
 
+    def send(self, *fields):
+        msg = self._encode(*fields)
+        self.sendMsg(msg)
+
     def _encode(self, *fields):
         """
         Serialize the given fields to a string conforming to the
@@ -324,8 +328,7 @@ class Client(EClient):
                     c.lastTradeDateOrContractMonth, c.strike,
                     c.right, c.multiplier, c.exchange,
                     c.primaryExchange, c.currency,
-                    c.localSymbol, c.tradingClass,
-                    1 if c.includeExpired else 0))
+                    c.localSymbol, c.tradingClass))
             elif type(field) is list:
                 # list of TagValue
                 s = ''.join(f'{v.tag}={v.value};' for v in field)
@@ -385,6 +388,404 @@ class Client(EClient):
                 self._readyEvent.set()
 
         self.decoder.interpret(fields)
+
+    def reqMktData(
+            self, reqId, contract, genericTickList, snapshot,
+            regulatorySnapshot, mktDataOptions):
+        fields = [1, 11, reqId, contract]
+
+        if contract.secType == 'BAG':
+            legs = contract.comboLegs or []
+            fields += [len(contract.comboLegs)]
+            for leg in legs:
+                fields += [leg.conId, leg.ratio, leg.action, leg.exchange]
+
+        dnc = contract.deltaNeutralContract
+        if dnc:
+            fields += [True, dnc.conId, dnc.delta, dnc.price]
+        else:
+            fields += [False]
+
+        fields += [
+            genericTickList, snapshot, regulatorySnapshot, mktDataOptions]
+        self.send(*fields)
+
+    def cancelMktData(self, reqId):
+        self.send(2, 2, reqId)
+
+    def placeOrder(self, orderId, contract, order):
+        version = self.serverVersion()
+        fields = [3]
+        if version < 145:
+            fields += [27]
+        fields += [
+            orderId,
+            contract,
+            contract.secIdType,
+            contract.secId,
+            order.action,
+            order.totalQuantity,
+            order.orderType,
+            order.lmtPrice,
+            order.auxPrice,
+            order.tif,
+            order.ocaGroup,
+            order.account,
+            order.openClose,
+            order.origin,
+            order.orderRef,
+            order.transmit,
+            order.parentId,
+            order.blockOrder,
+            order.sweepToFill,
+            order.displaySize,
+            order.triggerMethod,
+            order.outsideRth,
+            order.hidden]
+
+        if contract.secType == 'BAG':
+            legs = contract.comboLegs or []
+            fields += [len(legs)]
+            for leg in legs:
+                fields += [
+                    leg.conId,
+                    leg.ratio,
+                    leg.action,
+                    leg.exchange,
+                    leg.openClose,
+                    leg.shortSaleSlot,
+                    leg.designatedLocation,
+                    leg.exemptCode]
+
+            legs = order.orderComboLegs or []
+            fields += [len(legs)]
+            for leg in legs:
+                fields += [leg.price]
+
+            params = order.smartComboRoutingParams or []
+            fields += [len(params)]
+            for param in params:
+                fields += [param.tag, param.value]
+
+        fields += [
+            '',
+            order.discretionaryAmt,
+            order.goodAfterTime,
+            order.goodTillDate,
+            order.faGroup,
+            order.faMethod,
+            order.faPercentage,
+            order.faProfile,
+            order.modelCode,
+            order.shortSaleSlot,
+            order.designatedLocation,
+            order.exemptCode,
+            order.ocaType,
+            order.rule80A,
+            order.settlingFirm,
+            order.allOrNone,
+            order.minQty,
+            order.percentOffset,
+            order.eTradeOnly,
+            order.firmQuoteOnly,
+            order.nbboPriceCap,
+            order.auctionStrategy,
+            order.startingPrice,
+            order.stockRefPrice,
+            order.delta,
+            order.stockRangeLower,
+            order.stockRangeUpper,
+            order.overridePercentageConstraints,
+            order.volatility,
+            order.volatilityType,
+            order.deltaNeutralOrderType,
+            order.deltaNeutralAuxPrice]
+
+        if order.deltaNeutralOrderType:
+            fields += [
+                order.deltaNeutralConId,
+                order.deltaNeutralSettlingFirm,
+                order.deltaNeutralClearingAccount,
+                order.deltaNeutralClearingIntent,
+                order.deltaNeutralOpenClose,
+                order.deltaNeutralShortSale,
+                order.deltaNeutralShortSaleSlot,
+                order.deltaNeutralDesignatedLocation]
+
+        fields += [
+            order.continuousUpdate,
+            order.referencePriceType,
+            order.trailStopPrice,
+            order.trailingPercent,
+            order.scaleInitLevelSize,
+            order.scaleSubsLevelSize,
+            order.scalePriceIncrement]
+
+        if (order.scalePriceIncrement != UNSET_DOUBLE
+                and order.scalePriceIncrement > 0.0):
+            fields += [
+                order.scalePriceAdjustValue,
+                order.scalePriceAdjustInterval,
+                order.scaleProfitOffset,
+                order.scaleAutoReset,
+                order.scaleInitPosition,
+                order.scaleInitFillQty,
+                order.scaleRandomPercent]
+
+        fields += [
+            order.scaleTable,
+            order.activeStartTime,
+            order.activeStopTime,
+            order.hedgeType]
+
+        if order.hedgeType:
+            fields += [order.hedgeParam]
+
+        fields += [
+            order.optOutSmartRouting,
+            order.clearingAccount,
+            order.clearingIntent,
+            order.notHeld]
+
+        dnc = contract.deltaNeutralContract
+        if dnc:
+            fields += [True, dnc.conId, dnc.delta, dnc.price]
+        else:
+            fields += [False]
+
+        fields += [order.algoStrategy]
+        if order.algoStrategy:
+            params = order.algoParams or []
+            fields += [len(params)]
+            for param in params:
+                fields += [param.tag, param.value]
+
+        fields += [
+            order.algoId,
+            order.whatIf,
+            order.orderMiscOptions,
+            order.solicited,
+            order.randomizeSize,
+            order.randomizePrice]
+
+        if order.orderType == 'PEG BENCH':
+            fields += [
+                order.referenceContractId,
+                order.isPeggedChangeAmountDecrease,
+                order.peggedChangeAmount,
+                order.referenceChangeAmount,
+                order.referenceExchangeId]
+
+        fields += [order.conditions]
+        if order.conditions:
+            for cond in order.conditions:
+                fields += [cond.type()]
+                fields += cond.make_fields()
+            fields += [
+                order.conditionsIgnoreRth,
+                order.conditionsCancelOrder]
+
+        fields += [
+            order.adjustedOrderType,
+            order.triggerPrice,
+            order.lmtPriceOffset,
+            order.adjustedStopPrice,
+            order.adjustedStopLimitPrice,
+            order.adjustedTrailingAmount,
+            order.adjustableTrailingUnit,
+            order.extOperator,
+            order.softDollarTier.name,
+            order.softDollarTier.val,
+            order.cashQty]
+
+        if version >= 138:
+            fields += [order.mifid2DecisionMaker, order.mifid2DecisionAlgo]
+        if version >= 139:
+            fields += [order.mifid2ExecutionTrader, order.mifid2ExecutionAlgo]
+        if version >= 141:
+            fields += [order.dontUseAutoPriceForHedge]
+        if version >= 145:
+            fields += [order.isOmsContainer]
+        if version >= 148:
+            fields += [order.discretionaryUpToLimitPrice]
+        if version >= 151:
+            fields += [order.usePriceMgmtAlgo]
+
+        self.send(*fields)
+
+    def cancelOrder(self, orderId):
+        self.send(4, 1, orderId)
+
+    def reqOpenOrders(self):
+        self.send(5, 1)
+
+    def reqAccountUpdates(self, subscribe, acctCode):
+        self.send(6, 2, subscribe, acctCode)
+
+    def reqExecutions(self, reqId, execFilter):
+        self.send(
+            7, 3, reqId,
+            execFilter.clientId,
+            execFilter.acctCode,
+            execFilter.time,
+            execFilter.symbol,
+            execFilter.secType,
+            execFilter.exchange,
+            execFilter.side)
+
+    def reqIds(self, numIds):
+        self.send(8, 1)
+
+    def reqContractDetails(self, reqId, contract):
+        self.send(
+            9, 8, reqId, contract, contract.includeExpired,
+            contract.secIdType, contract.secId)
+
+    def reqMktDepth(
+            self, reqId, contract, numRows, isSmartDepth, mktDepthOptions):
+        self.send(
+            10, 5, reqId, contract, numRows, isSmartDepth, mktDepthOptions)
+
+    def cancelMktDepth(self, reqId, isSmartDepth):
+        self.send(11, 1, reqId, isSmartDepth)
+
+    def reqNewsBulletins(self, allMsgs):
+        self.send(12, 1, allMsgs)
+
+    def cancelNewsBulletins(self):
+        self.send(13, 1)
+
+    def reqAutoOpenOrders(self, bAutoBind):
+        self.send(15, 1, bAutoBind)
+
+    def reqAllOpenOrders(self):
+        self.send(16, 1)
+
+    def reqManagedAccts(self):
+        self.send(17, 1)
+
+    def requestFA(self, faData):
+        self.send(18, 1, faData)
+
+    def replaceFA(self, faData, cxml):
+        self.send(19, 1, faData, cxml)
+
+    def reqHistoricalData(
+            self, reqId, contract, endDateTime, durationStr, barSizeSetting,
+            whatToShow, useRTH, formatDate, keepUpToDate, chartOptions):
+        fields = [20]
+        if self.serverVersion() < 124:
+            fields += [6]
+        fields += [
+            reqId, contract, contract.includeExpired,
+            endDateTime, barSizeSetting, durationStr, useRTH,
+            whatToShow, formatDate]
+
+        if contract.secType == 'BAG':
+            fields += [len(contract.comboLegs)]
+            for leg in contract.comboLegs:
+                fields += [leg.conId, leg.ratio, leg.action, leg.exchange]
+
+        fields += [keepUpToDate, chartOptions]
+        self.send(*fields)
+
+    def exerciseOptions(
+            self, reqId, contract, exerciseAction,
+            exerciseQuantity, account, override):
+        self.send(
+            21, 2, contract, exerciseAction,
+            exerciseQuantity, account, override)
+
+    def cancelHistoricalData(self, reqId):
+        self.send(25, 1, reqId)
+
+    def reqCurrentTime(self):
+        self.send(49, 1)
+
+    def calculateImpliedVolatility(
+            self, reqId, contract, optionPrice, underPrice, implVolOptions):
+        self.send(
+            54, 3, reqId, contract, optionPrice, underPrice,
+            len(implVolOptions), implVolOptions)
+
+    def calculateOptionPrice(
+            self, reqId, contract, volatility, underPrice, optPrcOptions):
+        self.send(
+            55, 3, reqId, contract, volatility, underPrice,
+            len(optPrcOptions), optPrcOptions)
+
+    def cancelCalculateImpliedVolatility(self, reqId):
+        self.send(56, 1, reqId)
+
+    def cancelCalculateOptionPrice(self, reqId):
+        self.send(57, 1, reqId)
+
+    def reqGlobalCancel(self):
+        self.send(58, 1)
+
+    def reqMarketDataType(self, marketDataType):
+        self.send(59, 1)
+
+    def reqPositions(self):
+        self.send(61, 1)
+
+    def reqAccountSummary(self, reqId, groupName, tags):
+        self.send(62, 1, reqId, groupName, tags)
+
+    def cancelAccountSummary(self, reqId):
+        self.send(63, 1, reqId)
+
+    def cancelPositions(self):
+        self.send(64, 1)
+
+    def reqPositionsMulti(self, reqId, account, modelCode):
+        self.send(74, 1, reqId, account, modelCode)
+
+    def cancelPositionsMulti(self, reqId):
+        self.send(75, 1, reqId)
+
+    def reqAccountUpdatesMulti(self, reqId, account, modelCode, ledgerAndNLV):
+        self.send(76, 1, reqId, account, modelCode, ledgerAndNLV)
+
+    def cancelAccountUpdatesMulti(self, reqId):
+        self.send(77, 1, reqId)
+
+    def reqMktDepthExchanges(self):
+        self.send(82)
+
+    def reqSmartComponents(self, reqId, bboExchange):
+        self.send(83, reqId, bboExchange)
+
+    def reqHeadTimeStamp(
+            self, reqId, contract, whatToShow, useRTH, formatDate):
+        self.send(
+            87, reqId, contract, contract.includeExpired,
+            useRTH, whatToShow, formatDate)
+
+    def cancelHeadTimeStamp(self, reqId):
+        self.send(90, reqId)
+
+    def reqMarketRule(self, marketRuleId):
+        self.send(91, marketRuleId)
+
+    def reqPnL(self, reqId, account, modelCode):
+        self.send(92, reqId, account, modelCode)
+
+    def cancelPnL(self, reqId):
+        self.send(93, reqId)
+
+    def reqPnLSingle(self, reqId, account, modelCode, conid):
+        self.send(94, reqId, account, modelCode, conid)
+
+    def cancelPnLSingle(self, reqId: int):
+        self.send(95, reqId)
+
+    def reqTickByTickData(
+            self, reqId, contract, tickType, numberOfTicks, ignoreSize):
+        self.send(97, contract, tickType, numberOfTicks, ignoreSize)
+
+    def cancelTickByTickData(self, reqId):
+        self.send(98, reqId)
 
 
 class Connection:

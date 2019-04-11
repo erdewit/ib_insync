@@ -256,7 +256,7 @@ def run(*awaitables, timeout: float = None):
             future = asyncio.gather(*awaitables)
         if timeout:
             future = asyncio.wait_for(future, timeout)
-        task = loop.create_task(future)
+        task = asyncio.ensure_future(future)
 
         def onError(_):
             task.cancel()
