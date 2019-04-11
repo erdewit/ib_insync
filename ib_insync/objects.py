@@ -1,13 +1,6 @@
 from collections import namedtuple
 
-import ibapi.scanner
-import ibapi.contract
-import ibapi.common
-import ibapi.order
-import ibapi.order_state
-import ibapi.softdollartier
-import ibapi.execution
-import ibapi.commission_report
+from .util import UNSET_DOUBLE, UNSET_INTEGER
 
 # order conditions are imported as-is from ibapi
 from ibapi.order_condition import (OrderCondition, ExecutionCondition,  # noqa
@@ -128,19 +121,61 @@ class DynamicObject:
 
 
 class ContractDetails(Object):
-    defaults = ibapi.contract.ContractDetails().__dict__
-    defaults['contract'] = None
+    defaults = dict(
+        contract=None,
+        marketName='',
+        minTick=0.0,
+        orderTypes='',
+        validExchanges='',
+        priceMagnifier=0,
+        underConId=0,
+        longName='',
+        contractMonth='',
+        industry='',
+        category='',
+        subcategory='',
+        timeZoneId='',
+        tradingHours='',
+        liquidHours='',
+        evRule='',
+        evMultiplier=0,
+        mdSizeMultiplier=0,
+        aggGroup=0,
+        underSymbol='',
+        underSecType='',
+        marketRuleIds='',
+        secIdList=None,
+        realExpirationDate='',
+        lastTradeTime='',
+        cusip='',
+        ratings='',
+        descAppend='',
+        bondType='',
+        couponType='',
+        callable=False,
+        putable=False,
+        coupon=0,
+        convertible=False,
+        maturity='',
+        issueDate='',
+        nextOptionDate='',
+        nextOptionType='',
+        nextOptionPartial=False,
+        notes='')
     __slots__ = defaults.keys()
 
 
 class ContractDescription(Object):
-    defaults = ibapi.contract.ContractDescription().__dict__
-    defaults['contract'] = None
+    defaults = dict(
+        contract=None,
+        derivativeSecTypes=None
+    )
     __slots__ = defaults.keys()
 
 
 class ComboLeg(Object):
-    defaults = ibapi.contract.ComboLeg().__dict__
+    defaults = dict(
+        price=UNSET_DOUBLE)
     __slots__ = defaults.keys()
 
 
@@ -153,52 +188,145 @@ class DeltaNeutralContract(Object):
 
 
 class OrderComboLeg(Object):
-    defaults = ibapi.order.OrderComboLeg().__dict__
+    defaults = dict(
+        price=UNSET_DOUBLE)
     __slots__ = defaults.keys()
 
 
 class OrderState(Object):
-    defaults = ibapi.order_state.OrderState().__dict__
+    defaults = dict(
+        status='',
+        initMarginBefore='',
+        maintMarginBefore='',
+        equityWithLoanBefore='',
+        initMarginChange='',
+        maintMarginChange='',
+        equityWithLoanChange='',
+        initMarginAfter='',
+        maintMarginAfter='',
+        equityWithLoanAfter='',
+        commission=UNSET_DOUBLE,
+        minCommission=UNSET_DOUBLE,
+        maxCommission=UNSET_DOUBLE,
+        commissionCurrency='',
+        warningText='',
+        completedTime='',
+        completedStatus='')
     __slots__ = defaults.keys()
 
 
 class ScannerSubscription(Object):
-    defaults = ibapi.scanner.ScannerSubscription().__dict__
+    defaults = dict(
+        numberOfRows=-1,
+        instrument='',
+        locationCode='',
+        scanCode='',
+        abovePrice=UNSET_DOUBLE,
+        belowPrice=UNSET_DOUBLE,
+        aboveVolume=UNSET_INTEGER,
+        marketCapAbove=UNSET_DOUBLE,
+        marketCapBelow=UNSET_DOUBLE,
+        moodyRatingAbove='',
+        moodyRatingBelow='',
+        spRatingAbove='',
+        spRatingBelow='',
+        maturityDateAbove='',
+        maturityDateBelow='',
+        couponRateAbove=UNSET_DOUBLE,
+        couponRateBelow=UNSET_DOUBLE,
+        excludeConvertible=False,
+        averageOptionVolumeAbove=UNSET_INTEGER,
+        scannerSettingPairs='',
+        stockTypeFilter='')
     __slots__ = defaults.keys()
 
 
 class SoftDollarTier(Object):
-    defaults = ibapi.softdollartier.SoftDollarTier().__dict__
+    defaults = dict(
+        name='',
+        val='',
+        displayName='')
     __slots__ = defaults.keys()
 
 
 class Execution(Object):
-    defaults = ibapi.execution.Execution().__dict__
+    defaults = dict(
+        execId='',
+        time='',
+        acctNumber='',
+        exchange='',
+        side='',
+        shares=0.0,
+        price=0.0,
+        permId=0,
+        clientId=0,
+        orderId=0,
+        liquidation=0,
+        cumQty=0.0,
+        avgPrice=0.0,
+        orderRef='',
+        evRule='',
+        evMultiplier=0.0,
+        modelCode='',
+        lastLiquidity=0)
     __slots__ = defaults.keys()
 
 
 class CommissionReport(Object):
-    defaults = ibapi.commission_report.CommissionReport().__dict__
+    defaults = dict(
+        execId='',
+        commission=0.0,
+        currency='',
+        realizedPNL=0.0,
+        yield_=0.0,
+        yieldRedemptionDate=0)
     __slots__ = defaults.keys()
 
 
 class ExecutionFilter(Object):
-    defaults = ibapi.execution.ExecutionFilter().__dict__
+    defaults = dict(
+        clientId=0,
+        acctCode='',
+        time='',
+        symbol='',
+        secType='',
+        exchange='',
+        side='')
     __slots__ = defaults.keys()
 
 
 class BarData(Object):
-    defaults = ibapi.common.BarData().__dict__
+    defaults = dict(
+        date='',
+        open=0.0,
+        high=0.0,
+        low=0.0,
+        close=0.0,
+        volume=0,
+        barCount=0,
+        average=0.0)
     __slots__ = defaults.keys()
 
 
 class RealTimeBar(Object):
-    defaults = ibapi.common.RealTimeBar().__dict__
+    defaults = dict(
+        time=0,
+        endTime=-1,
+        open_=0.0,
+        high=0.0,
+        low=0.0,
+        close=0.0,
+        volume=0.0,
+        wap=0.0,
+        count=0)
     __slots__ = defaults.keys()
 
 
 class TickAttrib(Object):
-    defaults = ibapi.common.TickAttrib().__dict__
+    defaults = dict(
+        canAutoExecute=False,
+        pastLimit=False,
+        preOpen=False)
     __slots__ = defaults.keys()
 
 
@@ -217,17 +345,26 @@ class TickAttribLast(Object):
 
 
 class HistogramData(Object):
-    defaults = ibapi.common.HistogramData().__dict__
+    defaults = dict(
+        price=0.0,
+        count=0)
     __slots__ = defaults.keys()
 
 
 class NewsProvider(Object):
-    defaults = ibapi.common.NewsProvider().__dict__
+    defaults = dict(
+        code='',
+        name='')
     __slots__ = defaults.keys()
 
 
 class DepthMktDataDescription(Object):
-    defaults = ibapi.common.DepthMktDataDescription().__dict__
+    defaults = dict(
+        exchange='',
+        secType='',
+        listingExch='',
+        serviceDataType='',
+        aggGroup=UNSET_INTEGER)
     __slots__ = defaults.keys()
 
 

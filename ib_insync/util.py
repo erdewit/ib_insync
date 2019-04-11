@@ -9,13 +9,15 @@ from typing import Iterator, AsyncIterator, Callable, Union
 
 import eventkit as ev
 
-from ib_insync.objects import Object, DynamicObject
-
 
 globalErrorEvent = ev.Event()
 """
 Event to emit global exceptions.
 """
+
+
+UNSET_INTEGER = 2 ** 31 - 1
+UNSET_DOUBLE = sys.float_info.max
 
 
 def df(objs, labels=None):
@@ -25,6 +27,7 @@ def df(objs, labels=None):
     drop the rest.
     """
     import pandas as pd
+    from .objects import Object, DynamicObject
     if objs:
         objs = list(objs)
         obj = objs[0]
@@ -51,6 +54,7 @@ def tree(obj):
     Convert object to a tree of lists, dicts and simple values.
     The result can be serialized to JSON.
     """
+    from .objects import Object
     if isinstance(obj, (bool, int, float, str, bytes)):
         return obj
     elif isinstance(obj, (datetime.date, datetime.time)):

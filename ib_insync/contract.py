@@ -1,4 +1,3 @@
-import ibapi.contract
 
 from ib_insync.objects import Object
 
@@ -77,7 +76,26 @@ class Contract(Object):
         deltaNeutralContract (DeltaNeutralContract): Delta and underlying
             price for Delta-Neutral combo orders.
     """
-    defaults = {'secType': '', **ibapi.contract.Contract().__dict__}
+    defaults = dict(
+        secType='',
+        conId=0,
+        symbol='',
+        lastTradeDateOrContractMonth='',
+        strike=0.0,
+        right='',
+        multiplier='',
+        exchange='',
+        primaryExchange='',
+        currency='',
+        localSymbol='',
+        tradingClass='',
+        includeExpired=False,
+        secIdType='',
+        secId='',
+        comboLegsDescrip='',
+        comboLegs=None,
+        deltaNeutralContract=None
+    )
     __slots__ = defaults.keys()
 
     @staticmethod

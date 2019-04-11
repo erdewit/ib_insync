@@ -5,7 +5,6 @@ from collections import defaultdict
 from contextlib import suppress
 
 from ibapi.wrapper import EWrapper, iswrapper
-from ibapi.common import UNSET_DOUBLE
 
 from ib_insync.contract import Contract
 from ib_insync.ticker import Ticker
@@ -22,6 +21,7 @@ from ib_insync.objects import (
     OptionComputation, ScanData, HistogramData,
     TagValue, ComboLeg, SoftDollarTier)
 import ib_insync.util as util
+from .util import UNSET_DOUBLE
 
 __all__ = ['Wrapper']
 
