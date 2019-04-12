@@ -6,9 +6,7 @@ import io
 from collections import deque
 from typing import List
 
-import ibapi
-from ibapi.client import EClient
-from ibapi.wrapper import EWrapper, iswrapper
+import ibapi.decoder
 from eventkit import Event
 
 from ib_insync.objects import ConnectionStats
@@ -19,7 +17,7 @@ from .util import UNSET_INTEGER, UNSET_DOUBLE
 __all__ = ['Client']
 
 
-class Client(EClient):
+class Client:
     """
     Modification of ``ibapi.client.EClient`` that uses asyncio.
 
@@ -80,14 +78,20 @@ class Client(EClient):
 
     MaxRequests = 45
     RequestsInterval = 1
-    MaxClientVersion = 148
+
+    MinClientVersion = 137
+    MaxClientVersion = 151
+
+    (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
 
     def __init__(self, wrapper):
-        self._readyEvent = asyncio.Event()
-        EClient.__init__(self, wrapper)
         Event.init(self, Client.events)
+        self.wrapper = wrapper
+        self.decoder = None
+        self._readyEvent = asyncio.Event()
         self._loop = asyncio.get_event_loop()
         self._logger = logging.getLogger('ib_insync.client')
+        self.reset()
 
         # extra optional wrapper methods
         self._priceSizeTick = getattr(wrapper, 'priceSizeTick', None)
@@ -95,7 +99,13 @@ class Client(EClient):
         self._tcpDataProcessed = getattr(wrapper, 'tcpDataProcessed', None)
 
     def reset(self):
-        EClient.reset(self)
+        self.host = None
+        self.port = None
+        self.clientId = None
+        self.conn = None
+        self.connState = Client.DISCONNECTED
+        self.optCapab = ''
+        self._serverVersion = None
         self._readyEvent.clear()
         self._data = b''
         self._connectOptions = b''
@@ -108,8 +118,14 @@ class Client(EClient):
         self._msgQ = deque()
         self._timeQ = deque()
 
+    def serverVersion(self):
+        return self._serverVersion
+
     def run(self):
         self._loop.run_forever()
+
+    def isConnected(self):
+        return self.connState == Client.CONNECTED
 
     def isReady(self) -> bool:
         """
@@ -179,7 +195,7 @@ class Client(EClient):
         self.host = host
         self.port = port
         self.clientId = clientId
-        self.setConnState(EClient.CONNECTING)
+        self.connState = Client.CONNECTING
         self.conn = Connection(host, port)
         self.conn.connected = self._onSocketConnected
         self.conn.hasData = self._onSocketHasData
@@ -201,6 +217,50 @@ class Client(EClient):
                 self._logger.error(msg)
             await fut  # consume exception
             raise
+
+    def disconnect(self):
+        """
+        Disconnect from IB connection.
+        """
+        self.connState = Client.DISCONNECTED
+        if self.conn is not None:
+            self._logger.info('Disconnecting')
+            self.conn.disconnect()
+            self.wrapper.connectionClosed()
+            self.reset()
+
+    def send(self, *fields):
+        """
+        Serialize and send the given fields using the IB socket protocol.
+        """
+        if not self.isConnected():
+            raise ConnectionError('Not connected')
+
+        msg = io.StringIO()
+        for field in fields:
+            typ = type(field)
+            if field in (None, UNSET_INTEGER, UNSET_DOUBLE):
+                s = ''
+            elif typ in (str, int, float):
+                s = str(field)
+            elif typ is bool:
+                s = '1' if field else '0'
+            elif typ is list:
+                # list of TagValue
+                s = ''.join(f'{v.tag}={v.value};' for v in field)
+            elif isinstance(field, Contract):
+                c = field
+                s = '\0'.join(str(f) for f in (
+                    c.conId, c.symbol, c.secType,
+                    c.lastTradeDateOrContractMonth, c.strike,
+                    c.right, c.multiplier, c.exchange,
+                    c.primaryExchange, c.currency,
+                    c.localSymbol, c.tradingClass))
+            else:
+                s = str(field)
+            msg.write(s)
+            msg.write('\0')
+        self.sendMsg(msg.getvalue())
 
     def sendMsg(self, msg):
         t = self._loop.time()
@@ -234,12 +294,10 @@ class Client(EClient):
         self._logger.info('Connected')
         # start handshake
         msg = b'API\0'
-        minVer = ibapi.server_versions.MIN_CLIENT_VER
-        maxVer = min(
-            self.MaxClientVersion, ibapi.server_versions.MAX_CLIENT_VER)
         connectOptions = b' ' + self._connectOptions if self._connectOptions \
             else b''
-        msg += self._prefix(b'v%d..%d%s' % (minVer, maxVer, connectOptions))
+        msg += self._prefix(b'v%d..%d%s' % (
+            self.MinClientVersion, self.MaxClientVersion, connectOptions))
         self.conn.sendMsg(msg)
         self.decoder = ibapi.decoder.Decoder(self.wrapper, None)
 
@@ -270,16 +328,16 @@ class Client(EClient):
                     '<<< %s', ','.join(
                         f.decode(errors='backslashreplace') for f in fields))
 
-            if not self.serverVersion_ and len(fields) == 2:
+            if not self._serverVersion and len(fields) == 2:
                 # this concludes the handshake
                 version, _connTime = fields
-                self.serverVersion_ = int(version)
-                self.decoder.serverVersion = self.serverVersion_
-                self.setConnState(EClient.CONNECTED)
+                self._serverVersion = int(version)
+                self.decoder.serverVersion = self._serverVersion
+                self.connState = Client.CONNECTED
                 self.startApi()
                 self.wrapper.connectAck()
                 self._logger.info(
-                    f'Logged on to server version {self.serverVersion_}')
+                    f'Logged on to server version {self._serverVersion}')
             else:
                 # decode and handle the message
                 try:
@@ -307,39 +365,6 @@ class Client(EClient):
         self._logger.error(msg)
         self.reset()
         self.apiError.emit(msg)
-
-    def send(self, *fields):
-        msg = self._encode(*fields)
-        self.sendMsg(msg)
-
-    def _encode(self, *fields):
-        """
-        Serialize the given fields to a string conforming to the
-        IB socket protocol.
-        """
-        result = io.StringIO()
-        for field in fields:
-            if field in (None, UNSET_INTEGER, UNSET_DOUBLE):
-                s = ''
-            elif isinstance(field, Contract):
-                c = field
-                s = '\0'.join(str(f) for f in (
-                    c.conId, c.symbol, c.secType,
-                    c.lastTradeDateOrContractMonth, c.strike,
-                    c.right, c.multiplier, c.exchange,
-                    c.primaryExchange, c.currency,
-                    c.localSymbol, c.tradingClass))
-            elif type(field) is list:
-                # list of TagValue
-                s = ''.join(f'{v.tag}={v.value};' for v in field)
-            elif type(field) is bool:
-                s = '1' if field else '0'
-            else:
-                s = str(field)
-
-            result.write(s)
-            result.write('\0')
-        return result.getvalue()
 
     def _decode(self, fields):
         """
@@ -388,6 +413,9 @@ class Client(EClient):
                 self._readyEvent.set()
 
         self.decoder.interpret(fields)
+
+    # client request methods
+    # the message type id is sent first, often followed by a version number
 
     def reqMktData(
             self, reqId, contract, genericTickList, snapshot,
@@ -643,8 +671,28 @@ class Client(EClient):
 
     def reqMktDepth(
             self, reqId, contract, numRows, isSmartDepth, mktDepthOptions):
-        self.send(
-            10, 5, reqId, contract, numRows, isSmartDepth, mktDepthOptions)
+        version = self.serverVersion()
+        fields = [
+            10, 5, reqId,
+            contract.conId,
+            contract.symbol,
+            contract.secType,
+            contract.lastTradeDateOrContractMonth,
+            contract.strike,
+            contract.right,
+            contract.multiplier,
+            contract.exchange]
+        if version >= 149:
+            fields += [contract.primaryExchange]
+        fields += [
+            contract.currency,
+            contract.localSymbol,
+            contract.tradingClass,
+            numRows]
+        if version >= 146:
+            fields += [isSmartDepth]
+        fields += [mktDepthOptions]
+        self.send(*fields)
 
     def cancelMktDepth(self, reqId, isSmartDepth):
         self.send(11, 1, reqId, isSmartDepth)
@@ -654,6 +702,9 @@ class Client(EClient):
 
     def cancelNewsBulletins(self):
         self.send(13, 1)
+
+    def setServerLogLevel(self, logLevel):
+        self.send(14, 1, logLevel)
 
     def reqAutoOpenOrders(self, bAutoBind):
         self.send(15, 1, bAutoBind)
@@ -673,11 +724,8 @@ class Client(EClient):
     def reqHistoricalData(
             self, reqId, contract, endDateTime, durationStr, barSizeSetting,
             whatToShow, useRTH, formatDate, keepUpToDate, chartOptions):
-        fields = [20]
-        if self.serverVersion() < 124:
-            fields += [6]
-        fields += [
-            reqId, contract, contract.includeExpired,
+        fields = [
+            20, reqId, contract, contract.includeExpired,
             endDateTime, barSizeSetting, durationStr, useRTH,
             whatToShow, formatDate]
 
@@ -696,11 +744,73 @@ class Client(EClient):
             21, 2, contract, exerciseAction,
             exerciseQuantity, account, override)
 
+    def reqScannerSubscription(
+            self, reqId, subscription, scannerSubscriptionOptions,
+            scannerSubscriptionFilterOptions):
+        sub = subscription
+        self.send(
+            22, 4, reqId,
+            sub.numberOfRows,
+            sub.instrument,
+            sub.locationCode,
+            sub.scanCode,
+            sub.abovePrice,
+            sub.belowPrice,
+            sub.aboveVolume,
+            sub.marketCapAbove,
+            sub.marketCapBelow,
+            sub.moodyRatingAbove,
+            sub.moodyRatingBelow,
+            sub.spRatingAbove,
+            sub.spRatingBelow,
+            sub.maturityDateAbove,
+            sub.maturityDateBelow,
+            sub.couponRateAbove,
+            sub.couponRateBelow,
+            sub.excludeConvertible,
+            sub.averageOptionVolumeAbove,
+            sub.stockTypeFilter,
+            sub.scannerSubscriptionFilterOptions,
+            sub.scannerSubscriptionOptions)
+
+    def cancelScannerSubscription(self, reqId):
+        self.send(23, 1, reqId)
+
+    def reqScannerParameters(self):
+        self.send(24, 1)
+
     def cancelHistoricalData(self, reqId):
         self.send(25, 1, reqId)
 
     def reqCurrentTime(self):
         self.send(49, 1)
+
+    def reqRealTimeBars(
+            self, reqId, contract, barSize, whatToShow,
+            useRTH, realTimeBarsOptions):
+        self.send(
+            50, 3, reqId, contract, barSize, whatToShow,
+            useRTH, realTimeBarsOptions)
+
+    def cancelRealTimeBars(self, reqId):
+        self.send(51, 1, reqId)
+
+    def reqFundamentalData(
+            self, reqId, contract, reportType, fundamentalDataOptions):
+        options = fundamentalDataOptions or []
+        self.send(
+            52, 2, reqId,
+            contract.conId,
+            contract.symbo,
+            contract.secType,
+            contract.exchange,
+            contract.primaryExchange,
+            contract.currency,
+            contract.localSymbol,
+            reportType, len(options), options)
+
+    def cancelFundamentalData(self, reqId):
+        self.send(53, 1, reqId)
 
     def calculateImpliedVolatility(
             self, reqId, contract, optionPrice, underPrice, implVolOptions):
@@ -738,6 +848,33 @@ class Client(EClient):
     def cancelPositions(self):
         self.send(64, 1)
 
+    def verifyRequest(self, apiName, apiVersion):
+        self.send(65, 1, apiName, apiVersion)
+
+    def verifyMessage(self, apiData):
+        self.send(66, 1, apiData)
+
+    def queryDisplayGroups(self, reqId):
+        self.send(67, 1, reqId)
+
+    def subscribeToGroupEvents(self, reqId, groupId):
+        self.send(68, 1, reqId, groupId)
+
+    def updateDisplayGroup(self, reqId, contractInfo):
+        self.send(69, 1, reqId, contractInfo)
+
+    def unsubscribeFromGroupEvents(self, reqId):
+        self.send(70, 1, reqId)
+
+    def startApi(self):
+        self.send(71, 2, self.clientId, self.optCapab)
+
+    def verifyAndAuthRequest(self, apiName, apiVersion, opaqueIsvKey):
+        self.send(72, 1, apiName, apiVersion, opaqueIsvKey)
+
+    def verifyAndAuthMessage(self, apiData, xyzResponse):
+        self.send(73, 1, apiData, xyzResponse)
+
     def reqPositionsMulti(self, reqId, account, modelCode):
         self.send(74, 1, reqId, account, modelCode)
 
@@ -750,17 +887,53 @@ class Client(EClient):
     def cancelAccountUpdatesMulti(self, reqId):
         self.send(77, 1, reqId)
 
+    def reqSecDefOptParams(
+            self, reqId, underlyingSymbol, futFopExchange,
+            underlyingSecType, underlyingConId):
+        self.send(
+            78, reqId, underlyingSymbol, futFopExchange,
+            underlyingSecType, underlyingConId)
+
+    def reqSoftDollarTiers(self, reqId):
+        self.send(79, reqId)
+
+    def reqFamilyCodes(self):
+        self.send(80)
+
+    def reqMatchingSymbols(self, reqId, pattern):
+        self.send(81, reqId, pattern)
+
     def reqMktDepthExchanges(self):
         self.send(82)
 
     def reqSmartComponents(self, reqId, bboExchange):
         self.send(83, reqId, bboExchange)
 
+    def reqNewsArticle(
+            self, reqId, providerCode, articleId, newsArticleOptions):
+        self.send(84, reqId, providerCode, articleId, newsArticleOptions)
+
+    def reqNewsProviders(self):
+        self.send(85)
+
+    def reqHistoricalNews(
+            self, reqId, conId, providerCodes, startDateTime, endDateTime,
+            totalResults, historicalNewsOptions):
+        self.send(
+            86, reqId, conId, providerCodes, startDateTime, endDateTime,
+            totalResults, historicalNewsOptions)
+
     def reqHeadTimeStamp(
             self, reqId, contract, whatToShow, useRTH, formatDate):
         self.send(
             87, reqId, contract, contract.includeExpired,
             useRTH, whatToShow, formatDate)
+
+    def reqHistogramData(self, tickerId, contract, useRTH, timePeriod):
+        self.send(88, tickerId, contract, useRTH, timePeriod)
+
+    def cancelHistogramData(self, tickerId):
+        self.send(89, tickerId)
 
     def cancelHeadTimeStamp(self, reqId):
         self.send(90, reqId)
@@ -780,12 +953,23 @@ class Client(EClient):
     def cancelPnLSingle(self, reqId: int):
         self.send(95, reqId)
 
+    def reqHistoricalTicks(
+            self, reqId, contract, startDateTime, endDateTime,
+            numberOfTicks, whatToShow, useRth, ignoreSize, miscOptions):
+        self.send(
+            96, reqId, contract, contract.includeExpired,
+            startDateTime, endDateTime, numberOfTicks, whatToShow,
+            useRth, ignoreSize, miscOptions)
+
     def reqTickByTickData(
             self, reqId, contract, tickType, numberOfTicks, ignoreSize):
         self.send(97, contract, tickType, numberOfTicks, ignoreSize)
 
     def cancelTickByTickData(self, reqId):
         self.send(98, reqId)
+
+    def reqCompletedOrders(self, apiOnly):
+        self.send(99, apiOnly)
 
 
 class Connection:
@@ -798,7 +982,7 @@ class Connection:
         self.socket = None
         self.numBytesSent = 0
         self.numMsgSent = 0
-        self._logger = logging.getLogger('ib_insync.connection')
+        self._logger = logging.getLogger('ib_insync.Connection')
 
         # the following are callbacks for socket events
         self.connected = None
@@ -853,22 +1037,3 @@ class Socket(asyncio.Protocol):
 
     def data_received(self, data):
         self.connection.hasData(data)
-
-
-class TestClient(Client, EWrapper):
-    """
-    Test to connect to a running TWS or gateway server.
-    """
-    def __init__(self):
-        Client.__init__(self, wrapper=self)
-
-    @iswrapper
-    def managedAccounts(self, accountsList):
-        print(self.__class__.__name__, accountsList)
-
-
-if __name__ == '__main__':
-    util.logToConsole(logging.DEBUG)
-    client = TestClient()
-    client.connect(host='127.0.0.1', port=7497, clientId=1)
-    client.disconnect()
