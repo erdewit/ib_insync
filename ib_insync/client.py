@@ -6,20 +6,19 @@ import io
 from collections import deque
 from typing import List
 
-import ibapi.decoder
 from eventkit import Event
 
+from .contract import Contract
+from ib_insync.decoder import Decoder
 from ib_insync.objects import ConnectionStats
-from ib_insync.contract import Contract
-import ib_insync.util as util
-from .util import UNSET_INTEGER, UNSET_DOUBLE
+from .util import run, UNSET_INTEGER, UNSET_DOUBLE
 
 __all__ = ['Client']
 
 
 class Client:
     """
-    Modification of ``ibapi.client.EClient`` that uses asyncio.
+    Replacement for ``ibapi.client.EClient`` that uses asyncio.
 
     The client is fully asynchronous and has its own
     event-driven networking code that replaces the
@@ -65,6 +64,8 @@ class Client:
         ``RequestsInterval`` seconds. Set to 0 to disable throttling.
       RequestsInterval (float):
         Time interval (in seconds) for request throttling.
+      MinClientVersion (int):
+        Client protocol version.
       MaxClientVersion (int):
         Client protocol version.
 
@@ -187,7 +188,7 @@ class Client:
                 ``timeout`` seconds then the ``asyncio.TimeoutError`` exception
                 is raised. Set to 0 to disable timeout.
         """
-        util.run(self.connectAsync(host, port, clientId, timeout))
+        run(self.connectAsync(host, port, clientId, timeout))
 
     async def connectAsync(self, host, port, clientId, timeout=2):
         self._logger.info(
@@ -299,7 +300,7 @@ class Client:
         msg += self._prefix(b'v%d..%d%s' % (
             self.MinClientVersion, self.MaxClientVersion, connectOptions))
         self.conn.sendMsg(msg)
-        self.decoder = ibapi.decoder.Decoder(self.wrapper, None)
+        self.decoder = Decoder(self.wrapper, None)
 
     def _onSocketHasData(self, data):
         debug = self._logger.isEnabledFor(logging.DEBUG)
@@ -317,16 +318,14 @@ class Client:
             if len(self._data) < msgEnd:
                 # insufficient data for now
                 break
-            msg = self._data[4:msgEnd]
+            msg = self._data[4:msgEnd].decode(errors='backslashreplace')
             self._data = self._data[msgEnd:]
-            fields = msg.split(b'\0')
+            fields = msg.split('\0')
             fields.pop()  # pop off last empty element
             self._numMsgRecv += 1
 
             if debug:
-                self._logger.debug(
-                    '<<< %s', ','.join(
-                        f.decode(errors='backslashreplace') for f in fields))
+                self._logger.debug('<<< %s', ','.join(fields))
 
             if not self._serverVersion and len(fields) == 2:
                 # this concludes the handshake
@@ -339,11 +338,23 @@ class Client:
                 self._logger.info(
                     f'Logged on to server version {self._serverVersion}')
             else:
+                if not self._readyEvent.is_set():
+                    # snoop for nextValidId and managedAccounts response,
+                    # when both are in then the client is ready
+                    msgId = int(fields[0])
+                    if msgId == 9:
+                        _, _, validId = fields
+                        self._reqIdSeq = int(validId)
+                        if self._accounts:
+                            self._readyEvent.set()
+                    elif msgId == 15:
+                        _, _, accts = fields
+                        self._accounts = [a for a in accts.split(',') if a]
+                        if self._reqIdSeq:
+                            self._readyEvent.set()
+
                 # decode and handle the message
-                try:
-                    self._decode(fields)
-                except Exception:
-                    self._logger.exception('Decode failed')
+                self.decoder.interpret(fields)
 
         if self._tcpDataProcessed:
             self._tcpDataProcessed()
@@ -365,54 +376,6 @@ class Client:
         self._logger.error(msg)
         self.reset()
         self.apiError.emit(msg)
-
-    def _decode(self, fields):
-        """
-        Decode the fields of the single response and call the appropriate
-        callback handler.
-        """
-        msgId = int(fields[0])
-
-        # bypass the ibapi decoder for ticks for more efficiency
-        if msgId == 2:
-            _, _, reqId, tickType, size = fields
-            self.wrapper.tickSize(
-                int(reqId), int(tickType), int(size))
-            return
-        elif msgId == 1:
-            if self._priceSizeTick:
-                _, _, reqId, tickType, price, size, _ = fields
-                if price:
-                    self._priceSizeTick(
-                        int(reqId), int(tickType),
-                        float(price), int(size))
-                return
-        elif msgId == 12:
-            _, _, reqId, position, operation, side, price, size = fields
-            self.wrapper.updateMktDepth(
-                int(reqId), int(position),
-                int(operation), int(side), float(price), int(size))
-            return
-        elif msgId == 46:
-            _, _, reqId, tickType, value = fields
-            self.wrapper.tickString(
-                int(reqId), int(tickType), value.decode())
-            return
-
-        # snoop for nextValidId and managedAccounts response,
-        # when both are in then the client is ready
-        elif msgId == 9:
-            _, _, validId = fields
-            self._reqIdSeq = int(validId)
-            if self._accounts:
-                self._readyEvent.set()
-        elif msgId == 15:
-            _, _, accts = fields
-            self._accounts = [a for a in accts.decode().split(',') if a]
-            if self._reqIdSeq:
-                self._readyEvent.set()
-
-        self.decoder.interpret(fields)
 
     # client request methods
     # the message type id is sent first, often followed by a version number
@@ -549,8 +512,7 @@ class Client:
             order.scaleSubsLevelSize,
             order.scalePriceIncrement]
 
-        if (order.scalePriceIncrement != UNSET_DOUBLE
-                and order.scalePriceIncrement > 0.0):
+        if (0 < order.scalePriceIncrement < UNSET_DOUBLE):
             fields += [
                 order.scalePriceAdjustValue,
                 order.scalePriceAdjustInterval,
@@ -604,11 +566,10 @@ class Client:
                 order.referenceChangeAmount,
                 order.referenceExchangeId]
 
-        fields += [order.conditions]
+        fields += [len(order.conditions)]
         if order.conditions:
             for cond in order.conditions:
-                fields += [cond.type()]
-                fields += cond.make_fields()
+                fields += cond.encode()
             fields += [
                 order.conditionsIgnoreRth,
                 order.conditionsCancelOrder]
@@ -963,7 +924,7 @@ class Client:
 
     def reqTickByTickData(
             self, reqId, contract, tickType, numberOfTicks, ignoreSize):
-        self.send(97, contract, tickType, numberOfTicks, ignoreSize)
+        self.send(97, reqId, contract, tickType, numberOfTicks, ignoreSize)
 
     def cancelTickByTickData(self, reqId):
         self.send(98, reqId)
@@ -1031,7 +992,7 @@ class Socket(asyncio.Protocol):
 
     def connection_lost(self, exc):
         if exc:
-            self.connection.hasError(exc.strerror)
+            self.connection.hasError(str(exc))
         else:
             self.connection.disconnected()
 

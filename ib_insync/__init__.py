@@ -1,25 +1,8 @@
 # flake8: noqa
 
 import sys
-import importlib
-
 if sys.version_info < (3, 6, 0):
     raise RuntimeError('ib_insync requires Python 3.6 or higher')
-
-try:
-    import ibapi
-except ImportError:
-    raise RuntimeError(
-       'IB API from http://interactivebrokers.github.io is required')
-
-from . import util
-if util.ibapiVersionInfo() < (9, 74, 0):
-    raise RuntimeError(
-        f'Old version ({util.ibapiVersionInfo()} of ibapi package detected,\n'
-        f'located at {ibapi.__path__}).\n'
-        'Remove this old version and install latest from\n'
-        'http://interactivebrokers.github.io')
-
 
 from eventkit import Event
 
@@ -36,17 +19,18 @@ from .objects import (
     HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
     TickAttrib, TickAttribBidAsk, TickAttribLast, FundamentalRatios,
     MktDepthData, DOMLevel, BracketOrder, TradeLogEntry, TagValue,
+    FamilyCode, SmartComponent,
     PortfolioItem, Position, Fill, OptionComputation, OptionChain, Dividends,
-    NewsArticle, HistoricalNews, NewsTick, NewsBulletin, ConnectionStats,
-    OrderCondition, ExecutionCondition, OperatorCondition, MarginCondition,
-    ContractCondition, TimeCondition, PriceCondition, PercentChangeCondition,
-    VolumeCondition)
+    NewsArticle, HistoricalNews, NewsTick, NewsBulletin, ConnectionStats)
 from .contract import (
     Contract, Stock, Option, Future, ContFuture, Forex, Index, CFD,
     Commodity, Bond, FuturesOption, MutualFund, Warrant, Bag)
 from .order import (
     Trade, OrderStatus, Order, LimitOrder, MarketOrder,
-    StopOrder, StopLimitOrder)
+    StopOrder, StopLimitOrder,
+    OrderCondition, ExecutionCondition, MarginCondition,
+    TimeCondition, PriceCondition, PercentChangeCondition,
+    VolumeCondition)
 from .ticker import Ticker
 from .ib import IB
 from .client import Client
@@ -61,5 +45,3 @@ for _m in (
     __all__ += _m.__all__
 
 del sys
-del importlib
-del ibapi

@@ -132,7 +132,7 @@ def allowCtrlC():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
-def logToFile(path, level=logging.INFO, ibapiLevel=logging.ERROR):
+def logToFile(path, level=logging.INFO):
     """
     Create a log handler that logs to the given file.
     """
@@ -143,10 +143,9 @@ def logToFile(path, level=logging.INFO, ibapiLevel=logging.ERROR):
     handler = logging.FileHandler(path)
     handler.setFormatter(formatter)
     logger.addHandler(handler)
-    logging.getLogger('ibapi').setLevel(ibapiLevel)
 
 
-def logToConsole(level=logging.INFO, ibapiLevel=logging.ERROR):
+def logToConsole(level=logging.INFO):
     """
     Create a log handler that logs to the console.
     """
@@ -160,20 +159,6 @@ def logToConsole(level=logging.INFO, ibapiLevel=logging.ERROR):
         h for h in logger.handlers
         if type(h) is not logging.StreamHandler]
     logger.addHandler(handler)
-    logging.getLogger('ibapi').setLevel(ibapiLevel)
-
-
-def ibapiVersionInfo() -> tuple:
-    """
-    Version info of ibapi module as 3-tuple.
-    """
-    import ibapi
-    import ibapi.wrapper
-    version = tuple(int(i) for i in ibapi.__version__.split('.'))
-    if version == (9, 73, 7) and hasattr(ibapi.wrapper.EWrapper, 'orderBound'):
-        # IB forgot to set the friggin version info again
-        version = (9, 74, 0)
-    return version
 
 
 def isNan(x: float) -> bool:
@@ -264,8 +249,8 @@ def run(*awaitables, timeout: float = None):
         globalErrorEvent.connect(onError)
         try:
             result = loop.run_until_complete(task)
-        except asyncio.CancelledError:
-            raise globalErrorEvent.value()
+        except asyncio.CancelledError as e:
+            raise globalErrorEvent.value() or e
         finally:
             globalErrorEvent.disconnect(onError)
 

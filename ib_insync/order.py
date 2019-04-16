@@ -5,7 +5,10 @@ from .util import UNSET_DOUBLE, UNSET_INTEGER
 
 __all__ = (
     'Trade OrderStatus Order '
-    'LimitOrder MarketOrder StopOrder StopLimitOrder').split()
+    'LimitOrder MarketOrder StopOrder StopLimitOrder '
+    'OrderCondition ExecutionCondition MarginCondition TimeCondition '
+    'PriceCondition PercentChangeCondition VolumeCondition '
+    ).split()
 
 
 class Trade(Object):
@@ -240,7 +243,7 @@ class Order(Object):
         if not self.conditions:
             self.conditions = []
         if not self.softDollarTier:
-            self.softDollarTier = SoftDollarTier('', '', '')
+            self.softDollarTier = SoftDollarTier()
 
     def __repr__(self):
         attrs = self.nonDefaults()
@@ -294,3 +297,125 @@ class StopLimitOrder(Order):
             self, orderType='STP LMT', action=action,
             totalQuantity=totalQuantity, lmtPrice=lmtPrice,
             auxPrice=stopPrice, **kwargs)
+
+
+class OrderCondition(Object):
+    __slots__ = ()
+
+    @staticmethod
+    def create(condType):
+        d = {
+            1: PriceCondition,
+            3: TimeCondition,
+            4: MarginCondition,
+            5: ExecutionCondition,
+            6: VolumeCondition,
+            7: PercentChangeCondition}
+        return d[condType]()
+
+    def And(self):
+        self.isConjunctionConnection = True
+        return self
+
+    def Or(self):
+        self.isConjunctionConnection = False
+        return self
+
+    def decode(self, *fields):
+        Object.__init__(self, *fields)
+        self.isConjunctionConnection = self.isConjunctionConnection == 'a'
+        self._parse()
+
+    def _parse(self):
+        pass
+
+    def encode(self):
+        d = self.dict()
+        d['isConjunctionConnection'] = (
+            'a' if self.isConjunctionConnection else 'o')
+        return d.values()
+
+
+class PriceCondition(OrderCondition):
+    defaults = dict(
+        condType=1,
+        isConjunctionConnection=True,
+        isMore=None,
+        conId=None,
+        exch=None,
+        price=None,
+        triggerMethod=None)
+    __slots__ = defaults.keys()
+
+    def _parse(self):
+        self.isMore = bool(self.isMore)
+        self.conId = int(self.conId)
+        self.price = float(self.price)
+        self.triggerMethod = int(self.triggerMethod)
+
+
+class TimeCondition(OrderCondition):
+    defaults = dict(
+        condType=3,
+        isConjunctionConnection=True,
+        isMore=None,
+        time=None)
+    __slots__ = defaults.keys()
+
+    def _parse(self):
+        self.isMore = bool(self.isMore)
+
+
+class MarginCondition(OrderCondition):
+    defaults = dict(
+        condType=4,
+        isConjunctionConnection=True,
+        isMore=None,
+        percent=None)
+    __slots__ = defaults.keys()
+
+    def _parse(self):
+        self.isMore = bool(self.isMore)
+        self.percent = float(self.percent)
+
+
+class ExecutionCondition(OrderCondition):
+    defaults = dict(
+        condType=5,
+        isConjunctionConnection=True,
+        secType=None,
+        exch=None,
+        symbol=None)
+    __slots__ = defaults.keys()
+
+
+class VolumeCondition(OrderCondition):
+    defaults = dict(
+        condType=6,
+        isConjunctionConnection=True,
+        isMore=None,
+        conId=None,
+        exch=None,
+        volume=None)
+    __slots__ = defaults.keys()
+
+    def _parse(self):
+        self.isMore = bool(self.isMore)
+        self.conId = int(self.conId)
+        self.volume = float(self.volume)
+
+
+class PercentChangeCondition(OrderCondition):
+    defaults = dict(
+        condType=7,
+        isConjunctionConnection=True,
+        isMore=None,
+        conId=None,
+        exch=None,
+        changePercent=None)
+    __slots__ = defaults.keys()
+
+    def _parse(self):
+        self.isMore = bool(self.isMore)
+        self.conId = int(self.conId)
+        self.changePercent = float(self.changePercent)

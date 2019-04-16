@@ -2,11 +2,6 @@ from collections import namedtuple
 
 from .util import UNSET_DOUBLE, UNSET_INTEGER
 
-# order conditions are imported as-is from ibapi
-from ibapi.order_condition import (OrderCondition, ExecutionCondition,  # noqa
-        OperatorCondition, MarginCondition, ContractCondition, TimeCondition,
-        PriceCondition, PercentChangeCondition, VolumeCondition)
-
 from eventkit import Event
 
 __all__ = (
@@ -21,11 +16,9 @@ __all__ = (
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
     'TickAttrib TickAttribBidAsk TickAttribLast '
     'MktDepthData DOMLevel BracketOrder TradeLogEntry TagValue '
+    'FamilyCode SmartComponent '
     'PortfolioItem Position Fill OptionComputation OptionChain Dividends '
-    'NewsArticle HistoricalNews NewsTick NewsBulletin ConnectionStats '
-    'OrderCondition ExecutionCondition OperatorCondition MarginCondition '
-    'ContractCondition TimeCondition PriceCondition PercentChangeCondition '
-    'VolumeCondition'
+    'NewsArticle HistoricalNews NewsTick NewsBulletin ConnectionStats'
 ).split()
 
 nan = float('nan')
@@ -175,7 +168,15 @@ class ContractDescription(Object):
 
 class ComboLeg(Object):
     defaults = dict(
-        price=UNSET_DOUBLE)
+        conId=0,
+        ratio=0,
+        action='',
+        exchange='',
+        openClose=0,
+        shortSaleSlot=0,
+        designatedLocation='',
+        exemptCode=-1
+        )
     __slots__ = defaults.keys()
 
 
@@ -303,8 +304,8 @@ class BarData(Object):
         low=0.0,
         close=0.0,
         volume=0,
-        barCount=0,
-        average=0.0)
+        average=0.0,
+        barCount=0)
     __slots__ = defaults.keys()
 
 
@@ -570,6 +571,14 @@ NewsTick = namedtuple(
 NewsBulletin = namedtuple(
     'NewsBulletin',
     'msgId msgType message origExchange')
+
+FamilyCode = namedtuple(
+    'FamilyCode',
+    'accountID familyCodeStr')
+
+SmartComponent = namedtuple(
+    'SmartComponent',
+    'bitNumber exchange exchangeLetter')
 
 ConnectionStats = namedtuple(
     'ConnectionStats',

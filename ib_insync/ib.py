@@ -5,7 +5,6 @@ import time
 from contextlib import suppress
 from typing import List, Iterator, Awaitable, Union
 
-import ibapi.account_summary_tags
 from eventkit import Event
 
 import ib_insync.util as util
@@ -189,7 +188,6 @@ class IB:
         self.wrapper = Wrapper(self)
         self.client = Client(self.wrapper)
         self.client.apiEnd += self.disconnectedEvent
-        self.client.apiEnd += self.wrapper.setDisconnected
         self._logger = logging.getLogger('ib_insync.ib')
 
     def __del__(self):
@@ -1660,8 +1658,15 @@ class IB:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         tags = (
-            ibapi.account_summary_tags.AccountSummaryTags.AllTags +
-            ',$LEDGER:ALL')
+            'AccountType,NetLiquidation,TotalCashValue,SettledCash,'
+            'AccruedCash,BuyingPower,EquityWithLoanValue,'
+            'PreviousEquityWithLoanValue,GrossPositionValue,ReqTEquity,'
+            'ReqTMargin,SMA,InitMarginReq,MaintMarginReq,AvailableFunds,'
+            'ExcessLiquidity,Cushion,FullInitMarginReq,FullMaintMarginReq,'
+            'FullAvailableFunds,FullExcessLiquidity,LookAheadNextChange,'
+            'LookAheadInitMarginReq,LookAheadMaintMarginReq,'
+            'LookAheadAvailableFunds,LookAheadExcessLiquidity,'
+            'HighestSeverity,DayTradesRemaining,Leverage,$LEDGER:ALL')
         self.client.reqAccountSummary(reqId, 'All', tags)
         return future
 
