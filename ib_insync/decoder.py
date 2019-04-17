@@ -9,33 +9,15 @@ from .objects import (
     SmartComponent, DepthMktDataDescription, NewsProvider,
     TickAttribBidAsk, TickAttribLast, HistogramData, PriceIncrement,
     HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast)
-from .util import UNSET_DOUBLE, UNSET_INTEGER
+from .util import UNSET_DOUBLE
 
 __all__ = ['Decoder']
 
 
-_parseFunc = {
-    'f': lambda s: float(s or 0),
-    'fu': lambda s: float(s or UNSET_DOUBLE),
-    'i': lambda s: int(s or 0),
-    'iu': lambda s: int(s or UNSET_INTEGER),
-    'b': lambda s: bool(int(s or 0))}
-
-
-class Parser:
-
-    def dict(self):
-        d = {}
-        for k, v in self.__dict__.items():
-            if '_' in k:
-                k, postfix = k.split('_')
-                v = _parseFunc[postfix](v)
-            d[k] = v
-        return d
-
-
 class Decoder:
-
+    """
+    Decode IB messages and invoke corresponding wrapper methods.
+    """
     def __init__(self, wrapper, serverVersion):
         self.wrapper = wrapper
         self.serverVersion = serverVersion
@@ -175,6 +157,11 @@ class Decoder:
         }
 
     def wrap(self, methodName, types, skip=2):
+        """
+        Create a message handler that invokes a wrapper method
+        with the in-order message fields as parameters, skipping over
+        the first ``skip`` fields, and parsed according to the ``types`` list.
+        """
 
         def handler(fields):
             try:
@@ -192,9 +179,28 @@ class Decoder:
         return handler if method else lambda *args: None
 
     def interpret(self, fields):
+        """
+        Decode fields and invoke corresponding wrapper method.
+        """
         msgId = int(fields[0])
         handler = self.handlers[msgId]
         handler(fields)
+
+    def parse(self, obj):
+        """
+        Parse the object's properties according its default types.
+        """
+        for k, default in obj.__class__.defaults.items():
+            typ = type(default)
+            if typ is str:
+                continue
+            v = getattr(obj, k)
+            if typ is int:
+                setattr(obj, k, int(v or default))
+            elif typ is float:
+                setattr(obj, k, float(v or default))
+            elif typ is bool:
+                setattr(obj, k, bool(int(v or default)))
 
     def priceSizeTick(self, fields):
         _, _, reqId, tickType, price, size, _ = fields
@@ -204,14 +210,14 @@ class Decoder:
                 int(reqId), int(tickType), float(price), int(size))
 
     def updatePortfolio(self, fields):
-        c = Parser()
+        c = Contract()
         (
             _, _,
-            c.conId_i,
+            c.conId,
             c.symbol,
             c.secType,
             c.lastTradeDateOrContractMonth,
-            c.strike_f,
+            c.strike,
             c.right,
             c.multiplier,
             c.primaryExchange,
@@ -226,36 +232,36 @@ class Decoder:
             realizedPNL,
             accountName) = fields
 
-        contract = Contract(**c.dict())
+        self.parse(c)
         self.wrapper.updatePortfolio(
-            contract, float(position), float(marketPrice),
+            c, float(position), float(marketPrice),
             float(marketValue), float(averageCost), float(unrealizedPNL),
             float(realizedPNL), accountName)
 
     def contractDetails(self, fields):
-        cd = Parser()
-        cd.contract = c = Parser()
+        cd = ContractDetails()
+        cd.contract = c = Contract()
         (
             _, _,
             reqId,
             c.symbol,
             c.secType,
             lastTimes,
-            c.strike_f,
+            c.strike,
             c.right,
             c.exchange,
             c.currency,
             c.localSymbol,
             cd.marketName,
             c.tradingClass,
-            c.conId_i,
-            cd.minTick_f,
-            cd.mdSizeMultiplier_i,
+            c.conId,
+            cd.minTick,
+            cd.mdSizeMultiplier,
             c.multiplier,
             cd.orderTypes,
             cd.validExchanges,
             cd.priceMagnifier,
-            cd.underConId_i,
+            cd.underConId,
             cd.longName,
             c.primaryExchange,
             cd.contractMonth,
@@ -266,7 +272,7 @@ class Decoder:
             cd.tradingHours,
             cd.liquidHours,
             cd.evRule,
-            cd.evMultiplier_i,
+            cd.evMultiplier,
             numSecIds,
             *fields) = fields
 
@@ -277,7 +283,7 @@ class Decoder:
                 tag, value, *fields = fields
                 cd.secIdList += [TagValue(tag, value)]
         (
-            cd.aggGroup_i,
+            cd.aggGroup,
             cd.underSymbol,
             cd.underSecType,
             cd.marketRuleIds,
@@ -289,45 +295,45 @@ class Decoder:
         if len(times) > 1:
             cd.lastTradeTime = times[1]
 
-        contractDetails = ContractDetails(**cd.dict())
-        contractDetails.contract = Contract(**c.dict())
-        self.wrapper.contractDetails(int(reqId), contractDetails)
+        self.parse(cd)
+        self.parse(c)
+        self.wrapper.contractDetails(int(reqId), cd)
 
     def bondContractDetails(self, fields):
-        cd = Parser()
-        cd.contract = c = Parser()
+        cd = ContractDetails()
+        cd.contract = c = Contract()
         (
             _, _,
             reqId,
             c.symbol,
             c.secType,
             cd.cusip,
-            cd.coupon_i,
+            cd.coupon,
             lastTimes,
             cd.issueDate,
             cd.ratings,
             cd.bondType,
             cd.couponType,
-            cd.convertible_b,
-            cd.callable_b,
-            cd.putable_b,
+            cd.convertible,
+            cd.callable,
+            cd.putable,
             cd.descAppend,
             c.exchange,
             c.currency,
             cd.marketName,
             c.tradingClass,
-            c.conId_i,
-            cd.minTick_f,
-            cd.mdSizeMultiplier_i,
+            c.conId,
+            cd.minTick,
+            cd.mdSizeMultiplier,
             cd.orderTypes,
             cd.validExchanges,
             cd.nextOptionDate,
             cd.nextOptionType,
-            cd.nextOptionPartial_b,
+            cd.nextOptionPartial,
             cd.notes,
             cd.longName,
             cd.evRule,
-            cd.evMultiplier_i,
+            cd.evMultiplier,
             numSecIds,
             *fields) = fields
 
@@ -338,7 +344,7 @@ class Decoder:
                 tag, value, *fields = fields
                 cd.secIdList += [TagValue(tag, value)]
 
-        cd.aggGroup_i, cd.marketRuleIds = fields
+        cd.aggGroup, cd.marketRuleIds = fields
 
         times = lastTimes.split()
         if len(times) > 0:
@@ -348,22 +354,22 @@ class Decoder:
         if len(times) > 2:
             cd.timeZoneId = times[2]
 
-        contractDetails = ContractDetails(**cd.dict())
-        contractDetails.contract = Contract(**c.dict())
-        self.wrapper.bondContractDetails(int(reqId), contractDetails)
+        self.parse(cd)
+        self.parse(c)
+        self.wrapper.bondContractDetails(int(reqId), cd)
 
     def execDetails(self, fields):
-        c = Parser()
-        ex = Parser()
+        c = Contract()
+        ex = Execution()
         (
             _,
             reqId,
-            ex.orderId_i,
-            c.conId_i,
+            ex.orderId,
+            c.conId,
             c.symbol,
             c.secType,
             c.lastTradeDateOrContractMonth,
-            c.strike_f,
+            c.strike,
             c.right,
             c.multiplier,
             c.exchange,
@@ -375,22 +381,22 @@ class Decoder:
             ex.acctNumber,
             ex.exchange,
             ex.side,
-            ex.shares_f,
-            ex.price_f,
-            ex.permId_i,
-            ex.clientId_i,
-            ex.liquidation_i,
-            ex.cumQty_f,
-            ex.avgPrice_f,
+            ex.shares,
+            ex.price,
+            ex.permId,
+            ex.clientId,
+            ex.liquidation,
+            ex.cumQty,
+            ex.avgPrice,
             ex.orderRef,
             ex.evRule,
-            ex.evMultiplier_f,
+            ex.evMultiplier,
             ex.modelCode,
-            ex.lastLiquidity_i) = fields
+            ex.lastLiquidity) = fields
 
-        contract = Contract(**c.dict())
-        execution = Execution(**ex.dict())
-        self.wrapper.execDetails(int(reqId), contract, execution)
+        self.parse(c)
+        self.parse(ex)
+        self.wrapper.execDetails(int(reqId), c, ex)
 
     def historicalData(self, fields):
         _, reqId, startDateStr, endDateStr, numBars, *fields = fields
@@ -430,16 +436,16 @@ class Decoder:
         _, _, reqId, n, *fields = fields
 
         for _ in range(int(n)):
-            cd = Parser()
-            c = Parser()
+            cd = ContractDetails()
+            cd.contract = c = Contract()
             (
                 rank,
-                c.conId_i,
+                c.conId,
                 c.symbol,
                 c.secType,
                 c.lastTradeDateOrContractMonth,
                 c.strike,
-                c.right_f,
+                c.right,
                 c.exchange,
                 c.currency,
                 c.localSymbol,
@@ -451,10 +457,10 @@ class Decoder:
                 legsStr,
                 *fields) = fields
 
-            contractDetails = ContractDetails(**cd.dict())
-            contractDetails.contract = Contract(**c.dict())
+            self.parse(cd)
+            self.parse(c)
             self.wrapper.scannerData(
-                int(reqId), int(rank), contractDetails,
+                int(reqId), int(rank), cd,
                 distance, benchmark, projection, legsStr)
 
         self.wrapper.scannerDataEnd(int(reqId))
@@ -492,15 +498,15 @@ class Decoder:
                 int(yieldRedemptionDate or 0)))
 
     def position(self, fields):
-        c = Parser()
+        c = Contract()
         (
             _, _,
             account,
-            c.conId_i,
+            c.conId,
             c.symbol,
             c.secType,
             c.lastTradeDateOrContractMonth,
-            c.strike_f,
+            c.strike,
             c.right,
             c.multiplier,
             c.exchange,
@@ -510,22 +516,22 @@ class Decoder:
             position,
             avgCost) = fields
 
-        contract = Contract(**c.dict())
+        self.parse(c)
         self.wrapper.position(
-            account, contract, float(position or 0), float(avgCost or 0))
+            account, c, float(position or 0), float(avgCost or 0))
 
     def positionMulti(self, fields):
-        c = Parser()
+        c = Contract()
         (
             _, _,
             reqId,
             orderId,
             account,
-            c.conId_i,
+            c.conId,
             c.symbol,
             c.secType,
             c.lastTradeDateOrContractMonth,
-            c.strike_f,
+            c.strike,
             c.right,
             c.multiplier,
             c.exchange,
@@ -536,9 +542,9 @@ class Decoder:
             avgCost,
             modelCode) = fields
 
-        contract = Contract(**c.dict())
+        self.parse(c)
         self.wrapper.positionMulti(
-            int(reqId), account, modelCode, contract,
+            int(reqId), account, modelCode, c,
             float(position or 0), float(avgCost or 0))
 
     def securityDefinitionOptionParameter(self, fields):
@@ -753,19 +759,19 @@ class Decoder:
             self.wrapper.tickByTickMidPoint(reqId, time, float(midPoint))
 
     def openOrder(self, fields):
-        o = Parser()
-        c = Parser()
-        st = Parser()
+        o = Order()
+        c = Contract()
+        st = OrderState()
         if self.serverVersion < 145:
             fields.pop(0)
         (
             _,
-            o.orderId_i,
-            c.conId_i,
+            o.orderId,
+            c.conId,
             c.symbol,
             c.secType,
             c.lastTradeDateOrContractMonth,
-            c.strike_f,
+            c.strike,
             c.right,
             c.multiplier,
             c.exchange,
@@ -773,21 +779,21 @@ class Decoder:
             c.localSymbol,
             c.tradingClass,
             o.action,
-            o.totalQuantity_f,
+            o.totalQuantity,
             o.orderType,
-            o.lmtPrice_fu,
-            o.auxPrice_fu,
+            o.lmtPrice,
+            o.auxPrice,
             o.tif,
             o.ocaGroup,
             o.account,
             o.openClose,
-            o.origin_i,
+            o.origin,
             o.orderRef,
-            o.clientId_i,
-            o.permId_i,
-            o.outsideRth_b,
-            o.hidden_b,
-            o.discretionaryAmt_f,
+            o.clientId,
+            o.permId,
+            o.outsideRth,
+            o.hidden,
+            o.discretionaryAmt,
             o.goodAfterTime,
             _,
             o.faGroup,
@@ -797,69 +803,70 @@ class Decoder:
             o.modelCode,
             o.goodTillDate,
             o.rule80A,
-            o.percentOffset_fu,
+            o.percentOffset,
             o.settlingFirm,
-            o.shortSaleSlot_i,
+            o.shortSaleSlot,
             o.designatedLocation,
-            o.exemptCode_i,
-            o.auctionStrategy_i,
-            o.startingPrice_fu,
-            o.stockRefPrice_fu,
-            o.delta_fu,
-            o.stockRangeLower_fu,
-            o.stockRangeUpper_fu,
-            o.displaySize_i,
-            o.blockOrder_b,
-            o.sweepToFill_b,
-            o.allOrNone_b,
-            o.minQty_iu,
-            o.ocaType_i,
-            o.eTradeOnly_b,
-            o.firmQuoteOnly_b,
-            o.nbboPriceCap_fu,
-            o.parentId_i,
-            o.triggerMethod_i,
-            o.volatility_fu,
-            o.volatilityType_i,
+            o.exemptCode,
+            o.auctionStrategy,
+            o.startingPrice,
+            o.stockRefPrice,
+            o.delta,
+            o.stockRangeLower,
+            o.stockRangeUpper,
+            o.displaySize,
+            o.blockOrder,
+            o.sweepToFill,
+            o.allOrNone,
+            o.minQty,
+            o.ocaType,
+            o.eTradeOnly,
+            o.firmQuoteOnly,
+            o.nbboPriceCap,
+            o.parentId,
+            o.triggerMethod,
+            o.volatility,
+            o.volatilityType,
             o.deltaNeutralOrderType,
-            o.deltaNeutralAuxPrice_fu,
+            o.deltaNeutralAuxPrice,
             *fields) = fields
         if o.deltaNeutralOrderType:
             (
-                o.deltaNeutralConId_i,
+                o.deltaNeutralConId,
                 o.deltaNeutralSettlingFirm,
                 o.deltaNeutralClearingAccount,
                 o.deltaNeutralClearingIntent,
                 o.deltaNeutralOpenClose,
-                o.deltaNeutralShortSale_b,
-                o.deltaNeutralShortSaleSlot_i,
+                o.deltaNeutralShortSale,
+                o.deltaNeutralShortSaleSlot,
                 o.deltaNeutralDesignatedLocation,
                 *fields) = fields
         (
-            o.continuousUpdate_b,
-            o.referencePriceType_i,
-            o.trailStopPrice_fu,
-            o.trailingPercent_fu,
-            o.basisPoints_fu,
-            o.basisPointsType_iu,
+            o.continuousUpdate,
+            o.referencePriceType,
+            o.trailStopPrice,
+            o.trailingPercent,
+            o.basisPoints,
+            o.basisPointsType,
             c.comboLegsDescrip,
             numLegs,
             *fields) = fields
 
         c.comboLegs = []
         for _ in range(int(numLegs)):
-            leg = Parser()
+            leg = ComboLeg()
             (
-                leg.conId_i,
-                leg.ratio_i,
+                leg.conId,
+                leg.ratio,
                 leg.action,
                 leg.exchange,
-                leg.openClose_i,
-                leg.shortSaleSlot_i,
+                leg.openClose,
+                leg.shortSaleSlot,
                 leg.designatedLocation,
-                leg.exemptCode_i,
+                leg.exemptCode,
                 *fields) = fields
-            c.comboLegs.append(ComboLeg(**leg.dict()))
+            self.parse(leg)
+            c.comboLegs.append(leg)
 
         numOrderLegs = int(fields.pop(0))
         o.orderComboLegs = []
@@ -876,21 +883,21 @@ class Decoder:
                     TagValue(tag, value))
 
         (
-            o.scaleInitLevelSize_iu,
-            o.scaleSubsLevelSize_iu,
+            o.scaleInitLevelSize,
+            o.scaleSubsLevelSize,
             increment,
             *fields) = fields
 
         o.scalePriceIncrement = float(increment or UNSET_DOUBLE)
         if 0 < o.scalePriceIncrement < UNSET_DOUBLE:
             (
-                o.scalePriceAdjustValue_fu,
-                o.scalePriceAdjustInterval_iu,
-                o.scaleProfitOffset_fu,
-                o.scaleAutoReset_b,
-                o.scaleInitPosition_iu,
-                o.scaleInitFillQty_iu,
-                o.scaleRandomPercent_b,
+                o.scalePriceAdjustValue,
+                o.scalePriceAdjustInterval,
+                o.scaleProfitOffset,
+                o.scaleAutoReset,
+                o.scaleInitPosition,
+                o.scaleInitFillQty,
+                o.scaleRandomPercent,
                 *fields) = fields
 
         o.hedgeType = fields.pop(0)
@@ -898,10 +905,10 @@ class Decoder:
             o.hedgeParam = fields.pop(0)
 
         (
-            o.optOutSmartRouting_b,
+            o.optOutSmartRouting,
             o.clearingAccount,
             o.clearingIntent,
-            o.notHeld_b,
+            o.notHeld,
             dncPresent,
             *fields) = fields
 
@@ -921,8 +928,8 @@ class Decoder:
                         TagValue(tag, value))
 
         (
-            o.solicited_b,
-            o.whatIf_b,
+            o.solicited,
+            o.whatIf,
             st.status,
             *fields) = fields
 
@@ -939,21 +946,21 @@ class Decoder:
             st.initMarginAfter,
             st.maintMarginAfter,
             st.equityWithLoanAfter,
-            st.commission_fu,
-            st.minCommission_fu,
-            st.maxCommission_fu,
+            st.commission,
+            st.minCommission,
+            st.maxCommission,
             st.commissionCurrency,
             st.warningText,
-            o.randomizeSize_b,
-            o.randomizePrice_b,
+            o.randomizeSize,
+            o.randomizePrice,
             *fields) = fields
 
         if o.orderType == 'PEG BENCH':
             (
-                o.referenceContractId_i,
-                o.isPeggedChangeAmountDecrease_b,
-                o.peggedChangeAmount_f,
-                o.referenceChangeAmount_f,
+                o.referenceContractId,
+                o.isPeggedChangeAmountDecrease,
+                o.peggedChangeAmount,
+                o.referenceChangeAmount,
                 o.referenceExchangeId,
                 *fields) = fields
 
@@ -968,40 +975,40 @@ class Decoder:
                 fields = fields[n:]
                 o.conditions.append(condition)
             (
-                o.conditionsIgnoreRth_b,
-                o.conditionsCancelOrder_b,
+                o.conditionsIgnoreRth,
+                o.conditionsCancelOrder,
                 *fields) = fields
 
         (
             o.adjustedOrderType,
-            o.triggerPrice_f,
-            o.trailStopPrice_f,
-            o.lmtPriceOffset_f,
-            o.adjustedStopPrice_f,
-            o.adjustedStopLimitPrice_f,
-            o.adjustedTrailingAmount_f,
-            o.adjustableTrailingUnit_i,
+            o.triggerPrice,
+            o.trailStopPrice,
+            o.lmtPriceOffset,
+            o.adjustedStopPrice,
+            o.adjustedStopLimitPrice,
+            o.adjustedTrailingAmount,
+            o.adjustableTrailingUnit,
             name,
             value,
             displayName,
-            cashQty_f,
+            cashQty,
             *fields) = fields
 
         o.softDollarTier = SoftDollarTier(name, value, displayName)
 
         if self.serverVersion >= 141:
-            o.dontUseAutoPriceForHedge_b = fields.pop(0)
+            o.dontUseAutoPriceForHedge = fields.pop(0)
         if self.serverVersion >= 145:
-            o.isOmsContainer_b = fields.pop(0)
+            o.isOmsContainer = fields.pop(0)
         if self.serverVersion >= 148:
-            o.discretionaryUpToLimitPrice_b = fields.pop(0)
+            o.discretionaryUpToLimitPrice = fields.pop(0)
         if self.serverVersion >= 151:
-            o.usePriceMgmtAlgo_b = fields.pop(0)
+            o.usePriceMgmtAlgo = fields.pop(0)
 
-        contract = Contract(**c.dict())
-        order = Order(**o.dict())
-        orderState = OrderState(**st.dict())
-        self.wrapper.openOrder(order.orderId, contract, order, orderState)
+        self.parse(c)
+        self.parse(o)
+        self.parse(st)
+        self.wrapper.openOrder(o.orderId, c, o, st)
 
     def completedOrder(self, fields):
         ...
