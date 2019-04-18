@@ -182,9 +182,12 @@ class Decoder:
         """
         Decode fields and invoke corresponding wrapper method.
         """
-        msgId = int(fields[0])
-        handler = self.handlers[msgId]
-        handler(fields)
+        try:
+            msgId = int(fields[0])
+            handler = self.handlers[msgId]
+            handler(fields)
+        except Exception:
+            self.logger.exception(f'Error handling fields: {fields}')
 
     def parse(self, obj):
         """
