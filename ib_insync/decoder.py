@@ -969,14 +969,14 @@ class Decoder:
 
         numConditions = int(fields.pop(0))
         if numConditions > 0:
-            o.conditions = []
             for _ in range(numConditions):
                 condType = int(fields.pop(0))
-                condition = OrderCondition.create(condType)
-                n = len(condition.defaults) - 1
-                condition.decode(condType, *fields[:n])
+                condCls = OrderCondition.createClass(condType)
+                n = len(condCls.defaults) - 1
+                cond = condCls(condType, *fields[:n])
+                self.parse(cond)
+                o.conditions.append(cond)
                 fields = fields[n:]
-                o.conditions.append(condition)
             (
                 o.conditionsIgnoreRth,
                 o.conditionsCancelOrder,

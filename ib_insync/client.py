@@ -569,7 +569,7 @@ class Client:
         fields += [len(order.conditions)]
         if order.conditions:
             for cond in order.conditions:
-                fields += cond.encode()
+                fields += cond.dict().values()
             fields += [
                 order.conditionsIgnoreRth,
                 order.conditionsCancelOrder]
