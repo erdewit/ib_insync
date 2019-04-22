@@ -708,9 +708,13 @@ class Client:
     def reqScannerSubscription(
             self, reqId, subscription, scannerSubscriptionOptions,
             scannerSubscriptionFilterOptions):
+        version = self.serverVersion()
         sub = subscription
-        self.send(
-            22, 4, reqId,
+        fields = [22]
+        if version < 143:
+            fields += [4]
+        fields += [
+            reqId,
             sub.numberOfRows,
             sub.instrument,
             sub.locationCode,
@@ -730,9 +734,12 @@ class Client:
             sub.couponRateBelow,
             sub.excludeConvertible,
             sub.averageOptionVolumeAbove,
-            sub.stockTypeFilter,
-            sub.scannerSubscriptionFilterOptions,
-            sub.scannerSubscriptionOptions)
+            sub.scannerSettingPairs,
+            sub.stockTypeFilter]
+        if version >= 143:
+            fields += [scannerSubscriptionFilterOptions]
+        fields += [scannerSubscriptionOptions]
+        self.send(*fields)
 
     def cancelScannerSubscription(self, reqId):
         self.send(23, 1, reqId)
