@@ -191,7 +191,7 @@ class Decoder:
 
     def parse(self, obj):
         """
-        Parse the object's properties according its default types.
+        Parse the object's properties according to its default types.
         """
         for k, default in obj.__class__.defaults.items():
             typ = type(default)
@@ -765,8 +765,10 @@ class Decoder:
         o = Order()
         c = Contract()
         st = OrderState()
+
         if self.serverVersion < 145:
             fields.pop(0)
+
         (
             _,
             o.orderId,
@@ -833,6 +835,7 @@ class Decoder:
             o.deltaNeutralOrderType,
             o.deltaNeutralAuxPrice,
             *fields) = fields
+
         if o.deltaNeutralOrderType:
             (
                 o.deltaNeutralConId,
@@ -852,11 +855,11 @@ class Decoder:
             o.basisPoints,
             o.basisPointsType,
             c.comboLegsDescrip,
-            numLegs,
             *fields) = fields
 
+        numLegs = int(fields.pop(0))
         c.comboLegs = []
-        for _ in range(int(numLegs)):
+        for _ in range(numLegs):
             leg = ComboLeg()
             (
                 leg.conId,
@@ -874,8 +877,10 @@ class Decoder:
         numOrderLegs = int(fields.pop(0))
         o.orderComboLegs = []
         for _ in range(numOrderLegs):
-            o.orderComboLegs.append(
-                OrderComboLeg(price=float(fields.pop(0) or UNSET_DOUBLE)))
+            leg = OrderComboLeg()
+            leg.price = fields.pop(0)
+            self.parse(leg)
+            o.orderComboLegs.append(leg)
 
         numParams = int(fields.pop(0))
         if numParams > 0:
@@ -991,13 +996,11 @@ class Decoder:
             o.adjustedStopLimitPrice,
             o.adjustedTrailingAmount,
             o.adjustableTrailingUnit,
-            name,
-            value,
-            displayName,
-            cashQty,
+            o.softDollarTier.name,
+            o.softDollarTier.val,
+            o.softDollarTier.displayName,
+            o.cashQty,
             *fields) = fields
-
-        o.softDollarTier = SoftDollarTier(name, value, displayName)
 
         if self.serverVersion >= 141:
             o.dontUseAutoPriceForHedge = fields.pop(0)
