@@ -826,7 +826,7 @@ class Wrapper:
 
     def scannerDataEnd(self, reqId):
         dataList = self._results.get(reqId)
-        if dataList:
+        if dataList is not None:
             self._endReq(reqId)
         else:
             dataList = self.reqId2Subscriber.get(reqId)
