@@ -13,7 +13,7 @@ The main features are:
 * An `IB component <https://ib-insync.readthedocs.io/api.html#module-ib_insync.ib>`_
   that automatically keeps in sync with the TWS or IB Gateway application;
 * A fully asynchonous framework based on
-  `asyncio <https://docs.python.org/3.6/library/asyncio.html>`_
+  `asyncio <https://docs.python.org/3/library/asyncio.html>`_
   and
   `eventkit <https://github.com/erdewit/eventkit>`_
   for advanced users;
@@ -122,7 +122,7 @@ Good luck and enjoy,
 
 .. |Docs| image:: https://img.shields.io/badge/docs-ib_insync-brightgreen.svg
    :alt: Documentation
-   :target: https://ib-insync.readthedocs.io
+   :target: https://readthedocs.org/projects/ib-insync/badge/?version=latest
 
 .. |Downloads| image:: https://pepy.tech/badge/ib-insync
    :alt: Number of downloads
