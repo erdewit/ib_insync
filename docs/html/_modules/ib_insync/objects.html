@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.objects &mdash; ib_insync 0.9.46 documentation</title>
+  <title>ib_insync.objects &mdash; ib_insync 0.9.47 documentation</title>
   
 
   
@@ -19,32 +19,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -155,19 +157,7 @@
   <h1>Source code for ib_insync.objects</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 
-<span class="kn">import</span> <span class="nn">ibapi.scanner</span>
-<span class="kn">import</span> <span class="nn">ibapi.contract</span>
-<span class="kn">import</span> <span class="nn">ibapi.common</span>
-<span class="kn">import</span> <span class="nn">ibapi.order</span>
-<span class="kn">import</span> <span class="nn">ibapi.order_state</span>
-<span class="kn">import</span> <span class="nn">ibapi.softdollartier</span>
-<span class="kn">import</span> <span class="nn">ibapi.execution</span>
-<span class="kn">import</span> <span class="nn">ibapi.commission_report</span>
-
-<span class="c1"># order conditions are imported as-is from ibapi</span>
-<span class="kn">from</span> <span class="nn">ibapi.order_condition</span> <span class="k">import</span> <span class="p">(</span><span class="n">OrderCondition</span><span class="p">,</span> <span class="n">ExecutionCondition</span><span class="p">,</span>  <span class="c1"># noqa</span>
-        <span class="n">OperatorCondition</span><span class="p">,</span> <span class="n">MarginCondition</span><span class="p">,</span> <span class="n">ContractCondition</span><span class="p">,</span> <span class="n">TimeCondition</span><span class="p">,</span>
-        <span class="n">PriceCondition</span><span class="p">,</span> <span class="n">PercentChangeCondition</span><span class="p">,</span> <span class="n">VolumeCondition</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.util</span> <span class="k">import</span> <span class="n">UNSET_DOUBLE</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span>
 
 <span class="kn">from</span> <span class="nn">eventkit</span> <span class="k">import</span> <span class="n">Event</span>
 
@@ -183,11 +173,9 @@
     <span class="s1">&#39;HistoricalTick HistoricalTickBidAsk HistoricalTickLast &#39;</span>
     <span class="s1">&#39;TickAttrib TickAttribBidAsk TickAttribLast &#39;</span>
     <span class="s1">&#39;MktDepthData DOMLevel BracketOrder TradeLogEntry TagValue &#39;</span>
+    <span class="s1">&#39;FamilyCode SmartComponent &#39;</span>
     <span class="s1">&#39;PortfolioItem Position Fill OptionComputation OptionChain Dividends &#39;</span>
-    <span class="s1">&#39;NewsArticle HistoricalNews NewsTick NewsBulletin ConnectionStats &#39;</span>
-    <span class="s1">&#39;OrderCondition ExecutionCondition OperatorCondition MarginCondition &#39;</span>
-    <span class="s1">&#39;ContractCondition TimeCondition PriceCondition PercentChangeCondition &#39;</span>
-    <span class="s1">&#39;VolumeCondition&#39;</span>
+    <span class="s1">&#39;NewsArticle HistoricalNews NewsTick NewsBulletin ConnectionStats&#39;</span>
 <span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
 <span class="n">nan</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
@@ -283,19 +271,69 @@
 
 
 <div class="viewcode-block" id="ContractDetails"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ContractDetails">[docs]</a><span class="k">class</span> <span class="nc">ContractDetails</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">ContractDetails</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;contract&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">contract</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">marketName</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">minTick</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">orderTypes</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">validExchanges</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">priceMagnifier</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">underConId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">longName</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">contractMonth</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">industry</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">subcategory</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">timeZoneId</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">tradingHours</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">liquidHours</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">evRule</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">evMultiplier</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">mdSizeMultiplier</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">aggGroup</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">underSymbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">underSecType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">marketRuleIds</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">secIdList</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">realExpirationDate</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">lastTradeTime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">cusip</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">ratings</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">descAppend</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">bondType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">couponType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">callable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">putable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">coupon</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">convertible</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">maturity</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">issueDate</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">nextOptionDate</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">nextOptionType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">nextOptionPartial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">notes</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ContractDescription"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ContractDescription">[docs]</a><span class="k">class</span> <span class="nc">ContractDescription</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">ContractDescription</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
-    <span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;contract&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">contract</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">derivativeSecTypes</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ComboLeg"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ComboLeg">[docs]</a><span class="k">class</span> <span class="nc">ComboLeg</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">ComboLeg</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">conId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">ratio</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">openClose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">shortSaleSlot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">designatedLocation</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">exemptCode</span><span class="o">=-</span><span class="mi">1</span>
+        <span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
@@ -308,52 +346,145 @@
 
 
 <div class="viewcode-block" id="OrderComboLeg"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OrderComboLeg">[docs]</a><span class="k">class</span> <span class="nc">OrderComboLeg</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">OrderComboLeg</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">price</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="OrderState"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OrderState">[docs]</a><span class="k">class</span> <span class="nc">OrderState</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">order_state</span><span class="o">.</span><span class="n">OrderState</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">status</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">initMarginBefore</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">maintMarginBefore</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">equityWithLoanBefore</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">initMarginChange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">maintMarginChange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">equityWithLoanChange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">initMarginAfter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">maintMarginAfter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">equityWithLoanAfter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">commission</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">minCommission</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">maxCommission</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">commissionCurrency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">warningText</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">completedTime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">completedStatus</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ScannerSubscription"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ScannerSubscription">[docs]</a><span class="k">class</span> <span class="nc">ScannerSubscription</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">scanner</span><span class="o">.</span><span class="n">ScannerSubscription</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">numberOfRows</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">locationCode</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">scanCode</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">abovePrice</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">belowPrice</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">aboveVolume</span><span class="o">=</span><span class="n">UNSET_INTEGER</span><span class="p">,</span>
+        <span class="n">marketCapAbove</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">marketCapBelow</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">moodyRatingAbove</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">moodyRatingBelow</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">spRatingAbove</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">spRatingBelow</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">maturityDateAbove</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">maturityDateBelow</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">couponRateAbove</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">couponRateBelow</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">excludeConvertible</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">averageOptionVolumeAbove</span><span class="o">=</span><span class="n">UNSET_INTEGER</span><span class="p">,</span>
+        <span class="n">scannerSettingPairs</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">stockTypeFilter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="SoftDollarTier"><a class="viewcode-back" href="../../api.html#ib_insync.objects.SoftDollarTier">[docs]</a><span class="k">class</span> <span class="nc">SoftDollarTier</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">softdollartier</span><span class="o">.</span><span class="n">SoftDollarTier</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">val</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">displayName</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Execution"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Execution">[docs]</a><span class="k">class</span> <span class="nc">Execution</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">Execution</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">execId</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">acctNumber</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">side</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">shares</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">price</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">permId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">clientId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">orderId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">liquidation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">cumQty</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">avgPrice</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">orderRef</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">evRule</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">evMultiplier</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">modelCode</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">lastLiquidity</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="CommissionReport"><a class="viewcode-back" href="../../api.html#ib_insync.objects.CommissionReport">[docs]</a><span class="k">class</span> <span class="nc">CommissionReport</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">commission_report</span><span class="o">.</span><span class="n">CommissionReport</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">execId</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">commission</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">currency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">realizedPNL</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">yield_</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">yieldRedemptionDate</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ExecutionFilter"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ExecutionFilter">[docs]</a><span class="k">class</span> <span class="nc">ExecutionFilter</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">ExecutionFilter</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">clientId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">acctCode</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">secType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">side</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="BarData"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarData">[docs]</a><span class="k">class</span> <span class="nc">BarData</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">BarData</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">date</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="nb">open</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">high</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">low</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">close</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">volume</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">average</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">barCount</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="RealTimeBar"><a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBar">[docs]</a><span class="k">class</span> <span class="nc">RealTimeBar</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">RealTimeBar</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">endTime</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">open_</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">high</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">low</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">close</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">volume</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">wap</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">count</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="TickAttrib"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TickAttrib">[docs]</a><span class="k">class</span> <span class="nc">TickAttrib</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">TickAttrib</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">canAutoExecute</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">pastLimit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">preOpen</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
@@ -372,17 +503,26 @@
 
 
 <div class="viewcode-block" id="HistogramData"><a class="viewcode-back" href="../../api.html#ib_insync.objects.HistogramData">[docs]</a><span class="k">class</span> <span class="nc">HistogramData</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">HistogramData</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">price</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">count</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="NewsProvider"><a class="viewcode-back" href="../../api.html#ib_insync.objects.NewsProvider">[docs]</a><span class="k">class</span> <span class="nc">NewsProvider</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">NewsProvider</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">code</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="DepthMktDataDescription"><a class="viewcode-back" href="../../api.html#ib_insync.objects.DepthMktDataDescription">[docs]</a><span class="k">class</span> <span class="nc">DepthMktDataDescription</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">DepthMktDataDescription</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">secType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">listingExch</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">serviceDataType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">aggGroup</span><span class="o">=</span><span class="n">UNSET_INTEGER</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 
@@ -488,13 +628,9 @@
         <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="TagValue"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TagValue">[docs]</a><span class="k">class</span> <span class="nc">TagValue</span><span class="p">(</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;TagValue&#39;</span><span class="p">,</span> <span class="s1">&#39;tag value&#39;</span><span class="p">)):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># ibapi serialization depends on this</span>
-        <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.tag}</span><span class="s1">=</span><span class="si">{self.value}</span><span class="s1">;&#39;</span></div>
-
+<span class="n">TagValue</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;TagValue&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;tag value&#39;</span><span class="p">)</span>
 
 <span class="n">AccountValue</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
     <span class="s1">&#39;AccountValue&#39;</span><span class="p">,</span>
@@ -593,6 +729,14 @@
     <span class="s1">&#39;NewsBulletin&#39;</span><span class="p">,</span>
     <span class="s1">&#39;msgId msgType message origExchange&#39;</span><span class="p">)</span>
 
+<span class="n">FamilyCode</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;FamilyCode&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;accountID familyCodeStr&#39;</span><span class="p">)</span>
+
+<span class="n">SmartComponent</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;SmartComponent&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bitNumber exchange exchangeLetter&#39;</span><span class="p">)</span>
+
 <span class="n">ConnectionStats</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
     <span class="s1">&#39;ConnectionStats&#39;</span><span class="p">,</span>
     <span class="s1">&#39;startTime duration numBytesRecv numBytesSent numMsgRecv numMsgSent&#39;</span><span class="p">)</span>
@@ -625,26 +769,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

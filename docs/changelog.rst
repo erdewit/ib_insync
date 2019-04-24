@@ -4,6 +4,16 @@ Changelog
 0.9
 ---
 
+Version 0.9.47
+^^^^^^^^^^^^^^
+
+* ``ibapi`` package from IB is no longer needed, ib_insync handles its own
+  socket protocol encoding and decoding now.
+* Documentation moved to `readthedocs <https://ib-insync.readthedocs.io>`_ as
+  rawgit will cease operation later this year.
+* Blocking requests will now raise ``ConnectionError`` on a connection failure.
+  This also goes for ``util.run``, ``util.timeRange``, etc.
+
 Version 0.9.46
 ^^^^^^^^^^^^^^
 

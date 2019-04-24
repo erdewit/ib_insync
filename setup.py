@@ -32,7 +32,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3 :: Only',
     ],
-    keywords='ibapi asyncio jupyter interactive brokers async',
+    keywords='ibapi tws asyncio jupyter interactive brokers async',
     packages=['ib_insync'],
     install_requires=['eventkit', 'nest_asyncio']
 )

@@ -3,18 +3,27 @@
 Introduction
 ============
 
-The ``ib_insync`` package is build on top of the Python API
-from Interactive Brokers. The objective is to make it as
-easy as possible to use the API to its fullest extent.
+The goal of the IB-insync library is to make working with the
+`Trader Workstation API <http://interactivebrokers.github.io/tws-api/>`_
+from Interactive Brokers as easy as possible.
 
 The main features are:
 
-* An ``IB`` component that automatically keeps in sync;
-* An easy to use linear style of programming (no more callbacks);
+* An easy to use linear style of programming;
+* An `IB component <https://ib-insync.readthedocs.io/api.html#module-ib_insync.ib>`_
+  that automatically keeps in sync with the TWS or IB Gateway application;
 * A fully asynchonous framework based on
   `asyncio <https://docs.python.org/3.6/library/asyncio.html>`_
+  and
+  `eventkit <https://github.com/erdewit/eventkit>`_
   for advanced users;
 * Interactive operation with live data in Jupyter notebooks.
+
+Be sure to take a look at the
+`notebooks <https://ib-insync.readthedocs.io/notebooks.html>`_,
+the `recipes <https://ib-insync.readthedocs.io/recipes.html>`_
+and the `API docs <https://ib-insync.readthedocs.io/api.html>`_.
+
 
 Installation
 ------------
@@ -23,23 +32,19 @@ Installation
 
     pip3 install -U ib_insync
 
-On some systems the command is named ``pip`` instead of ``pip3``.
+On some systems ``pip`` should be used instead of ``pip3``.
 
-If the package is to be installed for a single user,
-then add ``--user`` to the command.
+To install for a single user, add ``--user`` to the command.
 
 Requirements:
 
-* Python_ version 3.6 or higher;
-* The `Interactive Brokers Python API`_ version 9.74;
-* A running TWS or IB gateway application (version 971 or higher).
+* Python 3.6 or higher;
+* A running TWS or IB Gateway application (version 973 or higher).
   Make sure the
   `API port is enabled <https://interactivebrokers.github.io/tws-api/initial_setup.html>`_
   and 'Download open orders on connection' is checked.
 
-To install packages needed for the examples and notebooks::
-
-    pip3 install -U jupyter numpy pandas
+The ibapi package from IB is not needed.
 
 Example
 -------
@@ -71,19 +76,12 @@ Output::
     ...
     719 2017-09-22 22:00:00  1.194425  1.195425  1.194225  1.195050
 
-
-Be sure to take a look at the
-`notebooks <http://rawgit.com/erdewit/ib_insync/master/docs/html/notebooks.html>`_
-and the
-`recipes <http://rawgit.com/erdewit/ib_insync/master/docs/html/recipes.html>`_
-too.
-
 Documentation
 -------------
 
-The complete `API documentation <http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html>`_.
+The complete `API documentation <https://ib-insync.readthedocs.io/api.html>`_.
 
-`Changelog <http://rawgit.com/erdewit/ib_insync/master/docs/html/changelog.html>`_.
+`Changelog <https://ib-insync.readthedocs.io/changelog.html>`_.
 
 Discussion
 ----------
@@ -99,13 +97,10 @@ The software is provided on the conditions of the simplified BSD license.
 This project is not affiliated with Interactive Brokers Group, Inc.'s.
 
 
-
-
 Good luck and enjoy,
 
 :author: Ewald de Wit <ewald.de.wit@gmail.com>
 
-.. _Python: http://www.python.org
 .. _`Interactive Brokers Python API`: http://interactivebrokers.github.io
 
 .. |Group| image:: https://img.shields.io/badge/groups.io-insync-green.svg
@@ -127,7 +122,7 @@ Good luck and enjoy,
 
 .. |Docs| image:: https://img.shields.io/badge/docs-ib_insync-brightgreen.svg
    :alt: Documentation
-   :target: http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html
+   :target: https://ib-insync.readthedocs.io
 
 .. |Downloads| image:: https://pepy.tech/badge/ib-insync
    :alt: Number of downloads

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Introduction &mdash; ib_insync 0.9.46 documentation</title>
+  <title>Introduction &mdash; ib_insync 0.9.47 documentation</title>
   
 
   
@@ -19,34 +19,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="API docs" href="api.html" />
     <link rel="prev" title="Contents" href="index.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -163,42 +165,44 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <p><a class="reference external" href="https://groups.io/g/insync"><img alt="Join the user group" src="https://img.shields.io/badge/groups.io-insync-green.svg" /></a> <img alt="" src="https://img.shields.io/badge/python-3.6+-blue.svg" /> <img alt="" src="https://img.shields.io/badge/status-beta-green.svg" /> <a class="reference external" href="https://pypi.python.org/pypi/ib_insync"><img alt="PyPi" src="https://img.shields.io/pypi/v/ib_insync.svg" /></a> <img alt="" src="https://img.shields.io/badge/license-BSD-blue.svg" /> <a class="reference external" href="http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html"><img alt="Documentation" src="https://img.shields.io/badge/docs-ib_insync-brightgreen.svg" /></a> <a class="reference external" href="https://pepy.tech/project/ib-insync"><img alt="Number of downloads" src="https://pepy.tech/badge/ib-insync" /></a></p>
+  <p><a class="reference external" href="https://groups.io/g/insync"><img alt="Join the user group" src="https://img.shields.io/badge/groups.io-insync-green.svg" /></a> <img alt="" src="https://img.shields.io/badge/python-3.6+-blue.svg" /> <img alt="" src="https://img.shields.io/badge/status-beta-green.svg" /> <a class="reference external" href="https://pypi.python.org/pypi/ib_insync"><img alt="PyPi" src="https://img.shields.io/pypi/v/ib_insync.svg" /></a> <img alt="" src="https://img.shields.io/badge/license-BSD-blue.svg" /> <a class="reference external" href="https://ib-insync.readthedocs.io"><img alt="Documentation" src="https://img.shields.io/badge/docs-ib_insync-brightgreen.svg" /></a> <a class="reference external" href="https://pepy.tech/project/ib-insync"><img alt="Number of downloads" src="https://pepy.tech/badge/ib-insync" /></a></p>
 <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">ib_insync</span></code> package is build on top of the Python API
-from Interactive Brokers. The objective is to make it as
-easy as possible to use the API to its fullest extent.</p>
+<p>The goal of the IB-insync library is to make working with the
+<a class="reference external" href="http://interactivebrokers.github.io/tws-api/">Trader Workstation API</a>
+from Interactive Brokers as easy as possible.</p>
 <p>The main features are:</p>
 <ul class="simple">
-<li>An <code class="docutils literal notranslate"><span class="pre">IB</span></code> component that automatically keeps in sync;</li>
-<li>An easy to use linear style of programming (no more callbacks);</li>
+<li>An easy to use linear style of programming;</li>
+<li>An <a class="reference external" href="https://ib-insync.readthedocs.io/api.html#module-ib_insync.ib">IB component</a>
+that automatically keeps in sync with the TWS or IB Gateway application;</li>
 <li>A fully asynchonous framework based on
 <a class="reference external" href="https://docs.python.org/3.6/library/asyncio.html">asyncio</a>
+and
+<a class="reference external" href="https://github.com/erdewit/eventkit">eventkit</a>
 for advanced users;</li>
 <li>Interactive operation with live data in Jupyter notebooks.</li>
 </ul>
+<p>Be sure to take a look at the
+<a class="reference external" href="https://ib-insync.readthedocs.io/notebooks.html">notebooks</a>,
+the <a class="reference external" href="https://ib-insync.readthedocs.io/recipes.html">recipes</a>
+and the <a class="reference external" href="https://ib-insync.readthedocs.io/api.html">API docs</a>.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">ib_insync</span>
 </pre></div>
 </div>
-<p>On some systems the command is named <code class="docutils literal notranslate"><span class="pre">pip</span></code> instead of <code class="docutils literal notranslate"><span class="pre">pip3</span></code>.</p>
-<p>If the package is to be installed for a single user,
-then add <code class="docutils literal notranslate"><span class="pre">--user</span></code> to the command.</p>
+<p>On some systems <code class="docutils literal notranslate"><span class="pre">pip</span></code> should be used instead of <code class="docutils literal notranslate"><span class="pre">pip3</span></code>.</p>
+<p>To install for a single user, add <code class="docutils literal notranslate"><span class="pre">--user</span></code> to the command.</p>
 <p>Requirements:</p>
 <ul class="simple">
-<li><a class="reference external" href="http://www.python.org">Python</a> version 3.6 or higher;</li>
-<li>The <a class="reference external" href="http://interactivebrokers.github.io">Interactive Brokers Python API</a> version 9.74;</li>
-<li>A running TWS or IB gateway application (version 971 or higher).
+<li>Python 3.6 or higher;</li>
+<li>A running TWS or IB Gateway application (version 973 or higher).
 Make sure the
 <a class="reference external" href="https://interactivebrokers.github.io/tws-api/initial_setup.html">API port is enabled</a>
 and ‘Download open orders on connection’ is checked.</li>
 </ul>
-<p>To install packages needed for the examples and notebooks:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">jupyter</span> <span class="n">numpy</span> <span class="n">pandas</span>
-</pre></div>
-</div>
+<p>The ibapi package from IB is not needed.</p>
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
@@ -227,16 +231,11 @@ and ‘Download open orders on connection’ is checked.</li>
 <span class="mi">719</span> <span class="mi">2017</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">22</span> <span class="mi">22</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">1.194425</span>  <span class="mf">1.195425</span>  <span class="mf">1.194225</span>  <span class="mf">1.195050</span>
 </pre></div>
 </div>
-<p>Be sure to take a look at the
-<a class="reference external" href="http://rawgit.com/erdewit/ib_insync/master/docs/html/notebooks.html">notebooks</a>
-and the
-<a class="reference external" href="http://rawgit.com/erdewit/ib_insync/master/docs/html/recipes.html">recipes</a>
-too.</p>
 </div>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
-<p>The complete <a class="reference external" href="http://rawgit.com/erdewit/ib_insync/master/docs/html/api.html">API documentation</a>.</p>
-<p><a class="reference external" href="http://rawgit.com/erdewit/ib_insync/master/docs/html/changelog.html">Changelog</a>.</p>
+<p>The complete <a class="reference external" href="https://ib-insync.readthedocs.io/api.html">API documentation</a>.</p>
+<p><a class="reference external" href="https://ib-insync.readthedocs.io/changelog.html">Changelog</a>.</p>
 </div>
 <div class="section" id="discussion">
 <h2>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
@@ -270,7 +269,7 @@ IB-insync and anything related to it.</p>
         <a href="api.html" class="btn btn-neutral float-right" title="API docs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Contents" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Contents" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -296,26 +295,16 @@ IB-insync and anything related to it.</p>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

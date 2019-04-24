@@ -28,7 +28,7 @@ __all__ = ['IB']
 class IB:
     """
     Provides both a blocking and an asynchronous interface
-    to the IB Python API, using asyncio networking and event loop.
+    to the IB API, using asyncio networking and event loop.
 
     The IB class offers direct access to the current state, such as
     orders, executions, positions, tickers etc. This state is
@@ -271,7 +271,7 @@ class IB:
         .. note::
             A loop with ``waitOnUpdate`` should not be used to harvest
             tick data from tickers, since some ticks can go missing.
-            This happens when multiple updates occur almost simultaneously.
+            This happens when multiple updates occur almost simultaneously;
             The ticks from the first update are then cleared.
             Use events instead to prevent this.
         """

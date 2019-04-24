@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.order &mdash; ib_insync 0.9.46 documentation</title>
+  <title>ib_insync.order &mdash; ib_insync 0.9.47 documentation</title>
   
 
   
@@ -19,32 +19,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -153,14 +155,17 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ib_insync.order</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ibapi</span>
-<span class="kn">from</span> <span class="nn">eventkit</span> <span class="k">import</span> <span class="n">Event</span>
+<span></span><span class="kn">from</span> <span class="nn">eventkit</span> <span class="k">import</span> <span class="n">Event</span>
 
-<span class="kn">from</span> <span class="nn">.objects</span> <span class="k">import</span> <span class="n">Object</span>
+<span class="kn">from</span> <span class="nn">.objects</span> <span class="k">import</span> <span class="n">Object</span><span class="p">,</span> <span class="n">SoftDollarTier</span>
+<span class="kn">from</span> <span class="nn">.util</span> <span class="k">import</span> <span class="n">UNSET_DOUBLE</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s1">&#39;Trade OrderStatus Order &#39;</span>
-    <span class="s1">&#39;LimitOrder MarketOrder StopOrder StopLimitOrder&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="s1">&#39;LimitOrder MarketOrder StopOrder StopLimitOrder &#39;</span>
+    <span class="s1">&#39;OrderCondition ExecutionCondition MarginCondition TimeCondition &#39;</span>
+    <span class="s1">&#39;PriceCondition PercentChangeCondition VolumeCondition &#39;</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="Trade"><a class="viewcode-back" href="../../api.html#ib_insync.order.Trade">[docs]</a><span class="k">class</span> <span class="nc">Trade</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
@@ -257,13 +262,145 @@
 
 <span class="sd">    https://interactivebrokers.github.io/tws-api/available_orders.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="n">ibapi</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">Order</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">orderId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">clientId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">permId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">totalQuantity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">orderType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">lmtPrice</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">auxPrice</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">tif</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">activeStartTime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">activeStopTime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">ocaGroup</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">ocaType</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">orderRef</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">transmit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">parentId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">blockOrder</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">sweepToFill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">displaySize</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">triggerMethod</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">outsideRth</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">goodAfterTime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">goodTillDate</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">rule80A</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">allOrNone</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">minQty</span><span class="o">=</span><span class="n">UNSET_INTEGER</span><span class="p">,</span>
+        <span class="n">percentOffset</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">overridePercentageConstraints</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">trailStopPrice</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">trailingPercent</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">faGroup</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">faProfile</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">faMethod</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">faPercentage</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">designatedLocation</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">openClose</span><span class="o">=</span><span class="s2">&quot;O&quot;</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">shortSaleSlot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">exemptCode</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">discretionaryAmt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">eTradeOnly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">firmQuoteOnly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">nbboPriceCap</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">optOutSmartRouting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">auctionStrategy</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">startingPrice</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">stockRefPrice</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">delta</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">stockRangeLower</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">stockRangeUpper</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">randomizePrice</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">randomizeSize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">volatility</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">volatilityType</span><span class="o">=</span><span class="n">UNSET_INTEGER</span><span class="p">,</span>
+        <span class="n">deltaNeutralOrderType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">deltaNeutralAuxPrice</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">deltaNeutralConId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">deltaNeutralSettlingFirm</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">deltaNeutralClearingAccount</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">deltaNeutralClearingIntent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">deltaNeutralOpenClose</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">deltaNeutralShortSale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">deltaNeutralShortSaleSlot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">deltaNeutralDesignatedLocation</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">continuousUpdate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">referencePriceType</span><span class="o">=</span><span class="n">UNSET_INTEGER</span><span class="p">,</span>
+        <span class="n">basisPoints</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">basisPointsType</span><span class="o">=</span><span class="n">UNSET_INTEGER</span><span class="p">,</span>
+        <span class="n">scaleInitLevelSize</span><span class="o">=</span><span class="n">UNSET_INTEGER</span><span class="p">,</span>
+        <span class="n">scaleSubsLevelSize</span><span class="o">=</span><span class="n">UNSET_INTEGER</span><span class="p">,</span>
+        <span class="n">scalePriceIncrement</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">scalePriceAdjustValue</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">scalePriceAdjustInterval</span><span class="o">=</span><span class="n">UNSET_INTEGER</span><span class="p">,</span>
+        <span class="n">scaleProfitOffset</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">scaleAutoReset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">scaleInitPosition</span><span class="o">=</span><span class="n">UNSET_INTEGER</span><span class="p">,</span>
+        <span class="n">scaleInitFillQty</span><span class="o">=</span><span class="n">UNSET_INTEGER</span><span class="p">,</span>
+        <span class="n">scaleRandomPercent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">scaleTable</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">hedgeType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">hedgeParam</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">account</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">settlingFirm</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">clearingAccount</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">clearingIntent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">algoStrategy</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">algoParams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">smartComboRoutingParams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">algoId</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">whatIf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">notHeld</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">solicited</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">modelCode</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">orderComboLegs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orderMiscOptions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">referenceContractId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">peggedChangeAmount</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">isPeggedChangeAmountDecrease</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">referenceChangeAmount</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">referenceExchangeId</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">adjustedOrderType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">triggerPrice</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">adjustedStopPrice</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">adjustedStopLimitPrice</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">adjustedTrailingAmount</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">adjustableTrailingUnit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">lmtPriceOffset</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">conditions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">conditionsCancelOrder</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">conditionsIgnoreRth</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">extOperator</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">softDollarTier</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cashQty</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">mifid2DecisionMaker</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">mifid2DecisionAlgo</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">mifid2ExecutionTrader</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">mifid2ExecutionAlgo</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">dontUseAutoPriceForHedge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">isOmsContainer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">discretionaryUpToLimitPrice</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">autoCancelDate</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">filledQuantity</span><span class="o">=</span><span class="n">UNSET_DOUBLE</span><span class="p">,</span>
+        <span class="n">refFuturesConId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">autoCancelParent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">shareholder</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">imbalanceOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">routeMarketableToBbo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">parentPermId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">usePriceMgmtAlgo</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">conditions</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">conditions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">softDollarTier</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">softDollarTier</span> <span class="o">=</span> <span class="n">SoftDollarTier</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nonDefaults</span><span class="p">()</span>
@@ -317,6 +454,96 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">orderType</span><span class="o">=</span><span class="s1">&#39;STP LMT&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
             <span class="n">totalQuantity</span><span class="o">=</span><span class="n">totalQuantity</span><span class="p">,</span> <span class="n">lmtPrice</span><span class="o">=</span><span class="n">lmtPrice</span><span class="p">,</span>
             <span class="n">auxPrice</span><span class="o">=</span><span class="n">stopPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OrderCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.OrderCondition">[docs]</a><span class="k">class</span> <span class="nc">OrderCondition</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="OrderCondition.createClass"><a class="viewcode-back" href="../../api.html#ib_insync.order.OrderCondition.createClass">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">createClass</span><span class="p">(</span><span class="n">condType</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="n">PriceCondition</span><span class="p">,</span>
+            <span class="mi">3</span><span class="p">:</span> <span class="n">TimeCondition</span><span class="p">,</span>
+            <span class="mi">4</span><span class="p">:</span> <span class="n">MarginCondition</span><span class="p">,</span>
+            <span class="mi">5</span><span class="p">:</span> <span class="n">ExecutionCondition</span><span class="p">,</span>
+            <span class="mi">6</span><span class="p">:</span> <span class="n">VolumeCondition</span><span class="p">,</span>
+            <span class="mi">7</span><span class="p">:</span> <span class="n">PercentChangeCondition</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">d</span><span class="p">[</span><span class="n">condType</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">clsName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__qualname__</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{k}</span><span class="s1">=</span><span class="si">{v!r}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{clsName}</span><span class="s1">(</span><span class="si">{kwargs}</span><span class="s1">)&#39;</span>
+
+<div class="viewcode-block" id="OrderCondition.And"><a class="viewcode-back" href="../../api.html#ib_insync.order.OrderCondition.And">[docs]</a>    <span class="k">def</span> <span class="nf">And</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conjunction</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="OrderCondition.Or"><a class="viewcode-back" href="../../api.html#ib_insync.order.OrderCondition.Or">[docs]</a>    <span class="k">def</span> <span class="nf">Or</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conjunction</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+
+
+<div class="viewcode-block" id="PriceCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.PriceCondition">[docs]</a><span class="k">class</span> <span class="nc">PriceCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">condType</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">conjunction</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span>
+        <span class="n">isMore</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">price</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">conId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">exch</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">triggerMethod</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TimeCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.TimeCondition">[docs]</a><span class="k">class</span> <span class="nc">TimeCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">condType</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">conjunction</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span>
+        <span class="n">isMore</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MarginCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.MarginCondition">[docs]</a><span class="k">class</span> <span class="nc">MarginCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">condType</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">conjunction</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span>
+        <span class="n">isMore</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">percent</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ExecutionCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.ExecutionCondition">[docs]</a><span class="k">class</span> <span class="nc">ExecutionCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">condType</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">conjunction</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span>
+        <span class="n">secType</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">exch</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="VolumeCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.VolumeCondition">[docs]</a><span class="k">class</span> <span class="nc">VolumeCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">condType</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+        <span class="n">conjunction</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span>
+        <span class="n">isMore</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">volume</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">conId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">exch</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="PercentChangeCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.PercentChangeCondition">[docs]</a><span class="k">class</span> <span class="nc">PercentChangeCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">condType</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+        <span class="n">conjunction</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span>
+        <span class="n">isMore</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">changePercent</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">conId</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">exch</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
@@ -346,26 +573,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API docs &mdash; ib_insync 0.9.46 documentation</title>
+  <title>API docs &mdash; ib_insync 0.9.47 documentation</title>
   
 
   
@@ -19,34 +19,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Notebooks" href="notebooks.html" />
     <link rel="prev" title="Introduction" href="readme.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -171,7 +173,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.46.</p>
+<p>Release 0.9.47.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -183,7 +185,7 @@ from IB.</p>
 <dt id="ib_insync.ib.IB">
 <em class="property">class </em><code class="descclassname">ib_insync.ib.</code><code class="descname">IB</code><a class="reference internal" href="_modules/ib_insync/ib.html#IB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides both a blocking and an asynchronous interface
-to the IB Python API, using asyncio networking and event loop.</p>
+to the IB API, using asyncio networking and event loop.</p>
 <p>The IB class offers direct access to the current state, such as
 orders, executions, positions, tickers etc. This state is
 automatically kept in sync with the TWS/IBG application.</p>
@@ -485,7 +487,7 @@ If 0 then no timeout is used.</td>
 <p class="first admonition-title">Note</p>
 <p class="last">A loop with <code class="docutils literal notranslate"><span class="pre">waitOnUpdate</span></code> should not be used to harvest
 tick data from tickers, since some ticks can go missing.
-This happens when multiple updates occur almost simultaneously.
+This happens when multiple updates occur almost simultaneously;
 The ticks from the first update are then cleared.
 Use events instead to prevent this.</p>
 </div>
@@ -2246,7 +2248,7 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 <dl class="class">
 <dt id="ib_insync.client.Client">
 <em class="property">class </em><code class="descclassname">ib_insync.client.</code><code class="descname">Client</code><span class="sig-paren">(</span><em>wrapper</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client" title="Permalink to this definition">¶</a></dt>
-<dd><p>Modification of <code class="docutils literal notranslate"><span class="pre">ibapi.client.EClient</span></code> that uses asyncio.</p>
+<dd><p>Replacement for <code class="docutils literal notranslate"><span class="pre">ibapi.client.EClient</span></code> that uses asyncio.</p>
 <p>The client is fully asynchronous and has its own
 event-driven networking code that replaces the
 networking code of the standard EClient.
@@ -2308,6 +2310,20 @@ one batch instead of item by item.</li>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="ib_insync.client.Client.MinClientVersion">
+<code class="descname">MinClientVersion</code><a class="headerlink" href="#ib_insync.client.Client.MinClientVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Client protocol version.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="ib_insync.client.Client.MaxClientVersion">
 <code class="descname">MaxClientVersion</code><a class="headerlink" href="#ib_insync.client.Client.MaxClientVersion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Client protocol version.</p>
@@ -2347,7 +2363,27 @@ one batch instead of item by item.</li>
 
 <dl class="attribute">
 <dt>
-<code class="descname">MaxClientVersion</code><em class="property"> = 148</em></dt>
+<code class="descname">MinClientVersion</code><em class="property"> = 137</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">MaxClientVersion</code><em class="property"> = 151</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.client.Client.DISCONNECTED">
+<code class="descname">DISCONNECTED</code><em class="property"> = 0</em><a class="headerlink" href="#ib_insync.client.Client.DISCONNECTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.client.Client.CONNECTING">
+<code class="descname">CONNECTING</code><em class="property"> = 1</em><a class="headerlink" href="#ib_insync.client.Client.CONNECTING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.client.Client.CONNECTED">
+<code class="descname">CONNECTED</code><em class="property"> = 2</em><a class="headerlink" href="#ib_insync.client.Client.CONNECTED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2356,10 +2392,19 @@ one batch instead of item by item.</li>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.client.Client.serverVersion">
+<code class="descname">serverVersion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.serverVersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.serverVersion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.client.Client.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the function that has the message loop.</p>
-</dd></dl>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.isConnected">
+<code class="descname">isConnected</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.isConnected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.isConnected" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="ib_insync.client.Client.isReady">
@@ -2456,8 +2501,395 @@ is raised. Set to 0 to disable timeout.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="ib_insync.client.Client.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect from IB connection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.send">
+<code class="descname">send</code><span class="sig-paren">(</span><em>*fields</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialize and send the given fields using the IB socket protocol.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="ib_insync.client.Client.sendMsg">
 <code class="descname">sendMsg</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.sendMsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.sendMsg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqMktData">
+<code class="descname">reqMktData</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>genericTickList</em>, <em>snapshot</em>, <em>regulatorySnapshot</em>, <em>mktDataOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqMktData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqMktData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelMktData">
+<code class="descname">cancelMktData</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelMktData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelMktData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.placeOrder">
+<code class="descname">placeOrder</code><span class="sig-paren">(</span><em>orderId</em>, <em>contract</em>, <em>order</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.placeOrder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.placeOrder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelOrder">
+<code class="descname">cancelOrder</code><span class="sig-paren">(</span><em>orderId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelOrder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelOrder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqOpenOrders">
+<code class="descname">reqOpenOrders</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqOpenOrders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqOpenOrders" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqAccountUpdates">
+<code class="descname">reqAccountUpdates</code><span class="sig-paren">(</span><em>subscribe</em>, <em>acctCode</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqAccountUpdates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqAccountUpdates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqExecutions">
+<code class="descname">reqExecutions</code><span class="sig-paren">(</span><em>reqId</em>, <em>execFilter</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqExecutions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqExecutions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqIds">
+<code class="descname">reqIds</code><span class="sig-paren">(</span><em>numIds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqIds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqIds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqContractDetails">
+<code class="descname">reqContractDetails</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqContractDetails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqContractDetails" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqMktDepth">
+<code class="descname">reqMktDepth</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>numRows</em>, <em>isSmartDepth</em>, <em>mktDepthOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqMktDepth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqMktDepth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelMktDepth">
+<code class="descname">cancelMktDepth</code><span class="sig-paren">(</span><em>reqId</em>, <em>isSmartDepth</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelMktDepth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelMktDepth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqNewsBulletins">
+<code class="descname">reqNewsBulletins</code><span class="sig-paren">(</span><em>allMsgs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqNewsBulletins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqNewsBulletins" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelNewsBulletins">
+<code class="descname">cancelNewsBulletins</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelNewsBulletins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelNewsBulletins" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.setServerLogLevel">
+<code class="descname">setServerLogLevel</code><span class="sig-paren">(</span><em>logLevel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.setServerLogLevel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.setServerLogLevel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqAutoOpenOrders">
+<code class="descname">reqAutoOpenOrders</code><span class="sig-paren">(</span><em>bAutoBind</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqAutoOpenOrders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqAutoOpenOrders" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqAllOpenOrders">
+<code class="descname">reqAllOpenOrders</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqAllOpenOrders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqAllOpenOrders" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqManagedAccts">
+<code class="descname">reqManagedAccts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqManagedAccts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqManagedAccts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.requestFA">
+<code class="descname">requestFA</code><span class="sig-paren">(</span><em>faData</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.requestFA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.requestFA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.replaceFA">
+<code class="descname">replaceFA</code><span class="sig-paren">(</span><em>faData</em>, <em>cxml</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.replaceFA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.replaceFA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqHistoricalData">
+<code class="descname">reqHistoricalData</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>endDateTime</em>, <em>durationStr</em>, <em>barSizeSetting</em>, <em>whatToShow</em>, <em>useRTH</em>, <em>formatDate</em>, <em>keepUpToDate</em>, <em>chartOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqHistoricalData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqHistoricalData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.exerciseOptions">
+<code class="descname">exerciseOptions</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>exerciseAction</em>, <em>exerciseQuantity</em>, <em>account</em>, <em>override</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.exerciseOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.exerciseOptions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqScannerSubscription">
+<code class="descname">reqScannerSubscription</code><span class="sig-paren">(</span><em>reqId</em>, <em>subscription</em>, <em>scannerSubscriptionOptions</em>, <em>scannerSubscriptionFilterOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqScannerSubscription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqScannerSubscription" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelScannerSubscription">
+<code class="descname">cancelScannerSubscription</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelScannerSubscription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelScannerSubscription" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqScannerParameters">
+<code class="descname">reqScannerParameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqScannerParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqScannerParameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelHistoricalData">
+<code class="descname">cancelHistoricalData</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelHistoricalData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelHistoricalData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqCurrentTime">
+<code class="descname">reqCurrentTime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqCurrentTime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqCurrentTime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqRealTimeBars">
+<code class="descname">reqRealTimeBars</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>barSize</em>, <em>whatToShow</em>, <em>useRTH</em>, <em>realTimeBarsOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqRealTimeBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqRealTimeBars" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelRealTimeBars">
+<code class="descname">cancelRealTimeBars</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelRealTimeBars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelRealTimeBars" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqFundamentalData">
+<code class="descname">reqFundamentalData</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>reportType</em>, <em>fundamentalDataOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqFundamentalData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqFundamentalData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelFundamentalData">
+<code class="descname">cancelFundamentalData</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelFundamentalData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelFundamentalData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.calculateImpliedVolatility">
+<code class="descname">calculateImpliedVolatility</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>optionPrice</em>, <em>underPrice</em>, <em>implVolOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.calculateImpliedVolatility"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.calculateImpliedVolatility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.calculateOptionPrice">
+<code class="descname">calculateOptionPrice</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>volatility</em>, <em>underPrice</em>, <em>optPrcOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.calculateOptionPrice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.calculateOptionPrice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelCalculateImpliedVolatility">
+<code class="descname">cancelCalculateImpliedVolatility</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelCalculateImpliedVolatility"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelCalculateImpliedVolatility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelCalculateOptionPrice">
+<code class="descname">cancelCalculateOptionPrice</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelCalculateOptionPrice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelCalculateOptionPrice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqGlobalCancel">
+<code class="descname">reqGlobalCancel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqGlobalCancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqGlobalCancel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqMarketDataType">
+<code class="descname">reqMarketDataType</code><span class="sig-paren">(</span><em>marketDataType</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqMarketDataType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqMarketDataType" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqPositions">
+<code class="descname">reqPositions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqPositions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqPositions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqAccountSummary">
+<code class="descname">reqAccountSummary</code><span class="sig-paren">(</span><em>reqId</em>, <em>groupName</em>, <em>tags</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqAccountSummary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqAccountSummary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelAccountSummary">
+<code class="descname">cancelAccountSummary</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelAccountSummary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelAccountSummary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelPositions">
+<code class="descname">cancelPositions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelPositions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelPositions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.verifyRequest">
+<code class="descname">verifyRequest</code><span class="sig-paren">(</span><em>apiName</em>, <em>apiVersion</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.verifyRequest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.verifyRequest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.verifyMessage">
+<code class="descname">verifyMessage</code><span class="sig-paren">(</span><em>apiData</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.verifyMessage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.verifyMessage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.queryDisplayGroups">
+<code class="descname">queryDisplayGroups</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.queryDisplayGroups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.queryDisplayGroups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.subscribeToGroupEvents">
+<code class="descname">subscribeToGroupEvents</code><span class="sig-paren">(</span><em>reqId</em>, <em>groupId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.subscribeToGroupEvents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.subscribeToGroupEvents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.updateDisplayGroup">
+<code class="descname">updateDisplayGroup</code><span class="sig-paren">(</span><em>reqId</em>, <em>contractInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.updateDisplayGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.updateDisplayGroup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.unsubscribeFromGroupEvents">
+<code class="descname">unsubscribeFromGroupEvents</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.unsubscribeFromGroupEvents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.unsubscribeFromGroupEvents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.startApi">
+<code class="descname">startApi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.startApi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.startApi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.verifyAndAuthRequest">
+<code class="descname">verifyAndAuthRequest</code><span class="sig-paren">(</span><em>apiName</em>, <em>apiVersion</em>, <em>opaqueIsvKey</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.verifyAndAuthRequest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.verifyAndAuthRequest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.verifyAndAuthMessage">
+<code class="descname">verifyAndAuthMessage</code><span class="sig-paren">(</span><em>apiData</em>, <em>xyzResponse</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.verifyAndAuthMessage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.verifyAndAuthMessage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqPositionsMulti">
+<code class="descname">reqPositionsMulti</code><span class="sig-paren">(</span><em>reqId</em>, <em>account</em>, <em>modelCode</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqPositionsMulti"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqPositionsMulti" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelPositionsMulti">
+<code class="descname">cancelPositionsMulti</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelPositionsMulti"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelPositionsMulti" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqAccountUpdatesMulti">
+<code class="descname">reqAccountUpdatesMulti</code><span class="sig-paren">(</span><em>reqId</em>, <em>account</em>, <em>modelCode</em>, <em>ledgerAndNLV</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqAccountUpdatesMulti"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqAccountUpdatesMulti" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelAccountUpdatesMulti">
+<code class="descname">cancelAccountUpdatesMulti</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelAccountUpdatesMulti"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelAccountUpdatesMulti" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqSecDefOptParams">
+<code class="descname">reqSecDefOptParams</code><span class="sig-paren">(</span><em>reqId</em>, <em>underlyingSymbol</em>, <em>futFopExchange</em>, <em>underlyingSecType</em>, <em>underlyingConId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqSecDefOptParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqSecDefOptParams" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqSoftDollarTiers">
+<code class="descname">reqSoftDollarTiers</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqSoftDollarTiers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqSoftDollarTiers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqFamilyCodes">
+<code class="descname">reqFamilyCodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqFamilyCodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqFamilyCodes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqMatchingSymbols">
+<code class="descname">reqMatchingSymbols</code><span class="sig-paren">(</span><em>reqId</em>, <em>pattern</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqMatchingSymbols"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqMatchingSymbols" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqMktDepthExchanges">
+<code class="descname">reqMktDepthExchanges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqMktDepthExchanges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqMktDepthExchanges" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqSmartComponents">
+<code class="descname">reqSmartComponents</code><span class="sig-paren">(</span><em>reqId</em>, <em>bboExchange</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqSmartComponents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqSmartComponents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqNewsArticle">
+<code class="descname">reqNewsArticle</code><span class="sig-paren">(</span><em>reqId</em>, <em>providerCode</em>, <em>articleId</em>, <em>newsArticleOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqNewsArticle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqNewsArticle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqNewsProviders">
+<code class="descname">reqNewsProviders</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqNewsProviders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqNewsProviders" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqHistoricalNews">
+<code class="descname">reqHistoricalNews</code><span class="sig-paren">(</span><em>reqId</em>, <em>conId</em>, <em>providerCodes</em>, <em>startDateTime</em>, <em>endDateTime</em>, <em>totalResults</em>, <em>historicalNewsOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqHistoricalNews"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqHistoricalNews" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqHeadTimeStamp">
+<code class="descname">reqHeadTimeStamp</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>whatToShow</em>, <em>useRTH</em>, <em>formatDate</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqHeadTimeStamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqHeadTimeStamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqHistogramData">
+<code class="descname">reqHistogramData</code><span class="sig-paren">(</span><em>tickerId</em>, <em>contract</em>, <em>useRTH</em>, <em>timePeriod</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqHistogramData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqHistogramData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelHistogramData">
+<code class="descname">cancelHistogramData</code><span class="sig-paren">(</span><em>tickerId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelHistogramData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelHistogramData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelHeadTimeStamp">
+<code class="descname">cancelHeadTimeStamp</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelHeadTimeStamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelHeadTimeStamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqMarketRule">
+<code class="descname">reqMarketRule</code><span class="sig-paren">(</span><em>marketRuleId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqMarketRule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqMarketRule" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqPnL">
+<code class="descname">reqPnL</code><span class="sig-paren">(</span><em>reqId</em>, <em>account</em>, <em>modelCode</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqPnL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqPnL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelPnL">
+<code class="descname">cancelPnL</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelPnL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelPnL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqPnLSingle">
+<code class="descname">reqPnLSingle</code><span class="sig-paren">(</span><em>reqId</em>, <em>account</em>, <em>modelCode</em>, <em>conid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqPnLSingle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqPnLSingle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelPnLSingle">
+<code class="descname">cancelPnLSingle</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelPnLSingle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelPnLSingle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqHistoricalTicks">
+<code class="descname">reqHistoricalTicks</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>startDateTime</em>, <em>endDateTime</em>, <em>numberOfTicks</em>, <em>whatToShow</em>, <em>useRth</em>, <em>ignoreSize</em>, <em>miscOptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqHistoricalTicks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqHistoricalTicks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqTickByTickData">
+<code class="descname">reqTickByTickData</code><span class="sig-paren">(</span><em>reqId</em>, <em>contract</em>, <em>tickType</em>, <em>numberOfTicks</em>, <em>ignoreSize</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqTickByTickData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqTickByTickData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.cancelTickByTickData">
+<code class="descname">cancelTickByTickData</code><span class="sig-paren">(</span><em>reqId</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.cancelTickByTickData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.cancelTickByTickData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.client.Client.reqCompletedOrders">
+<code class="descname">reqCompletedOrders</code><span class="sig-paren">(</span><em>apiOnly</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/client.html#Client.reqCompletedOrders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.client.Client.reqCompletedOrders" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2720,12 +3152,17 @@ and as keyword, the keyword wins.</p>
 <p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/available_orders.html">https://interactivebrokers.github.io/tws-api/available_orders.html</a></p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.defaults">
-<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': [], 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'discretionaryUpToLimitPrice': False, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': 139973802392992: Name: , Value: , DisplayName: , 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'account': '', 'action': '', 'activeStartTime': '', 'activeStopTime': '', 'adjustableTrailingUnit': 0, 'adjustedOrderType': '', 'adjustedStopLimitPrice': 1.7976931348623157e+308, 'adjustedStopPrice': 1.7976931348623157e+308, 'adjustedTrailingAmount': 1.7976931348623157e+308, 'algoId': '', 'algoParams': None, 'algoStrategy': '', 'allOrNone': False, 'auctionStrategy': 0, 'autoCancelDate': '', 'autoCancelParent': False, 'auxPrice': 1.7976931348623157e+308, 'basisPoints': 1.7976931348623157e+308, 'basisPointsType': 2147483647, 'blockOrder': False, 'cashQty': 1.7976931348623157e+308, 'clearingAccount': '', 'clearingIntent': '', 'clientId': 0, 'conditions': None, 'conditionsCancelOrder': False, 'conditionsIgnoreRth': False, 'continuousUpdate': False, 'delta': 1.7976931348623157e+308, 'deltaNeutralAuxPrice': 1.7976931348623157e+308, 'deltaNeutralClearingAccount': '', 'deltaNeutralClearingIntent': '', 'deltaNeutralConId': 0, 'deltaNeutralDesignatedLocation': '', 'deltaNeutralOpenClose': '', 'deltaNeutralOrderType': '', 'deltaNeutralSettlingFirm': '', 'deltaNeutralShortSale': False, 'deltaNeutralShortSaleSlot': 0, 'designatedLocation': '', 'discretionaryAmt': 0, 'discretionaryUpToLimitPrice': False, 'displaySize': 0, 'dontUseAutoPriceForHedge': False, 'eTradeOnly': True, 'exemptCode': -1, 'extOperator': '', 'faGroup': '', 'faMethod': '', 'faPercentage': '', 'faProfile': '', 'filledQuantity': 1.7976931348623157e+308, 'firmQuoteOnly': True, 'goodAfterTime': '', 'goodTillDate': '', 'hedgeParam': '', 'hedgeType': '', 'hidden': False, 'imbalanceOnly': False, 'isOmsContainer': False, 'isPeggedChangeAmountDecrease': False, 'lmtPrice': 1.7976931348623157e+308, 'lmtPriceOffset': 1.7976931348623157e+308, 'mifid2DecisionAlgo': '', 'mifid2DecisionMaker': '', 'mifid2ExecutionAlgo': '', 'mifid2ExecutionTrader': '', 'minQty': 2147483647, 'modelCode': '', 'nbboPriceCap': 1.7976931348623157e+308, 'notHeld': False, 'ocaGroup': '', 'ocaType': 0, 'openClose': 'O', 'optOutSmartRouting': False, 'orderComboLegs': None, 'orderId': 0, 'orderMiscOptions': None, 'orderRef': '', 'orderType': '', 'origin': 0, 'outsideRth': False, 'overridePercentageConstraints': False, 'parentId': 0, 'parentPermId': 0, 'peggedChangeAmount': 0.0, 'percentOffset': 1.7976931348623157e+308, 'permId': 0, 'randomizePrice': False, 'randomizeSize': False, 'refFuturesConId': 0, 'referenceChangeAmount': 0.0, 'referenceContractId': 0, 'referenceExchangeId': '', 'referencePriceType': 2147483647, 'routeMarketableToBbo': False, 'rule80A': '', 'scaleAutoReset': False, 'scaleInitFillQty': 2147483647, 'scaleInitLevelSize': 2147483647, 'scaleInitPosition': 2147483647, 'scalePriceAdjustInterval': 2147483647, 'scalePriceAdjustValue': 1.7976931348623157e+308, 'scalePriceIncrement': 1.7976931348623157e+308, 'scaleProfitOffset': 1.7976931348623157e+308, 'scaleRandomPercent': False, 'scaleSubsLevelSize': 2147483647, 'scaleTable': '', 'settlingFirm': '', 'shareholder': '', 'shortSaleSlot': 0, 'smartComboRoutingParams': None, 'softDollarTier': None, 'solicited': False, 'startingPrice': 1.7976931348623157e+308, 'stockRangeLower': 1.7976931348623157e+308, 'stockRangeUpper': 1.7976931348623157e+308, 'stockRefPrice': 1.7976931348623157e+308, 'sweepToFill': False, 'tif': '', 'totalQuantity': 0, 'trailStopPrice': 1.7976931348623157e+308, 'trailingPercent': 1.7976931348623157e+308, 'transmit': True, 'triggerMethod': 0, 'triggerPrice': 1.7976931348623157e+308, 'usePriceMgmtAlgo': False, 'volatility': 1.7976931348623157e+308, 'volatilityType': 2147483647, 'whatIf': False}</em><a class="headerlink" href="#ib_insync.order.Order.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="ib_insync.order.Order.conditions">
 <code class="descname">conditions</code><a class="headerlink" href="#ib_insync.order.Order.conditions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.Order.softDollarTier">
+<code class="descname">softDollarTier</code><a class="headerlink" href="#ib_insync.order.Order.softDollarTier" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2796,6 +3233,16 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.auctionStrategy">
 <code class="descname">auctionStrategy</code><a class="headerlink" href="#ib_insync.order.Order.auctionStrategy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.Order.autoCancelDate">
+<code class="descname">autoCancelDate</code><a class="headerlink" href="#ib_insync.order.Order.autoCancelDate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.Order.autoCancelParent">
+<code class="descname">autoCancelParent</code><a class="headerlink" href="#ib_insync.order.Order.autoCancelParent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2969,6 +3416,11 @@ and as keyword, the keyword wins.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="ib_insync.order.Order.filledQuantity">
+<code class="descname">filledQuantity</code><a class="headerlink" href="#ib_insync.order.Order.filledQuantity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="ib_insync.order.Order.firmQuoteOnly">
 <code class="descname">firmQuoteOnly</code><a class="headerlink" href="#ib_insync.order.Order.firmQuoteOnly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2996,6 +3448,11 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.hidden">
 <code class="descname">hidden</code><a class="headerlink" href="#ib_insync.order.Order.hidden" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.Order.imbalanceOnly">
+<code class="descname">imbalanceOnly</code><a class="headerlink" href="#ib_insync.order.Order.imbalanceOnly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -3124,6 +3581,11 @@ and as keyword, the keyword wins.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="ib_insync.order.Order.parentPermId">
+<code class="descname">parentPermId</code><a class="headerlink" href="#ib_insync.order.Order.parentPermId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="ib_insync.order.Order.peggedChangeAmount">
 <code class="descname">peggedChangeAmount</code><a class="headerlink" href="#ib_insync.order.Order.peggedChangeAmount" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3149,6 +3611,11 @@ and as keyword, the keyword wins.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="ib_insync.order.Order.refFuturesConId">
+<code class="descname">refFuturesConId</code><a class="headerlink" href="#ib_insync.order.Order.refFuturesConId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="ib_insync.order.Order.referenceChangeAmount">
 <code class="descname">referenceChangeAmount</code><a class="headerlink" href="#ib_insync.order.Order.referenceChangeAmount" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3166,6 +3633,11 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.referencePriceType">
 <code class="descname">referencePriceType</code><a class="headerlink" href="#ib_insync.order.Order.referencePriceType" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.Order.routeMarketableToBbo">
+<code class="descname">routeMarketableToBbo</code><a class="headerlink" href="#ib_insync.order.Order.routeMarketableToBbo" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -3234,6 +3706,11 @@ and as keyword, the keyword wins.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="ib_insync.order.Order.shareholder">
+<code class="descname">shareholder</code><a class="headerlink" href="#ib_insync.order.Order.shareholder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="ib_insync.order.Order.shortSaleSlot">
 <code class="descname">shortSaleSlot</code><a class="headerlink" href="#ib_insync.order.Order.shortSaleSlot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3241,11 +3718,6 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.order.Order.smartComboRoutingParams">
 <code class="descname">smartComboRoutingParams</code><a class="headerlink" href="#ib_insync.order.Order.smartComboRoutingParams" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.order.Order.softDollarTier">
-<code class="descname">softDollarTier</code><a class="headerlink" href="#ib_insync.order.Order.softDollarTier" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -3314,6 +3786,11 @@ and as keyword, the keyword wins.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="ib_insync.order.Order.usePriceMgmtAlgo">
+<code class="descname">usePriceMgmtAlgo</code><a class="headerlink" href="#ib_insync.order.Order.usePriceMgmtAlgo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="ib_insync.order.Order.volatility">
 <code class="descname">volatility</code><a class="headerlink" href="#ib_insync.order.Order.volatility" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3349,6 +3826,274 @@ and as keyword, the keyword wins.</p>
 <dt id="ib_insync.order.StopLimitOrder">
 <em class="property">class </em><code class="descclassname">ib_insync.order.</code><code class="descname">StopLimitOrder</code><span class="sig-paren">(</span><em>action</em>, <em>totalQuantity</em>, <em>lmtPrice</em>, <em>stopPrice</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#StopLimitOrder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.StopLimitOrder" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.order.OrderCondition">
+<em class="property">class </em><code class="descclassname">ib_insync.order.</code><code class="descname">OrderCondition</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#OrderCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.OrderCondition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute values can be given positionally or as keyword.
+If an attribute is not given it will take its value from the
+‘defaults’ class member. If an attribute is given both positionally
+and as keyword, the keyword wins.</p>
+<dl class="staticmethod">
+<dt id="ib_insync.order.OrderCondition.createClass">
+<em class="property">static </em><code class="descname">createClass</code><span class="sig-paren">(</span><em>condType</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#OrderCondition.createClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.OrderCondition.createClass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.order.OrderCondition.And">
+<code class="descname">And</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#OrderCondition.And"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.OrderCondition.And" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.order.OrderCondition.Or">
+<code class="descname">Or</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#OrderCondition.Or"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.OrderCondition.Or" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.order.PriceCondition">
+<em class="property">class </em><code class="descclassname">ib_insync.order.</code><code class="descname">PriceCondition</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#PriceCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.PriceCondition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute values can be given positionally or as keyword.
+If an attribute is not given it will take its value from the
+‘defaults’ class member. If an attribute is given both positionally
+and as keyword, the keyword wins.</p>
+<dl class="attribute">
+<dt id="ib_insync.order.PriceCondition.defaults">
+<code class="descname">defaults</code><em class="property"> = {'conId': 0, 'condType': 1, 'conjunction': 'a', 'exch': '', 'isMore': True, 'price': 0.0, 'triggerMethod': 0}</em><a class="headerlink" href="#ib_insync.order.PriceCondition.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PriceCondition.conId">
+<code class="descname">conId</code><a class="headerlink" href="#ib_insync.order.PriceCondition.conId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PriceCondition.condType">
+<code class="descname">condType</code><a class="headerlink" href="#ib_insync.order.PriceCondition.condType" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PriceCondition.conjunction">
+<code class="descname">conjunction</code><a class="headerlink" href="#ib_insync.order.PriceCondition.conjunction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PriceCondition.exch">
+<code class="descname">exch</code><a class="headerlink" href="#ib_insync.order.PriceCondition.exch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PriceCondition.isMore">
+<code class="descname">isMore</code><a class="headerlink" href="#ib_insync.order.PriceCondition.isMore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PriceCondition.price">
+<code class="descname">price</code><a class="headerlink" href="#ib_insync.order.PriceCondition.price" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PriceCondition.triggerMethod">
+<code class="descname">triggerMethod</code><a class="headerlink" href="#ib_insync.order.PriceCondition.triggerMethod" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.order.TimeCondition">
+<em class="property">class </em><code class="descclassname">ib_insync.order.</code><code class="descname">TimeCondition</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#TimeCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.TimeCondition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute values can be given positionally or as keyword.
+If an attribute is not given it will take its value from the
+‘defaults’ class member. If an attribute is given both positionally
+and as keyword, the keyword wins.</p>
+<dl class="attribute">
+<dt id="ib_insync.order.TimeCondition.defaults">
+<code class="descname">defaults</code><em class="property"> = {'condType': 3, 'conjunction': 'a', 'isMore': True, 'time': ''}</em><a class="headerlink" href="#ib_insync.order.TimeCondition.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.TimeCondition.condType">
+<code class="descname">condType</code><a class="headerlink" href="#ib_insync.order.TimeCondition.condType" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.TimeCondition.conjunction">
+<code class="descname">conjunction</code><a class="headerlink" href="#ib_insync.order.TimeCondition.conjunction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.TimeCondition.isMore">
+<code class="descname">isMore</code><a class="headerlink" href="#ib_insync.order.TimeCondition.isMore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.TimeCondition.time">
+<code class="descname">time</code><a class="headerlink" href="#ib_insync.order.TimeCondition.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.order.MarginCondition">
+<em class="property">class </em><code class="descclassname">ib_insync.order.</code><code class="descname">MarginCondition</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#MarginCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.MarginCondition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute values can be given positionally or as keyword.
+If an attribute is not given it will take its value from the
+‘defaults’ class member. If an attribute is given both positionally
+and as keyword, the keyword wins.</p>
+<dl class="attribute">
+<dt id="ib_insync.order.MarginCondition.defaults">
+<code class="descname">defaults</code><em class="property"> = {'condType': 4, 'conjunction': 'a', 'isMore': True, 'percent': 0}</em><a class="headerlink" href="#ib_insync.order.MarginCondition.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.MarginCondition.condType">
+<code class="descname">condType</code><a class="headerlink" href="#ib_insync.order.MarginCondition.condType" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.MarginCondition.conjunction">
+<code class="descname">conjunction</code><a class="headerlink" href="#ib_insync.order.MarginCondition.conjunction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.MarginCondition.isMore">
+<code class="descname">isMore</code><a class="headerlink" href="#ib_insync.order.MarginCondition.isMore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.MarginCondition.percent">
+<code class="descname">percent</code><a class="headerlink" href="#ib_insync.order.MarginCondition.percent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.order.ExecutionCondition">
+<em class="property">class </em><code class="descclassname">ib_insync.order.</code><code class="descname">ExecutionCondition</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#ExecutionCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.ExecutionCondition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute values can be given positionally or as keyword.
+If an attribute is not given it will take its value from the
+‘defaults’ class member. If an attribute is given both positionally
+and as keyword, the keyword wins.</p>
+<dl class="attribute">
+<dt id="ib_insync.order.ExecutionCondition.defaults">
+<code class="descname">defaults</code><em class="property"> = {'condType': 5, 'conjunction': 'a', 'exch': '', 'secType': '', 'symbol': ''}</em><a class="headerlink" href="#ib_insync.order.ExecutionCondition.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.ExecutionCondition.condType">
+<code class="descname">condType</code><a class="headerlink" href="#ib_insync.order.ExecutionCondition.condType" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.ExecutionCondition.conjunction">
+<code class="descname">conjunction</code><a class="headerlink" href="#ib_insync.order.ExecutionCondition.conjunction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.ExecutionCondition.exch">
+<code class="descname">exch</code><a class="headerlink" href="#ib_insync.order.ExecutionCondition.exch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.ExecutionCondition.secType">
+<code class="descname">secType</code><a class="headerlink" href="#ib_insync.order.ExecutionCondition.secType" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.ExecutionCondition.symbol">
+<code class="descname">symbol</code><a class="headerlink" href="#ib_insync.order.ExecutionCondition.symbol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.order.VolumeCondition">
+<em class="property">class </em><code class="descclassname">ib_insync.order.</code><code class="descname">VolumeCondition</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#VolumeCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.VolumeCondition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute values can be given positionally or as keyword.
+If an attribute is not given it will take its value from the
+‘defaults’ class member. If an attribute is given both positionally
+and as keyword, the keyword wins.</p>
+<dl class="attribute">
+<dt id="ib_insync.order.VolumeCondition.defaults">
+<code class="descname">defaults</code><em class="property"> = {'conId': 0, 'condType': 6, 'conjunction': 'a', 'exch': '', 'isMore': True, 'volume': 0}</em><a class="headerlink" href="#ib_insync.order.VolumeCondition.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.VolumeCondition.conId">
+<code class="descname">conId</code><a class="headerlink" href="#ib_insync.order.VolumeCondition.conId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.VolumeCondition.condType">
+<code class="descname">condType</code><a class="headerlink" href="#ib_insync.order.VolumeCondition.condType" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.VolumeCondition.conjunction">
+<code class="descname">conjunction</code><a class="headerlink" href="#ib_insync.order.VolumeCondition.conjunction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.VolumeCondition.exch">
+<code class="descname">exch</code><a class="headerlink" href="#ib_insync.order.VolumeCondition.exch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.VolumeCondition.isMore">
+<code class="descname">isMore</code><a class="headerlink" href="#ib_insync.order.VolumeCondition.isMore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.VolumeCondition.volume">
+<code class="descname">volume</code><a class="headerlink" href="#ib_insync.order.VolumeCondition.volume" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.order.PercentChangeCondition">
+<em class="property">class </em><code class="descclassname">ib_insync.order.</code><code class="descname">PercentChangeCondition</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#PercentChangeCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.order.PercentChangeCondition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute values can be given positionally or as keyword.
+If an attribute is not given it will take its value from the
+‘defaults’ class member. If an attribute is given both positionally
+and as keyword, the keyword wins.</p>
+<dl class="attribute">
+<dt id="ib_insync.order.PercentChangeCondition.defaults">
+<code class="descname">defaults</code><em class="property"> = {'changePercent': 0.0, 'conId': 0, 'condType': 7, 'conjunction': 'a', 'exch': '', 'isMore': True}</em><a class="headerlink" href="#ib_insync.order.PercentChangeCondition.defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PercentChangeCondition.changePercent">
+<code class="descname">changePercent</code><a class="headerlink" href="#ib_insync.order.PercentChangeCondition.changePercent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PercentChangeCondition.conId">
+<code class="descname">conId</code><a class="headerlink" href="#ib_insync.order.PercentChangeCondition.conId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PercentChangeCondition.condType">
+<code class="descname">condType</code><a class="headerlink" href="#ib_insync.order.PercentChangeCondition.condType" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PercentChangeCondition.conjunction">
+<code class="descname">conjunction</code><a class="headerlink" href="#ib_insync.order.PercentChangeCondition.conjunction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PercentChangeCondition.exch">
+<code class="descname">exch</code><a class="headerlink" href="#ib_insync.order.PercentChangeCondition.exch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.order.PercentChangeCondition.isMore">
+<code class="descname">isMore</code><a class="headerlink" href="#ib_insync.order.PercentChangeCondition.isMore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 </div>
 <div class="section" id="module-ib_insync.contract">
@@ -4573,7 +5318,7 @@ If an attribute is not given it will take its value from the
 and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.objects.OrderState.defaults">
-<code class="descname">defaults</code><em class="property"> = {'commission': 1.7976931348623157e+308, 'commissionCurrency': '', 'equityWithLoanAfter': '', 'equityWithLoanBefore': '', 'equityWithLoanChange': '', 'initMarginAfter': '', 'initMarginBefore': '', 'initMarginChange': '', 'maintMarginAfter': '', 'maintMarginBefore': '', 'maintMarginChange': '', 'maxCommission': 1.7976931348623157e+308, 'minCommission': 1.7976931348623157e+308, 'status': '', 'warningText': ''}</em><a class="headerlink" href="#ib_insync.objects.OrderState.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="descname">defaults</code><em class="property"> = {'commission': 1.7976931348623157e+308, 'commissionCurrency': '', 'completedStatus': '', 'completedTime': '', 'equityWithLoanAfter': '', 'equityWithLoanBefore': '', 'equityWithLoanChange': '', 'initMarginAfter': '', 'initMarginBefore': '', 'initMarginChange': '', 'maintMarginAfter': '', 'maintMarginBefore': '', 'maintMarginChange': '', 'maxCommission': 1.7976931348623157e+308, 'minCommission': 1.7976931348623157e+308, 'status': '', 'warningText': ''}</em><a class="headerlink" href="#ib_insync.objects.OrderState.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4584,6 +5329,16 @@ and as keyword, the keyword wins.</p>
 <dl class="attribute">
 <dt id="ib_insync.objects.OrderState.commissionCurrency">
 <code class="descname">commissionCurrency</code><a class="headerlink" href="#ib_insync.objects.OrderState.commissionCurrency" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.OrderState.completedStatus">
+<code class="descname">completedStatus</code><a class="headerlink" href="#ib_insync.objects.OrderState.completedStatus" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.OrderState.completedTime">
+<code class="descname">completedTime</code><a class="headerlink" href="#ib_insync.objects.OrderState.completedTime" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -5541,8 +6296,18 @@ and as keyword, the keyword wins.</p>
 
 <dl class="class">
 <dt id="ib_insync.objects.TagValue">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">TagValue</code><a class="reference internal" href="_modules/ib_insync/objects.html#TagValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.TagValue" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">TagValue</code><span class="sig-paren">(</span><em>tag</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.TagValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of TagValue(tag, value)</p>
+<dl class="attribute">
+<dt id="ib_insync.objects.TagValue.tag">
+<code class="descname">tag</code><a class="headerlink" href="#ib_insync.objects.TagValue.tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.TagValue.value">
+<code class="descname">value</code><a class="headerlink" href="#ib_insync.objects.TagValue.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -6250,6 +7015,43 @@ and as keyword, the keyword wins.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="ib_insync.objects.FamilyCode">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">FamilyCode</code><span class="sig-paren">(</span><em>accountID</em>, <em>familyCodeStr</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.FamilyCode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of FamilyCode(accountID, familyCodeStr)</p>
+<dl class="attribute">
+<dt id="ib_insync.objects.FamilyCode.accountID">
+<code class="descname">accountID</code><a class="headerlink" href="#ib_insync.objects.FamilyCode.accountID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.FamilyCode.familyCodeStr">
+<code class="descname">familyCodeStr</code><a class="headerlink" href="#ib_insync.objects.FamilyCode.familyCodeStr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ib_insync.objects.SmartComponent">
+<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">SmartComponent</code><span class="sig-paren">(</span><em>bitNumber</em>, <em>exchange</em>, <em>exchangeLetter</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.SmartComponent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of SmartComponent(bitNumber, exchange, exchangeLetter)</p>
+<dl class="attribute">
+<dt id="ib_insync.objects.SmartComponent.bitNumber">
+<code class="descname">bitNumber</code><a class="headerlink" href="#ib_insync.objects.SmartComponent.bitNumber" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.SmartComponent.exchange">
+<code class="descname">exchange</code><a class="headerlink" href="#ib_insync.objects.SmartComponent.exchange" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.objects.SmartComponent.exchangeLetter">
+<code class="descname">exchangeLetter</code><a class="headerlink" href="#ib_insync.objects.SmartComponent.exchangeLetter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="ib_insync.objects.ConnectionStats">
 <em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">ConnectionStats</code><span class="sig-paren">(</span><em>startTime</em>, <em>duration</em>, <em>numBytesRecv</em>, <em>numBytesSent</em>, <em>numMsgRecv</em>, <em>numMsgSent</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.ConnectionStats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of ConnectionStats(startTime, duration, numBytesRecv, numBytesSent, numMsgRecv, numMsgSent)</p>
@@ -6285,350 +7087,15 @@ and as keyword, the keyword wins.</p>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="ib_insync.objects.OrderCondition">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">OrderCondition</code><span class="sig-paren">(</span><em>condType</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#OrderCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.OrderCondition" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
-<dt id="ib_insync.objects.OrderCondition.Price">
-<code class="descname">Price</code><em class="property"> = 1</em><a class="headerlink" href="#ib_insync.objects.OrderCondition.Price" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.objects.OrderCondition.Time">
-<code class="descname">Time</code><em class="property"> = 3</em><a class="headerlink" href="#ib_insync.objects.OrderCondition.Time" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.objects.OrderCondition.Margin">
-<code class="descname">Margin</code><em class="property"> = 4</em><a class="headerlink" href="#ib_insync.objects.OrderCondition.Margin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.objects.OrderCondition.Execution">
-<code class="descname">Execution</code><em class="property"> = 5</em><a class="headerlink" href="#ib_insync.objects.OrderCondition.Execution" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.objects.OrderCondition.Volume">
-<code class="descname">Volume</code><em class="property"> = 6</em><a class="headerlink" href="#ib_insync.objects.OrderCondition.Volume" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ib_insync.objects.OrderCondition.PercentChange">
-<code class="descname">PercentChange</code><em class="property"> = 7</em><a class="headerlink" href="#ib_insync.objects.OrderCondition.PercentChange" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.OrderCondition.type">
-<code class="descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#OrderCondition.type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.OrderCondition.type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.OrderCondition.And">
-<code class="descname">And</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#OrderCondition.And"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.OrderCondition.And" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.OrderCondition.Or">
-<code class="descname">Or</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#OrderCondition.Or"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.OrderCondition.Or" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.OrderCondition.decode">
-<code class="descname">decode</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#OrderCondition.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.OrderCondition.decode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.OrderCondition.make_fields">
-<code class="descname">make_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#OrderCondition.make_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.OrderCondition.make_fields" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ib_insync.objects.ExecutionCondition">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">ExecutionCondition</code><span class="sig-paren">(</span><em>secType=None</em>, <em>exch=None</em>, <em>symbol=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#ExecutionCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.ExecutionCondition" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="ib_insync.objects.ExecutionCondition.decode">
-<code class="descname">decode</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#ExecutionCondition.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.ExecutionCondition.decode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.ExecutionCondition.make_fields">
-<code class="descname">make_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#ExecutionCondition.make_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.ExecutionCondition.make_fields" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ib_insync.objects.OperatorCondition">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">OperatorCondition</code><span class="sig-paren">(</span><em>condType=None</em>, <em>isMore=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#OperatorCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.OperatorCondition" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="ib_insync.objects.OperatorCondition.valueToString">
-<code class="descname">valueToString</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#OperatorCondition.valueToString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.OperatorCondition.valueToString" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.OperatorCondition.setValueFromString">
-<code class="descname">setValueFromString</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#OperatorCondition.setValueFromString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.OperatorCondition.setValueFromString" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.OperatorCondition.decode">
-<code class="descname">decode</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#OperatorCondition.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.OperatorCondition.decode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.OperatorCondition.make_fields">
-<code class="descname">make_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#OperatorCondition.make_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.OperatorCondition.make_fields" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ib_insync.objects.MarginCondition">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">MarginCondition</code><span class="sig-paren">(</span><em>isMore=None</em>, <em>percent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#MarginCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.MarginCondition" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="ib_insync.objects.MarginCondition.decode">
-<code class="descname">decode</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#MarginCondition.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.MarginCondition.decode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.MarginCondition.make_fields">
-<code class="descname">make_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#MarginCondition.make_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.MarginCondition.make_fields" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.MarginCondition.valueToString">
-<code class="descname">valueToString</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#MarginCondition.valueToString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.MarginCondition.valueToString" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.MarginCondition.setValueFromString">
-<code class="descname">setValueFromString</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#MarginCondition.setValueFromString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.MarginCondition.setValueFromString" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ib_insync.objects.ContractCondition">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">ContractCondition</code><span class="sig-paren">(</span><em>condType=None</em>, <em>conId=None</em>, <em>exch=None</em>, <em>isMore=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#ContractCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.ContractCondition" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="ib_insync.objects.ContractCondition.decode">
-<code class="descname">decode</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#ContractCondition.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.ContractCondition.decode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.ContractCondition.make_fields">
-<code class="descname">make_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#ContractCondition.make_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.ContractCondition.make_fields" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ib_insync.objects.TimeCondition">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">TimeCondition</code><span class="sig-paren">(</span><em>isMore=None</em>, <em>time=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#TimeCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.TimeCondition" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="ib_insync.objects.TimeCondition.decode">
-<code class="descname">decode</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#TimeCondition.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.TimeCondition.decode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.TimeCondition.make_fields">
-<code class="descname">make_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#TimeCondition.make_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.TimeCondition.make_fields" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.TimeCondition.valueToString">
-<code class="descname">valueToString</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#TimeCondition.valueToString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.TimeCondition.valueToString" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.TimeCondition.setValueFromString">
-<code class="descname">setValueFromString</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#TimeCondition.setValueFromString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.TimeCondition.setValueFromString" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ib_insync.objects.PriceCondition">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">PriceCondition</code><span class="sig-paren">(</span><em>triggerMethod=None</em>, <em>conId=None</em>, <em>exch=None</em>, <em>isMore=None</em>, <em>price=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#PriceCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.PriceCondition" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
-<dt id="ib_insync.objects.PriceCondition.TriggerMethodEnum">
-<code class="descname">TriggerMethodEnum</code><em class="property"> = &lt;ibapi.enum_implem.Enum object&gt;</em><a class="headerlink" href="#ib_insync.objects.PriceCondition.TriggerMethodEnum" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.PriceCondition.decode">
-<code class="descname">decode</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#PriceCondition.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.PriceCondition.decode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.PriceCondition.make_fields">
-<code class="descname">make_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#PriceCondition.make_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.PriceCondition.make_fields" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.PriceCondition.valueToString">
-<code class="descname">valueToString</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#PriceCondition.valueToString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.PriceCondition.valueToString" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.PriceCondition.setValueFromString">
-<code class="descname">setValueFromString</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#PriceCondition.setValueFromString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.PriceCondition.setValueFromString" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ib_insync.objects.PercentChangeCondition">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">PercentChangeCondition</code><span class="sig-paren">(</span><em>conId=None</em>, <em>exch=None</em>, <em>isMore=None</em>, <em>changePercent=1.7976931348623157e+308</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#PercentChangeCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.PercentChangeCondition" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="ib_insync.objects.PercentChangeCondition.decode">
-<code class="descname">decode</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#PercentChangeCondition.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.PercentChangeCondition.decode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.PercentChangeCondition.make_fields">
-<code class="descname">make_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#PercentChangeCondition.make_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.PercentChangeCondition.make_fields" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.PercentChangeCondition.valueToString">
-<code class="descname">valueToString</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#PercentChangeCondition.valueToString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.PercentChangeCondition.valueToString" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.PercentChangeCondition.setValueFromString">
-<code class="descname">setValueFromString</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#PercentChangeCondition.setValueFromString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.PercentChangeCondition.setValueFromString" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="ib_insync.objects.VolumeCondition">
-<em class="property">class </em><code class="descclassname">ib_insync.objects.</code><code class="descname">VolumeCondition</code><span class="sig-paren">(</span><em>conId=None</em>, <em>exch=None</em>, <em>isMore=None</em>, <em>volume=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#VolumeCondition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.VolumeCondition" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="ib_insync.objects.VolumeCondition.decode">
-<code class="descname">decode</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#VolumeCondition.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.VolumeCondition.decode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.VolumeCondition.make_fields">
-<code class="descname">make_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#VolumeCondition.make_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.VolumeCondition.make_fields" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.VolumeCondition.valueToString">
-<code class="descname">valueToString</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#VolumeCondition.valueToString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.VolumeCondition.valueToString" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="ib_insync.objects.VolumeCondition.setValueFromString">
-<code class="descname">setValueFromString</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ibapi/order_condition.html#VolumeCondition.setValueFromString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.objects.VolumeCondition.setValueFromString" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">None</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 <div class="section" id="module-ib_insync.util">
 <span id="utilities"></span><h2>Utilities<a class="headerlink" href="#module-ib_insync.util" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="ib_insync.util.globalErrorEvent">
+<code class="descclassname">ib_insync.util.</code><code class="descname">globalErrorEvent</code><em class="property"> = Event&lt;Event, []&gt;</em><a class="headerlink" href="#ib_insync.util.globalErrorEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event to emit global exceptions.</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="ib_insync.util.df">
 <code class="descclassname">ib_insync.util.</code><code class="descname">df</code><span class="sig-paren">(</span><em>objs</em>, <em>labels=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.df" title="Permalink to this definition">¶</a></dt>
@@ -6659,28 +7126,14 @@ a DataFrame or as a list of bar objects.</p>
 
 <dl class="function">
 <dt id="ib_insync.util.logToFile">
-<code class="descclassname">ib_insync.util.</code><code class="descname">logToFile</code><span class="sig-paren">(</span><em>path</em>, <em>level=20</em>, <em>ibapiLevel=40</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#logToFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.logToFile" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ib_insync.util.</code><code class="descname">logToFile</code><span class="sig-paren">(</span><em>path</em>, <em>level=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#logToFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.logToFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a log handler that logs to the given file.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ib_insync.util.logToConsole">
-<code class="descclassname">ib_insync.util.</code><code class="descname">logToConsole</code><span class="sig-paren">(</span><em>level=20</em>, <em>ibapiLevel=40</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#logToConsole"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.logToConsole" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ib_insync.util.</code><code class="descname">logToConsole</code><span class="sig-paren">(</span><em>level=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#logToConsole"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.logToConsole" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a log handler that logs to the console.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ib_insync.util.ibapiVersionInfo">
-<code class="descclassname">ib_insync.util.</code><code class="descname">ibapiVersionInfo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#ibapiVersionInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.ibapiVersionInfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Version info of ibapi module as 3-tuple.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="function">
@@ -6853,12 +7306,6 @@ or as datetime.time in which case today is used as the date.</td>
 </dd></dl>
 
 <dl class="function">
-<dt id="ib_insync.util.parseIBDatetime">
-<code class="descclassname">ib_insync.util.</code><code class="descname">parseIBDatetime</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#parseIBDatetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.parseIBDatetime" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse string in IB date or datetime format to datetime.</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="ib_insync.util.timeRangeAsync">
 <code class="descclassname">ib_insync.util.</code><code class="descname">timeRangeAsync</code><span class="sig-paren">(</span><em>start</em>, <em>end</em>, <em>step</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#timeRangeAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.timeRangeAsync" title="Permalink to this definition">¶</a></dt>
 <dd><p>Async version of <a class="reference internal" href="#ib_insync.util.timeRange" title="ib_insync.util.timeRange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">timeRange()</span></code></a>.</p>
@@ -6884,6 +7331,12 @@ or as datetime.time in which case today is used as the date.</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ib_insync.util.parseIBDatetime">
+<code class="descclassname">ib_insync.util.</code><code class="descname">parseIBDatetime</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#parseIBDatetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.parseIBDatetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse string in IB date or datetime format to datetime.</p>
 </dd></dl>
 
 </div>
@@ -7431,7 +7884,7 @@ and reconnect. Restarting will also occur directly on error 1100.</p>
         <a href="notebooks.html" class="btn btn-neutral float-right" title="Notebooks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="readme.html" class="btn btn-neutral" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="readme.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -7457,26 +7910,16 @@ and reconnect. Restarting will also occur directly on error 1100.</p>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
