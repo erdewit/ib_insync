@@ -802,7 +802,7 @@ class Client:
         self.send(58, 1)
 
     def reqMarketDataType(self, marketDataType):
-        self.send(59, 1)
+        self.send(59, 1, marketDataType)
 
     def reqPositions(self):
         self.send(61, 1)
