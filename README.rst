@@ -120,9 +120,9 @@ Good luck and enjoy,
 .. |License| image:: https://img.shields.io/badge/license-BSD-blue.svg
    :alt:
 
-.. |Docs| image:: https://img.shields.io/badge/docs-ib_insync-brightgreen.svg
+.. |Docs| image:: https://readthedocs.org/projects/ib-insync/badge/?version=latest
    :alt: Documentation
-   :target: https://readthedocs.org/projects/ib-insync/badge/?version=latest
+   :target: https://ib-insync.readthedocs.io
 
 .. |Downloads| image:: https://pepy.tech/badge/ib-insync
    :alt: Number of downloads
