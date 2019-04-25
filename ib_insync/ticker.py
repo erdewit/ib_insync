@@ -63,6 +63,7 @@ class Ticker(Object):
         askYield=nan,
         lastYield=nan,
         markPrice=nan,
+        halted=nan,
         rtHistVolatility=nan,
         rtVolume=nan,
         avVolume=nan,

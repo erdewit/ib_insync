@@ -727,25 +727,28 @@ class Wrapper:
             return
         try:
             value = float(value)
-            if tickType == 23:
-                ticker.histVolatility = value
-            elif tickType == 24:
-                ticker.impliedVolatility = value
-            elif tickType == 31:
-                ticker.indexFuturePremium = value
-            elif tickType == 54:
-                ticker.tradeCount = value
-            elif tickType == 55:
-                ticker.tradeRate = value
-            elif tickType == 56:
-                ticker.volumeRate = value
-            elif tickType == 58:
-                ticker.rtHistVolatility = value
-            tick = TickData(self.lastTime, tickType, value, 0)
-            ticker.ticks.append(tick)
-            self.pendingTickers.add(ticker)
         except ValueError:
             self._logger.error(f'genericTick: malformed value: {value!r}')
+            return
+        if tickType == 23:
+            ticker.histVolatility = value
+        elif tickType == 24:
+            ticker.impliedVolatility = value
+        elif tickType == 31:
+            ticker.indexFuturePremium = value
+        elif tickType == 49:
+            ticker.halted = value
+        elif tickType == 54:
+            ticker.tradeCount = value
+        elif tickType == 55:
+            ticker.tradeRate = value
+        elif tickType == 56:
+            ticker.volumeRate = value
+        elif tickType == 58:
+            ticker.rtHistVolatility = value
+        tick = TickData(self.lastTime, tickType, value, 0)
+        ticker.ticks.append(tick)
+        self.pendingTickers.add(ticker)
 
     def tickReqParams(self, reqId, minTick, bboExchange, snapshotPermissions):
         pass
