@@ -1315,9 +1315,9 @@ class IB:
         https://interactivebrokers.github.io/tws-api/market_scanners.html
 
         Args:
-            subscription: What to scan for.
+            subscription: Basic filters.
             scannerSubscriptionOptions: Unknown.
-            scannerSubscriptionFilterOptions: Unknown.
+            scannerSubscriptionFilterOptions: Advanced generic filters.
         """
         return self._run(
             self.reqScannerDataAsync(
