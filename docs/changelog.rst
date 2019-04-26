@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.48
+^^^^^^^^^^^^^^
+
+* ``Ticker.halted`` field added.
+* ``Client.reqFundamentalData`` fixed.
+
 Version 0.9.47
 ^^^^^^^^^^^^^^
 
