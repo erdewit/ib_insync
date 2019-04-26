@@ -623,7 +623,7 @@ class Client:
             execFilter.side)
 
     def reqIds(self, numIds):
-        self.send(8, 1)
+        self.send(8, 1, numIds)
 
     def reqContractDetails(self, reqId, contract):
         self.send(
@@ -769,7 +769,7 @@ class Client:
         self.send(
             52, 2, reqId,
             contract.conId,
-            contract.symbo,
+            contract.symbol,
             contract.secType,
             contract.exchange,
             contract.primaryExchange,
@@ -918,7 +918,7 @@ class Client:
     def reqPnLSingle(self, reqId, account, modelCode, conid):
         self.send(94, reqId, account, modelCode, conid)
 
-    def cancelPnLSingle(self, reqId: int):
+    def cancelPnLSingle(self, reqId):
         self.send(95, reqId)
 
     def reqHistoricalTicks(
