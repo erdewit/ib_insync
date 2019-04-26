@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.client &mdash; ib_insync 0.9.47 documentation</title>
+  <title>ib_insync.client &mdash; ib_insync 0.9.48 documentation</title>
   
 
   
@@ -780,7 +780,7 @@
             <span class="n">execFilter</span><span class="o">.</span><span class="n">side</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.reqIds"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqIds">[docs]</a>    <span class="k">def</span> <span class="nf">reqIds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numIds</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">numIds</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.reqContractDetails"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqContractDetails">[docs]</a>    <span class="k">def</span> <span class="nf">reqContractDetails</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
@@ -926,7 +926,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="mi">52</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">conId</span><span class="p">,</span>
-            <span class="n">contract</span><span class="o">.</span><span class="n">symbo</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">secType</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">exchange</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">primaryExchange</span><span class="p">,</span>
@@ -1075,7 +1075,7 @@
 <div class="viewcode-block" id="Client.reqPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqPnLSingle">[docs]</a>    <span class="k">def</span> <span class="nf">reqPnLSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">conid</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">conid</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelPnLSingle">[docs]</a>    <span class="k">def</span> <span class="nf">cancelPnLSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<div class="viewcode-block" id="Client.cancelPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelPnLSingle">[docs]</a>    <span class="k">def</span> <span class="nf">cancelPnLSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.reqHistoricalTicks"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqHistoricalTicks">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistoricalTicks</span><span class="p">(</span>
