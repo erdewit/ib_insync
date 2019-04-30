@@ -765,6 +765,15 @@ class IB:
         """
         return self._run(self.reqAllOpenOrdersAsync())
 
+    def reqCompletedOrders(self, apiOnly: bool) -> List[Trade]:
+        """
+        Request and return a list of completed trades.
+
+        Args:
+            apiOnly: Request only API orders (not manually placed TWS orders).
+        """
+        return self._run(self.reqCompletedOrdersAsync(apiOnly))
+
     def reqExecutions(
             self, execFilter: ExecutionFilter = None) -> List[Fill]:
         """
@@ -1678,6 +1687,11 @@ class IB:
     def reqAllOpenOrdersAsync(self):
         future = self.wrapper.startReq('openOrders')
         self.client.reqAllOpenOrders()
+        return future
+
+    def reqCompletedOrdersAsync(self, apiOnly):
+        future = self.wrapper.startReq('completedOrders')
+        self.client.reqCompletedOrders(apiOnly)
         return future
 
     def reqExecutionsAsync(self, execFilter=None):

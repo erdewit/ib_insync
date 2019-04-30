@@ -199,11 +199,11 @@ class Decoder:
                 continue
             v = getattr(obj, k)
             if typ is int:
-                setattr(obj, k, int(v or default))
+                setattr(obj, k, int(v) if v else default)
             elif typ is float:
-                setattr(obj, k, float(v or default))
+                setattr(obj, k, float(v) if v else default)
             elif typ is bool:
-                setattr(obj, k, bool(int(v or default)))
+                setattr(obj, k, bool(int(v)) if v else default)
 
     def priceSizeTick(self, fields):
         _, _, reqId, tickType, price, size, _ = fields
@@ -1017,4 +1017,213 @@ class Decoder:
         self.wrapper.openOrder(o.orderId, c, o, st)
 
     def completedOrder(self, fields):
-        ...
+        o = Order()
+        c = Contract()
+        st = OrderState()
+
+        (
+            _,
+            c.conId,
+            c.symbol,
+            c.secType,
+            c.lastTradeDateOrContractMonth,
+            c.strike,
+            c.right,
+            c.multiplier,
+            c.exchange,
+            c.currency,
+            c.localSymbol,
+            c.tradingClass,
+            o.action,
+            o.totalQuantity,
+            o.orderType,
+            o.lmtPrice,
+            o.auxPrice,
+            o.tif,
+            o.ocaGroup,
+            o.account,
+            o.openClose,
+            o.origin,
+            o.orderRef,
+            o.permId,
+            o.outsideRth,
+            o.hidden,
+            o.discretionaryAmt,
+            o.goodAfterTime,
+            o.faGroup,
+            o.faMethod,
+            o.faPercentage,
+            o.faProfile,
+            o.modelCode,
+            o.goodTillDate,
+            o.rule80A,
+            o.percentOffset,
+            o.settlingFirm,
+            o.shortSaleSlot,
+            o.designatedLocation,
+            o.exemptCode,
+            o.startingPrice,
+            o.stockRefPrice,
+            o.delta,
+            o.stockRangeLower,
+            o.stockRangeUpper,
+            o.displaySize,
+            o.sweepToFill,
+            o.allOrNone,
+            o.minQty,
+            o.ocaType,
+            o.triggerMethod,
+            o.volatility,
+            o.volatilityType,
+            o.deltaNeutralOrderType,
+            o.deltaNeutralAuxPrice,
+            *fields) = fields
+
+        if o.deltaNeutralOrderType:
+            (
+                o.deltaNeutralConId,
+                o.deltaNeutralShortSale,
+                o.deltaNeutralShortSaleSlot,
+                o.deltaNeutralDesignatedLocation,
+                *fields) = fields
+        (
+            o.continuousUpdate,
+            o.referencePriceType,
+            o.trailStopPrice,
+            o.trailingPercent,
+            c.comboLegsDescrip,
+            *fields) = fields
+
+        numLegs = int(fields.pop(0))
+        c.comboLegs = []
+        for _ in range(numLegs):
+            leg = ComboLeg()
+            (
+                leg.conId,
+                leg.ratio,
+                leg.action,
+                leg.exchange,
+                leg.openClose,
+                leg.shortSaleSlot,
+                leg.designatedLocation,
+                leg.exemptCode,
+                *fields) = fields
+            self.parse(leg)
+            c.comboLegs.append(leg)
+
+        numOrderLegs = int(fields.pop(0))
+        o.orderComboLegs = []
+        for _ in range(numOrderLegs):
+            leg = OrderComboLeg()
+            leg.price = fields.pop(0)
+            self.parse(leg)
+            o.orderComboLegs.append(leg)
+
+        numParams = int(fields.pop(0))
+        if numParams > 0:
+            o.smartComboRoutingParams = []
+            for _ in range(numParams):
+                tag, value, *fields = fields
+                o.smartComboRoutingParams.append(
+                    TagValue(tag, value))
+        (
+            o.scaleInitLevelSize,
+            o.scaleSubsLevelSize,
+            increment,
+            *fields) = fields
+
+        o.scalePriceIncrement = float(increment or UNSET_DOUBLE)
+        if 0 < o.scalePriceIncrement < UNSET_DOUBLE:
+            (
+                o.scalePriceAdjustValue,
+                o.scalePriceAdjustInterval,
+                o.scaleProfitOffset,
+                o.scaleAutoReset,
+                o.scaleInitPosition,
+                o.scaleInitFillQty,
+                o.scaleRandomPercent,
+                *fields) = fields
+
+        o.hedgeType = fields.pop(0)
+        if o.hedgeType:
+            o.hedgeParam = fields.pop(0)
+
+        (
+            o.clearingAccount,
+            o.clearingIntent,
+            o.notHeld,
+            dncPresent,
+            *fields) = fields
+
+        if int(dncPresent):
+            conId, delta, price, *fields = fields
+            c.deltaNeutralContract = DeltaNeutralContract(
+                int(price or 0), float(delta or 0), float(price or 0))
+
+        o.algoStrategy = fields.pop(0)
+        if o.algoStrategy:
+            numParams = int(fields.pop(0))
+            if numParams > 0:
+                o.algoParams = []
+                for _ in range(numParams):
+                    tag, value, *fields = fields
+                    o.algoParams.append(
+                        TagValue(tag, value))
+        (
+            o.solicited,
+            st.status,
+            o.randomizeSize,
+            o.randomizePrice,
+            *fields) = fields
+
+        if o.orderType == 'PEG BENCH':
+            (
+                o.referenceContractId,
+                o.isPeggedChangeAmountDecrease,
+                o.peggedChangeAmount,
+                o.referenceChangeAmount,
+                o.referenceExchangeId,
+                *fields) = fields
+
+        numConditions = int(fields.pop(0))
+        if numConditions > 0:
+            for _ in range(numConditions):
+                condType = int(fields.pop(0))
+                condCls = OrderCondition.createClass(condType)
+                n = len(condCls.defaults) - 1
+                cond = condCls(condType, *fields[:n])
+                self.parse(cond)
+                o.conditions.append(cond)
+                fields = fields[n:]
+            (
+                o.conditionsIgnoreRth,
+                o.conditionsCancelOrder,
+                *fields) = fields
+
+        (
+            o.trailStopPrice,
+            o.lmtPriceOffset,
+            o.cashQty,
+            *fields) = fields
+
+        if self.serverVersion >= 141:
+            o.dontUseAutoPriceForHedge = fields.pop(0)
+        if self.serverVersion >= 145:
+            o.isOmsContainer = fields.pop(0)
+
+        (
+            autoCancelDate,
+            filledQuantity,
+            refFuturesConId,
+            autoCancelParent,
+            shareholder,
+            imbalanceOnly,
+            routeMarketableToBbo,
+            parentPermId,
+            completedTime,
+            completedStatus) = fields
+
+        self.parse(c)
+        self.parse(o)
+        self.parse(st)
+        self.wrapper.completedOrder(c, o, st)

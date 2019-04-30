@@ -301,6 +301,15 @@ class Wrapper:
     def openOrderEnd(self):
         self._endReq('openOrders')
 
+    def completedOrder(self, contract, order, orderState):
+        contract = Contract.create(**contract.dict())
+        orderStatus = OrderStatus(status=orderState.status)
+        self._results['completedOrders'].append(
+            Trade(contract, order, orderStatus, [], []))
+
+    def completedOrdersEnd(self):
+        self._endReq('completedOrders')
+
     def orderStatus(
             self, orderId, status, filled, remaining, avgFillPrice,
             permId, parentId, lastFillPrice, clientId, whyHeld,
