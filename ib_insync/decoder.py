@@ -1212,16 +1212,16 @@ class Decoder:
             o.isOmsContainer = fields.pop(0)
 
         (
-            autoCancelDate,
-            filledQuantity,
-            refFuturesConId,
-            autoCancelParent,
-            shareholder,
-            imbalanceOnly,
-            routeMarketableToBbo,
-            parentPermId,
-            completedTime,
-            completedStatus) = fields
+            o.autoCancelDate,
+            o.filledQuantity,
+            o.refFuturesConId,
+            o.autoCancelParent,
+            o.shareholder,
+            o.imbalanceOnly,
+            o.routeMarketableToBbo,
+            o.parentPermId,
+            st.completedTime,
+            st.completedStatus) = fields
 
         self.parse(c)
         self.parse(o)
