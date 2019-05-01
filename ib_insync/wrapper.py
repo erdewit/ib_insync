@@ -15,7 +15,7 @@ from ib_insync.objects import (
     TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint, FundamentalRatios,
     MktDepthData, DOMLevel, OptionComputation, ScanData, HistogramData)
 import ib_insync.util as util
-from .util import UNSET_DOUBLE, UNSET_INTEGER
+from .util import UNSET_DOUBLE
 
 __all__ = ['Wrapper']
 
@@ -36,6 +36,7 @@ class Wrapper:
         self.portfolio = defaultdict(dict)  # account -> conId -> PortfolioItem
         self.positions = defaultdict(dict)  # account -> conId -> Position
         self.trades = {}  # (client, orderId) or permId -> Trade
+        self.permId2Trade = {}  # permId -> Trade
         self.fills = {}  # execId -> Fill
         self.newsTicks = []  # list of NewsTick
         self.newsBulletins = {}  # msgId -> NewsBulletin
@@ -290,6 +291,7 @@ class Wrapper:
                 orderStatus = OrderStatus(status=orderState.status)
                 trade = Trade(contract, order, orderStatus, [], [])
                 self.trades[key] = trade
+                self.permId2Trade[order.permId] = trade
                 self._logger.info(f'openOrder: {trade}')
             results = self._results.get('openOrders')
             if results is None:
@@ -304,8 +306,11 @@ class Wrapper:
     def completedOrder(self, contract, order, orderState):
         contract = Contract.create(**contract.dict())
         orderStatus = OrderStatus(status=orderState.status)
-        self._results['completedOrders'].append(
-            Trade(contract, order, orderStatus, [], []))
+        trade = Trade(contract, order, orderStatus, [], [])
+        self._results['completedOrders'].append(trade)
+        if order.permId not in self.permId2Trade:
+            self.trades[order.permId] = trade
+            self.permId2Trade[order.permId] = trade
 
     def completedOrdersEnd(self):
         self._endReq('completedOrders')
@@ -357,13 +362,8 @@ class Wrapper:
         """
         This wrapper handles both live fills and responses to reqExecutions.
         """
-        if execution.orderId == UNSET_INTEGER:
-            # bug in TWS: executions of manual orders have unset value
-            execution.orderId = 0
-        key = self.orderKey(
-            execution.clientId, execution.orderId, execution.permId)
-        trade = self.trades.get(key)
-        if trade and contract.conId == trade.contract.conId:
+        trade = self.permId2Trade.get(execution.permId)
+        if trade and contract == trade.contract:
             contract = trade.contract
         else:
             contract = Contract.create(**contract.dict())
@@ -379,7 +379,7 @@ class Wrapper:
             if trade:
                 trade.fills.append(fill)
                 logEntry = TradeLogEntry(
-                    self.lastTime,
+                    time,
                     trade.orderStatus.status,
                     f'Fill {execution.shares}@{execution.price}')
                 trade.log.append(logEntry)
@@ -403,10 +403,7 @@ class Wrapper:
             report = fill.commissionReport.update(
                 **commissionReport.dict())
             self._logger.info(f'commissionReport: {report}')
-            key = self.orderKey(
-                fill.execution.clientId,
-                fill.execution.orderId, fill.execution.permId)
-            trade = self.trades.get(key)
+            trade = self.permId2Trade.get(fill.execution.permId)
             if trade:
                 self.ib.commissionReportEvent.emit(trade, fill, report)
                 trade.commissionReportEvent.emit(trade, fill, report)

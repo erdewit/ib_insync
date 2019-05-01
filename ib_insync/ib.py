@@ -1585,6 +1585,8 @@ class IB:
             self, host='127.0.0.1', port=7497, clientId=1, timeout=2):
         self.wrapper.clientId = clientId
         await self.client.connectAsync(host, port, clientId, timeout)
+        if self.client.serverVersion() >= 150:
+            await self.reqCompletedOrdersAsync(False)
         accounts = self.client.getAccounts()
         await asyncio.gather(
             self.reqAccountUpdatesAsync(accounts[0]),
