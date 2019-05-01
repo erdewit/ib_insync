@@ -4,6 +4,14 @@ Changelog
 0.9
 ---
 
+Version 0.9.49
+^^^^^^^^^^^^^^
+
+* ``ib.reqCompletedOrders()`` request added (requires TWS/gateway >= 976).
+  Completed orders are automatically synced on connect and are available from
+  ``ib.trades()``, complete with fills and commission info.
+* Fixed bug #144.
+
 Version 0.9.48
 ^^^^^^^^^^^^^^
 

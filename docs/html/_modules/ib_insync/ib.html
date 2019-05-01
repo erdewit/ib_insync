@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.ib &mdash; ib_insync 0.9.48 documentation</title>
+  <title>ib_insync.ib &mdash; ib_insync 0.9.49 documentation</title>
   
 
   
@@ -922,6 +922,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqAllOpenOrdersAsync</span><span class="p">())</span></div>
 
+<div class="viewcode-block" id="IB.reqCompletedOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqCompletedOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqCompletedOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiOnly</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Trade</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request and return a list of completed trades.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            apiOnly: Request only API orders (not manually placed TWS orders).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqCompletedOrdersAsync</span><span class="p">(</span><span class="n">apiOnly</span><span class="p">))</span></div>
+
 <div class="viewcode-block" id="IB.reqExecutions"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqExecutions">[docs]</a>    <span class="k">def</span> <span class="nf">reqExecutions</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">execFilter</span><span class="p">:</span> <span class="n">ExecutionFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Fill</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1733,6 +1742,8 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">7497</span><span class="p">,</span> <span class="n">clientId</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">clientId</span> <span class="o">=</span> <span class="n">clientId</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">150</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqCompletedOrdersAsync</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">accounts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getAccounts</span><span class="p">()</span>
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reqAccountUpdatesAsync</span><span class="p">(</span><span class="n">accounts</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
@@ -1835,6 +1846,11 @@
 <div class="viewcode-block" id="IB.reqAllOpenOrdersAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAllOpenOrdersAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqAllOpenOrdersAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="s1">&#39;openOrders&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqAllOpenOrders</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">future</span></div>
+
+<div class="viewcode-block" id="IB.reqCompletedOrdersAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqCompletedOrdersAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqCompletedOrdersAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiOnly</span><span class="p">):</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="s1">&#39;completedOrders&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqCompletedOrders</span><span class="p">(</span><span class="n">apiOnly</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span></div>
 
 <div class="viewcode-block" id="IB.reqExecutionsAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqExecutionsAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqExecutionsAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">execFilter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
