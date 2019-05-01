@@ -528,7 +528,6 @@ class Decoder:
         (
             _, _,
             reqId,
-            orderId,
             account,
             c.conId,
             c.symbol,
