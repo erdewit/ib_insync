@@ -70,7 +70,8 @@ class Wrapper:
             sub.updateEvent.set_done()
         error = ConnectionError('Socket disconnect')
         for future in self._futures.values():
-            future.set_exception(error)
+            if not future.done():
+                future.set_exception(error)
         util.globalErrorEvent.emit(error)
         self.reset()
 
