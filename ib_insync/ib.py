@@ -207,7 +207,7 @@ class IB:
 
     def connect(
             self, host: str = '127.0.0.1', port: int = 7497,
-            clientId: int = 1, timeout: float = 2):
+            clientId: int = 1, timeout: float = 2, readonly: bool = False):
         """
         Connect to a running TWS or IB gateway application.
         After the connection is made the client is fully synchronized
@@ -224,8 +224,10 @@ class IB:
             timeout: If establishing the connection takes longer than
                 ``timeout`` seconds then the ``asyncio.TimeoutError`` exception
                 is raised. Set to 0 to disable timeout.
+            readonly: Set to ``True`` when API is in read-only mode.
         """
-        return self._run(self.connectAsync(host, port, clientId, timeout))
+        return self._run(self.connectAsync(
+            host, port, clientId, timeout, readonly))
 
     def disconnect(self):
         """
@@ -1582,10 +1584,11 @@ class IB:
     # now entering the parallel async universe
 
     async def connectAsync(
-            self, host='127.0.0.1', port=7497, clientId=1, timeout=2):
+            self, host='127.0.0.1', port=7497, clientId=1,
+            timeout=2, readonly=False):
         self.wrapper.clientId = clientId
         await self.client.connectAsync(host, port, clientId, timeout)
-        if self.client.serverVersion() >= 150:
+        if not readonly and self.client.serverVersion() >= 150:
             await self.reqCompletedOrdersAsync(False)
         accounts = self.client.getAccounts()
         await asyncio.gather(
