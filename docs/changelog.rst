@@ -4,6 +4,13 @@ Changelog
 0.9
 ---
 
+Version 0.9.50
+^^^^^^^^^^^^^^
+
+* Fix ``execDetailsEvent`` regression.
+* Added ``readonly`` argument to ``ib.connect`` method. Set this to ``True``
+  when the API is in read-only mode.
+
 Version 0.9.49
 ^^^^^^^^^^^^^^
 

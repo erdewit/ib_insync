@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API docs &mdash; ib_insync 0.9.49 documentation</title>
+  <title>API docs &mdash; ib_insync 0.9.50 documentation</title>
   
 
   
@@ -173,7 +173,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.49.</p>
+<p>Release 0.9.50.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -319,7 +319,7 @@ handler as it may lead to too much recursion.</p>
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.connect">
-<code class="descname">connect</code><span class="sig-paren">(</span><em>host='127.0.0.1'</em>, <em>port=7497</em>, <em>clientId=1</em>, <em>timeout=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.connect" title="Permalink to this definition">¶</a></dt>
+<code class="descname">connect</code><span class="sig-paren">(</span><em>host='127.0.0.1'</em>, <em>port=7497</em>, <em>clientId=1</em>, <em>timeout=2</em>, <em>readonly=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to a running TWS or IB gateway application.
 After the connection is made the client is fully synchronized
 and ready to serve requests.</p>
@@ -337,6 +337,7 @@ TWS trading with this client.</li>
 <li><strong>timeout</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – If establishing the connection takes longer than
 <code class="docutils literal notranslate"><span class="pre">timeout</span></code> seconds then the <code class="docutils literal notranslate"><span class="pre">asyncio.TimeoutError</span></code> exception
 is raised. Set to 0 to disable timeout.</li>
+<li><strong>readonly</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Set to <code class="docutils literal notranslate"><span class="pre">True</span></code> when API is in read-only mode.</li>
 </ul>
 </td>
 </tr>
@@ -2213,7 +2214,7 @@ ready yet if called directly after <a class="reference internal" href="#ib_insyn
 
 <dl class="method">
 <dt id="ib_insync.ib.IB.connectAsync">
-<code class="descname">connectAsync</code><span class="sig-paren">(</span><em>host='127.0.0.1'</em>, <em>port=7497</em>, <em>clientId=1</em>, <em>timeout=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.connectAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.connectAsync" title="Permalink to this definition">¶</a></dt>
+<code class="descname">connectAsync</code><span class="sig-paren">(</span><em>host='127.0.0.1'</em>, <em>port=7497</em>, <em>clientId=1</em>, <em>timeout=2</em>, <em>readonly=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.connectAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.connectAsync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
