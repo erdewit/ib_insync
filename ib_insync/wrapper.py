@@ -15,7 +15,7 @@ from ib_insync.objects import (
     TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint, FundamentalRatios,
     MktDepthData, DOMLevel, OptionComputation, ScanData, HistogramData)
 import ib_insync.util as util
-from .util import UNSET_DOUBLE
+from .util import UNSET_DOUBLE, UNSET_INTEGER
 
 __all__ = ['Wrapper']
 
@@ -363,7 +363,12 @@ class Wrapper:
         """
         This wrapper handles both live fills and responses to reqExecutions.
         """
-        trade = self.permId2Trade.get(execution.permId)
+        if execution.orderId == UNSET_INTEGER:
+            # bug in TWS: executions of manual orders have unset value
+            execution.orderId = 0
+        key = self.orderKey(
+            execution.clientId, execution.orderId, execution.permId)
+        trade = self.trades.get(key) or self.permId2Trade.get(execution.permId)
         if trade and contract == trade.contract:
             contract = trade.contract
         else:
