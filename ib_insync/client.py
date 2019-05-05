@@ -9,8 +9,9 @@ from typing import List
 from eventkit import Event
 
 from .contract import Contract
-from ib_insync.decoder import Decoder
-from ib_insync.objects import ConnectionStats
+from .connection import Connection
+from .decoder import Decoder
+from .objects import ConnectionStats
 from .util import run, UNSET_INTEGER, UNSET_DOUBLE
 
 __all__ = ['Client']
@@ -88,7 +89,7 @@ class Client:
     def __init__(self, wrapper):
         Event.init(self, Client.events)
         self.wrapper = wrapper
-        self.decoder = None
+        self.decoder = Decoder(wrapper, None)
         self._readyEvent = asyncio.Event()
         self._loop = asyncio.get_event_loop()
         self._logger = logging.getLogger('ib_insync.client')
@@ -198,25 +199,28 @@ class Client:
         self.clientId = clientId
         self.connState = Client.CONNECTING
         self.conn = Connection(host, port)
-        self.conn.connected = self._onSocketConnected
         self.conn.hasData = self._onSocketHasData
         self.conn.disconnected = self._onSocketDisconnected
         self.conn.hasError = self._onSocketHasError
         try:
             await asyncio.sleep(0)  # in case of a not yet finished disconnect
-            fut = asyncio.gather(self.conn.connect(), self._readyEvent.wait())
-            await asyncio.wait_for(fut, timeout)
+            await asyncio.wait_for(self.conn.connectAsync(), timeout)
+            self._logger.info('Connected')
+            msg = b'API\0' + self._prefix(b'v%d..%d%s' % (
+                self.MinClientVersion, self.MaxClientVersion,
+                b' ' + self._connectOptions if self._connectOptions else b''))
+            self.conn.sendMsg(msg)
+            await asyncio.wait_for(self._readyEvent.wait(), timeout)
             self._logger.info('API connection ready')
             self.apiStart.emit()
         except Exception as e:
+            self.disconnect()
             self.reset()
             msg = f'API connection failed: {e!r}'
             self._logger.error(msg)
             self.apiError.emit(msg)
             if isinstance(e, ConnectionRefusedError):
-                msg = 'Make sure API port on TWS/IBG is open'
-                self._logger.error(msg)
-            await fut  # consume exception
+                self._logger.error('Make sure API port on TWS/IBG is open')
             raise
 
     def disconnect(self):
@@ -275,6 +279,9 @@ class Client:
             msg = msgs.popleft()
             self.conn.sendMsg(self._prefix(msg.encode()))
             times.append(t)
+            if self._logger.isEnabledFor(logging.DEBUG):
+                self._logger.debug(
+                    '>>> %s', ','.join(f for f in msg.split('\0')))
         if msgs:
             if not self._isThrottling:
                 self._isThrottling = True
@@ -290,17 +297,6 @@ class Client:
     def _prefix(self, msg):
         # prefix a message with its length
         return struct.pack('>I', len(msg)) + msg
-
-    def _onSocketConnected(self):
-        self._logger.info('Connected')
-        # start handshake
-        msg = b'API\0'
-        connectOptions = b' ' + self._connectOptions if self._connectOptions \
-            else b''
-        msg += self._prefix(b'v%d..%d%s' % (
-            self.MinClientVersion, self.MaxClientVersion, connectOptions))
-        self.conn.sendMsg(msg)
-        self.decoder = Decoder(self.wrapper, None)
 
     def _onSocketHasData(self, data):
         debug = self._logger.isEnabledFor(logging.DEBUG)
@@ -374,6 +370,7 @@ class Client:
 
     def _onSocketHasError(self, msg):
         self._logger.error(msg)
+        self.disconnect()
         self.reset()
         self.apiError.emit(msg)
 
@@ -938,70 +935,3 @@ class Client:
 
     def reqCompletedOrders(self, apiOnly):
         self.send(99, apiOnly)
-
-
-class Connection:
-    """
-    Replacement for ibapi.connection.Connection that uses asyncio.
-    """
-    def __init__(self, host, port):
-        self.host = host
-        self.port = port
-        self.socket = None
-        self.numBytesSent = 0
-        self.numMsgSent = 0
-        self._logger = logging.getLogger('ib_insync.Connection')
-
-        # the following are callbacks for socket events
-        self.connected = None
-        self.disconnected = None
-        self.hasError = None
-        self.hasData = None
-
-    def _onConnectionCreated(self, future):
-        if not future.exception():
-            _, self.socket = future.result()
-            self.connected()
-
-    def connect(self):
-        loop = asyncio.get_event_loop()
-        coro = loop.create_connection(
-            lambda: Socket(self), self.host, self.port)
-        future = asyncio.ensure_future(coro)
-        future.add_done_callback(self._onConnectionCreated)
-        return future
-
-    def disconnect(self):
-        if self.socket:
-            self.socket.transport.close()
-            self.socket = None
-
-    def isConnected(self):
-        return self.socket is not None
-
-    def sendMsg(self, msg):
-        self.socket.transport.write(msg)
-        self.numBytesSent += len(msg)
-        self.numMsgSent += 1
-        if self._logger.isEnabledFor(logging.DEBUG):
-            self._logger.debug(
-                '>>> %s', ','.join(f.decode() for f in msg[4:].split(b'\0')))
-
-
-class Socket(asyncio.Protocol):
-
-    def __init__(self, connection):
-        self.transport = None
-        self.connection = connection
-
-    def connection_made(self, transport):
-        self.transport = transport
-
-    def connection_lost(self, exc):
-        if exc:
-            self.connection.hasError(str(exc))
-        else:
-            self.connection.disconnected()
-
-    def data_received(self, data):
-        self.connection.hasData(data)
