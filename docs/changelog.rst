@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.51
+^^^^^^^^^^^^^^
+
+* Fix ``ib.placeOrder`` for older TWS/gateway versions.
+* Better handling of unclean disconnects.
+
 Version 0.9.50
 ^^^^^^^^^^^^^^
 
