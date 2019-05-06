@@ -406,7 +406,7 @@ class Client:
         version = self.serverVersion()
         fields = [3]
         if version < 145:
-            fields += [27]
+            fields += [45]
         fields += [
             orderId,
             contract,
