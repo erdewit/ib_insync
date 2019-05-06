@@ -215,7 +215,6 @@ class Client:
             self.apiStart.emit()
         except Exception as e:
             self.disconnect()
-            self.reset()
             msg = f'API connection failed: {e!r}'
             self._logger.error(msg)
             self.apiError.emit(msg)
@@ -231,7 +230,6 @@ class Client:
         if self.conn is not None:
             self._logger.info('Disconnecting')
             self.conn.disconnect()
-            self.wrapper.connectionClosed()
             self.reset()
 
     def send(self, *fields):
@@ -365,12 +363,15 @@ class Client:
             self.apiError.emit(msg)
         else:
             self._logger.info('Disconnected')
+        if self.isReady():
+            self.wrapper.connectionClosed()
         self.reset()
         self.apiEnd.emit()
 
     def _onSocketHasError(self, msg):
         self._logger.error(msg)
-        self.disconnect()
+        if self.isReady():
+            self.wrapper.connectionClosed()
         self.reset()
         self.apiError.emit(msg)
 
