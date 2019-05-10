@@ -117,7 +117,7 @@ class Ticker(Object):
         Return average of bid and ask, or NaN if no valid bid and ask
         are available.
         """
-        return (self.bid + self.ask) / 2 if self.hasBidAsk() else nan
+        return (self.bid + self.ask) * 0.5 if self.hasBidAsk() else nan
 
     def marketPrice(self) -> float:
         """
