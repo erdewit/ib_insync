@@ -1586,22 +1586,26 @@ class IB:
     async def connectAsync(
             self, host='127.0.0.1', port=7497, clientId=1,
             timeout=2, readonly=False):
-        self.wrapper.clientId = clientId
-        await self.client.connectAsync(host, port, clientId, timeout)
-        if not readonly and self.client.serverVersion() >= 150:
-            await self.reqCompletedOrdersAsync(False)
-        accounts = self.client.getAccounts()
-        await asyncio.gather(
-            self.reqAccountUpdatesAsync(accounts[0]),
-            *(self.reqAccountUpdatesMultiAsync(a) for a in accounts),
-            self.reqPositionsAsync(),
-            self.reqExecutionsAsync())
-        if clientId == 0:
-            # autobind manual orders
-            self.reqAutoOpenOrders(True)
-        self._logger.info('Synchronization complete')
-        self.connectedEvent.emit()
-        return self
+
+        async def connect():
+            self.wrapper.clientId = clientId
+            await self.client.connectAsync(host, port, clientId, timeout)
+            if not readonly and self.client.serverVersion() >= 150:
+                await self.reqCompletedOrdersAsync(False)
+            accounts = self.client.getAccounts()
+            await asyncio.gather(
+                self.reqAccountUpdatesAsync(accounts[0]),
+                *(self.reqAccountUpdatesMultiAsync(a) for a in accounts),
+                self.reqPositionsAsync(),
+                self.reqExecutionsAsync())
+            if clientId == 0:
+                # autobind manual orders
+                self.reqAutoOpenOrders(True)
+            self._logger.info('Synchronization complete')
+            self.connectedEvent.emit()
+            return self
+
+        return await asyncio.wait_for(connect(), timeout or None)
 
     async def qualifyContractsAsync(self, *contracts):
         detailsLists = await asyncio.gather(

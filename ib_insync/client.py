@@ -192,27 +192,31 @@ class Client:
         run(self.connectAsync(host, port, clientId, timeout))
 
     async def connectAsync(self, host, port, clientId, timeout=2):
-        self._logger.info(
-            f'Connecting to {host}:{port} with clientId {clientId}...')
-        self.host = host
-        self.port = port
-        self.clientId = clientId
-        self.connState = Client.CONNECTING
-        self.conn = Connection(host, port)
-        self.conn.hasData = self._onSocketHasData
-        self.conn.disconnected = self._onSocketDisconnected
-        self.conn.hasError = self._onSocketHasError
-        try:
+
+        async def connect():
+            self._logger.info(
+                f'Connecting to {host}:{port} with clientId {clientId}...')
+            self.host = host
+            self.port = port
+            self.clientId = clientId
+            self.connState = Client.CONNECTING
+            self.conn = Connection(host, port)
+            self.conn.hasData = self._onSocketHasData
+            self.conn.disconnected = self._onSocketDisconnected
+            self.conn.hasError = self._onSocketHasError
             await asyncio.sleep(0)  # in case of a not yet finished disconnect
-            await asyncio.wait_for(self.conn.connectAsync(), timeout)
+            await self.conn.connectAsync()
             self._logger.info('Connected')
             msg = b'API\0' + self._prefix(b'v%d..%d%s' % (
                 self.MinClientVersion, self.MaxClientVersion,
                 b' ' + self._connectOptions if self._connectOptions else b''))
             self.conn.sendMsg(msg)
-            await asyncio.wait_for(self._readyEvent.wait(), timeout)
+            await self._readyEvent.wait()
             self._logger.info('API connection ready')
             self.apiStart.emit()
+
+        try:
+            await asyncio.wait_for(connect(), timeout or None)
         except Exception as e:
             self.disconnect()
             msg = f'API connection failed: {e!r}'
@@ -278,8 +282,7 @@ class Client:
             self.conn.sendMsg(self._prefix(msg.encode()))
             times.append(t)
             if self._logger.isEnabledFor(logging.DEBUG):
-                self._logger.debug(
-                    '>>> %s', ','.join(f for f in msg.split('\0')))
+                self._logger.debug('>>> %s', msg[:-1].replace('\0', ','))
         if msgs:
             if not self._isThrottling:
                 self._isThrottling = True
