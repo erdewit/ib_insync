@@ -1,4 +1,4 @@
-|Group| |PyVersion| |Status| |PyPiVersion| |License| |Docs| |Downloads|
+|Build| |Group| |PyVersion| |Status| |PyPiVersion| |License| |Docs| |Downloads|
 
 Introduction
 ============
@@ -127,3 +127,6 @@ Good luck and enjoy,
 .. |Downloads| image:: https://pepy.tech/badge/ib-insync
    :alt: Number of downloads
    :target: https://pepy.tech/project/ib-insync
+   
+.. |Build| image:: https://travis-ci.org/erdewit/ib_insync.svg?branch=master
+   :target: https://travis-ci.org/erdewit/ib_insync
