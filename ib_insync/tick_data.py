@@ -118,19 +118,46 @@ contracts = [ContFuture('ZB')]
 ib.qualifyContracts(*contracts)
 contracts[0].includeExpired=True
 ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
-dt=datetime.datetime(2018, 12, 13, 23, 0)
-ticks=ib.reqHistoricalTicks(contracts[0], '',datetime.datetime.now(),1000,"TRADES",False)
-#ticks=ib.reqHistoricalTicks(contracts[0], dt, '',1000,"TRADES",False)
+
+dt=datetime.datetime(2019, 5, 20, 1, 31,0,0,datetime.timezone.utc)
+
+dt=datetime.datetime(2019, 5, 19, 23, 52,33,0,datetime.timezone.utc)
+
+dt.utctimetuple()
+#ticks=ib.reqHistoricalTicks(contracts[0], '',datetime.datetime.now(),1000,"TRADES",False)
+ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
+ticks
 #%%
-for tick in ticks:
-    print(tick.time)
-    print(tick.price)
-    print(tick.size)
+import pandas as pd
+df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
+#%%
+def insert_ticks(df_ticks):
+    data = []
+    i=0
+    for tick in ticks:
+        #df_ticks.loc[i] = [tick.time,tick.price,tick.size]
+        data.insert(i, {'Timestamp': tick.time, 'price': tick.price, 'size': tick.size})
+        #df_ticks.loc[len(ticks)] = [tick.time,tick.price,tick.size]  # adding a row
+        #df_ticks.index = df_ticks.index + 1  # shifting index
+        #df_ticks.sort_index(inplace=True) 
+        i=i+1
 
+    df_ticks=pd.concat([pd.DataFrame(data), df_ticks], ignore_index=True)
+    return df_ticks
 
-#ticks[-1]
+dt=datetime.datetime.now()
 
+while True:
+    ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
 
+    if len(ticks)<1:
+        break
+    
+    df_ticks=insert_ticks(df_ticks)
+    dt=datetime.datetime.fromisoformat(str(ticks[0].time))
+  
+df_ticks
+df_ticks.to_csv(r'c:\test\IB-data.csv')
 #%%
 ib.disconnect()
 
