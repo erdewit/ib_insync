@@ -112,21 +112,34 @@ import datetime
 start = ''
 end = datetime.datetime.now()
 ticks = ib.reqHistoricalTicks(eurusd, start, end, 1000, 'BID_ASK', useRth=False)
-
+ticks
+#%%
 contracts = [ContFuture('ZB')]
 ib.qualifyContracts(*contracts)
 contracts[0].includeExpired=True
 ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
-dt=datetime.datetime(2016, 11, 13, 23, 0)
-ib.reqHistoricalTicks(contracts[0], dt,'',1000,"TRADES",False)
+dt=datetime.datetime(2018, 12, 13, 23, 0)
+ticks=ib.reqHistoricalTicks(contracts[0], '',datetime.datetime.now(),1000,"TRADES",False)
+#ticks=ib.reqHistoricalTicks(contracts[0], dt, '',1000,"TRADES",False)
+#%%
+for tick in ticks:
+    print(tick.time)
+    print(tick.price)
+    print(tick.size)
 
 
-
-
-ticks[-1]
+#ticks[-1]
 
 
 #%%
 ib.disconnect()
 
+'''
+put the first date in the ticks result array in a variable and use it as the end time for the next iteration 
+in the loop. get the next date/second and start storing in DB till end of array
+creaye a tick id as datetime field + a counter, to differentiate between ticks in the same second
 
+for the calculations; drop all leading rows in bars dataframe until the last row where 
+position was flat and number of remaining rows > largest number of rows required to calc studies, 35 for e.g.
+- estimate how many ticks are needed to form a new bar, keep a counter, once it's formed, 
+add a row to the dataframe and recalculate
