@@ -143,6 +143,7 @@ from ib_insync import *
 util.startLoop()
 
 ib = IB()
+#%%
 ib.connect('127.0.0.1', 7498, clientId=1)
 
 #%%
@@ -156,6 +157,7 @@ contracts[0].includeExpired=True
 ib.qualifyContracts(*contracts)
 dt_earliest_available=ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
 dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
+dt_earliest_available
 #%%
 def insert_ticks(df_ticks, ticks):
     data = []
@@ -186,6 +188,16 @@ while True:
 df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_ticks)
 #%%
+
+
+
+
+
+
+
+
+
+
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
 
 def insert_ticks_to_end(df_ticks, ticks):
@@ -204,8 +216,8 @@ dt=dt.astimezone(tz=datetime.timezone.utc)
 ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
 
 while True:
-    if dt<=datetime.datetime.now(tz=datetime.timezone.utc):
-        ticks=ib.reqHistoricalTicks(contracts[0],dt,None,1000,"TRADES",False)
+    if dt<datetime.datetime.now(tz=datetime.timezone.utc):
+        ticks=ib.reqHistoricalTicks(contracts[0],dt+datetime.timedelta(seconds=1),None,1000,"TRADES",False)
 
         if len(ticks)>1:
             df_ticks=insert_ticks_to_end(df_ticks, ticks)
@@ -215,6 +227,16 @@ while True:
 df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_ticks)
 #%%
+
+
+
+
+
+
+
+
+
+
 ib.connect('127.0.0.1', 7498, clientId=1)
 #%%
 df_ticks = pd.DataFrame(columns=[ 'time','last','lastSize','prevLast','prevLastSize', 'tickByTicks'])
