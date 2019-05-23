@@ -15,7 +15,7 @@ from ib_insync import *
 util.startLoop()
 
 ib = IB()
-ib.connect('127.0.0.1', 7497, clientId=15)
+ib.connect('127.0.0.1', 7498, clientId=15)
 
 #%% [markdown]
 # ### Streaming tick data
@@ -114,50 +114,135 @@ end = datetime.datetime.now()
 ticks = ib.reqHistoricalTicks(eurusd, start, end, 1000, 'BID_ASK', useRth=False)
 ticks
 #%%
-contracts = [ContFuture('ZB')]
-ib.qualifyContracts(*contracts)
-contracts[0].includeExpired=True
-ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
 
+contracts = [Future(conId='333866981')]
+#contracts = [ContFuture('ZB')]
+contracts[0].includeExpired=True
+#contracts[0].lastTradeDateOrContractMonth='20190318'
+ib.qualifyContracts(*contracts)
+ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
+len(contracts)
 dt=datetime.datetime(2019, 5, 20, 1, 31,0,0,datetime.timezone.utc)
 
-dt=datetime.datetime(2019, 5, 19, 23, 52,33,0,datetime.timezone.utc)
+dt=datetime.datetime(2018, 12, 30, 23, 52,33,0,datetime.timezone.utc)
 
 dt.utctimetuple()
 #ticks=ib.reqHistoricalTicks(contracts[0], '',datetime.datetime.now(),1000,"TRADES",False)
 ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
 ticks
+#%% Change working directory from the workspace root to the ipynb file location. Turn this addition off with the DataScience.changeDirOnImportExport setting
+import os
+
+try:
+	os.chdir(os.path.join(os.getcwd(), '..\..\ib_insync'))
+	print(os.getcwd())
+except:
+	pass
 #%%
+from ib_insync import *
+util.startLoop()
+
+ib = IB()
+ib.connect('127.0.0.1', 7498, clientId=1)
+
+#%%
+
+import datetime
 import pandas as pd
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
+contracts = [Future(conId='333866981')]
+contracts[0].includeExpired=True
+#contracts[0].lastTradeDateOrContractMonth='20190318'
+ib.qualifyContracts(*contracts)
+dt_earliest_available=ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
+dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 #%%
-def insert_ticks(df_ticks):
+def insert_ticks(df_ticks, ticks):
     data = []
     i=0
     for tick in ticks:
-        #df_ticks.loc[i] = [tick.time,tick.price,tick.size]
         data.insert(i, {'Timestamp': tick.time, 'price': tick.price, 'size': tick.size})
-        #df_ticks.loc[len(ticks)] = [tick.time,tick.price,tick.size]  # adding a row
-        #df_ticks.index = df_ticks.index + 1  # shifting index
-        #df_ticks.sort_index(inplace=True) 
         i=i+1
 
     df_ticks=pd.concat([pd.DataFrame(data), df_ticks], ignore_index=True)
     return df_ticks
-
+#%%
 dt=datetime.datetime.now()
+dt=dt.astimezone(tz=datetime.timezone.utc)
 
 while True:
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
 
-    if len(ticks)<1:
-        break
-    
-    df_ticks=insert_ticks(df_ticks)
-    dt=datetime.datetime.fromisoformat(str(ticks[0].time))
-  
-df_ticks
-df_ticks.to_csv(r'c:\test\IB-data.csv')
+    if dt<=dt_earliest_available:
+        break    
+
+    if len(ticks)<2:
+        dt=dt-datetime.timedelta(days=1)
+    else:
+        df_ticks=insert_ticks(df_ticks, ticks)
+        dt=ticks[0].time
+        print ('Getting tick data for ', dt)
+
+df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
+print(df_ticks)
+#%%
+df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
+
+def insert_ticks_to_end(df_ticks, ticks):
+    data = []
+    i=0
+    for tick in ticks:
+        data.insert(i, {'Timestamp': tick.time, 'price': tick.price, 'size': tick.size})
+        i=i+1
+
+    df_ticks=pd.concat([df_ticks,pd.DataFrame(data)], ignore_index=True)
+    return df_ticks
+#%%
+dt=datetime.datetime.now()
+dt=dt.astimezone(tz=datetime.timezone.utc)
+
+ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
+
+while True:
+    if dt<=datetime.datetime.now(tz=datetime.timezone.utc):
+        ticks=ib.reqHistoricalTicks(contracts[0],dt,None,1000,"TRADES",False)
+
+        if len(ticks)>1:
+            df_ticks=insert_ticks_to_end(df_ticks, ticks)
+            print ('Getting tick data for ', dt)
+            dt=ticks[len(ticks)-1].time
+#%%
+df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
+print(df_ticks)
+#%%
+ib.connect('127.0.0.1', 7498, clientId=1)
+#%%
+df_ticks = pd.DataFrame(columns=[ 'time','last','lastSize','prevLast','prevLastSize', 'tickByTicks'])
+i=0
+#%%
+zb_ticker=ib.reqTickByTickData(contracts[0],'AllLast')
+#%%
+def onPendingTickers(tickers):
+    for t in tickers:
+        df_ticks.loc[len(df_ticks)]=[ t.time,t.last,t.lastSize,t.prevLast,t.prevLastSize,t.tickByTicks]
+    print(df_ticks.tail())
+    dt=datetime.datetime.now()
+
+    if dt.minute==0:
+        df_ticks.to_csv(r'c:\test\liveIB'+str(dt.timestamp())+'.csv')
+
+ib.pendingTickersEvent += onPendingTickers
+
+#%%
+df_ticks.to_csv(r'c:\test\liveIB'+str(dt.timestamp())+'.csv')
+
+#%%
+
+#%%
+ib.pendingTickersEvent -= onPendingTickers
+#%%
+ib.cancelTickByTickData(contracts[0], 'AllLast')
+
 #%%
 ib.disconnect()
 
@@ -170,3 +255,9 @@ for the calculations; drop all leading rows in bars dataframe until the last row
 position was flat and number of remaining rows > largest number of rows required to calc studies, 35 for e.g.
 - estimate how many ticks are needed to form a new bar, keep a counter, once it's formed, 
 add a row to the dataframe and recalculate
+'''
+      #df_ticks.loc[len(ticks)] = [tick.time,tick.price,tick.size]  # adding a row
+        #df_ticks.index = df_ticks.index + 1  # shifting index
+        #df_ticks.sort_index(inplace=True) 
+        #df_ticks.loc[i] = [tick.time,tick.price,tick.size]
+ #    dt=datetime.datetime(2019, 2, 20, 23, 0,0,0,datetime.timezone.utc)
