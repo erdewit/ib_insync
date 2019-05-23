@@ -82,9 +82,11 @@ class IB:
     :meth:`.sleep` instead.
 
     Attributes:
-        RequestTimeout (float): Timeout (in seconds) to wait for a request
-          to finish before raising ``asyncio.TimeoutError``.
+        RequestTimeout (float): Timeout (in seconds) to wait for a
+          blocking request to finish before raising ``asyncio.TimeoutError``.
           The default value of 0 will wait indefinitely.
+          Note: This timeout is not used for the ``*Async`` methods.
+
 
     Events:
         * ``connectedEvent`` ():
