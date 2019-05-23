@@ -168,10 +168,14 @@ def insert_ticks(df_ticks, ticks):
 
     df_ticks=pd.concat([pd.DataFrame(data), df_ticks], ignore_index=True)
     return df_ticks
-#%%
+#%% download historical ticks from a current moment to a past date then exit
+
+dt_earliest_available=datetime.datetime.now()-datetime.timedelta(days=1)
+dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
+
 dt=datetime.datetime.now()
 dt=dt.astimezone(tz=datetime.timezone.utc)
-
+dt
 while True:
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
 
@@ -188,15 +192,10 @@ while True:
 df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_ticks)
 #%%
-
-
-
-
-
-
-
-
-
+#%%
+#%%
+#%%
+#%% infinite loop todownload historical ticks from a start date onwards till current moment 
 
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
 
@@ -227,22 +226,17 @@ while True:
 df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_ticks)
 #%%
-
-
-
-
-
-
-
-
-
+#%%
+#%%
+#%%
+#%% live tick data
 
 ib.connect('127.0.0.1', 7498, clientId=1)
 #%%
 df_ticks = pd.DataFrame(columns=[ 'time','last','lastSize','prevLast','prevLastSize', 'tickByTicks'])
 i=0
 #%%
-zb_ticker=ib.reqTickByTickData(contracts[0],'AllLast')
+zb_ticker=ib.reqTickByTickData(contracts[0],'Last')
 #%%
 def onPendingTickers(tickers):
     for t in tickers:
