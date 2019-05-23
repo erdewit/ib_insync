@@ -1605,6 +1605,9 @@ class IB:
             self.connectedEvent.emit()
             return self
 
+        if self.isConnected():
+            self._logger.warn('Already connected')
+            return self
         return await asyncio.wait_for(connect(), timeout or None)
 
     async def qualifyContractsAsync(self, *contracts):
