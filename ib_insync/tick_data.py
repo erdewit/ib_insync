@@ -241,6 +241,9 @@ zb_ticker=ib.reqTickByTickData(contracts[0],'Last')
 def onPendingTickers(tickers):
     for t in tickers:
         df_ticks.loc[len(df_ticks)]=[ t.time,t.last,t.lastSize,t.prevLast,t.prevLastSize,t.tickByTicks]
+        for tick in t.tickByTicks:
+            print('tick.time',tick.time, 'tick.price',tick.price,'tick.size', tick.size)
+            
     print(df_ticks.tail())
     dt=datetime.datetime.now()
 
