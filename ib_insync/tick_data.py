@@ -264,7 +264,53 @@ ib.cancelTickByTickData(contracts[0], 'AllLast')
 
 #%%
 ib.disconnect()
+#%%
+#%%
+#%%
+#%%
 
+
+
+
+
+#%%
+#%% store live ticks the same way historical ticks are returned by the API, hence making backtests valid
+    
+ib.connect('127.0.0.1', 7498, clientId=1)
+df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
+contracts = [Future(conId='333866981')]
+contracts[0].includeExpired=True
+#contracts[0].lastTradeDateOrContractMonth='20190318'
+ib.qualifyContracts(*contracts)
+#%%
+
+zb_ticker=ib.reqTickByTickData(contracts[0],'Last')
+#%%
+def onPendingTickers(tickers):
+    for t in tickers:
+        for tick in t.tickByTicks:
+            df_ticks.loc[len(df_ticks)]=[ tick.time,tick.price,tick.size]
+            
+    print(df_ticks.tail())
+    dt=datetime.datetime.now()
+
+    if dt.minute==0:
+        df_ticks.to_csv(r'c:\test\liveIB'+str(dt.timestamp())+'.csv')
+
+ib.pendingTickersEvent += onPendingTickers
+
+#%%
+df_ticks.to_csv(r'c:\test\liveIB'+str(dt.timestamp())+'.csv')
+
+#%%
+
+#%%
+ib.pendingTickersEvent -= onPendingTickers
+#%%
+ib.cancelTickByTickData(contracts[0], 'AllLast')
+
+#%%
+ib.disconnect()
 '''
 put the first date in the ticks result array in a variable and use it as the end time for the next iteration 
 in the loop. get the next date/second and start storing in DB till end of array
