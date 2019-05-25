@@ -170,7 +170,7 @@ def insert_ticks(df_ticks, ticks):
     return df_ticks
 #%% download historical ticks from a current moment to a past date then exit
 
-dt_earliest_available=datetime.datetime.now()-datetime.timedelta(days=1)
+dt_earliest_available=datetime.datetime.now()-datetime.timedelta(days=3)
 dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 
 dt=datetime.datetime.now()
