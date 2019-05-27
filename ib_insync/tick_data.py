@@ -130,6 +130,10 @@ dt.utctimetuple()
 #ticks=ib.reqHistoricalTicks(contracts[0], '',datetime.datetime.now(),1000,"TRADES",False)
 ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
 ticks
+#%%
+#%%
+#%%
+#%%
 #%% Change working directory from the workspace root to the ipynb file location. Turn this addition off with the DataScience.changeDirOnImportExport setting
 import os
 
@@ -147,6 +151,8 @@ ib = IB()
 ib.connect('127.0.0.1', 7498, clientId=1)
 
 #%%
+import requests
+from influxdb import DataFrameClient
 
 import datetime
 import pandas as pd
@@ -168,11 +174,36 @@ def insert_ticks(df_ticks, ticks):
 
     df_ticks=pd.concat([pd.DataFrame(data), df_ticks], ignore_index=True)
     return df_ticks
-#%% download historical ticks from a current moment to a past date then exit
 
+#%%
+def insert_ticks_to_db(ticks):
+    i=0
+    for tick in ticks:
+        i=i+1
+        #this adds i as a column regardless of the tick timestamp being unique or not
+        #this will require to completely purge and re-import historical data every time 
+        #unless "seconds" in timestamp is used as a merker to not write to db anymore history
+        req_data='demo_tbl,'+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+' '+str(tick.time.timestamp())
+        req_data=req_data.encode('utf-8')
+        #"http://localhost:8086/write?db=mydb" --data-binary 'mymeas,mytag=1 myfield=90 1463683075000000000'
+        r = requests.post('http://localhost:8086/write?db=demo&u=root&p=root', data=req_data)
+        print(r)
+    return r.status_code   
+
+def GetInfluxdbPandasClient():
+    """Instantiate the connection to the InfluxDB client."""
+    user = 'root'
+    password = 'root'
+    dbname = 'demo'
+    protocol = 'json'
+    host='localhost'
+    port=8086
+    client = DataFrameClient(host, port, user, password, dbname)
+    return client
+#%% download historical ticks from a current moment to a past date then exit
 dt_earliest_available=datetime.datetime.now()-datetime.timedelta(days=3)
 dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
-
+#%%
 dt=datetime.datetime.now()
 dt=dt.astimezone(tz=datetime.timezone.utc)
 dt
@@ -180,16 +211,21 @@ while True:
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
 
     if dt<=dt_earliest_available:
-        break    
+        break
 
     if len(ticks)<2:
         dt=dt-datetime.timedelta(days=1)
     else:
-        df_ticks=insert_ticks(df_ticks, ticks)
+        #df_ticks=insert_ticks(df_ticks, ticks)
+        result=insert_ticks_to_db(ticks)
         dt=ticks[0].time
         print ('Getting tick data for ', dt)
 
-df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
+client = GetInfluxdbPandasClient()
+result=client.query("select time, price,size,id from demo_tbl")
+df_result=pd.DataFrame(result['demo_tbl'])
+df_result.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
+#df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_ticks)
 #%%
 #%%
@@ -268,9 +304,6 @@ ib.disconnect()
 #%%
 #%%
 #%%
-
-
-
 
 
 #%%
