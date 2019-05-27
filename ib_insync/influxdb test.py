@@ -37,7 +37,7 @@ ib.qualifyContracts(*contracts)
 dt_earliest_available=ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
 dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 dt_earliest_available
-table='demo_tbl'
+table='demo_tbl1'
 #%%
 def insert_ticks(df_ticks, ticks):
     data = []
@@ -88,6 +88,7 @@ client = GetInfluxdbPandasClient()
 result=client.query("delete from "+table)
 
 while True:
+    print ('Getting tick data for ', dt)
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
 
     if dt<=dt_earliest_available:
@@ -97,9 +98,10 @@ while True:
         dt=dt-datetime.timedelta(days=1)
     else:
         #df_ticks=insert_ticks(df_ticks, ticks)
+        print ('Writing tick data to db for ', dt)
         result=insert_ticks_to_db(ticks)
         dt=ticks[0].time
-        print ('Getting tick data for ', dt)
+        
 
 result=client.query("select time, price,size,id from "+table)
 df_result=pd.DataFrame(result['demo_tbl'])
