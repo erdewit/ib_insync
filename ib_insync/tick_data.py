@@ -310,12 +310,12 @@ ib.disconnect()
 #%% store live ticks the same way historical ticks are returned by the API, hence making backtests valid
     
 ib.connect('127.0.0.1', 7498, clientId=1)
-df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
 contracts = [Future(conId='333866981')]
 contracts[0].includeExpired=True
 #contracts[0].lastTradeDateOrContractMonth='20190318'
 ib.qualifyContracts(*contracts)
 #%%
+df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
 
 zb_ticker=ib.reqTickByTickData(contracts[0],'Last')
 #%%

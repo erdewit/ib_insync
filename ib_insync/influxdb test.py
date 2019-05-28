@@ -38,7 +38,7 @@ dt_earliest_available=ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
 dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 dt_earliest_available
 
-table='demo_tbl1'
+table='USM19'
 #%%
 def insert_ticks(df_ticks, ticks):
     data = []
@@ -66,25 +66,7 @@ def insert_ticks_to_db(ticks):
     r = requests.post('http://localhost:8086/write?db=demo&u=root&p=root', data=req_data)
     print(req_data,' ',r)
     return r.status_code  
-
-def insert_new_ticks_to_db(ticks):
-    i=0
-    req_data=''
-    for tick in ticks:
-        i=i+1
-        #this adds i as a column regardless of the tick timestamp being unique or not
-        #this will require to completely purge and re-import historical data every time 
-        #unless "seconds" in timestamp is used as a merker to not write to db anymore history
-        tick_time=str(tick.time)
-        #tick_time=(str(tick.time.timestamp()))[:-2]
-        req_data=req_data+table+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+' '+tick_time+'\n'
-        #print(req_data)
-    req_data=req_data.encode('utf-8')
-    #"http://localhost:8086/write?db=mydb" --data-binary 'mymeas,mytag=1 myfield=90 1463683075000000000'
-    r = requests.post('http://localhost:8086/write?db=demo&u=root&p=root', data=req_data)
-    print(req_data,' ',r)
-    return r.status_code   
-
+#%%
 def GetInfluxdbPandasClient():
     """Instantiate the connection to the InfluxDB client."""
     user = 'root'
@@ -129,6 +111,51 @@ while True:
         dt=ticks[0].time
         
 #%%
+'''
+#pd.DatetimeIndex(df_result.index).strftime('%f')
+dt=pd.DatetimeIndex(df_result.index).second*1000000000
+dt=dt+pd.DatetimeIndex(df_result.index).microsecond*1000
+dt=dt+pd.DatetimeIndex(df_result.index).nanosecond
+df_result.index= pd.to_datetime(dt, unit='s')
+'''
+#%%
+ib.connect('127.0.0.1', 7498, clientId=1)
+#%%
+#df_ticks.index=pd.DatetimeIndex(df_ticks['time'])
+
+zb_ticker=ib.reqTickByTickData(contracts[0],'Last')
+#%%
+def onPendingTickers(tickers):
+    df_ticks = pd.DataFrame(columns=['time','id','price','size'])
+
+    i=0
+    for t in tickers:
+        for tick in t.tickByTicks:
+            new_entry = {'time': datetime.datetime.fromtimestamp (tick.time.timestamp()),
+                         'id': i,'price': tick.price, 'size': float(tick.size)}
+
+            df_ticks.loc[len(df_ticks)]= new_entry
+            
+            #df_ticks.loc[len(df_ticks)]=[ tick.time,i,tick.price,tick.size]
+            i=i+1
+        
+    print(df_ticks.tail())
+    #dt=datetime.datetime.now()
+
+    if len(df_ticks)>=0:
+        #df_ticks.set_index(['time','id'],inplace=True)
+        df_ticks.set_index(['time'],inplace=True)
+        #print(df_ticks)
+        #print(df_ticks.index)
+        result=client.write_points(df_ticks,table,tag_columns=['id'])
+        #result=True
+        #if result:
+            #df_ticks.truncate()
+           # df_ticks.reset_index(drop=True,inplace=True)
+            
+ib.pendingTickersEvent += onPendingTickers
+
+#%%
 result=client.query("select * from "+table) #+" order by time desc limit 10 ",
                     #epoch='ns')
 result
@@ -139,10 +166,11 @@ df_result.to_csv(r'c:\test\IB-USM19-hist-data'+str(datetime.datetime.now().times
 #df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_result)
 #%%
-'''
-#pd.DatetimeIndex(df_result.index).strftime('%f')
-dt=pd.DatetimeIndex(df_result.index).second*1000000000
-dt=dt+pd.DatetimeIndex(df_result.index).microsecond*1000
-dt=dt+pd.DatetimeIndex(df_result.index).nanosecond
-df_result.index= pd.to_datetime(dt, unit='s')
-'''
+
+#%%
+ib.pendingTickersEvent -= onPendingTickers
+#%%
+ib.cancelTickByTickData(contracts[0], 'AllLast')
+
+#%%
+ib.disconnect()
