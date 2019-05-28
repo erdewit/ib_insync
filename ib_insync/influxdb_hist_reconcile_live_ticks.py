@@ -77,9 +77,6 @@ def GetInfluxdbPandasClient():
     port=8086
     client = DataFrameClient(host, port, user, password, dbname)
     return client
-#%% download historical ticks from a current moment to a past date then exit
-#dt_earliest_available=datetime.datetime.now()-datetime.timedelta(days=3)
-#dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 #%%
 
 client = GetInfluxdbPandasClient()
@@ -87,6 +84,14 @@ client = GetInfluxdbPandasClient()
 dt=datetime.datetime.now()
 dt=dt.astimezone(tz=datetime.timezone.utc)
 dt
+
+#%% download historical ticks from a current moment to a past date then exit
+result=client.query("select * from "+table+" where id>=1000 order by time desc limit 1 ")
+                    #epoch='ns')
+result
+df_result=pd.DataFrame(result[table])
+dt_latest_hist_in_db=datetime.datetime( df_result.index[0],tz=datetime.timezone.utc)
+dt_latest_hist_in_db=dt_latest_hist_in_db+datetime.timedelta(seconds=1)
 # to stop at a certain tick in db
 #result=client.query("select * from "+table +" order by time desc limit 1")
 #df_result=pd.DataFrame(result['demo_tbl'])
