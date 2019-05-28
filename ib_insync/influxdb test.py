@@ -110,8 +110,8 @@ dt
 #df_result=pd.DataFrame(result['demo_tbl'])
 #df_result.index[0]
 #dt_earliest_available=datetime.datetime.fromtimestamp(int(str(df_result.index[0])),tz=datetime.timezone.utc)
-
-result=client.query("delete from "+table)
+#%%
+#result=client.query("delete from "+table)
 #%%
 while True:
     print ('Getting tick data for ', dt)
@@ -128,10 +128,19 @@ while True:
         result=insert_ticks_to_db(ticks)
         dt=ticks[0].time
         
-
-result=client.query("select time, price,size,id from "+table)
+import numpy as np
+result=client.query("select * from "+table) #+" order by time desc limit 10 ",
+                    #epoch='ns')
+result
 df_result=pd.DataFrame(result['demo_tbl'])
-df_result.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
+#pd.DatetimeIndex(df_result.index).strftime('%f')
+dt=pd.DatetimeIndex(df_result.index).second*1000000000
+dt=dt+pd.DatetimeIndex(df_result.index).microsecond*1000
+dt=dt+pd.DatetimeIndex(df_result.index).nanosecond
+df_result.index= pd.to_datetime(dt, unit='s')
+df_result
+
+df_result.to_csv(r'c:\test\IB-USM19-hist-data'+str(datetime.datetime.now().timestamp())+'.csv')
 #df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_result)
 #%%
