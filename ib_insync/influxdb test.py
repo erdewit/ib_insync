@@ -38,7 +38,7 @@ dt_earliest_available=ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
 dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 dt_earliest_available
 
-table='demo_tbl'
+table='demo_tbl1'
 #%%
 def insert_ticks(df_ticks, ticks):
     data = []
@@ -59,7 +59,7 @@ def insert_ticks_to_db(ticks):
         #this adds i as a column regardless of the tick timestamp being unique or not
         #this will require to completely purge and re-import historical data every time 
         #unless "seconds" in timestamp is used as a merker to not write to db anymore history
-        req_data=req_data+table+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+' '+(str(tick.time.timestamp()))[:-2]+'\n'
+        req_data=req_data+table+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+' '+(str(tick.time.timestamp()))[:-2]+'000000000\n'
         #print(req_data)
     req_data=req_data.encode('utf-8')
     #"http://localhost:8086/write?db=mydb" --data-binary 'mymeas,mytag=1 myfield=90 1463683075000000000'
@@ -128,19 +128,21 @@ while True:
         result=insert_ticks_to_db(ticks)
         dt=ticks[0].time
         
-import numpy as np
+#%%
 result=client.query("select * from "+table) #+" order by time desc limit 10 ",
                     #epoch='ns')
 result
-df_result=pd.DataFrame(result['demo_tbl'])
-#pd.DatetimeIndex(df_result.index).strftime('%f')
-dt=pd.DatetimeIndex(df_result.index).second*1000000000
-dt=dt+pd.DatetimeIndex(df_result.index).microsecond*1000
-dt=dt+pd.DatetimeIndex(df_result.index).nanosecond
-df_result.index= pd.to_datetime(dt, unit='s')
+df_result=pd.DataFrame(result[table])
 df_result
 
 df_result.to_csv(r'c:\test\IB-USM19-hist-data'+str(datetime.datetime.now().timestamp())+'.csv')
 #df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_result)
 #%%
+'''
+#pd.DatetimeIndex(df_result.index).strftime('%f')
+dt=pd.DatetimeIndex(df_result.index).second*1000000000
+dt=dt+pd.DatetimeIndex(df_result.index).microsecond*1000
+dt=dt+pd.DatetimeIndex(df_result.index).nanosecond
+df_result.index= pd.to_datetime(dt, unit='s')
+'''
