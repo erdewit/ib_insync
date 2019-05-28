@@ -231,7 +231,7 @@ print(df_ticks)
 #%%
 #%%
 #%%
-#%% infinite loop todownload historical ticks from a start date onwards till current moment 
+#%% infinite loop to download historical ticks from a start date onwards till current moment 
 
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
 
