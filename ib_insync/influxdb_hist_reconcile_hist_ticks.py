@@ -104,14 +104,14 @@ from time import sleep
 
 last_hist_tick_time_in_db=Get_last_hist_tick_time_in_db()
 
-dt=datetime.datetime.now()
-dt=dt.astimezone(tz=datetime.timezone.utc)
+dt_now=datetime.datetime.now()
+dt_now=dt.astimezone(tz=datetime.timezone.utc)
 
 while True:
     print ('Getting tick data for ', dt)
-    ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
+    ticks=ib.reqHistoricalTicks(contracts[0],None,dt_now,1000,"TRADES",False)
 
-    if dt<=last_hist_tick_time_in_db:
+    if dt_now<=dt:
         break
 
     if len(ticks)<2:
