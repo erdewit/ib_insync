@@ -39,6 +39,7 @@ dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 dt_earliest_available
 
 table='USM19-5-28'
+last_tick_time=0
 #%%
 def insert_ticks(df_ticks, ticks):
     data = []
@@ -53,13 +54,21 @@ def insert_ticks(df_ticks, ticks):
 #%%
 def insert_ticks_to_db(ticks):
     i=0
+    last_tick_time=0
+
     req_data=''
     for tick in ticks:
-        i=i+1
+        tick_time=tick.time.timestamp()
+        
+        if tick_time!=last_tick_time:
+            i=0
+        else:
+            i=i+1
         #this adds i as a column regardless of the tick timestamp being unique or not
         #this will require to completely purge and re-import historical data every time 
         #unless "seconds" in timestamp is used as a merker to not write to db anymore history
-        req_data=req_data+table+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+',hist=1 '+(str(tick.time.timestamp()))[:-2]+'000000000\n'
+        req_data=req_data+table+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+',hist=1 '+str(tick_time)[:-2]+'000000000\n'
+        last_tick_time=tick_time
         #print(req_data)
     req_data=req_data.encode('utf-8')
     #"http://localhost:8086/write?db=mydb" --data-binary 'mymeas,mytag=1 myfield=90 1463683075000000000'
@@ -87,11 +96,6 @@ client = GetInfluxdbPandasClient()
 dt=datetime.datetime.now()
 dt=dt.astimezone(tz=datetime.timezone.utc)
 dt
-# to stop at a certain tick in db
-#result=client.query("select * from "+table +" order by time desc limit 1")
-#df_result=pd.DataFrame(result['demo_tbl'])
-#df_result.index[0]
-#dt_earliest_available=datetime.datetime.fromtimestamp(int(str(df_result.index[0])),tz=datetime.timezone.utc)
 #%%
 #result=client.query("delete from "+table)
 #%%
