@@ -26,11 +26,13 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-ib.connect('127.0.0.1', 7498, clientId=10)
+ib.connect('127.0.0.1', 7498, clientId=1)
 
 #%%
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
-contracts = [Future(conId='333866981')]
+#contracts = [Future(conId='333866981')]
+contracts = [ContFuture('ZB')]
+
 contracts[0].includeExpired=True
 #contracts[0].lastTradeDateOrContractMonth='20190318'
 ib.qualifyContracts(*contracts)
@@ -38,7 +40,7 @@ dt_earliest_available=ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
 dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 dt_earliest_available
 
-table='USM19-5-29'
+table='ContUSM19-5-29'
 last_tick_time=0
 #%%
 def insert_ticks(df_ticks, ticks):
@@ -94,6 +96,7 @@ def GetInfluxdbPandasClient():
 client = GetInfluxdbPandasClient()
 
 dt=datetime.datetime.now()
+#dt=datetime.datetime.fromtimestamp(1559102979)
 dt=dt.astimezone(tz=datetime.timezone.utc)
 dt
 #%%
