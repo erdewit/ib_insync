@@ -100,6 +100,8 @@ def insert_ticks_to_db(ticks):
 #result=client.query("delete from "+table)
     
 #%%
+from time import sleep
+
 last_hist_tick_time_in_db=Get_last_hist_tick_time_in_db()
 
 dt=datetime.datetime.now()
@@ -109,7 +111,7 @@ while True:
     print ('Getting tick data for ', dt)
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
 
-    if dt<=dt_earliest_available:
+    if dt<=last_hist_tick_time_in_db:
         break
 
     if len(ticks)<2:
@@ -122,6 +124,8 @@ while True:
         #once adding to db stops, get out of the while loop
         if str(result)!='204':
             break
+        
+    sleep(1)
         
 #%%
 '''
