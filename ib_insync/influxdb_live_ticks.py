@@ -25,7 +25,7 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-ib.connect('127.0.0.1', 7498, clientId=1)
+ib.connect('127.0.0.1', 7498, clientId=2)
 
 #%%
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
@@ -50,6 +50,7 @@ def GetInfluxdbPandasClient():
     port=8086
     client = DataFrameClient(host, port, user, password, dbname)
     return client
+#%%
 '''
 #pd.DatetimeIndex(df_result.index).strftime('%f')
 dt=pd.DatetimeIndex(df_result.index).second*1000000000

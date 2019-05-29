@@ -38,7 +38,7 @@ dt_earliest_available=ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
 dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 dt_earliest_available
 
-table='USM19-5-28'
+table='USM19-5-29'
 #%%
 def GetInfluxdbPandasClient():
     """Instantiate the connection to the InfluxDB client."""
@@ -102,7 +102,7 @@ def insert_ticks_to_db(ticks, last_hist_tick_time_in_db):
     return r.status_code  
 #%%
 #result=client.query("delete from "+table)
-    
+
 #%%
 last_hist_tick_time_in_db=Get_last_hist_tick_time_in_db()
 dt_earliest_live_tick_in_db=Get_earliest_live_tick_time_in_db()
