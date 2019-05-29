@@ -30,15 +30,17 @@ ib.connect('127.0.0.1', 7498, clientId=3)
 
 #%%
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
-contracts = [Future(conId='333866981')]
+#contracts = [Future(conId='333866981')]
+contracts = [ContFuture('ZB')]
 contracts[0].includeExpired=True
+
 #contracts[0].lastTradeDateOrContractMonth='20190318'
 ib.qualifyContracts(*contracts)
 dt_earliest_available=ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
 dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 dt_earliest_available
 
-table='USM19-5-28'
+table='"ContUSM19-5-29"'
 #%%
 def GetInfluxdbPandasClient():
     """Instantiate the connection to the InfluxDB client."""
@@ -60,10 +62,12 @@ def Get_last_hist_tick_time_in_db():
     result=client.query("select * from "+table+" where hist=1 order by time desc limit 1")
                     #epoch='ns')
     result
-    df_result=pd.DataFrame(result[table])
-    dt_latest_hist_in_db=datetime.datetime( df_result.index[0],tz=datetime.timezone.utc)
+    df_result=pd.DataFrame(result[table.replace('"','')])
+    dt_latest_hist_in_db=df_result.index[0]#,tz=datetime.timezone.utc)
     dt_latest_hist_in_db=dt_latest_hist_in_db+datetime.timedelta(seconds=1)
+    #dt_latest_hist_in_db=dt_latest_hist_in_db.astimezone(tz=datetime.timezone.utc)
     return dt_latest_hist_in_db
+#%%
 #to stop at a certain tick in db
 #result=client.query("select * from "+table +" order by time desc limit 1")
 #df_result=pd.DataFrame(result['demo_tbl'])
@@ -88,18 +92,18 @@ def insert_ticks_to_db(ticks):
         #this adds i as a column regardless of the tick timestamp being unique or not
         #this will require to completely purge and re-import historical data every time 
         #unless "seconds" in timestamp is used as a merker to not write to db anymore history
-        req_data=req_data+table+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+',hist=1 '+str(tick_time)[:-2]+'000000000\n'
+        req_data=req_data+table.replace('"','')+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+',hist=1 '+str(tick_time)[:-2]+'000000000\n'
         last_tick_time=tick_time
         #print(req_data)
-    req_data=req_data.encode('utf-8')
     #"http://localhost:8086/write?db=mydb" --data-binary 'mymeas,mytag=1 myfield=90 1463683075000000000'
-     if len(req_data)>0:
-        req_data=req_data.encode('utf-8')
+    if len(req_data)>0:
+        req_data=str(req_data).encode('utf-8')
         #"http://localhost:8086/write?db=mydb" --data-binary 'mymeas,mytag=1 myfield=90 1463683075000000000'
         r = requests.post('http://localhost:8086/write?db=demo&u=root&p=root', data=req_data)
-        print(req_data,' ',r)
+        print('inserted data ', req_data,' ',r)
         return r.status_code
     else:
+        print('no more data to insert')
         return 'no points to insert'
      
 #%%
@@ -108,7 +112,10 @@ def insert_ticks_to_db(ticks):
 #%%
 from time import sleep
 
-last_hist_tick_time_in_db=Get_last_hist_tick_time_in_db()
+last_hist_tick_time_in_db = Get_last_hist_tick_time_in_db()
+last_hist_tick_time_in_db = pd.datetime.timestamp(last_hist_tick_time_in_db)
+last_hist_tick_time_in_db = datetime.datetime.fromtimestamp(last_hist_tick_time_in_db)
+last_hist_tick_time_in_db  = last_hist_tick_time_in_db.astimezone(tz=datetime.timezone.utc)
 
 dt_now=datetime.datetime.now()
 dt_now=dt_now.astimezone(tz=datetime.timezone.utc)
@@ -131,7 +138,7 @@ while True:
         if str(result)!='204':
             break
         
-    sleep(1)
+#sleep(1)
         
 #%%
 '''
@@ -140,7 +147,6 @@ dt=pd.DatetimeIndex(df_result.index).second*1000000000
 dt=dt+pd.DatetimeIndex(df_result.index).microsecond*1000
 dt=dt+pd.DatetimeIndex(df_result.index).nanosecond
 df_result.index= pd.to_datetime(dt, unit='s')
-'''
 #%%
 result=client.query("select * from "+table) #+" order by time desc limit 10 ",
                     #epoch='ns')
@@ -152,4 +158,5 @@ df_result.to_csv(r'c:\test\IB-USM19-hist-data'+str(datetime.datetime.now().times
 #df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_result)
 #%%
+'''
 ib.disconnect()
