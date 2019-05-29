@@ -65,13 +65,13 @@ client = GetInfluxdbPandasClient()
 zb_ticker=ib.reqTickByTickData(contracts[0],'Last')
 #%%
 def onPendingTickers(tickers):
-    df_ticks = pd.DataFrame(columns=['time','id','price','size'])
+    df_ticks = pd.DataFrame(columns=['time','id','price','size', 'hist'])
 
     i=0
     for t in tickers:
         for tick in t.tickByTicks:
             new_entry = {'time': datetime.datetime.fromtimestamp (tick.time.timestamp()),
-                         'id': i,'price': tick.price, 'size': float(tick.size)}
+                         'id': i,'price': tick.price, 'size': float(tick.size), 'hist': '0'}
 
             df_ticks.loc[len(df_ticks)]= new_entry
             

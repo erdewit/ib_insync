@@ -40,33 +40,6 @@ dt_earliest_available
 
 table='USM19-5-28'
 #%%
-def insert_ticks(df_ticks, ticks):
-    data = []
-    i=0
-    for tick in ticks:
-        data.insert(i, {'Timestamp': tick.time, 'price': tick.price, 'size': tick.size})
-        i=i+1
-
-    df_ticks=pd.concat([pd.DataFrame(data), df_ticks], ignore_index=True)
-    return df_ticks
-
-#%%
-def insert_ticks_to_db(ticks):
-    i=0
-    req_data=''
-    for tick in ticks:
-        i=i+1
-        #this adds i as a column regardless of the tick timestamp being unique or not
-        #this will require to completely purge and re-import historical data every time 
-        #unless "seconds" in timestamp is used as a merker to not write to db anymore history
-        req_data=req_data+table+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+' '+(str(tick.time.timestamp()))[:-2]+'000000000\n'
-        #print(req_data)
-    req_data=req_data.encode('utf-8')
-    #"http://localhost:8086/write?db=mydb" --data-binary 'mymeas,mytag=1 myfield=90 1463683075000000000'
-    r = requests.post('http://localhost:8086/write?db=demo&u=root&p=root', data=req_data)
-    print(req_data,' ',r)
-    return r.status_code  
-#%%
 def GetInfluxdbPandasClient():
     """Instantiate the connection to the InfluxDB client."""
     user = 'root'
@@ -78,7 +51,6 @@ def GetInfluxdbPandasClient():
     client = DataFrameClient(host, port, user, password, dbname)
     return client
 #%%
-
 client = GetInfluxdbPandasClient()
 
 dt=datetime.datetime.now()
@@ -86,23 +58,58 @@ dt=dt.astimezone(tz=datetime.timezone.utc)
 dt
 
 #%% download historical ticks from a current moment to a past date then exit
-result=client.query("select * from "+table+" where id>=1000 order by time desc limit 1 ")
+def Get_last_hist_tick_time_in_db():
+    #id>=1000 is only true when historical ticks are retrieved, also time precision is second only
+    result=client.query("select * from "+table+" where hist=1 order by time desc limit 1")
                     #epoch='ns')
-result
-df_result=pd.DataFrame(result[table])
-dt_latest_hist_in_db=datetime.datetime( df_result.index[0],tz=datetime.timezone.utc)
-dt_latest_hist_in_db=dt_latest_hist_in_db+datetime.timedelta(seconds=1)
-# to stop at a certain tick in db
+    result
+    df_result=pd.DataFrame(result[table])
+    dt_latest_hist_in_db=datetime.datetime( df_result.index[0],tz=datetime.timezone.utc)
+    dt_latest_hist_in_db=dt_latest_hist_in_db+datetime.timedelta(seconds=1)
+    return dt_latest_hist_in_db
+#to stop at a certain tick in db
 #result=client.query("select * from "+table +" order by time desc limit 1")
 #df_result=pd.DataFrame(result['demo_tbl'])
 #df_result.index[0]
 #dt_earliest_available=datetime.datetime.fromtimestamp(int(str(df_result.index[0])),tz=datetime.timezone.utc)
+
+#%% download historical ticks from a current moment to a past date then exit
+def Get_earliest_live_tick_time_in_db():
+    #assumes the db has only one patch of live ticks, i.e. historical tick has to overwrite live ticks everyday before market opens, and after a system crash
+    result=client.query("select * from "+table+" where hist=0 order by time asc limit 1 ")#epoch='ns')
+    result
+    
+    df_result=pd.DataFrame(result[table])
+    dt_latest_hist_in_db=datetime.datetime( df_result.index[0],tz=datetime.timezone.utc)
+    dt_latest_hist_in_db=dt_latest_hist_in_db+datetime.timedelta(seconds=1)
+    return dt_latest_hist_in_db
+#%%
+def insert_ticks_to_db(ticks, last_hist_tick_time_in_db):
+    i=0
+    req_data=''
+    for tick in ticks:
+        if tick.time.timestamp()>=last_hist_tick_time_in_db: #last_hist_tick_time_in_db already has 1 second added, hence the >= condition
+            i=i+1
+            #this adds i as a column regardless of the tick timestamp being unique or not
+            #this will require to completely purge and re-import historical data every time 
+            #unless "seconds" in timestamp is used as a merker to not write to db anymore history
+            req_data=req_data+table+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+',hist=1 '+(str(tick.time.timestamp()))[:-2]+'000000000\n'
+            #print(req_data)
+    req_data=req_data.encode('utf-8')
+    #"http://localhost:8086/write?db=mydb" --data-binary 'mymeas,mytag=1 myfield=90 1463683075000000000'
+    r = requests.post('http://localhost:8086/write?db=demo&u=root&p=root', data=req_data)
+    print(req_data,' ',r)
+    return r.status_code  
 #%%
 #result=client.query("delete from "+table)
+    
 #%%
+last_hist_tick_time_in_db=Get_last_hist_tick_time_in_db()
+dt_earliest_live_tick_in_db=Get_dt_earliest_live_tick_in_db()
+
 while True:
     print ('Getting tick data for ', dt)
-    ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
+    ticks=ib.reqHistoricalTicks(contracts[0],None,dt_earliest_live_tick_in_db,1000,"TRADES",False)
 
     if dt<=dt_earliest_available:
         break
@@ -112,8 +119,11 @@ while True:
     else:
         #df_ticks=insert_ticks(df_ticks, ticks)
         print ('Writing tick data to db for ', dt)
-        result=insert_ticks_to_db(ticks)
+        result=insert_ticks_to_db(ticks, last_hist_tick_time_in_db)
         dt=ticks[0].time
+        #once adding to db stops, get out of the while loop
+        if str(result)!='204':
+            break
         
 #%%
 '''
