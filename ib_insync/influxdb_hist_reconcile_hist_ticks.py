@@ -93,9 +93,15 @@ def insert_ticks_to_db(ticks):
         #print(req_data)
     req_data=req_data.encode('utf-8')
     #"http://localhost:8086/write?db=mydb" --data-binary 'mymeas,mytag=1 myfield=90 1463683075000000000'
-    r = requests.post('http://localhost:8086/write?db=demo&u=root&p=root', data=req_data)
-    print(req_data,' ',r)
-    return r.status_code  
+     if len(req_data)>0:
+        req_data=req_data.encode('utf-8')
+        #"http://localhost:8086/write?db=mydb" --data-binary 'mymeas,mytag=1 myfield=90 1463683075000000000'
+        r = requests.post('http://localhost:8086/write?db=demo&u=root&p=root', data=req_data)
+        print(req_data,' ',r)
+        return r.status_code
+    else:
+        return 'no points to insert'
+     
 #%%
 #result=client.query("delete from "+table)
     
