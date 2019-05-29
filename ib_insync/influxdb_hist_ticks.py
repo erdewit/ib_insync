@@ -121,7 +121,7 @@ dt=pd.DatetimeIndex(df_result.index).second*1000000000
 dt=dt+pd.DatetimeIndex(df_result.index).microsecond*1000
 dt=dt+pd.DatetimeIndex(df_result.index).nanosecond
 df_result.index= pd.to_datetime(dt, unit='s')
-'''
+
 #%%
 result=client.query("select * from "+table) #+" order by time desc limit 10 ",
                     #epoch='ns')
@@ -134,3 +134,4 @@ df_result.to_csv(r'c:\test\IB-USM19-hist-data'+str(datetime.datetime.now().times
 print(df_result)
 #%%
 ib.disconnect()
+'''

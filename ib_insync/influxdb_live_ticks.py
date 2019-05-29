@@ -95,7 +95,7 @@ def onPendingTickers(tickers):
             
 ib.pendingTickersEvent += onPendingTickers
 
-
+'''
 #%%
 ib.pendingTickersEvent -= onPendingTickers
 #%%
@@ -115,3 +115,4 @@ df_result.to_csv(r'c:\test\IB-USM19-hist-data'+str(datetime.datetime.now().times
 #df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_result)
 #%%
+'''
