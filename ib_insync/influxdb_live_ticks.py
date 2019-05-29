@@ -25,7 +25,7 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-ib.connect('127.0.0.1', 7498, clientId=2)
+ib.connect('127.0.0.1', 7498, clientId=8)
 
 #%%
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
@@ -37,7 +37,7 @@ dt_earliest_available=ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
 dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 dt_earliest_available
 
-table='USM19-5-28'
+table='USM19-5-29'
      
 #%%
 def GetInfluxdbPandasClient():
@@ -72,7 +72,7 @@ def onPendingTickers(tickers):
     for t in tickers:
         for tick in t.tickByTicks:
             new_entry = {'time': datetime.datetime.fromtimestamp (tick.time.timestamp()),
-                         'id': i,'price': tick.price, 'size': float(tick.size), 'hist': '0'}
+                         'id': i,'price': tick.price, 'size': float(tick.size), 'hist': float(0)}
 
             df_ticks.loc[len(df_ticks)]= new_entry
             
