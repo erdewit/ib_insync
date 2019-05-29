@@ -105,22 +105,22 @@ from time import sleep
 last_hist_tick_time_in_db=Get_last_hist_tick_time_in_db()
 
 dt_now=datetime.datetime.now()
-dt_now=dt.astimezone(tz=datetime.timezone.utc)
+dt_now=dt_now.astimezone(tz=datetime.timezone.utc)
 
 while True:
-    print ('Getting tick data for ', dt)
+    print ('Getting tick data for ', dt_now)
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt_now,1000,"TRADES",False)
 
-    if dt_now<=dt:
+    if dt_now<=last_hist_tick_time_in_db:
         break
 
     if len(ticks)<2:
-        dt=dt-datetime.timedelta(days=1)
+        dt_now=dt_now-datetime.timedelta(days=1)
     else:
         #df_ticks=insert_ticks(df_ticks, ticks)
-        print ('Writing tick data to db for ', dt)
+        print ('Writing tick data to db for ', dt_now)
         result=insert_ticks_to_db(ticks, last_hist_tick_time_in_db)
-        dt=ticks[0].time
+        dt_now=ticks[0].time
         #once adding to db stops, get out of the while loop
         if str(result)!='204':
             break
