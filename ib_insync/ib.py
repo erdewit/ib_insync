@@ -1605,12 +1605,16 @@ class IB:
                 self.reqAutoOpenOrders(True)
             self._logger.info('Synchronization complete')
             self.connectedEvent.emit()
-            return self
 
-        if self.isConnected():
+        if not self.isConnected():
+            try:
+                await asyncio.wait_for(connect(), timeout or None)
+            except Exception:
+                self.disconnect()
+                raise
+        else:
             self._logger.warn('Already connected')
-            return self
-        return await asyncio.wait_for(connect(), timeout or None)
+        return self
 
     async def qualifyContractsAsync(self, *contracts):
         detailsLists = await asyncio.gather(
