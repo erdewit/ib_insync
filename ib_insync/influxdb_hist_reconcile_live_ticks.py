@@ -95,7 +95,7 @@ def insert_ticks_to_db(ticks, last_hist_tick_time_in_db):
                 i=i+1            #this adds i as a column regardless of the tick timestamp being unique or not
             #this will require to completely purge and re-import historical data every time 
             #unless "seconds" in timestamp is used as a merker to not write to db anymore history
-            req_data=req_data+table+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+',hist=1 '+(str(tick.time.timestamp()))[:-2]+'000000000\n'
+            req_data=req_data+table.replace('"','')+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+',hist=1 '+(str(tick.time.timestamp()))[:-2]+'000000000\n'
             last_tick_time=tick_time
 
             #print(req_data)
