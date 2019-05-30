@@ -26,10 +26,11 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-ib.connect('127.0.0.1', 7498, clientId=5)
+ib.connect('127.0.0.1', 7498, clientId=15)
 table='USM190529'
 
 #%%
+data_ready=False
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
 contracts = [Future(conId='333866981')]
 #contracts = [ContFuture('ZB')]
@@ -189,13 +190,18 @@ def onPendingTickers(tickers):
         
     print(df_ticks.tail())
     #dt=datetime.datetime.now()
-
+    
+    if data_ready:
+        #call function to calc bars & studies on new data
+    
     if len(df_ticks)>=0:
         #df_ticks.set_index(['time','id'],inplace=True)
         df_ticks.set_index(['time'],inplace=True)
         #print(df_ticks)
         #print(df_ticks.index)
+        
         result=client.write_points(df_ticks,table.replace('"',''),tag_columns=['id'])
+        
         #result=True
         #if result:
             #df_ticks.truncate()
@@ -268,7 +274,13 @@ while True:
         if str(result)!='204':
             break
         sleep(10)
-        
+#%% has to be done when market data is very slow to give time for initial calulations without missing new live ticks
+#call function to calc bars & studies
+result=client.query("select * from "+table+" order by time asc limit ",epoch='ns')
+df_result=pd.DataFrame(result[table])
+
+data_ready=True
+
 #%%
 '''
 #pd.DatetimeIndex(df_result.index).strftime('%f')
