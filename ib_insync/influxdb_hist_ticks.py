@@ -116,7 +116,7 @@ while True:
         print ('Writing tick data to db for ', dt)
         result=insert_ticks_to_db(ticks)
         dt=ticks[0].time
-        
+
 #%%
 '''
 #pd.DatetimeIndex(df_result.index).strftime('%f')

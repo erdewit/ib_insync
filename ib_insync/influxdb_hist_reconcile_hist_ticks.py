@@ -110,8 +110,6 @@ def insert_ticks_to_db(ticks):
 #result=client.query("delete from "+table)
     
 #%%
-from time import sleep
-
 last_hist_tick_time_in_db = Get_last_hist_tick_time_in_db()
 last_hist_tick_time_in_db = pd.datetime.timestamp(last_hist_tick_time_in_db)
 last_hist_tick_time_in_db = datetime.datetime.fromtimestamp(last_hist_tick_time_in_db)
@@ -137,8 +135,24 @@ while True:
         #once adding to db stops, get out of the while loop
         if str(result)!='204':
             break
+#%% keep getting new historical data eery second
+# since every historical tick has time and id as primary key, duplicate ticks will not be inserted more than once to the db
+#this code assumes that not more than 1000 ticks can be returned per second, which is safe for ZB
+from time import sleep
+while True:
         
-#sleep(1)
+    dt=datetime.datetime.now()
+    dt=dt.astimezone(tz=datetime.timezone.utc)
+    
+    print ('Getting tick data for ', dt)
+    ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
+
+    if len(ticks)>2:
+        #df_ticks=insert_ticks(df_ticks, ticks)
+        print ('Writing tick data to db for ', dt)
+        result=insert_ticks_to_db(ticks)
+        dt=ticks[0].time        
+        sleep(1)
         
 #%%
 '''
