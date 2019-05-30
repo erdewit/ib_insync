@@ -152,7 +152,7 @@ while True:
         print ('Writing tick data to db for ', dt)
         result=insert_ticks_to_db(ticks)
         dt=ticks[0].time        
-        sleep(1)
+        sleep(10)
         
 #%%
 '''
@@ -171,6 +171,7 @@ df_result
 df_result.to_csv(r'c:\test\IB-USM19-hist-data'+str(datetime.datetime.now().timestamp())+'.csv')
 #df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_result)
-#%%
+
 '''
+#%%
 ib.disconnect()
