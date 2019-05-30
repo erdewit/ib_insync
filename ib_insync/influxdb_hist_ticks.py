@@ -40,7 +40,7 @@ dt_earliest_available=ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
 dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 dt_earliest_available
 
-table='ContUSM19-5-29'
+table='ContUSM190530'
 last_tick_time=0
 #%%
 def insert_ticks(df_ticks, ticks):
