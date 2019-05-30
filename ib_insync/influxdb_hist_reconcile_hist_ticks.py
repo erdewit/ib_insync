@@ -30,8 +30,8 @@ ib.connect('127.0.0.1', 7498, clientId=5)
 
 #%%
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
-contracts = [Future(conId='333866981')]
-#contracts = [ContFuture('ZB')]
+#contracts = [Future(conId='333866981')]
+contracts = [ContFuture('ZB')]
 contracts[0].includeExpired=True
 
 #contracts[0].lastTradeDateOrContractMonth='20190318'
@@ -40,7 +40,7 @@ dt_earliest_available=ib.reqHeadTimeStamp(contracts[0],"TRADES",False,1)
 dt_earliest_available=dt_earliest_available.astimezone(tz=datetime.timezone.utc)
 dt_earliest_available
 
-table='"USM19-5-29"'
+table='ContUSM190530'
 #%%
 def GetInfluxdbPandasClient():
     """Instantiate the connection to the InfluxDB client."""
@@ -188,14 +188,15 @@ while True:
 # since every historical tick has time and id as primary key, duplicate ticks will not be inserted more than once to the db
 #this code assumes that not more than 1000 ticks can be returned per 10 second, which is safe for ZB
             
-from time import sleep
 
 prev_req_data_live=0
     
 dt_earliest_live_tick_in_db = Get_earliest_live_tick_time_in_db()
 dt_earliest_live_tick_in_db = pd.datetime.timestamp(dt_earliest_live_tick_in_db)
 dt_earliest_live_tick_in_db = datetime.datetime.fromtimestamp(dt_earliest_live_tick_in_db)
+#%%
 
+from time import sleep
 while True:
         
     dt=datetime.datetime.now()
@@ -209,8 +210,8 @@ while True:
         print ('Second Loop: Writing tick data to db for ', dt)
         
         #switch the 2 lines of code below if trying to to reconcile with live ticks
-        #result=insert_ticks_to_db(ticks)
-        result,prev_req_data_live=insert_mid_ticks_to_db(ticks,dt_earliest_live_tick_in_db,prev_req_data_live)
+        result=insert_ticks_to_db(ticks)
+        #result,prev_req_data_live=insert_mid_ticks_to_db(ticks,dt_earliest_live_tick_in_db,prev_req_data_live)
         print(str(result))
         if str(result)!='204':
             break
