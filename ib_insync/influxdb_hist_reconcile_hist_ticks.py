@@ -133,7 +133,7 @@ while True:
         #df_ticks=insert_ticks(df_ticks, ticks)
         print ('Writing tick data to db for ', dt_now)
         result=insert_ticks_to_db(ticks)
-        dt_now=ticks[0].time
+        dt_now=ticks[0].time#earliest time in result set
         #once adding to db stops, get out of the while loop
         if str(result)!='204':
             break

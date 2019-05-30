@@ -26,7 +26,7 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-ib.connect('127.0.0.1', 7498, clientId=3)
+ib.connect('127.0.0.1', 7498, clientId=12)
 
 #%%
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
@@ -78,7 +78,7 @@ def Get_earliest_live_tick_time_in_db():
     dt_earliest_live_tick_in_db=df_result.index[0]#,tz=datetime.timezone.utc)
     dt_earliest_live_tick_in_db=dt_earliest_live_tick_in_db-datetime.timedelta(microseconds=1)
     #dt_earliest_live_tick_in_db=dt_earliest_live_tick_in_db.astimezone(tz=datetime.timezone.utc)
-    return pd.datetime.timestamp(dt_earliest_live_tick_in_db)
+    return dt_earliest_live_tick_in_db
 #%%
 def insert_ticks_to_db(ticks, last_hist_tick_time_in_db):
     i=0
@@ -86,8 +86,9 @@ def insert_ticks_to_db(ticks, last_hist_tick_time_in_db):
 
     req_data=''
     for tick in ticks:
-        if tick.time.timestamp()>=last_hist_tick_time_in_db.timestamp(): #last_hist_tick_time_in_db already has 1 second added, hence the >= condition
-            tick_time=tick.time.timestamp()
+        #print(tick.time)
+        tick_time=tick.time.timestamp()
+        if tick_time>=last_hist_tick_time_in_db.timestamp(): #last_hist_tick_time_in_db already has 1 second added, hence the >= condition
         
             if tick_time!=last_tick_time:
                 i=0
@@ -97,10 +98,9 @@ def insert_ticks_to_db(ticks, last_hist_tick_time_in_db):
             #unless "seconds" in timestamp is used as a merker to not write to db anymore history
             req_data=req_data+table.replace('"','')+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+',hist=1 '+(str(tick.time.timestamp()))[:-2]+'000000000\n'
             last_tick_time=tick_time
-
-            #print(req_data)
+            #print(len(req_data))
     if len(req_data)>0:
-        req_data=req_data.encode('utf-8')
+        req_data=str(req_data).encode('utf-8')
         #"http://localhost:8086/write?db=mydb" --data-binary 'mymeas,mytag=1 myfield=90 1463683075000000000'
         r = requests.post('http://localhost:8086/write?db=demo&u=root&p=root', data=req_data)
         print(req_data,' ',r)
@@ -118,13 +118,12 @@ last_hist_tick_time_in_db = datetime.datetime.fromtimestamp(last_hist_tick_time_
 dt_earliest_live_tick_in_db = Get_earliest_live_tick_time_in_db()
 dt_earliest_live_tick_in_db = pd.datetime.timestamp(dt_earliest_live_tick_in_db)
 dt_earliest_live_tick_in_db = datetime.datetime.fromtimestamp(dt_earliest_live_tick_in_db)
-
+#%%
 dt = dt_earliest_live_tick_in_db
 while True:
     print ('Getting tick data for ', dt)
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
 
-  
     if len(ticks)<2:
         break
     else:
