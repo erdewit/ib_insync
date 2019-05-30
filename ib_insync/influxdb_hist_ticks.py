@@ -96,7 +96,7 @@ def GetInfluxdbPandasClient():
 client = GetInfluxdbPandasClient()
 
 dt=datetime.datetime.now()
-dt=datetime.datetime.fromtimestamp(1558002912,tz=datetime.timezone.utc)
+dt=datetime.datetime.fromtimestamp(1555505101,tz=datetime.timezone.utc)
 #dt=dt.astimezone(tz=datetime.timezone.utc)
 dt
 #%%
@@ -135,6 +135,7 @@ df_result
 df_result.to_csv(r'c:\test\IB-USM19-hist-data'+str(datetime.datetime.now().timestamp())+'.csv')
 #df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_result)
+
+'''
 #%%
 ib.disconnect()
-'''
