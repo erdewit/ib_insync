@@ -274,11 +274,12 @@ while True:
         if str(result)!='204':
             break
         sleep(10)
-#%% has to be done when market data is very slow to give time for initial calulations without missing new live ticks
+#%% has to be done when market data is very slow to give time for initial calculations without missing new live ticks
 #call function to calc bars & studies
-result=client.query("select * from "+table+" order by time asc limit ",epoch='ns')
+#get last time for hist tick in dataframe, use that as condition below
+result=client.query("select * from "+table+" order by time asc where time> "+ df_last_hist,epoch='ns')
 df_result=pd.DataFrame(result[table])
-
+#concatdf_result with existing df
 data_ready=True
 
 #%%
