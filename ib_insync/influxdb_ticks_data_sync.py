@@ -176,13 +176,13 @@ zb_ticker=ib.reqTickByTickData(contracts[0],'Last')
 #%% start storing live ticks
 def onPendingTickers(tickers):
     df_ticks = pd.DataFrame(columns=['time','id','price','size', 'hist'])
-
+    
     i=0
     for t in tickers:
         for tick in t.tickByTicks:
             new_entry = {'time': datetime.datetime.fromtimestamp (tick.time.timestamp()),
                          'id': i,'price': tick.price, 'size': float(tick.size), 'hist': float(0)}
-
+    
             df_ticks.loc[len(df_ticks)]= new_entry
             
             #df_ticks.loc[len(df_ticks)]=[ tick.time,i,tick.price,tick.size]
@@ -191,7 +191,7 @@ def onPendingTickers(tickers):
     print(df_ticks.tail())
     #dt=datetime.datetime.now()
     
-    if data_ready:
+    #if data_ready:
         #call function to calc bars & studies on new data
     
     if len(df_ticks)>=0:
@@ -206,7 +206,7 @@ def onPendingTickers(tickers):
         #if result:
             #df_ticks.truncate()
            # df_ticks.reset_index(drop=True,inplace=True)
-            
+        
 ib.pendingTickersEvent += onPendingTickers
 
 #%% store missing hist ticks till current moment

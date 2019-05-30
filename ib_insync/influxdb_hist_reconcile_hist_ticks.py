@@ -175,7 +175,7 @@ while True:
         dt_now=dt_now-datetime.timedelta(days=1)
     else:
         #df_ticks=insert_ticks(df_ticks, ticks)
-        print ('Second Loop: Writing tick data to db for ', dt_now)
+        print ('First Loop: Writing tick data to db for ', dt_now)
         result=insert_ticks_to_db(ticks)
         dt_now=ticks[0].time#earliest time in result set
         # since every historical tick has time and id as primary key, duplicate ticks will not be inserted more than once to the db
@@ -215,7 +215,7 @@ while True:
         print(str(result))
         if str(result)!='204':
             break
-        sleep(10)
+        sleep(15)
         
 #%%
 '''
