@@ -50,14 +50,7 @@ def GetInfluxdbPandasClient():
     port=8086
     client = DataFrameClient(host, port, user, password, dbname)
     return client
-#%%
-'''
-#pd.DatetimeIndex(df_result.index).strftime('%f')
-dt=pd.DatetimeIndex(df_result.index).second*1000000000
-dt=dt+pd.DatetimeIndex(df_result.index).microsecond*1000
-dt=dt+pd.DatetimeIndex(df_result.index).nanosecond
-df_result.index= pd.to_datetime(dt, unit='s')
-'''
+
 #%%
 #df_ticks.index=pd.DatetimeIndex(df_ticks['time'])
 
@@ -95,8 +88,12 @@ def onPendingTickers(tickers):
             
 ib.pendingTickersEvent += onPendingTickers
 
-'''
 #%%
+#%%
+#%%
+#%%
+#%%
+
 ib.pendingTickersEvent -= onPendingTickers
 #%%
 ib.cancelTickByTickData(contracts[0], 'AllLast')
@@ -105,6 +102,15 @@ ib.cancelTickByTickData(contracts[0], 'AllLast')
 ib.disconnect()
 
 #%%
+'''
+#pd.DatetimeIndex(df_result.index).strftime('%f')
+dt=pd.DatetimeIndex(df_result.index).second*1000000000
+dt=dt+pd.DatetimeIndex(df_result.index).microsecond*1000
+dt=dt+pd.DatetimeIndex(df_result.index).nanosecond
+df_result.index= pd.to_datetime(dt, unit='s')
+'''
+#%%
+'''
 result=client.query("select * from "+table) #+" order by time desc limit 10 ",
                     #epoch='ns')
 result
