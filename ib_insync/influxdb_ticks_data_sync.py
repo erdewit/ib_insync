@@ -213,8 +213,9 @@ except:
     last_hist_tick_time_in_db = datetime.datetime.fromtimestamp(last_hist_tick_time_in_db,tz=datetime.timezone.utc)
     
 dt_now=datetime.datetime.now()
+#dt_now=datetime.datetime.fromtimestamp(1557150177)
 dt_now=dt_now.astimezone(tz=datetime.timezone.utc)
-
+#%%
 while True:
     print ('First Loop: Getting tick data for ', dt_now)
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt_now,1000,"TRADES",False)
