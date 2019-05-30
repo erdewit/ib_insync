@@ -77,6 +77,7 @@ def Get_last_hist_tick_time_in_db():
 
 #%%
 
+#%%
 def insert_ticks_to_db(ticks):
     i=0
     last_tick_time=0
@@ -104,11 +105,53 @@ def insert_ticks_to_db(ticks):
         return r.status_code
     else:
         print('no more data to insert')
-        return 'no points to insert'
-     
+        return 'no points to insert'    
+
 #%%
+def insert_mid_ticks_to_db(ticks, first_live_tick_time_in_db):
+    i=0
+    last_tick_time=0
+
+    req_data=''
+    for tick in ticks:
+        #print(tick.time)
+        tick_time=tick.time.timestamp()
+        if tick_time<=first_live_tick_time_in_db.timestamp(): #last_hist_tick_time_in_db already has 1 second added, hence the >= condition
+        
+            if tick_time!=last_tick_time:
+                i=0
+            else:
+                i=i+1            #this adds i as a column regardless of the tick timestamp being unique or not
+            #this will require to completely purge and re-import historical data every time 
+            #unless "seconds" in timestamp is used as a merker to not write to db anymore history
+            req_data=req_data+table.replace('"','')+','+'id='+ str(i) +' price='+str(tick.price)+',size='+str(tick.size)+',hist=1 '+(str(tick.time.timestamp()))[:-2]+'000000000\n'
+            last_tick_time=tick_time
+            #print(len(req_data))
+    if len(req_data)>0:
+        req_data=str(req_data).encode('utf-8')
+        #"http://localhost:8086/write?db=mydb" --data-binary 'mymeas,mytag=1 myfield=90 1463683075000000000'
+        r = requests.post('http://localhost:8086/write?db=demo&u=root&p=root', data=req_data)
+        print(req_data,' ',r)
+        return r.status_code
+    else:
+        return 'no points to insert' 
+    #%%
 #result=client.query("delete from "+table)
+    #%% download historical ticks from a current moment to a past date then exit
+def Get_earliest_live_tick_time_in_db():
+    #assumes the db has only one patch of live ticks, i.e. historical tick has to overwrite live ticks everyday before market opens, and after a system crash
+    result=client.query("select * from "+table+" where hist=0 order by time asc limit 1")#epoch='ns')
+    result
     
+    try:
+        df_result=pd.DataFrame(result[table.replace('"','')])
+        dt_earliest_live_tick_in_db=df_result.index[0]#,tz=datetime.timezone.utc)
+        dt_earliest_live_tick_in_db=dt_earliest_live_tick_in_db-datetime.timedelta(microseconds=1)
+        #dt_earliest_live_tick_in_db=dt_earliest_live_tick_in_db.astimezone(tz=datetime.timezone.utc)
+        return dt_earliest_live_tick_in_db
+        
+    finally:
+        return datetime.datetime.now().astimezone(tz=datetime.timezone.utc)
 #%%
 last_hist_tick_time_in_db = Get_last_hist_tick_time_in_db()
 last_hist_tick_time_in_db = pd.datetime.timestamp(last_hist_tick_time_in_db)
@@ -119,7 +162,7 @@ dt_now=datetime.datetime.now()
 dt_now=dt_now.astimezone(tz=datetime.timezone.utc)
 
 while True:
-    print ('Getting tick data for ', dt_now)
+    print ('First Loop: Getting tick data for ', dt_now)
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt_now,1000,"TRADES",False)
 
     if dt_now<=last_hist_tick_time_in_db:
@@ -129,29 +172,42 @@ while True:
         dt_now=dt_now-datetime.timedelta(days=1)
     else:
         #df_ticks=insert_ticks(df_ticks, ticks)
-        print ('Writing tick data to db for ', dt_now)
+        print ('Second Loop: Writing tick data to db for ', dt_now)
         result=insert_ticks_to_db(ticks)
         dt_now=ticks[0].time#earliest time in result set
-        #once adding to db stops, get out of the while loop
+        # since every historical tick has time and id as primary key, duplicate ticks will not be inserted more than once to the db
+        #this code assumes that not more than 1000 ticks can be returned per 10 second, which is safe for ZB
+ 
+        #once adding to db stops, get out of this while loop
         if str(result)!='204':
             break
 #%% keep getting new historical data eery second
 # since every historical tick has time and id as primary key, duplicate ticks will not be inserted more than once to the db
-#this code assumes that not more than 1000 ticks can be returned per second, which is safe for ZB
+#this code assumes that not more than 1000 ticks can be returned per 10 second, which is safe for ZB
+            
 from time import sleep
 while True:
         
     dt=datetime.datetime.now()
     dt=dt.astimezone(tz=datetime.timezone.utc)
     
-    print ('Getting tick data for ', dt)
+    print ('Second Loop: Getting tick data for ', dt)
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt,1000,"TRADES",False)
 
     if len(ticks)>2:
         #df_ticks=insert_ticks(df_ticks, ticks)
-        print ('Writing tick data to db for ', dt)
-        result=insert_ticks_to_db(ticks)
-        dt=ticks[0].time        
+        print ('Second Loop: Writing tick data to db for ', dt)
+        
+        dt_earliest_live_tick_in_db = Get_earliest_live_tick_time_in_db()
+        dt_earliest_live_tick_in_db = pd.datetime.timestamp(dt_earliest_live_tick_in_db)
+        dt_earliest_live_tick_in_db = datetime.datetime.fromtimestamp(dt_earliest_live_tick_in_db)
+        
+        #switch the 2 lines of code below if trying to to reconcile with live ticks
+        #result=insert_ticks_to_db(ticks)
+        result=insert_mid_ticks_to_db(ticks,dt_earliest_live_tick_in_db )
+        
+        if str(result)!='204':
+            break
         sleep(10)
         
 #%%

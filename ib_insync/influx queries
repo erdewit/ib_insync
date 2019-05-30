@@ -5,3 +5,10 @@ select * FROM "USM19-5-28"  where id>=1000 order by time desc limit 1
 select count(*) from "USM19-5-28" where time>=1559077199000000000
 
 select count(*) FROM "USM19-5-28"
+DELETE from "USM19-5-29" where hist=0
+
+before market open; data reconcile algo should be 
+1- delete all live ticks in table
+2- run live injesting
+3- run hist-hist reconcilation
+4- his-hist reconcilation should stop once it hits live ticks of the same time in db
