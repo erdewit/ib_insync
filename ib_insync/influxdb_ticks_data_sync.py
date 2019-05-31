@@ -310,4 +310,7 @@ ib.cancelTickByTickData(contracts[0], 'AllLast')
 ib.disconnect()
 
 #%%
-ib.disconnect()
+result=client.query("select * from "+table+" order by time asc")
+df_result=pd.DataFrame(result[table.replace('"','')])
+df_result.to_csv(r'c:\test\IB-USM19-hist-live-data'+str(datetime.datetime.now().timestamp())+'.csv')
+df_result
