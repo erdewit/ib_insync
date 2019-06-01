@@ -107,7 +107,7 @@ def Get_earliest_live_tick_time_in_db():
         return dt_earliest_live_tick_in_db
         
     except:
-        return 0#datetime.datetime.now().astimezone(tz=datetime.timezone.utc)
+        return 'no live ticks'#datetime.datetime.now().astimezone(tz=datetime.timezone.utc)
 #%%
 def insert_ticks_to_db(ticks):
     i=0
