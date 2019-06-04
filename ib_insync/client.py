@@ -703,8 +703,19 @@ class Client:
             self, reqId, contract, exerciseAction,
             exerciseQuantity, account, override):
         self.send(
-            21, 2, contract, exerciseAction,
-            exerciseQuantity, account, override)
+            21, 2, reqId,
+            contract.conId,
+            contract.symbol,
+            contract.secType,
+            contract.lastTradeDateOrContractMonth,
+            contract.strike,
+            contract.right,
+            contract.multiplier,
+            contract.exchange,
+            contract.currency,
+            contract.localSymbol,
+            contract.tradingClass,
+            exerciseAction, exerciseQuantity, account, override)
 
     def reqScannerSubscription(
             self, reqId, subscription, scannerSubscriptionOptions,
