@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.client &mdash; ib_insync 0.9.51 documentation</title>
+  <title>ib_insync.client &mdash; ib_insync 0.9.52 documentation</title>
   
 
   
@@ -349,27 +349,31 @@
         <span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Client.connectAsync"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connectAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">connectAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="n">f</span><span class="s1">&#39;Connecting to </span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1"> with clientId </span><span class="si">{clientId}</span><span class="s1">...&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span> <span class="o">=</span> <span class="n">clientId</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">=</span> <span class="n">Client</span><span class="o">.</span><span class="n">CONNECTING</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">hasData</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketHasData</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">disconnected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketDisconnected</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">hasError</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketHasError</span>
-        <span class="k">try</span><span class="p">:</span>
+
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">connect</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="n">f</span><span class="s1">&#39;Connecting to </span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}</span><span class="s1"> with clientId </span><span class="si">{clientId}</span><span class="s1">...&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span> <span class="o">=</span> <span class="n">clientId</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">=</span> <span class="n">Client</span><span class="o">.</span><span class="n">CONNECTING</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">hasData</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketHasData</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">disconnected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketDisconnected</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">hasError</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketHasError</span>
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># in case of a not yet finished disconnect</span>
-            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(),</span> <span class="n">timeout</span><span class="p">)</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connected&#39;</span><span class="p">)</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;API</span><span class="se">\0</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;v</span><span class="si">%d</span><span class="s1">..</span><span class="si">%d%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">MinClientVersion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaxClientVersion</span><span class="p">,</span>
                 <span class="sa">b</span><span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connectOptions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connectOptions</span> <span class="k">else</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span><span class="o">.</span><span class="n">wait</span><span class="p">(),</span> <span class="n">timeout</span><span class="p">)</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;API connection ready&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">connect</span><span class="p">(),</span> <span class="n">timeout</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;API connection failed: </span><span class="si">{e!r}</span><span class="s1">&#39;</span>
@@ -435,8 +439,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">encode</span><span class="p">()))</span>
             <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                    <span class="s1">&#39;&gt;&gt;&gt; </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">msg</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;&gt;&gt;&gt; </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">msgs</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span> <span class="o">=</span> <span class="kc">True</span>
@@ -857,8 +860,19 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">exerciseAction</span><span class="p">,</span>
             <span class="n">exerciseQuantity</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">override</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
-            <span class="mi">21</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">exerciseAction</span><span class="p">,</span>
-            <span class="n">exerciseQuantity</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">override</span><span class="p">)</span></div>
+            <span class="mi">21</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">conId</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">secType</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">lastTradeDateOrContractMonth</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">strike</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">right</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">multiplier</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">exchange</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">currency</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">localSymbol</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">tradingClass</span><span class="p">,</span>
+            <span class="n">exerciseAction</span><span class="p">,</span> <span class="n">exerciseQuantity</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">override</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.reqScannerSubscription"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqScannerSubscription">[docs]</a>    <span class="k">def</span> <span class="nf">reqScannerSubscription</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">,</span>

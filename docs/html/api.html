@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API docs &mdash; ib_insync 0.9.51 documentation</title>
+  <title>API docs &mdash; ib_insync 0.9.52 documentation</title>
   
 
   
@@ -173,7 +173,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.51.</p>
+<p>Release 0.9.52.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -230,9 +230,10 @@ that the current state may have been updated during the sleep(0) call.</p>
 <dl class="attribute">
 <dt id="ib_insync.ib.IB.RequestTimeout">
 <code class="descname">RequestTimeout</code><a class="headerlink" href="#ib_insync.ib.IB.RequestTimeout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Timeout (in seconds) to wait for a request
-to finish before raising <code class="docutils literal notranslate"><span class="pre">asyncio.TimeoutError</span></code>.
-The default value of 0 will wait indefinitely.</p>
+<dd><p>Timeout (in seconds) to wait for a
+blocking request to finish before raising <code class="docutils literal notranslate"><span class="pre">asyncio.TimeoutError</span></code>.
+The default value of 0 will wait indefinitely.
+Note: This timeout is not used for the <code class="docutils literal notranslate"><span class="pre">*Async</span></code> methods.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

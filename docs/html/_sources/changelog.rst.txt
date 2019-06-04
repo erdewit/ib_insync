@@ -4,6 +4,11 @@ Changelog
 0.9
 ---
 
+Version 0.9.52
+^^^^^^^^^^^^^^
+
+* Fix Client.exerciseOptions (bug #152).
+
 Version 0.9.51
 ^^^^^^^^^^^^^^
 
