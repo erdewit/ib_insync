@@ -388,7 +388,7 @@ class Client:
 
         if contract.secType == 'BAG':
             legs = contract.comboLegs or []
-            fields += [len(contract.comboLegs)]
+            fields += [len(legs)]
             for leg in legs:
                 fields += [leg.conId, leg.ratio, leg.action, leg.exchange]
 
@@ -692,8 +692,9 @@ class Client:
             whatToShow, formatDate]
 
         if contract.secType == 'BAG':
-            fields += [len(contract.comboLegs)]
-            for leg in contract.comboLegs:
+            legs = contract.comboLegs or []
+            fields += [len(legs)]
+            for leg in legs:
                 fields += [leg.conId, leg.ratio, leg.action, leg.exchange]
 
         fields += [keepUpToDate, chartOptions]
