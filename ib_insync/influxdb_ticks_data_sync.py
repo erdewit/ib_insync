@@ -227,7 +227,6 @@ def onPendingTickers(tickers):
             
             #df_ticks.loc[len(df_ticks)]=[ tick.time,i,tick.price,tick.size]
             i=i+1
-        
     print(df_ticks.tail())
     #dt=datetime.datetime.now()
     
