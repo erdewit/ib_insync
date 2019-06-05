@@ -4,7 +4,7 @@ Created on Mon May 27 11:05:27 2019
 
 @author: basse
 
-remeber to always change clientid, table name and contract name
+remeber to always change clientid, table name and contract name and open a new ipython console
 
 """
 
@@ -29,16 +29,16 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-ib.connect('127.0.0.1', 7498, clientId=3)
-table='ContUSM190604'
-#table='USM190529'
+ib.connect('127.0.0.1', 7498, clientId=13)
+#table='ContUSM190604'
+table='USM190529'
+contracts = [Future(conId='333866981')] #USM19
+#contracts = [ContFuture('ZB')]
+contracts[0].includeExpired=True
 
 #%%
 data_ready=False
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
-#contracts = [Future(conId='333866981')]
-contracts = [ContFuture('ZB')]
-contracts[0].includeExpired=True
 
 #contracts[0].lastTradeDateOrContractMonth='20190318'
 ib.qualifyContracts(*contracts)
@@ -174,9 +174,45 @@ def insert_mid_ticks_to_db(ticks, first_live_tick_time_in_db,prev_req_data_live)
     else:
         return 'no points to insert' ,prev_req_data_live
     #%%
+zb_ticker=ib.reqTickByTickData(contracts[0],'Last')
+
 result=Delete_existing_live_ticks()
 result
-zb_ticker=ib.reqTickByTickData(contracts[0],'Last')
+
+#%% store missing hist ticks till current moment
+try:
+    last_hist_tick_time_in_db = Get_last_hist_tick_time_in_db()
+    last_hist_tick_time_in_db = pd.datetime.timestamp(last_hist_tick_time_in_db)
+    last_hist_tick_time_in_db = datetime.datetime.fromtimestamp(last_hist_tick_time_in_db)
+    last_hist_tick_time_in_db  = last_hist_tick_time_in_db.astimezone(tz=datetime.timezone.utc)
+except:
+    last_hist_tick_time_in_db = datetime.datetime.fromtimestamp(last_hist_tick_time_in_db,tz=datetime.timezone.utc)
+last_hist_tick_time_in_db  
+dt_now=datetime.datetime.now()
+#dt_now=datetime.datetime.fromtimestamp(1557150177)
+dt_now=dt_now.astimezone(tz=datetime.timezone.utc)
+#%%
+while True:
+    print ('First Loop: Getting tick data for ', dt_now)
+    ticks=ib.reqHistoricalTicks(contracts[0],None,dt_now,1000,"TRADES",False)
+
+    if dt_now<=last_hist_tick_time_in_db:
+        break
+
+    if len(ticks)<2:
+        dt_now=dt_now-datetime.timedelta(days=1)
+    else:
+        #df_ticks=insert_ticks(df_ticks, ticks)
+        print ('First Loop: Writing tick data to db for ', dt_now)
+        result=insert_ticks_to_db(ticks)
+        dt_now=ticks[0].time#earliest time in result set
+        # since every historical tick has time and id as primary key, duplicate ticks will not be inserted more than once to the db
+        #this code assumes that not more than 1000 ticks can be returned per 10 second, which is safe for ZB
+ 
+        #once adding to db stops, get out of this while loop
+        if str(result)!='204':
+            break
+
 #%% start storing live ticks
 def onPendingTickers(tickers):
     df_ticks = pd.DataFrame(columns=['time','id','price','size', 'hist'])
@@ -213,39 +249,6 @@ def onPendingTickers(tickers):
         
 ib.pendingTickersEvent += onPendingTickers
 
-#%% store missing hist ticks till current moment
-try:
-    last_hist_tick_time_in_db = Get_last_hist_tick_time_in_db()
-    last_hist_tick_time_in_db = pd.datetime.timestamp(last_hist_tick_time_in_db)
-    last_hist_tick_time_in_db = datetime.datetime.fromtimestamp(last_hist_tick_time_in_db)
-    last_hist_tick_time_in_db  = last_hist_tick_time_in_db.astimezone(tz=datetime.timezone.utc)
-except:
-    last_hist_tick_time_in_db = datetime.datetime.fromtimestamp(last_hist_tick_time_in_db,tz=datetime.timezone.utc)
-last_hist_tick_time_in_db  
-dt_now=datetime.datetime.now()
-#dt_now=datetime.datetime.fromtimestamp(1557150177)
-dt_now=dt_now.astimezone(tz=datetime.timezone.utc)
-#%%
-while True:
-    print ('First Loop: Getting tick data for ', dt_now)
-    ticks=ib.reqHistoricalTicks(contracts[0],None,dt_now,1000,"TRADES",False)
-
-    if dt_now<=last_hist_tick_time_in_db:
-        break
-
-    if len(ticks)<2:
-        dt_now=dt_now-datetime.timedelta(days=1)
-    else:
-        #df_ticks=insert_ticks(df_ticks, ticks)
-        print ('First Loop: Writing tick data to db for ', dt_now)
-        result=insert_ticks_to_db(ticks)
-        dt_now=ticks[0].time#earliest time in result set
-        # since every historical tick has time and id as primary key, duplicate ticks will not be inserted more than once to the db
-        #this code assumes that not more than 1000 ticks can be returned per 10 second, which is safe for ZB
- 
-        #once adding to db stops, get out of this while loop
-        if str(result)!='204':
-            break
 #%% keep getting new historical data every 10 seconds until earliest live tick is hit
 # since every historical tick has time and id as primary key, duplicate historical ticks will not be inserted more than once to the db
 #this code assumes that not more than 1000 ticks can be returned per 10 second, which is safe for ZB
@@ -258,7 +261,9 @@ prev_req_data_live=0
 dt_earliest_live_tick_in_db = Get_earliest_live_tick_time_in_db()
 dt_earliest_live_tick_in_db = pd.datetime.timestamp(dt_earliest_live_tick_in_db)
 dt_earliest_live_tick_in_db = datetime.datetime.fromtimestamp(dt_earliest_live_tick_in_db)
+dt_earliest_live_tick_in_db
 # get any additional missing hist ticks between the time last hist ticks were saved and live ticks started
+#%%
 while True:
         
     dt=datetime.datetime.now()
