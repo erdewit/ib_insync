@@ -3,6 +3,9 @@
 Created on Mon May 27 11:05:27 2019
 
 @author: basse
+
+remeber to always change clientid, table name and contract name
+
 """
 
 #%% Change working directory from the workspace root to the ipynb file location. Turn this addition off with the DataScience.changeDirOnImportExport setting
@@ -26,14 +29,15 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-ib.connect('127.0.0.1', 7498, clientId=15)
-table='USM190529'
+ib.connect('127.0.0.1', 7498, clientId=3)
+table='ContUSM190604'
+#table='USM190529'
 
 #%%
 data_ready=False
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
-contracts = [Future(conId='333866981')]
-#contracts = [ContFuture('ZB')]
+#contracts = [Future(conId='333866981')]
+contracts = [ContFuture('ZB')]
 contracts[0].includeExpired=True
 
 #contracts[0].lastTradeDateOrContractMonth='20190318'
@@ -171,7 +175,7 @@ def insert_mid_ticks_to_db(ticks, first_live_tick_time_in_db,prev_req_data_live)
         return 'no points to insert' ,prev_req_data_live
     #%%
 result=Delete_existing_live_ticks()
-
+result
 zb_ticker=ib.reqTickByTickData(contracts[0],'Last')
 #%% start storing live ticks
 def onPendingTickers(tickers):
@@ -217,7 +221,7 @@ try:
     last_hist_tick_time_in_db  = last_hist_tick_time_in_db.astimezone(tz=datetime.timezone.utc)
 except:
     last_hist_tick_time_in_db = datetime.datetime.fromtimestamp(last_hist_tick_time_in_db,tz=datetime.timezone.utc)
-    
+last_hist_tick_time_in_db  
 dt_now=datetime.datetime.now()
 #dt_now=datetime.datetime.fromtimestamp(1557150177)
 dt_now=dt_now.astimezone(tz=datetime.timezone.utc)
@@ -273,7 +277,7 @@ while True:
         print(str(result))
         if str(result)!='204':
             break
-        sleep(10)
+        sleep(15)
 #%% has to be done when market data is very slow to give time for initial calculations without missing new live ticks
 #call function to calc bars & studies
 #get last time for hist tick in dataframe, use that as condition below

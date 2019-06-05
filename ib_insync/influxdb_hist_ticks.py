@@ -26,12 +26,12 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-ib.connect('127.0.0.1', 7498, clientId=1)
+ib.connect('127.0.0.1', 7498, clientId=11)
 
 #%%
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
-contracts = [Future(conId='333866981')]
-#contracts = [ContFuture('ZB')]
+#contracts = [Future(conId='333866981')]
+contracts = [ContFuture('ZB')]
 
 contracts[0].includeExpired=True
 #contracts[0].lastTradeDateOrContractMonth='20190318'
@@ -96,7 +96,7 @@ def GetInfluxdbPandasClient():
 client = GetInfluxdbPandasClient()
 
 dt=datetime.datetime.now()
-dt=datetime.datetime.fromtimestamp(1555505101,tz=datetime.timezone.utc)
+dt=datetime.datetime.fromtimestamp(1559150585,tz=datetime.timezone.utc)
 #dt=dt.astimezone(tz=datetime.timezone.utc)
 dt
 #%%
