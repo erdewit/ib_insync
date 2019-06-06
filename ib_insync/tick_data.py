@@ -304,8 +304,6 @@ ib.disconnect()
 #%%
 #%%
 #%%
-
-
 #%%
 #%% store live ticks the same way historical ticks are returned by the API, hence making backtests valid
     

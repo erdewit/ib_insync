@@ -6,6 +6,12 @@ Created on Mon May 27 11:05:27 2019
 
 remeber to always change clientid, table name and contract name and open a new ipython console
 
+    contract = Contract()
+    contract.symbol = "ES"
+    contract.secType = "FUT"
+    contract.exchange = "GLOBEX"
+    contract.currency = "USD"
+    contract.lastTradeDateOrContractMonth = "201903"
 """
 
 #%% Change working directory from the workspace root to the ipynb file location. Turn this addition off with the DataScience.changeDirOnImportExport setting
@@ -29,10 +35,12 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-ib.connect('127.0.0.1', 7498, clientId=11)
+ib.connect('127.0.0.1', 7498, clientId=1706)
 #table='ContUSM190604'
-table='USM190605'
-contracts = [Future(conId='333866981')] #USM19
+table='USM1706'
+#contracts = [Future(conId='333866981')] #USM19, USH19=322458851, USU19=346233386, USZ19=358060606
+contracts = [Future(symbol='ZB',lastTradeDateOrContractMonth="201706")] 
+
 #contracts = [ContFuture('ZB')]
 contracts[0].includeExpired=True
 
@@ -175,7 +183,6 @@ def insert_mid_ticks_to_db(ticks, first_live_tick_time_in_db,prev_req_data_live)
     else:
         return 'no points to insert' ,prev_req_data_live
     #%%
-zb_ticker=ib.reqTickByTickData(contracts[0],'Last')
 
 result=Delete_existing_live_ticks()
 result
@@ -189,9 +196,13 @@ try:
 except:
     last_hist_tick_time_in_db = datetime.datetime.fromtimestamp(last_hist_tick_time_in_db,tz=datetime.timezone.utc)
 last_hist_tick_time_in_db  
+#%%
 dt_now=datetime.datetime.now()
 #dt_now=datetime.datetime.fromtimestamp(1557150177)
 dt_now=dt_now.astimezone(tz=datetime.timezone.utc)
+#%%
+dt_now=dt_now-datetime.timedelta(weeks=98)
+dt_now
 #%%
 while True:
     print ('First Loop: Getting tick data for ', dt_now)
@@ -215,6 +226,9 @@ while True:
             break
 
 #%% start storing live ticks
+            
+zb_ticker=ib.reqTickByTickData(contracts[0],'Last')
+
 def onPendingTickers(tickers):
     df_ticks = pd.DataFrame(columns=['time','id','price','size', 'hist'])
     
@@ -255,7 +269,7 @@ ib.pendingTickersEvent += onPendingTickers
             
 from time import sleep
 sleep(60) #give some time for the live ticks to start
-
+#%%
 prev_req_data_live=0
     
 dt_earliest_live_tick_in_db = Get_earliest_live_tick_time_in_db()
@@ -264,6 +278,7 @@ dt_earliest_live_tick_in_db = datetime.datetime.fromtimestamp(dt_earliest_live_t
 dt_earliest_live_tick_in_db
 # get any additional missing hist ticks between the time last hist ticks were saved and live ticks started
 #%%
+from time import sleep
 while True:
         
     dt=datetime.datetime.now()
@@ -309,7 +324,6 @@ df_result.to_csv(r'c:\test\IB-USM19-hist-data'+str(datetime.datetime.now().times
 #df_ticks.to_csv(r'c:\test\IB-USM19-hist-data'+str(dt.timestamp())+'.csv')
 print(df_result)
 
-'''
 #%%
 ib.pendingTickersEvent -= onPendingTickers
 #%%
@@ -323,3 +337,5 @@ result=client.query("select * from "+table+" order by time asc")
 df_result=pd.DataFrame(result[table.replace('"','')])
 df_result.to_csv(r'c:\test\IB-USM19-hist-live-data'+str(datetime.datetime.now().timestamp())+'.csv')
 df_result
+
+'''

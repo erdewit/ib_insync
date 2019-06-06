@@ -30,8 +30,8 @@ ib.connect('127.0.0.1', 7498, clientId=11)
 
 #%%
 df_ticks = pd.DataFrame(columns=['Timestamp','price','size'])
-#contracts = [Future(conId='333866981')]
-contracts = [ContFuture('ZB')]
+contracts = [Future(conId='333866981')]
+#contracts = [ContFuture('ZB')]
 
 contracts[0].includeExpired=True
 #contracts[0].lastTradeDateOrContractMonth='20190318'
