@@ -29,7 +29,7 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-ib.connect('127.0.0.1', 7498, clientId=1)
+ib.connect('127.0.0.1', 7498, clientId=11)
 #table='ContUSM190604'
 table='USM190605'
 contracts = [Future(conId='333866981')] #USM19
