@@ -29,9 +29,9 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-ib.connect('127.0.0.1', 7498, clientId=13)
+ib.connect('127.0.0.1', 7498, clientId=10)
 #table='ContUSM190604'
-table='USM190529'
+table='USM190605'
 contracts = [Future(conId='333866981')] #USM19
 #contracts = [ContFuture('ZB')]
 contracts[0].includeExpired=True
