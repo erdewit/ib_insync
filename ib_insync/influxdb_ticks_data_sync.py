@@ -93,7 +93,8 @@ def Delete_existing_live_ticks():
         
         dt_earliest_live_tick_in_db = pd.datetime.timestamp(dt_earliest_live_tick_in_db)
         dt_earliest_live_tick_in_db = datetime.datetime.fromtimestamp(dt_earliest_live_tick_in_db)
-        result=client.query("delete from "+table+" where time>="+str(dt_earliest_live_tick_in_db.timestamp()))#epoch='ns')
+        ts_time=str(dt_earliest_live_tick_in_db.timestamp()).replace('.','')+'000'
+        result=client.query("delete from "+table+" where time>="+ts_time)#epoch='ns')
         return result
     except:
         return 0
