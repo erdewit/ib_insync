@@ -33,10 +33,9 @@ output_notebook()
  #%%
 # Import Libraries
 from functools import reduce
-from  operator import mul
+from operator import mul
 
 import statsmodels.api as sm
-
 
 np.random.seed(42)
 import pandas_datareader.wb as wb
@@ -193,8 +192,6 @@ def CCI(df, n):
     return df
 
 # In[12]:
-
-
 def CalculateBarMaxProfit(df, returnsCol = 'dollar_returns', window = 1): 
     df=df.dropna()
     df.head()
@@ -237,7 +234,6 @@ def CalculateBarMaxProfit(df, returnsCol = 'dollar_returns', window = 1):
         prev_return=curr_return
 
     return df
-    
 
 def CalculateBarStrength(df, returnsCol = 'dollar_returns', window = 1): 
     df=df.dropna()
@@ -285,7 +281,6 @@ def CalcRollingVAR(df, rolling_window=5, returnsCol = 'dollar_returns'):
 def CalcRollingCORR(df, rolling_window=5, returnsCol = 'dollar_returns'):
     df=df.assign(periodCORR=df[returnsCol].rolling(5, center=True).corr())
     return df
-
 
 def CalcRollingCOV(df, rolling_window=5, returnsCol = 'dollar_returns'):
     df=df.assign(periodCOV=df[returnsCol].rolling(5, center=True).cov())
@@ -355,9 +350,7 @@ def CalculateLabels(df, returnsCol = 'dollar_returns',voltCol = 'periodVolDiff',
     return df
 
 def CreateDollarBars(_bars_, units):
-     
-    
-    
+
     ##df2.loc[: , "2005"]
     _bars_['transaction']=_bars_['Price']*_bars_['Vol']
     column_='transaction'
