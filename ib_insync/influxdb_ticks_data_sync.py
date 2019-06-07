@@ -33,7 +33,7 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-cont_id="1706"
+cont_id="1903"
 ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
 #ib.connect('127.0.0.1', 7498, clientId=1903)#
 #table='ContUSM190604'
@@ -241,11 +241,15 @@ dt_now=dt_now.astimezone(tz=datetime.timezone.utc)
 #%%
 #%% download hist ticks from earliest hist tick in db till earliest hist tick available for this contract
 dt_first_hist_tick_in_db = Get_first_hist_tick_time_in_db()
+dt_first_hist_tick_in_db = pd.datetime.timestamp(dt_first_hist_tick_in_db)
+dt_first_hist_tick_in_db = datetime.datetime.fromtimestamp(dt_first_hist_tick_in_db)
+dt_first_hist_tick_in_db  = dt_first_hist_tick_in_db.astimezone(tz=datetime.timezone.utc)
 if dt_first_hist_tick_in_db==0: #no hist ticks in db
     dt_cont_exp = datetime.datetime.combine(last_thurs_date, datetime.datetime.min.time())
-    dt_cont_exp=dt_cont_exp.astimezone(tz=datetime.timezone.utc)
 else:
     dt_cont_exp=dt_first_hist_tick_in_db
+dt_cont_exp=dt_cont_exp.astimezone(tz=datetime.timezone.utc)
+
 dt_cont_exp
 
 while True:
