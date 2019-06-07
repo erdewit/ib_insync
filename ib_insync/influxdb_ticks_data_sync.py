@@ -29,17 +29,18 @@ try:
 except:
 	pass
 
-#%%
-
 from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-ib.connect('127.0.0.1', 7498, clientId=1706)
+cont_id="1706"
+ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
+#ib.connect('127.0.0.1', 7498, clientId=1903)#
 #table='ContUSM190604'
-table='USM1706'
-#contracts = [Future(conId='333866981')] #USM19, USH19=322458851, USU19=346233386, USZ19=358060606
-contracts = [Future(symbol='ZB',lastTradeDateOrContractMonth="201706")] 
+table='US20'+cont_id
+#table='USM1903'
+#contracts = [Future(conId='322458851')] #USM19=333866981, USH19=322458851, USU19=346233386, USZ19=358060606
+contracts = [Future(symbol='ZB',lastTradeDateOrContractMonth="20"+cont_id)] 
 
 #contracts = [ContFuture('ZB')]
 contracts[0].includeExpired=True
@@ -72,6 +73,19 @@ client = GetInfluxdbPandasClient()
 def Get_last_hist_tick_time_in_db():
     #id>=1000 is only true when historical ticks are retrieved, also time precision is second only
     result=client.query("select * from "+table+" where hist=1 order by time desc limit 1")
+
+    try:
+        df_result=pd.DataFrame(result[table.replace('"','')])
+        dt_latest_hist_in_db=df_result.index[0]#,tz=datetime.timezone.utc)
+        dt_latest_hist_in_db=dt_latest_hist_in_db+datetime.timedelta(seconds=1)
+        #dt_latest_hist_in_db=dt_latest_hist_in_db.astimezone(tz=datetime.timezone.utc)
+        return dt_latest_hist_in_db
+    except:
+        return 0
+#%% download historical ticks from a current moment to a past date then exit
+def Get_first_hist_tick_time_in_db():
+    #id>=1000 is only true when historical ticks are retrieved, also time precision is second only
+    result=client.query("select * from "+table+" where hist=1 order by time asc limit 1")
 
     try:
         df_result=pd.DataFrame(result[table.replace('"','')])
@@ -182,7 +196,29 @@ def insert_mid_ticks_to_db(ticks, first_live_tick_time_in_db,prev_req_data_live)
         return r.status_code, prev_req_data_live
     else:
         return 'no points to insert' ,prev_req_data_live
-    #%%
+
+#%%
+import calendar
+import datetime
+def get_thursday(cal,year,month,thursday_number):
+    '''
+    For example, get_thursday(cal, 2017,8,0) returns (2017,8,3) 
+    because the first thursday of August 2017 is 2017-08-03
+    '''
+    monthcal = cal.monthdatescalendar(year, month)
+    selected_thursday = [day for week in monthcal for day in week if \
+                    day.weekday() == calendar.THURSDAY and \
+                    day.month == month][thursday_number]
+    return selected_thursday
+
+#Show the use of get_thursday()
+cal = calendar.Calendar(firstweekday=calendar.MONDAY)
+today = datetime.datetime.today()
+year = int("20"+cont_id[0:2])
+month = int(cont_id[-2:])
+last_thurs_date = get_thursday(cal,year,month,-1) # -1 because we want the last Thursday 
+last_thurs_date
+ #%%
 
 result=Delete_existing_live_ticks()
 result
@@ -201,9 +237,34 @@ dt_now=datetime.datetime.now()
 #dt_now=datetime.datetime.fromtimestamp(1557150177)
 dt_now=dt_now.astimezone(tz=datetime.timezone.utc)
 #%%
-dt_now=dt_now-datetime.timedelta(weeks=98)
-dt_now
-#%%
+#%% download hist ticks from earliest hist tick in db till earliest hist tick available for this contract
+
+dt_cont_exp = datetime.datetime.combine(last_thurs_date, datetime.datetime.min.time())
+dt_cont_exp=dt_cont_exp.astimezone(tz=datetime.timezone.utc)
+dt_cont_exp
+
+while True:
+    print ('First Loop: Getting tick data for ', dt_cont_exp)
+    ticks=ib.reqHistoricalTicks(contracts[0],None,dt_cont_exp,1000,"TRADES",False)
+
+    if dt_cont_exp<=dt_earliest_available:
+        break
+
+    if len(ticks)<2:
+        dt_cont_exp=dt_cont_exp-datetime.timedelta(days=1)
+    else:
+        #df_ticks=insert_ticks(df_ticks, ticks)
+        print ('First Loop: Writing tick data to db for ', dt_cont_exp)
+        result=insert_ticks_to_db(ticks)
+        dt_cont_exp=ticks[0].time#earliest time in result set
+        # since every historical tick has time and id as primary key, duplicate ticks will not be inserted more than once to the db
+        #this code assumes that not more than 1000 ticks can be returned per 10 second, which is safe for ZB
+ 
+        #once adding to db stops, get out of this while loop
+        if str(result)!='204':
+            break
+'''        
+#%% download hist ticks from now till last hist tick in db
 while True:
     print ('First Loop: Getting tick data for ', dt_now)
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt_now,1000,"TRADES",False)
@@ -307,6 +368,7 @@ df_result=pd.DataFrame(result[table])
 data_ready=True
 
 #%%
+'''
 '''
 #pd.DatetimeIndex(df_result.index).strftime('%f')
 dt=pd.DatetimeIndex(df_result.index).second*1000000000
