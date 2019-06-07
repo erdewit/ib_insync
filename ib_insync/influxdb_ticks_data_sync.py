@@ -33,14 +33,14 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-cont_id="1903"
+cont_id="1906"
 ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
 #ib.connect('127.0.0.1', 7498, clientId=1903)#
 #table='ContUSM190604'
-table='ES20'+cont_id
+table='ZB20'+cont_id
 #table='USM1903'
 #contracts = [Future(conId='346233386')] #USM19=333866981, USH19=322458851, USU19=346233386, USZ19=358060606
-contracts = [Future(symbol='ES',lastTradeDateOrContractMonth="20"+cont_id)] 
+contracts = [Future(symbol='ZB',lastTradeDateOrContractMonth="20"+cont_id,exchange='GLOBEX')] 
 contracts[0].includeExpired=True
 contract=ib.qualifyContracts(*contracts)
 contracts = [Future(conId=contract[0].conId)] 
@@ -272,8 +272,9 @@ while True:
         #once adding to db stops, get out of this while loop
         if str(result)!='204':
             break
-'''
+
 #%% download hist ticks from now till last hist tick in db
+'''
 while True:
     print ('First Loop: Getting tick data for ', dt_now)
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt_now,1000,"TRADES",False)
