@@ -33,7 +33,7 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-cont_id="1903"
+cont_id="1706"
 ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
 #ib.connect('127.0.0.1', 7498, clientId=1903)#
 #table='ContUSM190604'
@@ -265,6 +265,7 @@ while True:
         #once adding to db stops, get out of this while loop
         if str(result)!='204':
             break
+'''
 #%% download hist ticks from now till last hist tick in db
 while True:
     print ('First Loop: Getting tick data for ', dt_now)
@@ -369,7 +370,7 @@ df_result=pd.DataFrame(result[table])
 data_ready=True
 
 #%%
-
+'''
 '''
 #pd.DatetimeIndex(df_result.index).strftime('%f')
 dt=pd.DatetimeIndex(df_result.index).second*1000000000
