@@ -240,9 +240,12 @@ dt_now=datetime.datetime.now()
 dt_now=dt_now.astimezone(tz=datetime.timezone.utc)
 #%%
 #%% download hist ticks from earliest hist tick in db till earliest hist tick available for this contract
-
-dt_cont_exp = datetime.datetime.combine(last_thurs_date, datetime.datetime.min.time())
-dt_cont_exp=dt_cont_exp.astimezone(tz=datetime.timezone.utc)
+dt_first_hist_tick_in_db = Get_first_hist_tick_time_in_db()
+if dt_first_hist_tick_in_db==0: #no hist ticks in db
+    dt_cont_exp = datetime.datetime.combine(last_thurs_date, datetime.datetime.min.time())
+    dt_cont_exp=dt_cont_exp.astimezone(tz=datetime.timezone.utc)
+else:
+    dt_cont_exp=dt_first_hist_tick_in_db
 dt_cont_exp
 
 while True:
