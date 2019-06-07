@@ -37,10 +37,10 @@ cont_id="1903"
 ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
 #ib.connect('127.0.0.1', 7498, clientId=1903)#
 #table='ContUSM190604'
-table='US20'+cont_id
+table='ES20'+cont_id
 #table='USM1903'
 #contracts = [Future(conId='346233386')] #USM19=333866981, USH19=322458851, USU19=346233386, USZ19=358060606
-contracts = [Future(symbol='ZB',lastTradeDateOrContractMonth="20"+cont_id)] 
+contracts = [Future(symbol='ES',lastTradeDateOrContractMonth="20"+cont_id)] 
 contracts[0].includeExpired=True
 contract=ib.qualifyContracts(*contracts)
 contracts = [Future(conId=contract[0].conId)] 
@@ -241,12 +241,12 @@ dt_now=dt_now.astimezone(tz=datetime.timezone.utc)
 #%%
 #%% download hist ticks from earliest hist tick in db till earliest hist tick available for this contract
 dt_first_hist_tick_in_db = Get_first_hist_tick_time_in_db()
-dt_first_hist_tick_in_db = pd.datetime.timestamp(dt_first_hist_tick_in_db)
-dt_first_hist_tick_in_db = datetime.datetime.fromtimestamp(dt_first_hist_tick_in_db)
-dt_first_hist_tick_in_db  = dt_first_hist_tick_in_db.astimezone(tz=datetime.timezone.utc)
 if dt_first_hist_tick_in_db==0: #no hist ticks in db
-    dt_cont_exp = datetime.datetime.combine(last_thurs_date, datetime.datetime.min.time())
+     dt_cont_exp = datetime.datetime.combine(last_thurs_date, datetime.datetime.min.time())
 else:
+    dt_first_hist_tick_in_db = pd.datetime.timestamp(dt_first_hist_tick_in_db)
+    dt_first_hist_tick_in_db = datetime.datetime.fromtimestamp(dt_first_hist_tick_in_db)
+    dt_first_hist_tick_in_db  = dt_first_hist_tick_in_db.astimezone(tz=datetime.timezone.utc)
     dt_cont_exp=dt_first_hist_tick_in_db
 dt_cont_exp=dt_cont_exp.astimezone(tz=datetime.timezone.utc)
 
