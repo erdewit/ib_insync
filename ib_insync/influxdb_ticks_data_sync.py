@@ -33,14 +33,15 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-cont_id="1906"
+cont_id="1712"
+cont_symbol='ZB'
 ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
 #ib.connect('127.0.0.1', 7498, clientId=1903)#
 #table='ContUSM190604'
-table='ZB20'+cont_id
+table=cont_symbol+'20'+cont_id
 #table='USM1903'
 #contracts = [Future(conId='346233386')] #USM19=333866981, USH19=322458851, USU19=346233386, USZ19=358060606
-contracts = [Future(symbol='ZB',lastTradeDateOrContractMonth="20"+cont_id,exchange='GLOBEX')] 
+contracts = [Future(symbol=cont_symbol,lastTradeDateOrContractMonth="20"+cont_id)]#,exchange = "GLOBEX")] 
 contracts[0].includeExpired=True
 contract=ib.qualifyContracts(*contracts)
 contracts = [Future(conId=contract[0].conId)] 
