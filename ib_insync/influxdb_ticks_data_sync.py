@@ -33,7 +33,7 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 #%%
-cont_id="1712"
+cont_id="1803"
 cont_symbol='ZB'
 ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
 #ib.connect('127.0.0.1', 7498, clientId=1903)#
@@ -275,7 +275,7 @@ while True:
             break
 
 #%% download hist ticks from now till last hist tick in db
-'''
+
 while True:
     print ('First Loop: Getting tick data for ', dt_now)
     ticks=ib.reqHistoricalTicks(contracts[0],None,dt_now,1000,"TRADES",False)
@@ -317,15 +317,15 @@ def onPendingTickers(tickers):
     print(df_ticks.tail())
     #dt=datetime.datetime.now()
     
-    #if data_ready:
-        #call function to calc bars & studies on new data
     
     if len(df_ticks)>=0:
         #df_ticks.set_index(['time','id'],inplace=True)
         df_ticks.set_index(['time'],inplace=True)
         #print(df_ticks)
         #print(df_ticks.index)
-        
+        #if data_ready:
+            #call function to calc bars & studies on new data
+  
         result=client.write_points(df_ticks,table.replace('"',''),tag_columns=['id'])
         
         #result=True
@@ -411,4 +411,3 @@ df_result=pd.DataFrame(result[table.replace('"','')])
 df_result.to_csv(r'c:\test\IB-USM19-hist-live-data'+str(datetime.datetime.now().timestamp())+'.csv')
 df_result
 
-'''

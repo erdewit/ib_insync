@@ -30,7 +30,7 @@ from bokeh.io import output_notebook
 output_notebook()
 #from data_wrangling import get_df_from_table, add_bar_counter
 #from db_connection import DBConnection
- #%%
+#%%
 # Import Libraries
 from functools import reduce
 from operator import mul
@@ -77,6 +77,8 @@ def create_bar(dataframe, column_, units):
         #print(_bars_)
         _bars_['filter'] = _bars_['filter']/units
         #print(_bars_)
+        _bars_['filter'] = np.nan_to_num(_bars_['filter'])
+
         _bars_['filter'] = _bars_['filter'].astype(int)
         #print(_bars_)
         _bars_['group']= _bars_['filter']
@@ -364,6 +366,8 @@ def CreateDollarBars(_bars_, units):
     ##print(_bars_)
     _bars_['filter'] = _bars_['filter']/units
     ##print(_bars_)
+    _bars_['filter'] = np.nan_to_num(_bars_['filter'])
+
     _bars_['filter'] = _bars_['filter'].astype(int)
     ##print(_bars_)
     _bars_['group']= _bars_['filter']
@@ -755,11 +759,22 @@ def AddForecasts(dollar_bars, Train=True):
     #dollar_bars['FCs']=dollar_bars['FCs'].replace( -15,3)
     #dollar_bars['FCs']=dollar_bars['FCs'].replace( 15,-3)
     
-    # if HT_sine is trending, use trend following EWMAC, else, use reverse trend following EWMAC, i.e. mean reversal
+   # if HT_sine is trending, use trend following EWMAC, else, use reverse trend following EWMAC, i.e. mean reversal
     #shift down 1, since position will be entered on bar close
     trend_following=(dollar_bars['sine']-dollar_bars['leadsine'])
+    dollar_bars['shifted_leadsine']=dollar_bars['leadsine'].shift(-1)
+    dollar_bars['diff_leadsine']=dollar_bars['shifted_leadsine']-dollar_bars['leadsine']
+    #dollar_bars['position']=dollar_bars['FCs'].shift(1)*(np.where( trend_following  > 0 ,1,-1))
     dollar_bars['position']=dollar_bars['FCs'].shift(1)*(np.where( trend_following  > 0 ,1,-1))
-    dollar_bars['trend_following'] = np.where(trend_following   > 0 ,1,-1)
+
+    dollar_bars['trend_following'] = np.where(trend_following > 0 ,1,-1)
+    dollar_bars['trend_following']=dollar_bars['trend_following'].shift(1)
+    #dollar_bars=dollar_bars.dropna()
+    #new system
+    dollar_bars['position']=np.where(dollar_bars['trend_following']==-1,
+               np.where(dollar_bars['diff_leadsine']>0,abs(dollar_bars['position']),-1*abs(dollar_bars['position']))
+               ,dollar_bars['position'])
+   
     dollar_bars['prev_position']=dollar_bars['position'].shift(1)
     
     
@@ -876,161 +891,119 @@ date = get_thursday(cal,year,month,-1) # -1 because we want the last Thursday
 print('date: {0}'.format(date)) # date: 2017-08-31        
 
 #%%
+import requests
+from influxdb import DataFrameClient
+import datetime
+from ib_insync import *
+util.startLoop()
 
+def GetInfluxdbPandasClient():
+    """Instantiate the connection to the InfluxDB client."""
+    user = 'root'
+    password = 'root'
+    dbname = 'tick_data'
+    protocol = 'json'
+    host='localhost'
+    port=8086
+    client = DataFrameClient(host, port, user, password, dbname)
+    return client
+#%%
+client = GetInfluxdbPandasClient()
+
+def GetAllTicksInDB(table):
+    
+    result=client.query("select * from "+table+" order by time asc")#epoch='ns')
+    result
+        
+    try:
+        df_result=pd.DataFrame(result[table.replace('"','')])
+        
+        return df_result
+            
+    except:
+        return 'no ticks'#d
+    
+def GetHistoricalTicksInDB(table):
+    
+    result=client.query("select * from "+table+" where hist=1 order by time asc")#epoch='ns')
+    result
+        
+    try:
+        df_result=pd.DataFrame(result[table.replace('"','')])
+        
+        return df_result
+            
+    except:
+        return 'no ticks'#d
+    
+def GetLiveTicksInDB(table):
+    
+    result=client.query("select * from "+table+" where hist=0 order by time asc")#epoch='ns')
+    result
+        
+    try:
+        df_result=pd.DataFrame(result[table.replace('"','')])
+        
+        return df_result
+            
+    except:
+        return 'no ticks'#d
+#%%
+cont_id="1906"
+cont_symbol='US'
+table=cont_symbol+'20'+cont_id
+dollar_bars=GetAllTicksInDB(table)
+dollar_bars.index
+dollar_bars
+#dollar_bars=pd.read_csv(r'e:\onedrive\data\IB-USM19-notCont-data.csv')
 #dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US.csv')
 #dollar_bars=pd.read_csv(r'e:\onedrive\data\@USM19price.csv')
-dollar_bars=pd.read_csv(r'e:\onedrive\data\IB-USM19-notCont-data.csv')
 #dollar_bars=pd.read_csv(r'e:\onedrive\data\@USZ18Trades.csv')
 #dollar_bars=pd.read_csv(r'e:\gdrive\code\@USM19price 9_2018-3_2019.csv')
 #dollar_bars=pd.read_csv(r'E:\OneDrive\data\TickData.US2016-Jul-Dec.csv')
 #dollar_bars=pd.read_csv(r'E:\OneDrive\data\TickData.US2016-Jan-Jul.csv')
 #dollar_bars['Date'] = dollar_bars['Date'].str.replace(" 0","")
 #dollar_bars['Date'] = dollar_bars['Date'].str.strip()
-dollar_bars['Timestamp'] = dollar_bars['Timestamp'].astype('datetime64[ns]')
+dollar_bars['Timestamp'] = dollar_bars.index.astype('datetime64[ns]')
 dollar_bars=dollar_bars.set_index(dollar_bars['Timestamp'])
 dollar_bars=dollar_bars.sort_index()
 dollar_bars['Time'] = [d.time() for d in dollar_bars['Timestamp']]
 dollar_bars['Date'] = [d.date() for d in dollar_bars['Timestamp']]
-
+dollar_bars.columns
+dollar_bars=dollar_bars.rename(columns={"price": "Price", "size": "Vol"}) #used for tickdata exported files
 #%%
-from datetime import datetime
+dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype('datetime64[ns]')<=datetime.datetime(2019,3,20))].index)
+dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype('datetime64[ns]')>=datetime.datetime(2019,5,31))].index)
+#dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype('datetime64[ns]')<=datetime.datetime(2018,12,20))].index)
+#dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype('datetime64[ns]')>=datetime.datetime(2019,2,28))].index)
+
 AllData = dollar_bars.copy()
-#AllData["Date"]=pd.to_datetime(AllData["Date"])
-AllData["Date"]=pd.to_datetime(AllData["Date"],format='%m/%d/%Y',errors ='coerce')
+
+dollar_bars['Vol']=1
 #dollar_bars=AllData
-#%%
-#for year in range(2005, 2016):
-#    for month in [3,6,9,12]:
-for x in [1]:
-    for month, year in [[9,2018],[12,2018],[3,2019]]:
-                
-        test_start = get_tuesday(cal,year,month,-1)#last tuesday of mar, jun, sept, dec
-        #test_end = get_thursday(cal,2016,2,-1) #last thursday of feb, may, aug, nov
-        end_month=month+3
-        if end_month==15:
-            year=year+1
-            end_month=3
-            
-        test_end = get_thursday(cal,year,end_month,2) #second thursday of  mar, jun, sept, dec
-        file_name='US-'+str(year)+'-Q'+str(end_month//3)+'-noVol-'
-        #test_start = pd.to_datetime(test_start, utc=-7).date()
-        #test_end = pd.to_datetime(test_end,utc=-7).date()
-        #
-        #end = datetime.datetime.now()
-        #file_name="US2016-1"
-        #dollar_bars=pd.read_csv(r'C:\Users\basse\gdrive\code\@USM19price 9_2018-3_2019.csv')
-        #call create dollar bars if reading tick data directly
-        
-        #dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars.index>2039680) # drop rows after the third friday of expiration month
-        #dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars.index<2039680) & (dollar_bars.index>3574645)].index)
-        #dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars.index<2993620) & (dollar_bars.index>5892831)].index)
-        #dollar_bars = dollar_bars.drop(dollar_bars[ (dollar_bars.index>2993620)].index)
-        #dollar_bars = dollar_bars.drop(dollar_bars[ (dollar_bars.index<1716306)].index)
-        
-        dollar_bars = AllData.drop(AllData[ (AllData['Date'].astype('datetime64[ns]')> test_end)].index)
-        dollar_bars = dollar_bars.drop(dollar_bars[ (dollar_bars['Date'].astype('datetime64[ns]')<test_start)].index)
-
-        file_name='IB-MH19-noVol'
-        #dollar_bars=dollar_bars.rename(columns={"formatted_time": "Time"," Close": "Price", " Volume": "Vol", " Time": "Time"}) #used for tickdata exported files
-        dollar_bars=dollar_bars.rename(columns={"price": "Price", "size": "Vol"}) #used for tickdata exported files
-        dollar_bars = dollar_bars.drop(dollar_bars[ (dollar_bars['Date'].astype('datetime64[ns]')<datetime.datetime(2019,3,21))].index)
-
-        dollar_bars['Vol']=1
-        # calculate bar size to the nearest smaller 32 multiple
-        bar_size=Get_Dollar_Bar_Size(dollar_bars)
-        bar_size
-        bar_size=bar_size//32
-        bar_size=bar_size*32
-        bar_size
-        # select the bar size that is closest to the output from Get_dollar_bar_size
-              
-        dollar_bars=CreateDollarBars(dollar_bars,bar_size)
-        #dollar_bars.to_csv(r'e:\onedrive\data\TickData.'+file_name+'bars.csv')
-        dollar_bars.to_csv(r'e:\onedrive\data\@us19'+file_name+'bars.csv')
-        #
-        #dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.@US-16-mbars.csv')
-        #dollar_bars=pd.read_csv(r'e:\onedrive\data\USM19dollarbars.csv')
-        #dollar_bars=pd.read_csv(r'e:\onedrive\data\@us18'+'bars.csv')
-        
-        dollar_bars=AddStudies(dollar_bars)
-        dollar_bars=AddForecasts(dollar_bars)#, Train=False)
-        dollar_bars=AddStopLoss(dollar_bars)
-        dollar_bars=AddPL(dollar_bars)
-        CalcAnalytics(dollar_bars)
-        
-        dollar_bars.to_csv(r'c:\test\ewmac-'+file_name+'.csv')
-        #dollar_bars.to_csv(r'c:\test\ewmac-'+'@us18'+'bars.csv')
-
-#%%
-# set the zoom level - how many bars to display (more bars = smaller candles)
-
-# configure slider
-bars_to_display = 180
-last_entry = dollar_bars.shape[0]
-slider = Slider(start=0, end=last_entry, value=last_entry, step=1, title="Bar", width=900)
-slider.on_change('value', slider_handler)
-
-
-# In[49]:
-
-source = ColumnDataSource(dollar_bars)
-# initialize the data source
-update_source(dollar_bars, slider,bars_to_display)
-# draw the plot
-plot = make_plot(source)
-sub_plot=make_subplot(source)
-PL_plot=make_PL_plot(source)
-vol_plot=make_vol_plot(source)
-
-
-curdoc().add_root(
-    column(
-        plot,
-        sub_plot,
-        vol_plot,
-        PL_plot,
-        slider
-    ))
-
-# In[33]:
-
-
-#layout = column(
-#    plot,
-#    widgetbox(slider),
-#)
-#pf.utils.get_symbol_rets('FB')
-
-#output_file("slider.html", title="slider.py example")
-#show(layout)
-
-
-# In[ ]:
-
-# run the below command from the anaconda prompt
-#bokeh serve --show E:\GDrive\code\US-Tests\candlesticks_slider.py
-
-  '''
-        bar_size=12500
-        bar_size=15600
-        bar_size=21875
-        bar_size=25000
-        bar_size=31250
-        bar_size=37500
-        bar_size=43750
-        bar_size=50000
-        bar_size=56250
-        bar_size=59375
-        bar_size=62500
-        bar_size=75000
-        bar_size=100000
-        bar_size=125000
-        bar_size=150000
-        bar_size=250000
-        bar_size=254000
-        bar_size=273000
-        bar_size=300000
-        bar_size=350000
-        
-        bar_size=75000
+#%% execute this block in train, skip in test
+# calculate bar size to the nearest smaller 32 multiple
 '''
+bar_size=Get_Dollar_Bar_Size(dollar_bars)
+bar_size
+bar_size=bar_size//32
+bar_size=bar_size*32
+bar_size
+'''
+# select the bar size that is closest to the output from Get_dollar_bar_size  
+#%%
+dollar_bars=CreateDollarBars(dollar_bars,bar_size)
+#dollar_bars.to_csv(r'e:\onedrive\data\TickData.'+file_name+'bars.csv')
+#dollar_bars.to_csv(r'e:\onedrive\data\\'+table+'_bars.csv')
+#
+#dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.@US-16-mbars.csv')
+#dollar_bars=pd.read_csv(r'e:\onedrive\data\USM19dollarbars.csv')
+#dollar_bars=pd.read_csv(r'e:\onedrive\data\@us18'+'bars.csv')
+
+dollar_bars=AddStudies(dollar_bars)
+dollar_bars=AddForecasts(dollar_bars, Train=False)
+dollar_bars=AddStopLoss(dollar_bars)
+dollar_bars=AddPL(dollar_bars)
+CalcAnalytics(dollar_bars)
+
+dollar_bars.to_csv(r'c:\test\ewmac-ib-influx-'+table+'.csv')
