@@ -1740,10 +1740,14 @@ class IB:
         except asyncio.TimeoutError:
             self._logger.error('reqMatchingSymbolsAsync: Timeout')
 
-    def reqMarketRuleAsync(self, marketRuleId):
+    async def reqMarketRuleAsync(self, marketRuleId):
         future = self.wrapper.startReq(f'marketRule-{marketRuleId}')
-        self.client.reqMarketRule(marketRuleId)
-        return future
+        try:
+            self.client.reqMarketRule(marketRuleId)
+            await asyncio.wait_for(future, 1)
+            return future.result()
+        except asyncio.TimeoutError:
+            self._logger.error('reqMarketRuleAsync: Timeout')
 
     def reqHistoricalDataAsync(
             self, contract, endDateTime,
