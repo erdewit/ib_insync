@@ -186,11 +186,36 @@ class IB:
     RequestTimeout = 0
 
     def __init__(self):
-        Event.init(self, IB.events)
+        self._createEvents()
         self.wrapper = Wrapper(self)
         self.client = Client(self.wrapper)
         self.client.apiEnd += self.disconnectedEvent
         self._logger = logging.getLogger('ib_insync.ib')
+
+    def _createEvents(self):
+        self.connectedEvent = Event('connectedEvent')
+        self.disconnectedEvent = Event('disconnectedEvent')
+        self.updateEvent = Event('updateEvent')
+        self.pendingTickersEvent = Event('pendingTickersEvent')
+        self.barUpdateEvent = Event('barUpdateEvent')
+        self.newOrderEvent = Event('newOrderEvent')
+        self.orderModifyEvent = Event('orderModifyEvent')
+        self.cancelOrderEvent = Event('cancelOrderEvent')
+        self.openOrderEvent = Event('openOrderEvent')
+        self.orderStatusEvent = Event('orderStatusEvent')
+        self.execDetailsEvent = Event('execDetailsEvent')
+        self.commissionReportEvent = Event('commissionReportEvent')
+        self.updatePortfolioEvent = Event('updatePortfolioEvent')
+        self.positionEvent = Event('positionEvent')
+        self.accountValueEvent = Event('accountValueEvent')
+        self.accountSummaryEvent = Event('accountSummaryEvent')
+        self.pnlEvent = Event('pnlEvent')
+        self.pnlSingleEvent = Event('pnlSingleEvent')
+        self.scannerDataEvent = Event('scannerDataEvent')
+        self.tickNewsEvent = Event('tickNewsEvent')
+        self.newsBulletinEvent = Event('newsBulletinEvent')
+        self.errorEvent = Event('errorEvent')
+        self.timeoutEvent = Event('timeoutEvent')
 
     def __del__(self):
         self.disconnect()

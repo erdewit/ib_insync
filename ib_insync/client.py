@@ -87,9 +87,11 @@ class Client:
     (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
 
     def __init__(self, wrapper):
-        Event.init(self, Client.events)
         self.wrapper = wrapper
         self.decoder = Decoder(wrapper, None)
+        self.apiStart = Event('apiStart')
+        self.apiEnd = Event('apiEnd')
+        self.apiError = Event('apiError')
         self._readyEvent = asyncio.Event()
         self._loop = asyncio.get_event_loop()
         self._logger = logging.getLogger('ib_insync.client')

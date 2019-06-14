@@ -292,8 +292,8 @@ class Wrapper:
                 orderStatus = OrderStatus(status=orderState.status)
                 trade = Trade(contract, order, orderStatus, [], [])
                 self.trades[key] = trade
-                self.permId2Trade[order.permId] = trade
                 self._logger.info(f'openOrder: {trade}')
+            self.permId2Trade.setdefault(order.permId, trade)
             results = self._results.get('openOrders')
             if results is None:
                 self.ib.openOrderEvent.emit(trade)

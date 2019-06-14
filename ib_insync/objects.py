@@ -409,7 +409,7 @@ class BarList(list):
 
     def __init__(self, *args):
         list.__init__(self, *args)
-        Event.init(self, BarList.events)
+        self.updateEvent = Event('updateEvent')
 
     def __eq__(self, other):
         return self is other
@@ -462,7 +462,7 @@ class ScanDataList(list):
 
     def __init__(self, *args):
         list.__init__(self, *args)
-        Event.init(self, ScanDataList.events)
+        self.updateEvent = Event('updateEvent')
 
     def __eq__(self, other):
         return self is other

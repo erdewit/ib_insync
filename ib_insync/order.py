@@ -41,7 +41,13 @@ class Trade(Object):
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
-        Event.init(self, Trade.events)
+        self.statusEvent = Event('statusEvent')
+        self.modifyEvent = Event('modifyEvent')
+        self.fillEvent = Event('fillEvent')
+        self.commissionReportEvent = Event('commissionReportEvent')
+        self.filledEvent = Event('filledEvent')
+        self.cancelEvent = Event('cancelEvent')
+        self.cancelledEvent = Event('cancelledEvent')
 
     def isActive(self):
         """

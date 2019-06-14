@@ -371,7 +371,12 @@ class Watchdog(Object):
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
-        Event.init(self, Watchdog.events)
+        self.startingEvent = Event('startingEvent')
+        self.startedEvent = Event('startedEvent')
+        self.stoppingEvent = Event('stoppingEvent')
+        self.stoppedEvent = Event('stoppedEvent')
+        self.softTimeoutEvent = Event('softTimeoutEvent')
+        self.hardTimeoutEvent = Event('hardTimeoutEvent')
         if not self.controller:
             raise ValueError('No controller supplied')
         if not self.ib:
