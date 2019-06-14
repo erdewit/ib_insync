@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.53
+^^^^^^^^^^^^^^
+
+* Fix bug #155 (IB.commissionReportEvent not firing).
+* Help editors with the code completion for Events.
+
 Version 0.9.52
 ^^^^^^^^^^^^^^
 

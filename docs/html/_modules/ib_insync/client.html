@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.client &mdash; ib_insync 0.9.52 documentation</title>
+  <title>ib_insync.client &mdash; ib_insync 0.9.53 documentation</title>
   
 
   
@@ -244,9 +244,11 @@
     <span class="p">(</span><span class="n">DISCONNECTED</span><span class="p">,</span> <span class="n">CONNECTING</span><span class="p">,</span> <span class="n">CONNECTED</span><span class="p">)</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">):</span>
-        <span class="n">Event</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Client</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span> <span class="o">=</span> <span class="n">wrapper</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">Decoder</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;apiStart&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apiEnd</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;apiEnd&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;apiError&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.client&#39;</span><span class="p">)</span>
@@ -545,7 +547,7 @@
 
         <span class="k">if</span> <span class="n">contract</span><span class="o">.</span><span class="n">secType</span> <span class="o">==</span> <span class="s1">&#39;BAG&#39;</span><span class="p">:</span>
             <span class="n">legs</span> <span class="o">=</span> <span class="n">contract</span><span class="o">.</span><span class="n">comboLegs</span> <span class="ow">or</span> <span class="p">[]</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">contract</span><span class="o">.</span><span class="n">comboLegs</span><span class="p">)]</span>
+            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">legs</span><span class="p">)]</span>
             <span class="k">for</span> <span class="n">leg</span> <span class="ow">in</span> <span class="n">legs</span><span class="p">:</span>
                 <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">leg</span><span class="o">.</span><span class="n">conId</span><span class="p">,</span> <span class="n">leg</span><span class="o">.</span><span class="n">ratio</span><span class="p">,</span> <span class="n">leg</span><span class="o">.</span><span class="n">action</span><span class="p">,</span> <span class="n">leg</span><span class="o">.</span><span class="n">exchange</span><span class="p">]</span>
 
@@ -849,8 +851,9 @@
             <span class="n">whatToShow</span><span class="p">,</span> <span class="n">formatDate</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">contract</span><span class="o">.</span><span class="n">secType</span> <span class="o">==</span> <span class="s1">&#39;BAG&#39;</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">contract</span><span class="o">.</span><span class="n">comboLegs</span><span class="p">)]</span>
-            <span class="k">for</span> <span class="n">leg</span> <span class="ow">in</span> <span class="n">contract</span><span class="o">.</span><span class="n">comboLegs</span><span class="p">:</span>
+            <span class="n">legs</span> <span class="o">=</span> <span class="n">contract</span><span class="o">.</span><span class="n">comboLegs</span> <span class="ow">or</span> <span class="p">[]</span>
+            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">legs</span><span class="p">)]</span>
+            <span class="k">for</span> <span class="n">leg</span> <span class="ow">in</span> <span class="n">legs</span><span class="p">:</span>
                 <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">leg</span><span class="o">.</span><span class="n">conId</span><span class="p">,</span> <span class="n">leg</span><span class="o">.</span><span class="n">ratio</span><span class="p">,</span> <span class="n">leg</span><span class="o">.</span><span class="n">action</span><span class="p">,</span> <span class="n">leg</span><span class="o">.</span><span class="n">exchange</span><span class="p">]</span>
 
         <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">keepUpToDate</span><span class="p">,</span> <span class="n">chartOptions</span><span class="p">]</span>
