@@ -10,7 +10,7 @@ from sklearn.datasets import make_regression
 from IPython.display import display, HTML
 import pandas as pd
 import pandas_datareader.wb as wb
-import statsmodels.api as sm
+#import statsmodels.api as sm
 from operator import mul
 from functools import reduce
 from bokeh.io import output_notebook
@@ -466,7 +466,7 @@ def CreateDollarBars(_bars_, units):
     #    #print(_bars_)
     #
     _bars_ = _bars_.rename(columns={"Vol": "vol"})
-    global df_leftoverticks=df_originalticks.drop(df_originalticks[(df_originalticks['cumsum_vol'] <= _bars_[[-2,'Vol']].cumsum())].index)
+    df_leftoverticks = df_originalticks[-1* _bars_[[-1,'Vol']]:]
     print(_bars_.columns)
     print(_bars_)
     print('df_leftoverticks' ,df_leftoverticks)
@@ -1047,11 +1047,11 @@ print('date: {0}'.format(date))  # date: 2017-08-31
 util.startLoop()
 
 
-def GetInfluxdbPandasClient():
+def GetInfluxdbPandasClient(db_name):
     """Instantiate the connection to the InfluxDB client."""
     user = 'root'
     password = 'root'
-    dbname = 'tick_data'
+    dbname = db_name
     protocol = 'json'
     host = 'localhost'
     port = 8086
@@ -1060,8 +1060,6 @@ def GetInfluxdbPandasClient():
 
 
 # %%
-client = GetInfluxdbPandasClient()
-
 
 def GetAllTicksInDB(table):
 
@@ -1117,10 +1115,10 @@ df_liveticks = pd.DataFrame()
 df_livebars = pd.DataFrame()
 
 def CheckCalc(df1,df2):
-    if df1['position']=df2['position']:
+    if df1['position']==df2['position']:
         return True
-    retutn False
-    
+    return False
+
 def RecalcNewBarsStudies(dollar_bars):
     new_dollar_bars = dollar_bars[-100:].copy()
     new_dollar_bars = AddStudies(new_dollar_bars)
@@ -1129,9 +1127,27 @@ def RecalcNewBarsStudies(dollar_bars):
     new_dollar_bars = AddPL(new_dollar_bars)
     if CheckCalc(dollar_bars, new_dollar_bars):
         old_dollar_bars = dollar_bars.drop(dollar_bars[dollar_bars['position']==None].index)
-        new_dollar_bars = new_dollar_bars[-1*(len(dollar_bars)-len(old_dollar_bars)):])
+        new_dollar_bars = new_dollar_bars[-1*(len(dollar_bars)-len(old_dollar_bars)):]
         dollar_bars = pd.concat([old_dollar_bars,new_dollar_bars])
     return dollar_bars
+
+def SyncPosition(dollar_bars):
+    order_size = 0
+    ib.cancelOrder(limitOrder)
+    positions = ib.positions()
+    size=positions[0].size
+    if size != dollar_bars[[-1,'position']]:
+        order_size = dollar_bars[[-1,'position']] - size
+    limitOrder = LimitOrder(np.where(order_size > 0, 'BUY', 'SELL'), abs(order_size), dollar_bars[[-1,'close']])
+    limitTrade = ib.placeOrder(contract, limitOrder)  
+    limitTrade
+    ib.placeOrder(contract, limitOrder)
+    ib.cancelOrder(limitOrder)
+    print(limitTrade.log)
+    
+    print(ib.positions())
+
+    return True
 
 def AddLiveTicks(df_ticks):
     #if len(dollar_bars)>0:
@@ -1142,9 +1158,11 @@ def AddLiveTicks(df_ticks):
         dollar_bars = dollar_bars.drop(dollar_bars[-1].index)
     dollar_bars = pd.concat([dollar_bars,df_new_bars])
     dollar_bars = RecalcNewBarsStudies(dollar_bars)
+    SyncPosition(dollar_bars)
     return 0
 # %%
-cont_id = "1906"
+client = GetInfluxdbPandasClient('demo')
+cont_id = "1909"
 cont_symbol = 'US'
 table = cont_symbol + '20' + cont_id
 dollar_bars = GetAllTicksInDB(table)
@@ -1165,10 +1183,7 @@ dollar_bars = dollar_bars.sort_index()
 dollar_bars['Time'] = [d.time() for d in dollar_bars['Timestamp']]
 dollar_bars['Date'] = [d.date() for d in dollar_bars['Timestamp']]
 dollar_bars.columns
-dollar_bars = dollar_bars.rename(
-    columns={
-        "price": "Price",
-        "size": "Vol"})  # used for tickdata exported files
+dollar_bars = dollar_bars.rename(columns={"price": "Price", "size": "Vol"})  # used for tickdata exported files
 # %%
 dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype(
     'datetime64[ns]') <= datetime.datetime(2019, 3, 20))].index)
@@ -1183,13 +1198,13 @@ dollar_bars['Vol'] = 1
 # dollar_bars=AllData
 # %% execute this block in train, skip in test
 # calculate bar size to the nearest smaller 32 multiple
-'''
+
 bar_size=Get_Dollar_Bar_Size(dollar_bars)
 bar_size
 bar_size=bar_size//32
 bar_size=bar_size*32
 bar_size
-'''
+
 # select the bar size that is closest to the output from Get_dollar_bar_size
 # %%
 dollar_bars,df_leftover_ticks = CreateDollarBars(dollar_bars, bar_size)

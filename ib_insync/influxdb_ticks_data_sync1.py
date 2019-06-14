@@ -35,7 +35,7 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 # %%
-cont_id = "1803"
+cont_id = "1909"
 cont_symbol = 'ZB'
 ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
 #ib.connect('127.0.0.1', 7498, clientId=1903)#
