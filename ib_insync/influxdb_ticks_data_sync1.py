@@ -51,9 +51,9 @@ contracts = [
         cont_id)]  # ,exchange = "GLOBEX")]
 contracts[0].includeExpired = True
 contract = ib.qualifyContracts(*contracts)
-contracts = [Future(conId=contract[0].conId)]
+#contracts = [Future(conId=contract[0].conId)]
 #contracts = [ContFuture('ZB')]
-contracts[0].includeExpired = True
+#contracts[0].includeExpired = True
 
 # %%
 data_ready = False
@@ -130,7 +130,7 @@ def Get_first_hist_tick_time_in_db():
 
 
 # %%
-def Delete_existing_live_ticks():
+def Delete_existing_live_ticks(table):
     # assumes the db has only one patch of live ticks, i.e. historical tick
     # has to overwrite live ticks everyday before market opens, and after a
     # system crash
@@ -286,8 +286,8 @@ month = int(cont_id[-2:])
 last_thurs_date = get_thursday(cal, year, month, -1)
 last_thurs_date
 # %%
-client = GetInfluxdbPandasClient('tick_data')
-result = Delete_existing_live_ticks()
+client = GetInfluxdbPandasClient('demo')
+result = Delete_existing_live_ticks(table)
 result
 
 # %% store missing hist ticks till current moment
@@ -406,7 +406,7 @@ def onPendingTickers(tickers):
         # print(df_ticks)
         # print(df_ticks.index)
         if data_ready:
-            AddLiveTicks(df_ticks)
+            AddLiveTicks(df_ticks, contracts[0])
         # call function to calc bars & studies on new data
 
         result = client.write_points(

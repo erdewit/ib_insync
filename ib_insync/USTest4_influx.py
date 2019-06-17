@@ -52,6 +52,9 @@ np.random.seed(42)
 #from plotly.offline import plot
 #import cufflinks as cf
 
+from ib_insync import *
+util.startLoop()
+ib = IB()
 
 pd.core.common.is_list_like = pd.api.types.is_list_like
 # In[6]:
@@ -148,17 +151,19 @@ def LinRegRollingWindow(df, window=0):
 
 
 def EMA(df, n, name, column='close'):
-
-    EMA = pd.Series(df[column].ewm(span=n).mean(), name='ema_' + name)
-    df = df.join(EMA)
+    
+    #EMA = pd.Series(df[column].ewm(span=n).mean(), name='ema_' + name)
+    #df = df.join(EMA)
+    df['ema_' + name] = df[column].ewm(span=n).mean()
     return df
 
 # Momentum
 
 
 def MOM(df, n):
-    M = pd.Series(df['close'].diff(n), name='momentum_' + str(n))
-    df = df.join(M)
+    #M = pd.Series(df['close'].diff(n), name='momentum_' + str(n))
+    #df = df.join(M)
+    df['momentum_' + str(n)]=df['close'].diff(n)
     return df
 
 # Relative Strength Index
@@ -188,8 +193,8 @@ def RSI(df, n):
     PosDI = pd.Series(UpI.ewm(span=n, min_periods=n - 1).mean())
     NegDI = pd.Series(DoI.ewm(span=n, min_periods=n - 1).mean())
     RSI = pd.Series(PosDI / (PosDI + NegDI), name='rsi_' + str(n)) * 100
-    df = df.assign(RSI=RSI.values)
-
+    #df = df.assign(RSI=RSI.values)
+    df['RSI'] = RSI.values
     return df
 
 # MACD, MACD Signal and MACD difference
@@ -228,9 +233,9 @@ def MACD(df, n_fast, n_slow):
         str(n_fast) +
         '_' +
         str(n_slow))
-    df = df.join(MACD)
-    df = df.join(MACDsign)
-    df = df.join(MACDdiff)
+    df['MACD'] = MACD.values
+    df['MACDsign'] = MACDsign.values
+    df['MACDdiff'] = MACDdiff.values
     return df
 
 # Commodity Channel Index
@@ -242,7 +247,8 @@ def CCI(df, n):
 
     r = PP.rolling(window=n)
     CCI = pd.Series((PP - r.mean()) / r.std(), name='CCI_' + str(n))
-    df = df.join(CCI)
+    #df = df.join(CCI)
+    df['CCI'] = CCI.values
     return df
 
 # In[12]:
@@ -426,6 +432,8 @@ def CalculateLabels(
 
 
 def CreateDollarBars(_bars_, units):
+    _bars_ = _bars_.rename(columns={"vol": "Vol", "price": "Price"})
+
     df_originalticks=_bars_.copy()
     df_originalticks['cumsum_vol']=df_originalticks['Vol'].cumsum()
     ##df2.loc[: , "2005"]
@@ -467,7 +475,8 @@ def CreateDollarBars(_bars_, units):
     #
     
     df_leftoverticks = df_originalticks[-1* _bars_.iloc[-1]['Vol']:]
-    _bars_ = _bars_.rename(columns={"Vol": "vol"})
+    
+    _bars_ = _bars_.rename(columns={"Vol": "vol", "Price": "price"})
     print(_bars_.columns)
     print(_bars_)
     print('df_leftoverticks' ,df_leftoverticks)
@@ -742,10 +751,12 @@ def AddStudies(dollar_bars):
     dollar_bars.columns
 
     # dollar_bars=LinRegRollingWindow(dollar_bars)
-''' dollar_bars = MACD(dollar_bars, 21, 35)
+    ''' 
+    dollar_bars = MACD(dollar_bars, 21, 35)
     dollar_bars = RSI(dollar_bars, 21)
     dollar_bars = MOM(dollar_bars, 21)
-    dollar_bars = CCI(dollar_bars, 14)'''
+    dollar_bars = CCI(dollar_bars, 14)
+    '''
     dollar_bars = EMA(dollar_bars, 8, 'fast')
     dollar_bars = EMA(dollar_bars, 64, 'slow')
     dollar_bars = CalcEWMAC(dollar_bars, 'ema_fast', 'ema_slow')
@@ -767,7 +778,9 @@ def AddStudies(dollar_bars):
 
     from talib import abstract
     from numpy import mean
-'''    KAMA = abstract.KAMA
+
+    '''
+    KAMA = abstract.KAMA
     KAMA = abstract.Function('KAMA')
     # print(KAMA.info)
     output1 = KAMA(dollar_bars, timeperiod=15)
@@ -799,7 +812,7 @@ def AddStudies(dollar_bars):
     dollar_bars = dollar_bars.assign(BBupper=df['upperband'])
     dollar_bars = dollar_bars.assign(BBmiddle=df['middleband'])
     dollar_bars = dollar_bars.assign(BBlower=df['lowerband'])
-'''
+    '''
     # ht=abstract.Function('HT_TRENDLINE')
     # ht=abstract.Function('HT_TRENDMODE')
     ht = abstract.Function('HT_SINE')
@@ -1137,27 +1150,38 @@ def RecalcNewBarsStudies(dollar_bars):
     #    dollar_bars = pd.concat([old_dollar_bars,new_dollar_bars],  ignore_index=True)
     return new_dollar_bars
 
-def SyncPosition(dollar_bars):
+def SyncPosition(dollar_bars, contract):
     order_size = 0
-    if limitOrder!=None:
-        ib.cancelOrder(limitOrder)
+    
+    for order in ib.openOrders():
+        ib.cancelOrder(order)
     positions = ib.positions()
-    size=positions[0].size
+    
+    if len(positions)>0:
+        size=positions[0].size
+    else:
+        size=0
+        
     if size != dollar_bars.iloc[-1]['position']:
         order_size = dollar_bars.iloc[-1]['position'] - size
-    limitOrder = LimitOrder(np.where(order_size > 0, 'BUY', 'SELL'), abs(order_size), dollar_bars.iloc[-1]['close'])
+    
+    orderType = 'SELL'
+    if order_size > 0:
+        orderType = 'BUY'
+    
+    
+    limitOrder = LimitOrder(orderType, abs(order_size), dollar_bars.iloc[-1]['close'])
     limitTrade = ib.placeOrder(contract, limitOrder)  
     limitTrade
-    ib.placeOrder(contract, limitOrder)
-    ib.cancelOrder(limitOrder)
+    
     print(limitTrade.log)
     
     print(ib.positions())
 
     return True
 
-def AddLiveTicks(df_ticks):
-    df_ticks = pd.DataFrame()
+def AddLiveTicks(df_ticks, contract):
+    #df_ticks = pd.DataFrame()
     #if len(dollar_bars)>0:
     #    transaction_size=dollar_bars[[-1,'transaction']]
     current_ticks_not_in_bars = pd.concat( [df_leftover_ticks,df_ticks])
@@ -1168,12 +1192,32 @@ def AddLiveTicks(df_ticks):
     dollar_bars = pd.concat([dollar_bars,df_new_bars], ignore_index=True)
     if old_len<len(dollar_bars):
         dollar_bars = RecalcNewBarsStudies(dollar_bars)
-        SyncPosition(dollar_bars)
+        SyncPosition(dollar_bars, contract)
         dollar_bars = AddPL(dollar_bars)
 
     return 0
+
 # %%
+ib.connect('127.0.0.1', 7498, 0)
+#%%
+cont_id = "1909"
+cont_symbol = 'ZB'
+table = cont_symbol + '20' + cont_id
+# table='USM1903'
+# contracts = [Future(conId='346233386')] #USM19=333866981,
+# USH19=322458851, USU19=346233386, USZ19=358060606
+contracts = [
+    Future(
+        symbol=cont_symbol,
+        lastTradeDateOrContractMonth="20" +
+        cont_id)]  # ,exchange = "GLOBEX")]
+
+contracts = ib.qualifyContracts(*contracts)
+contracts[0].includeExpired = True
+contract = contracts[0]
+#%%
 client = GetInfluxdbPandasClient('demo')
+
 cont_id = "1909"
 cont_symbol = 'ZB'
 table = cont_symbol + '20' + cont_id
@@ -1221,7 +1265,7 @@ bar_size
 
 # select the bar size that is closest to the output from Get_dollar_bar_size
 # %%
-dollar_bars.iloc[-1]['Vol']
+#dollar_bars.iloc[-1]['vol']
 dollar_bars,df_leftover_ticks, df_original_ticks = CreateDollarBars(dollar_bars, bar_size)
 # dollar_bars.to_csv(r'e:\onedrive\data\TickData.'+file_name+'bars.csv')
 # dollar_bars.to_csv(r'e:\onedrive\data\\'+table+'_bars.csv')
@@ -1231,7 +1275,7 @@ dollar_bars,df_leftover_ticks, df_original_ticks = CreateDollarBars(dollar_bars,
 # dollar_bars=pd.read_csv(r'e:\onedrive\data\@us18'+'bars.csv')
 
 dollar_bars = AddStudies(dollar_bars)
-dollar_bars = AddForecasts(dollar_bars, Train=False)
+dollar_bars = AddForecasts(dollar_bars)#, Train=False)
 dollar_bars = AddStopLoss(dollar_bars)
 dollar_bars = AddPL(dollar_bars)
 CalcAnalytics(dollar_bars)
