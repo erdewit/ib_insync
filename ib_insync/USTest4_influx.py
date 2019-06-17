@@ -465,8 +465,9 @@ def CreateDollarBars(_bars_, units):
     _bars_['vwap'] = _bars_['transaction'] / _bars_['Vol']
     #    #print(_bars_)
     #
+    
+    df_leftoverticks = df_originalticks[-1* _bars_.iloc[-1]['Vol']:]
     _bars_ = _bars_.rename(columns={"Vol": "vol"})
-    df_leftoverticks = df_originalticks[-1* _bars_[[-1,'Vol']]:]
     print(_bars_.columns)
     print(_bars_)
     print('df_leftoverticks' ,df_leftoverticks)
@@ -859,8 +860,9 @@ def AddForecasts(dollar_bars, Train=True):
         print("forecasts_L - ", forecasts_L)
 
     else:
-        forecasts_S = scaler.fit_transform(dollar_bars[['shorts']])
-        forecasts_L = scaler.fit_transform(dollar_bars[['longs']])
+        #TODO: if scaler is not fitted, need to fit it first
+        forecasts_S = scaler.transform(dollar_bars[['shorts']])
+        forecasts_L = scaler.transform(dollar_bars[['longs']])
 
     dollar_bars['shortFCs'] = pd.DataFrame(forecasts_S[:, 0])
     dollar_bars['longFCs'] = pd.DataFrame(forecasts_L[:, 0])
@@ -1121,24 +1123,28 @@ def CheckCalc(df1,df2):
 
 def RecalcNewBarsStudies(dollar_bars):
     new_dollar_bars = dollar_bars[-100:].copy()
+    new_dollar_bars.columns
     new_dollar_bars = AddStudies(new_dollar_bars)
     new_dollar_bars = AddForecasts(new_dollar_bars, Train=False)
     new_dollar_bars = AddStopLoss(new_dollar_bars)
     new_dollar_bars = AddPL(new_dollar_bars)
+    CalcAnalytics(new_dollar_bars)
+    new_dollar_bars.to_csv(r'c:\test\new_dollar_bars.csv')
     if CheckCalc(dollar_bars, new_dollar_bars):
         old_dollar_bars = dollar_bars.drop(dollar_bars[dollar_bars['position']==None].index)
         new_dollar_bars = new_dollar_bars[-1*(len(dollar_bars)-len(old_dollar_bars)):]
-        dollar_bars = pd.concat([old_dollar_bars,new_dollar_bars])
+        dollar_bars = pd.concat([old_dollar_bars,new_dollar_bars],  ignore_index=True)
     return dollar_bars
 
 def SyncPosition(dollar_bars):
     order_size = 0
-    ib.cancelOrder(limitOrder)
+    if limitOrder!=None:
+        ib.cancelOrder(limitOrder)
     positions = ib.positions()
     size=positions[0].size
-    if size != dollar_bars[[-1,'position']]:
-        order_size = dollar_bars[[-1,'position']] - size
-    limitOrder = LimitOrder(np.where(order_size > 0, 'BUY', 'SELL'), abs(order_size), dollar_bars[[-1,'close']])
+    if size != dollar_bars.iloc[-1]['position']:
+        order_size = dollar_bars.iloc[-1]['position'] - size
+    limitOrder = LimitOrder(np.where(order_size > 0, 'BUY', 'SELL'), abs(order_size), dollar_bars.iloc[-1]['close'])
     limitTrade = ib.placeOrder(contract, limitOrder)  
     limitTrade
     ib.placeOrder(contract, limitOrder)
@@ -1150,20 +1156,21 @@ def SyncPosition(dollar_bars):
     return True
 
 def AddLiveTicks(df_ticks):
+    df_ticks = pd.DataFrame()
     #if len(dollar_bars)>0:
     #    transaction_size=dollar_bars[[-1,'transaction']]
-    current_ticks_not_in_bars = pd.concat( [df_leftoverticks,df_tcks])
-    df_new_bars,df_leftoverticks= CreateDollarBars(current_ticks_not_in_bars, bar_size)
-    if(dollar_bars[[-2,'transaction']]-dollar_bars[[-1,'transaction']])>dollar_bars[[-1,'close']]:
-        dollar_bars = dollar_bars.drop(dollar_bars[-1].index)
-    dollar_bars = pd.concat([dollar_bars,df_new_bars])
+    current_ticks_not_in_bars = pd.concat( [df_leftover_ticks,df_ticks])
+    df_new_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(current_ticks_not_in_bars, bar_size)
+    if(dollar_bars.iloc[-2]['transaction']-dollar_bars.iloc[-1]['transaction'])>dollar_bars.iloc[-1]['close']:
+        dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
+    dollar_bars = pd.concat([dollar_bars,df_new_bars], ignore_index=True)
     dollar_bars = RecalcNewBarsStudies(dollar_bars)
     SyncPosition(dollar_bars)
     return 0
 # %%
 client = GetInfluxdbPandasClient('demo')
 cont_id = "1909"
-cont_symbol = 'US'
+cont_symbol = 'ZB'
 table = cont_symbol + '20' + cont_id
 dollar_bars = GetAllTicksInDB(table)
 dollar_bars.index
@@ -1185,13 +1192,15 @@ dollar_bars['Date'] = [d.date() for d in dollar_bars['Timestamp']]
 dollar_bars.columns
 dollar_bars = dollar_bars.rename(columns={"price": "Price", "size": "Vol"})  # used for tickdata exported files
 # %%
+'''
 dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype(
     'datetime64[ns]') <= datetime.datetime(2019, 3, 20))].index)
 dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype(
     'datetime64[ns]') >= datetime.datetime(2019, 5, 31))].index)
 #dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype('datetime64[ns]')<=datetime.datetime(2018,12,20))].index)
 #dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype('datetime64[ns]')>=datetime.datetime(2019,2,28))].index)
-
+'''
+#%%
 AllData = dollar_bars.copy()
 
 dollar_bars['Vol'] = 1
@@ -1207,7 +1216,8 @@ bar_size
 
 # select the bar size that is closest to the output from Get_dollar_bar_size
 # %%
-dollar_bars,df_leftover_ticks = CreateDollarBars(dollar_bars, bar_size)
+dollar_bars.iloc[-1]['Vol']
+dollar_bars,df_leftover_ticks, df_original_ticks = CreateDollarBars(dollar_bars, bar_size)
 # dollar_bars.to_csv(r'e:\onedrive\data\TickData.'+file_name+'bars.csv')
 # dollar_bars.to_csv(r'e:\onedrive\data\\'+table+'_bars.csv')
 #

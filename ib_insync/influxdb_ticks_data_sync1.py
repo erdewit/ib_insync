@@ -69,20 +69,17 @@ dt_earliest_available
 # %%
 
 
-def GetInfluxdbPandasClient():
+def GetInfluxdbPandasClient(db_name):
     """Instantiate the connection to the InfluxDB client."""
     user = 'root'
     password = 'root'
-    dbname = 'demo'
+    dbname = db_name
     protocol = 'json'
     host = 'localhost'
     port = 8086
     client = DataFrameClient(host, port, user, password, dbname)
     return client
 
-
-# %%
-client = GetInfluxdbPandasClient()
 
 # %% download historical ticks from a current moment to a past date then exit
 
@@ -289,7 +286,7 @@ month = int(cont_id[-2:])
 last_thurs_date = get_thursday(cal, year, month, -1)
 last_thurs_date
 # %%
-
+client = GetInfluxdbPandasClient('tick_data')
 result = Delete_existing_live_ticks()
 result
 
@@ -310,7 +307,6 @@ last_hist_tick_time_in_db
 dt_now = datetime.datetime.now()
 # dt_now=datetime.datetime.fromtimestamp(1557150177)
 dt_now = dt_now.astimezone(tz=datetime.timezone.utc)
-# %%
 # %% download hist ticks from earliest hist tick in db till earliest hist tick available for this contract
 dt_first_hist_tick_in_db = Get_first_hist_tick_time_in_db()
 if dt_first_hist_tick_in_db == 0:  # no hist ticks in db
@@ -358,7 +354,7 @@ while True:
 # %% download hist ticks from now till last hist tick in db
 
 while True:
-    print('First Loop: Getting tick data for ', dt_now)
+    print('Second Loop: Getting tick data for ', dt_now)
     ticks = ib.reqHistoricalTicks(
         contracts[0], None, dt_now, 1000, "TRADES", False)
 
@@ -369,7 +365,7 @@ while True:
         dt_now = dt_now - datetime.timedelta(days=1)
     else:
         #df_ticks=insert_ticks(df_ticks, ticks)
-        print('First Loop: Writing tick data to db for ', dt_now)
+        print('Second Loop: Writing tick data to db for ', dt_now)
         result = insert_ticks_to_db(ticks)
         dt_now = ticks[0].time  # earliest time in result set
         # since every historical tick has time and id as primary key, duplicate ticks will not be inserted more than once to the db
@@ -447,13 +443,13 @@ while True:
     dt = datetime.datetime.now()
     dt = dt.astimezone(tz=datetime.timezone.utc)
 
-    print('Second Loop: Getting tick data for ', dt)
+    print('third Loop: Getting tick data for ', dt)
     ticks = ib.reqHistoricalTicks(
         contracts[0], None, dt, 1000, "TRADES", False)
 
     if len(ticks) > 2:
         #df_ticks=insert_ticks(df_ticks, ticks)
-        print('Second Loop: Writing tick data to db for ', dt)
+        print('third Loop: Writing tick data to db for ', dt)
 
         # switch the 2 lines of code below if trying to to reconcile with live ticks
         # result=insert_ticks_to_db(ticks)
