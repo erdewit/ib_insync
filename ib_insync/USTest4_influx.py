@@ -742,13 +742,14 @@ def AddStudies(dollar_bars):
     dollar_bars.columns
 
     # dollar_bars=LinRegRollingWindow(dollar_bars)
+''' dollar_bars = MACD(dollar_bars, 21, 35)
     dollar_bars = RSI(dollar_bars, 21)
     dollar_bars = MOM(dollar_bars, 21)
-    dollar_bars = CCI(dollar_bars, 14)
+    dollar_bars = CCI(dollar_bars, 14)'''
     dollar_bars = EMA(dollar_bars, 8, 'fast')
     dollar_bars = EMA(dollar_bars, 64, 'slow')
     dollar_bars = CalcEWMAC(dollar_bars, 'ema_fast', 'ema_slow')
-    dollar_bars = MACD(dollar_bars, 21, 35)
+    
     dollar_bars = CalcRollingCORR(dollar_bars)
     dollar_bars = CalcRollingCOV(dollar_bars)
     dollar_bars = CalcRollingKURT(dollar_bars)
@@ -766,7 +767,7 @@ def AddStudies(dollar_bars):
 
     from talib import abstract
     from numpy import mean
-    KAMA = abstract.KAMA
+'''    KAMA = abstract.KAMA
     KAMA = abstract.Function('KAMA')
     # print(KAMA.info)
     output1 = KAMA(dollar_bars, timeperiod=15)
@@ -798,7 +799,7 @@ def AddStudies(dollar_bars):
     dollar_bars = dollar_bars.assign(BBupper=df['upperband'])
     dollar_bars = dollar_bars.assign(BBmiddle=df['middleband'])
     dollar_bars = dollar_bars.assign(BBlower=df['lowerband'])
-
+'''
     # ht=abstract.Function('HT_TRENDLINE')
     # ht=abstract.Function('HT_TRENDMODE')
     ht = abstract.Function('HT_SINE')
@@ -1122,19 +1123,19 @@ def CheckCalc(df1,df2):
     return False
 
 def RecalcNewBarsStudies(dollar_bars):
-    new_dollar_bars = dollar_bars[-100:].copy()
-    new_dollar_bars.columns
-    new_dollar_bars = AddStudies(new_dollar_bars)
+    #new_dollar_bars = dollar_bars[-100:].copy()
+    #new_dollar_bars.columns
+    new_dollar_bars = AddStudies(dollar_bars)
     new_dollar_bars = AddForecasts(new_dollar_bars, Train=False)
     new_dollar_bars = AddStopLoss(new_dollar_bars)
-    new_dollar_bars = AddPL(new_dollar_bars)
-    CalcAnalytics(new_dollar_bars)
-    new_dollar_bars.to_csv(r'c:\test\new_dollar_bars.csv')
-    if CheckCalc(dollar_bars, new_dollar_bars):
-        old_dollar_bars = dollar_bars.drop(dollar_bars[dollar_bars['position']==None].index)
-        new_dollar_bars = new_dollar_bars[-1*(len(dollar_bars)-len(old_dollar_bars)):]
-        dollar_bars = pd.concat([old_dollar_bars,new_dollar_bars],  ignore_index=True)
-    return dollar_bars
+    #new_dollar_bars = AddPL(new_dollar_bars)
+    #CalcAnalytics(new_dollar_bars)
+    #new_dollar_bars.to_csv(r'c:\test\new_dollar_bars.csv')
+    #if CheckCalc(dollar_bars, new_dollar_bars):
+    #    old_dollar_bars = dollar_bars.drop(dollar_bars[dollar_bars['position']==None].index)
+    #    new_dollar_bars = new_dollar_bars[-1*(len(dollar_bars)-len(old_dollar_bars)):]
+    #    dollar_bars = pd.concat([old_dollar_bars,new_dollar_bars],  ignore_index=True)
+    return new_dollar_bars
 
 def SyncPosition(dollar_bars):
     order_size = 0
@@ -1161,11 +1162,15 @@ def AddLiveTicks(df_ticks):
     #    transaction_size=dollar_bars[[-1,'transaction']]
     current_ticks_not_in_bars = pd.concat( [df_leftover_ticks,df_ticks])
     df_new_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(current_ticks_not_in_bars, bar_size)
+    old_len=len(dollar_bars)
     if(dollar_bars.iloc[-2]['transaction']-dollar_bars.iloc[-1]['transaction'])>dollar_bars.iloc[-1]['close']:
         dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
     dollar_bars = pd.concat([dollar_bars,df_new_bars], ignore_index=True)
-    dollar_bars = RecalcNewBarsStudies(dollar_bars)
-    SyncPosition(dollar_bars)
+    if old_len<len(dollar_bars):
+        dollar_bars = RecalcNewBarsStudies(dollar_bars)
+        SyncPosition(dollar_bars)
+        dollar_bars = AddPL(dollar_bars)
+
     return 0
 # %%
 client = GetInfluxdbPandasClient('demo')
