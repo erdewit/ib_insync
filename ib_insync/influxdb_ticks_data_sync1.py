@@ -405,13 +405,15 @@ def onPendingTickers(tickers):
         df_ticks.set_index(['time'], inplace=True)
         # print(df_ticks)
         # print(df_ticks.index)
-        if data_ready:
-            AddLiveTicks(df_ticks, contracts[0])
-        # call function to calc bars & studies on new data
 
         result = client.write_points(
             df_ticks, table.replace(
                 '"', ''), tag_columns=['id'])
+
+        # call function to calc bars & studies on new data
+        if data_ready:
+            AddLiveTicks(df_ticks, contracts[0])
+
 
         # result=True
         # if result:
