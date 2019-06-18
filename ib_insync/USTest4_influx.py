@@ -45,9 +45,6 @@ hv.extension('bokeh')
 output_notebook()
 #from data_wrangling import get_df_from_table, add_bar_counter
 #from db_connection import DBConnection
-# %%
-# Import Libraries
-
 
 np.random.seed(42)
 
@@ -61,61 +58,6 @@ ib = IB()
 pd.core.common.is_list_like = pd.api.types.is_list_like
 # In[6]:
 
-# function to create different sampling base data
-
-
-def create_bar(dataframe, column_, units):
-    _bars_ = dataframe  # .copy()
-    # print(_bars_)
-    if column_ == 'time_stamp':
-        _bars_ = _bars_.resample(str(units) + 'T',
-                                 label='left').agg({"Price": 'ohlc',
-                                                    "volume": 'sum',
-                                                    'transaction': 'sum'})
-        # print(_bars_)
-        _bars_.columns = _bars_.columns.droplevel()
-        # print(_bars_)
-        _bars_['vwap'] = _bars_['transaction'] / _bars_['volume']
-        _bars_ = _bars_.set_index('time_stamp')
-        # print(_bars_)
-    else:
-        if column_ == 'id':
-            _bars_[column_] = 1
-        print(_bars_)
-        # _bars_
-        _bars_['transaction'] = _bars_['Open'] * _bars_['Volume']
-
-        _bars_['filter'] = _bars_[column_].cumsum()
-        # print(_bars_)
-        _bars_['group'] = 0
-        # print(_bars_)
-        _bars_['filter'] = _bars_['filter'] / units
-        # print(_bars_)
-        _bars_['filter'] = np.nan_to_num(_bars_['filter'])
-
-        _bars_['filter'] = _bars_['filter'].astype(int)
-        # print(_bars_)
-        _bars_['group'] = _bars_['filter']
-        # print(_bars_)
-        # _bars_ =
-        # _bars_.groupby('group').agg({"time_stamp":"last","Price":'ohlc',"volume":'sum','transaction':'sum'})
-        # # original version for ML class project
-        _bars_ = _bars_.groupby('group').agg(
-            {"Date": "last", "Open": 'ohlc', "Volume": 'sum', 'transaction': 'sum'})
-        # print(_bars_)
-
-        _bars_.columns = _bars_.columns.droplevel()
-        # print(_bars_)
-        _bars_['vwap'] = _bars_['transaction'] / _bars_['Volume']
-        # print(_bars_)
-
-        # print(_bars_)
-
-    return _bars_
-
-
-# In[8]:
-
 def split_time(x):
     x = x.astype('str')
     x = x.str.pad(4, side='left', fillchar='0')
@@ -124,8 +66,6 @@ def split_time(x):
     x = x.str[:2] + ':' + x.str[2:]
 
     return x
-
-# In[15]:
 
 
 def LinRegRollingWindow(df, window=0):
@@ -654,85 +594,6 @@ def Get_Dollar_Bar_Size(dollar_bars):
     return bar_size
 
 
-# In[48]:
-
-# dollar_bars=pd.read_csv(r'e:\gdrive\code\USH19_12-2_dollar_bars_labelled_bars.csv')
-# dollar_bars['Date']=dollar_bars['DayTime']
-
-#dollar_bars=dollar_bars.loc[dollar_bars['dollar_returns_log'] > 0]
-
-
-# In[3123]
-# dollar_bars=pd.read_csv(r'e:\gdrive\code\USH19_11-30_dollar_bars_labelled_bars.csv')
-# dollar_bars['Date']=dollar_bars['DateTime']
-#dollar_bars=dollar_bars.loc[dollar_bars['dollar_returns_log'] > 0]
-# dollar_bars=pd.read_csv(r'e:\gdrive\code\dollar_bars_labelled_bars.csv')
-# dollar_bars['dollar_returns_log']*1000
-
-# In[38]:
-"""
-#import pandas as pd
-#dollar_bars=pd.read_csv(r'e:\gdrive\code\@USM19price 9_2018-3_2019.csv')
-li = []
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2003-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2004-Jan-Jul.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2004-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2005-Jan-Jul.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2005-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2006-Jan-Jul.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2006-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2007-Jan-Jul.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2007-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2008-Jan-Jul.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2008-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2009-Jan-Jul.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.us2009-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2010-Jan-Jul.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2010-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2011-Jan-Jul.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2011-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2012-Jan-Jul.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2012-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2013-Jan-Jul.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2013-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2014-Jan-Jul.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2014-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2015-Jan-Jul.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2015-Jul-Dec.csv')
-li.append(dollar_bars)
-dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2016-Jan-Jul.csv')
-li.append(dollar_bars)
-
-frame = pd.concat(li, axis=0, ignore_index=True)
-dollar_bars=frame
-
-dollar_bars["Date"]=pd.to_datetime(dollar_bars["Date"]).astype('datetime64[ns]')
-dollar_bars.to_csv(r'e:\onedrive\data\TickData.US.csv')
-"""
 
 # %%
 
@@ -837,7 +698,6 @@ def AddStudies(dollar_bars):
         dollar_bars['ema_fast'] - dollar_bars['ema_slow']) / dollar_bars['periodVolStd'] * 10
     dollar_bars['VolAdjEMA']
 
-    import numpy as np
     dollar_bars['longs'] = dollar_bars['VolAdjEMA'].loc[(
         dollar_bars['VolAdjEMA'] >= 0)]
     dollar_bars['shorts'] = dollar_bars['VolAdjEMA'].loc[(
@@ -930,10 +790,6 @@ def AddForecasts(dollar_bars, Train=True):
     return dollar_bars
 # %%
 
-# AddForecasts()
-
-# %%
-
 
 def AddStopLoss(dollar_bars):
 
@@ -962,9 +818,7 @@ def AddStopLoss(dollar_bars):
     # dollar_bars['position_with_stoploss'].cumsum()
     # dollar_bars['position'].cumsum()
     return dollar_bars
-# %%
 
-# AddStopLoss()
 # %%
 
 
@@ -1020,7 +874,6 @@ def CalcAnalytics(dollar_bars):
 
 
 # %%
-# AddPL()
 
 
 def get_thursday(cal, year, month, thursday_number):
@@ -1045,7 +898,6 @@ def get_tuesday(cal, year, month, tuesday_number):
 
 
 # %%
-util.startLoop()
 
 
 def GetInfluxdbPandasClient(db_name):
@@ -1183,10 +1035,46 @@ def AddLiveTicks(df_ticks, contract):
         dollar_bars = AddPL(dollar_bars)
 
     return 0
-
 # %%
+def Load_dollar_bars():
+    global dollar_bars 
+    dollar_bars = GetAllTicksInDB(table)
+    dollar_bars['Timestamp'] = dollar_bars.index.astype('datetime64[ns]')
+    dollar_bars = dollar_bars.set_index(dollar_bars['Timestamp'])
+    dollar_bars = dollar_bars.sort_index()
+    dollar_bars['Time'] = [d.time() for d in dollar_bars['Timestamp']]
+    dollar_bars['Date'] = [d.date() for d in dollar_bars['Timestamp']]
+    dollar_bars.columns
+    dollar_bars = dollar_bars.rename(columns={"price": "Price", "size": "Vol"})  # used for tickdata exported files
+    
+    '''
+    dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype(
+        'datetime64[ns]') <= datetime.datetime(2019, 3, 20))].index)
+    dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype(
+        'datetime64[ns]') >= datetime.datetime(2019, 5, 31))].index)
+    #dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype('datetime64[ns]')<=datetime.datetime(2018,12,20))].index)
+    #dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype('datetime64[ns]')>=datetime.datetime(2019,2,28))].index)
+    '''
+    AllData = dollar_bars.copy()
+    
+    dollar_bars['Vol'] = 1
+    # dollar_bars=AllData
+    # execute this block in train, skip in test
+    # calculate bar size to the nearest smaller 32 multiple
+    
+    bar_size=Get_Dollar_Bar_Size(dollar_bars)
+    bar_size
+    bar_size=bar_size//32
+    bar_size=bar_size*32
+    return dollar_bars, bar_size
+    
+# %%
+
 df_liveticks = pd.DataFrame()
 df_livebars = pd.DataFrame()
+dollar_bars = pd.DataFrame()
+df_leftover_ticks = pd.DataFrame()
+df_original_ticks = pd.DataFrame()
 
 # AddStudies(62500)
 scaler = StandardScaler()
@@ -1202,8 +1090,7 @@ month = today.month
 # -1 because we want the last Thursday
 date = get_thursday(cal, year, month, -1)
 print('date: {0}'.format(date))  # date: 2017-08-31
-#%%
-ib.connect('127.0.0.1', 7498, 0)
+
 #%%
 cont_id = "1909"
 cont_symbol = 'ZB'
@@ -1217,18 +1104,31 @@ contracts = [
         lastTradeDateOrContractMonth="20" +
         cont_id)]  # ,exchange = "GLOBEX")]
 
+ib.connect('127.0.0.1', 7498, 0)
 contracts = ib.qualifyContracts(*contracts)
 contracts[0].includeExpired = True
 contract = contracts[0]
+
 #%%
 client = GetInfluxdbPandasClient('demo')
+#%%
+    
+def main():    
+    global dollar_bars, df_leftover_ticks, df_original_ticks  
+    dollar_bars, bar_size = Load_dollar_bars()
+    dollar_bars.columns
+    dollar_bars, df_leftover_ticks, df_original_ticks = CreateDollarBars(dollar_bars, bar_size)
+    dollar_bars = AddStudies(dollar_bars)
+    dollar_bars = AddForecasts(dollar_bars)#, Train=False)
+    dollar_bars = AddStopLoss(dollar_bars)
+    dollar_bars = AddPL(dollar_bars)
+    CalcAnalytics(dollar_bars)
+    
+    #dollar_bars.to_csv(r'c:\test\ewmac-ib-influx-' + table + '.csv')
 
-cont_id = "1909"
-cont_symbol = 'ZB'
-table = cont_symbol + '20' + cont_id
-dollar_bars = GetAllTicksInDB(table)
-dollar_bars.index
-dollar_bars
+main()
+
+#%%
 # dollar_bars=pd.read_csv(r'e:\onedrive\data\IB-USM19-notCont-data.csv')
 # dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US.csv')
 # dollar_bars=pd.read_csv(r'e:\onedrive\data\@USM19price.csv')
@@ -1238,51 +1138,145 @@ dollar_bars
 # dollar_bars=pd.read_csv(r'E:\OneDrive\data\TickData.US2016-Jan-Jul.csv')
 #dollar_bars['Date'] = dollar_bars['Date'].str.replace(" 0","")
 #dollar_bars['Date'] = dollar_bars['Date'].str.strip()
-dollar_bars['Timestamp'] = dollar_bars.index.astype('datetime64[ns]')
-dollar_bars = dollar_bars.set_index(dollar_bars['Timestamp'])
-dollar_bars = dollar_bars.sort_index()
-dollar_bars['Time'] = [d.time() for d in dollar_bars['Timestamp']]
-dollar_bars['Date'] = [d.date() for d in dollar_bars['Timestamp']]
-dollar_bars.columns
-dollar_bars = dollar_bars.rename(columns={"price": "Price", "size": "Vol"})  # used for tickdata exported files
-# %%
-'''
-dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype(
-    'datetime64[ns]') <= datetime.datetime(2019, 3, 20))].index)
-dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype(
-    'datetime64[ns]') >= datetime.datetime(2019, 5, 31))].index)
-#dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype('datetime64[ns]')<=datetime.datetime(2018,12,20))].index)
-#dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype('datetime64[ns]')>=datetime.datetime(2019,2,28))].index)
-'''
-#%%
-AllData = dollar_bars.copy()
-
-dollar_bars['Vol'] = 1
-# dollar_bars=AllData
-# %% execute this block in train, skip in test
-# calculate bar size to the nearest smaller 32 multiple
-
-bar_size=Get_Dollar_Bar_Size(dollar_bars)
-bar_size
-bar_size=bar_size//32
-bar_size=bar_size*32
-bar_size
-
 # select the bar size that is closest to the output from Get_dollar_bar_size
-# %%
 #dollar_bars.iloc[-1]['vol']
-dollar_bars,df_leftover_ticks, df_original_ticks = CreateDollarBars(dollar_bars, bar_size)
+
 # dollar_bars.to_csv(r'e:\onedrive\data\TickData.'+file_name+'bars.csv')
 # dollar_bars.to_csv(r'e:\onedrive\data\\'+table+'_bars.csv')
 #
 # dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.@US-16-mbars.csv')
 # dollar_bars=pd.read_csv(r'e:\onedrive\data\USM19dollarbars.csv')
 # dollar_bars=pd.read_csv(r'e:\onedrive\data\@us18'+'bars.csv')
+'''
 
-dollar_bars = AddStudies(dollar_bars)
-dollar_bars = AddForecasts(dollar_bars)#, Train=False)
-dollar_bars = AddStopLoss(dollar_bars)
-dollar_bars = AddPL(dollar_bars)
-CalcAnalytics(dollar_bars)
+# function to create different sampling base data
 
-dollar_bars.to_csv(r'c:\test\ewmac-ib-influx-' + table + '.csv')
+
+def create_bar(dataframe, column_, units):
+    _bars_ = dataframe  # .copy()
+    # print(_bars_)
+    if column_ == 'time_stamp':
+        _bars_ = _bars_.resample(str(units) + 'T',
+                                 label='left').agg({"Price": 'ohlc',
+                                                    "volume": 'sum',
+                                                    'transaction': 'sum'})
+        # print(_bars_)
+        _bars_.columns = _bars_.columns.droplevel()
+        # print(_bars_)
+        _bars_['vwap'] = _bars_['transaction'] / _bars_['volume']
+        _bars_ = _bars_.set_index('time_stamp')
+        # print(_bars_)
+    else:
+        if column_ == 'id':
+            _bars_[column_] = 1
+        print(_bars_)
+        # _bars_
+        _bars_['transaction'] = _bars_['Open'] * _bars_['Volume']
+
+        _bars_['filter'] = _bars_[column_].cumsum()
+        # print(_bars_)
+        _bars_['group'] = 0
+        # print(_bars_)
+        _bars_['filter'] = _bars_['filter'] / units
+        # print(_bars_)
+        _bars_['filter'] = np.nan_to_num(_bars_['filter'])
+
+        _bars_['filter'] = _bars_['filter'].astype(int)
+        # print(_bars_)
+        _bars_['group'] = _bars_['filter']
+        # print(_bars_)
+        # _bars_ =
+        # _bars_.groupby('group').agg({"time_stamp":"last","Price":'ohlc',"volume":'sum','transaction':'sum'})
+        # # original version for ML class project
+        _bars_ = _bars_.groupby('group').agg(
+            {"Date": "last", "Open": 'ohlc', "Volume": 'sum', 'transaction': 'sum'})
+        # print(_bars_)
+
+        _bars_.columns = _bars_.columns.droplevel()
+        # print(_bars_)
+        _bars_['vwap'] = _bars_['transaction'] / _bars_['Volume']
+        # print(_bars_)
+
+        # print(_bars_)
+
+    return _bars_
+'''
+# In[48]:
+
+# dollar_bars=pd.read_csv(r'e:\gdrive\code\USH19_12-2_dollar_bars_labelled_bars.csv')
+# dollar_bars['Date']=dollar_bars['DayTime']
+
+#dollar_bars=dollar_bars.loc[dollar_bars['dollar_returns_log'] > 0]
+
+
+# In[3123]
+# dollar_bars=pd.read_csv(r'e:\gdrive\code\USH19_11-30_dollar_bars_labelled_bars.csv')
+# dollar_bars['Date']=dollar_bars['DateTime']
+#dollar_bars=dollar_bars.loc[dollar_bars['dollar_returns_log'] > 0]
+# dollar_bars=pd.read_csv(r'e:\gdrive\code\dollar_bars_labelled_bars.csv')
+# dollar_bars['dollar_returns_log']*1000
+
+# In[38]:
+"""
+#import pandas as pd
+#dollar_bars=pd.read_csv(r'e:\gdrive\code\@USM19price 9_2018-3_2019.csv')
+li = []
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2003-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2004-Jan-Jul.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2004-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2005-Jan-Jul.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2005-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2006-Jan-Jul.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2006-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2007-Jan-Jul.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2007-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2008-Jan-Jul.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2008-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2009-Jan-Jul.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.us2009-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2010-Jan-Jul.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2010-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2011-Jan-Jul.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2011-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2012-Jan-Jul.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2012-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2013-Jan-Jul.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2013-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2014-Jan-Jul.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2014-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2015-Jan-Jul.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2015-Jul-Dec.csv')
+li.append(dollar_bars)
+dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US2016-Jan-Jul.csv')
+li.append(dollar_bars)
+
+frame = pd.concat(li, axis=0, ignore_index=True)
+dollar_bars=frame
+
+dollar_bars["Date"]=pd.to_datetime(dollar_bars["Date"]).astype('datetime64[ns]')
+dollar_bars.to_csv(r'e:\onedrive\data\TickData.US.csv')
+"""

@@ -29,10 +29,12 @@ from time import sleep
 import calendar
 import requests
 from influxdb import DataFrameClient
-from USTest4_influx import AddLiveTicks
 
 import datetime
 import pandas as pd
+
+from USTest4_influx import AddLiveTicks
+#%%
 from ib_insync import *
 util.startLoop()
 ib = IB()
@@ -473,6 +475,7 @@ while True:
 # %% has to be done when market data is very slow to give time for initial calculations without missing new live ticks
 # call function to calc bars & studies
 # get last time for hist tick in dataframe, use that as condition below
+'''
 result = client.query(
     "select * from " +
     table +
@@ -480,11 +483,11 @@ result = client.query(
     df_last_hist,
     epoch='ns')
 df_result = pd.DataFrame(result[table])
+'''
 # concatdf_result with existing df
 data_ready = True
 
 # %%
-'''
 '''
 # pd.DatetimeIndex(df_result.index).strftime('%f')
 dt = pd.DatetimeIndex(df_result.index).second * 1000000000
@@ -518,3 +521,4 @@ df_result = pd.DataFrame(result[table.replace('"', '')])
 df_result.to_csv(r'c:\test\IB-USM19-hist-live-data' +
                  str(datetime.datetime.now().timestamp()) + '.csv')
 df_result
+'''
