@@ -15,22 +15,24 @@ remeber to always change clientid, table name and contract name and open a new i
 """
 
 # %% Change working directory from the workspace root to the ipynb file location. Turn this addition off with the DataScience.changeDirOnImportExport setting
-from time import sleep
-import calendar
-import requests
-from influxdb import DataFrameClient
-
-import datetime
-import pandas as pd
 
 import os
-
+import sys
 try:
-    os.chdir(os.path.join(os.getcwd(), r'..\..\ib_insync'))
+    os.chdir(sys.path[0])
+    #os.chdir(os.path.join(os.getcwd(), r'..\..\ib_insync'))
     print(os.getcwd())
 except BaseException:
     pass
 
+from time import sleep
+import calendar
+import requests
+from influxdb import DataFrameClient
+from USTest4_influx import AddLiveTicks
+
+import datetime
+import pandas as pd
 from ib_insync import *
 util.startLoop()
 ib = IB()
@@ -307,51 +309,59 @@ last_hist_tick_time_in_db
 dt_now = datetime.datetime.now()
 # dt_now=datetime.datetime.fromtimestamp(1557150177)
 dt_now = dt_now.astimezone(tz=datetime.timezone.utc)
+
+data_ready = False
+download_all_history = False
 # %% download hist ticks from earliest hist tick in db till earliest hist tick available for this contract
-dt_first_hist_tick_in_db = Get_first_hist_tick_time_in_db()
-if dt_first_hist_tick_in_db == 0:  # no hist ticks in db
-    dt_cont_exp = datetime.datetime.combine(
-        last_thurs_date, datetime.datetime.min.time())
-else:
-    dt_first_hist_tick_in_db = pd.datetime.timestamp(dt_first_hist_tick_in_db)
-    dt_first_hist_tick_in_db = datetime.datetime.fromtimestamp(
-        dt_first_hist_tick_in_db)
-    dt_first_hist_tick_in_db = dt_first_hist_tick_in_db.astimezone(
-        tz=datetime.timezone.utc)
-    dt_cont_exp = dt_first_hist_tick_in_db
-dt_cont_exp = dt_cont_exp.astimezone(tz=datetime.timezone.utc)
-
-dt_cont_exp
-
-while True:
-    print('First Loop: Getting tick data for ', dt_cont_exp)
-    ticks = ib.reqHistoricalTicks(
-        contracts[0],
-        None,
-        dt_cont_exp,
-        1000,
-        "TRADES",
-        False)
-
-    if dt_cont_exp <= dt_earliest_available:
-        break
-
-    if len(ticks) < 2:
-        dt_cont_exp = dt_cont_exp - datetime.timedelta(days=1)
+if download_all_history:
+    dt_first_hist_tick_in_db = Get_first_hist_tick_time_in_db()
+    if dt_first_hist_tick_in_db == 0:  # no hist ticks in db
+        dt_cont_exp = datetime.datetime.combine(
+            last_thurs_date, datetime.datetime.min.time())
     else:
-        #df_ticks=insert_ticks(df_ticks, ticks)
-        print('First Loop: Writing tick data to db for ', dt_cont_exp)
-        result = insert_ticks_to_db(ticks)
-        dt_cont_exp = ticks[0].time  # earliest time in result set
-        # since every historical tick has time and id as primary key, duplicate ticks will not be inserted more than once to the db
-        # this code assumes that not more than 1000 ticks can be returned per
-        # 10 second, which is safe for ZB
-
-        # once adding to db stops, get out of this while loop
-        if str(result) != '204':
+        dt_first_hist_tick_in_db = pd.datetime.timestamp(dt_first_hist_tick_in_db)
+        dt_first_hist_tick_in_db = datetime.datetime.fromtimestamp(
+            dt_first_hist_tick_in_db)
+        dt_first_hist_tick_in_db = dt_first_hist_tick_in_db.astimezone(
+            tz=datetime.timezone.utc)
+        dt_cont_exp = dt_first_hist_tick_in_db
+    dt_cont_exp = dt_cont_exp.astimezone(tz=datetime.timezone.utc)
+    
+    dt_cont_exp
+    
+    while True:
+        print('First Loop: Getting tick data for ', dt_cont_exp)
+        ticks = ib.reqHistoricalTicks(
+            contracts[0],
+            None,
+            dt_cont_exp,
+            1000,
+            "TRADES",
+            False)
+    
+        if dt_cont_exp <= dt_earliest_available:
             break
+    
+        if len(ticks) < 2:
+            dt_cont_exp = dt_cont_exp - datetime.timedelta(days=1)
+        else:
+            #df_ticks=insert_ticks(df_ticks, ticks)
+            print('First Loop: Writing tick data to db for ', dt_cont_exp)
+            result = insert_ticks_to_db(ticks)
+            dt_cont_exp = ticks[0].time  # earliest time in result set
+            # since every historical tick has time and id as primary key, duplicate ticks will not be inserted more than once to the db
+            # this code assumes that not more than 1000 ticks can be returned per
+            # 10 second, which is safe for ZB
+    
+            # once adding to db stops, get out of this while loop
+            if str(result) != '204':
+                break
 
 # %% download hist ticks from now till last hist tick in db
+
+dt_now = datetime.datetime.now()
+# dt_now=datetime.datetime.fromtimestamp(1557150177)
+dt_now = dt_now.astimezone(tz=datetime.timezone.utc)
 
 while True:
     print('Second Loop: Getting tick data for ', dt_now)
@@ -377,7 +387,6 @@ while True:
             break
 
 # %% start storing live ticks
-from USTest4_influx import AddLiveTicks
 
 zb_ticker = ib.reqTickByTickData(contracts[0], 'Last')
 

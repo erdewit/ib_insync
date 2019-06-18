@@ -1,6 +1,8 @@
 # In[37]:
 from ib_insync import *
 from influxdb import DataFrameClient
+from talib import abstract
+from numpy import mean
 import requests
 import datetime
 import calendar
@@ -776,8 +778,6 @@ def AddStudies(dollar_bars):
 
     #dollar_bars['KF_returns_log']= dollar_bars['close']-dollar_bars['state_means_returns_log']
 
-    from talib import abstract
-    from numpy import mean
 
     '''
     KAMA = abstract.KAMA
@@ -855,12 +855,6 @@ def AddStudies(dollar_bars):
 
 
 # %%
-# AddStudies(62500)
-scaler = StandardScaler()
-forecasts_S = pd.DataFrame()
-forecasts_L = pd.DataFrame()
-# %% comment to test second wave of data after train (fit) was done
-
 
 def AddForecasts(dollar_bars, Train=True):
 
@@ -1050,15 +1044,6 @@ def get_tuesday(cal, year, month, tuesday_number):
     return selected_tuesday
 
 
-# Show the use of get_thursday()
-cal = calendar.Calendar(firstweekday=calendar.MONDAY)
-today = datetime.datetime.today()
-year = today.year
-month = today.month
-# -1 because we want the last Thursday
-date = get_thursday(cal, year, month, -1)
-print('date: {0}'.format(date))  # date: 2017-08-31
-
 # %%
 util.startLoop()
 
@@ -1126,9 +1111,6 @@ def GetLiveTicksInDB(table):
 
     except BaseException:
         return 'no ticks'  # d
-#%%
-df_liveticks = pd.DataFrame()
-df_livebars = pd.DataFrame()
 
 def CheckCalc(df1,df2):
     if df1['position']==df2['position']:
@@ -1141,6 +1123,7 @@ def RecalcNewBarsStudies(dollar_bars):
     new_dollar_bars = AddStudies(dollar_bars)
     new_dollar_bars = AddForecasts(new_dollar_bars, Train=False)
     new_dollar_bars = AddStopLoss(new_dollar_bars)
+    print(new_dollar_bars)
     #new_dollar_bars = AddPL(new_dollar_bars)
     #CalcAnalytics(new_dollar_bars)
     #new_dollar_bars.to_csv(r'c:\test\new_dollar_bars.csv')
@@ -1152,11 +1135,11 @@ def RecalcNewBarsStudies(dollar_bars):
 
 def SyncPosition(dollar_bars, contract):
     order_size = 0
-    
+    print("inside SyncPosition")
     for order in ib.openOrders():
         ib.cancelOrder(order)
     positions = ib.positions()
-    
+    print("Position: ", positions)
     if len(positions)>0:
         size=positions[0].size
     else:
@@ -1171,8 +1154,9 @@ def SyncPosition(dollar_bars, contract):
     
     
     limitOrder = LimitOrder(orderType, abs(order_size), dollar_bars.iloc[-1]['close'])
+    print(limitOrder)
     limitTrade = ib.placeOrder(contract, limitOrder)  
-    limitTrade
+    print(limitTrade)
     
     print(limitTrade.log)
     
@@ -1181,6 +1165,9 @@ def SyncPosition(dollar_bars, contract):
     return True
 
 def AddLiveTicks(df_ticks, contract):
+    #ToDo: query to get new ticks from db after last timestamp present
+    #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
+    
     #df_ticks = pd.DataFrame()
     #if len(dollar_bars)>0:
     #    transaction_size=dollar_bars[[-1,'transaction']]
@@ -1198,6 +1185,24 @@ def AddLiveTicks(df_ticks, contract):
     return 0
 
 # %%
+df_liveticks = pd.DataFrame()
+df_livebars = pd.DataFrame()
+
+# AddStudies(62500)
+scaler = StandardScaler()
+forecasts_S = pd.DataFrame()
+forecasts_L = pd.DataFrame()
+# %% comment to test second wave of data after train (fit) was done
+
+# Show the use of get_thursday()
+cal = calendar.Calendar(firstweekday=calendar.MONDAY)
+today = datetime.datetime.today()
+year = today.year
+month = today.month
+# -1 because we want the last Thursday
+date = get_thursday(cal, year, month, -1)
+print('date: {0}'.format(date))  # date: 2017-08-31
+#%%
 ib.connect('127.0.0.1', 7498, 0)
 #%%
 cont_id = "1909"
