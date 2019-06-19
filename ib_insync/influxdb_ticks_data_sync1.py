@@ -34,6 +34,7 @@ import datetime
 import pandas as pd
 
 from USTest4_influx import AddLiveTicks
+sleep(30) 
 #%%
 from ib_insync import *
 util.startLoop()
@@ -467,6 +468,10 @@ while True:
 # %% has to be done when market data is very slow to give time for initial calculations without missing new live ticks
 # call function to calc bars & studies
 # get last time for hist tick in dataframe, use that as condition below
+
+# concatdf_result with existing df
+data_ready = True
+print ('data_ready')
 '''
 result = client.query(
     "select * from " +
@@ -476,9 +481,6 @@ result = client.query(
     epoch='ns')
 df_result = pd.DataFrame(result[table])
 '''
-# concatdf_result with existing df
-data_ready = True
-print ('data_ready')
 # %%
 '''
 # pd.DatetimeIndex(df_result.index).strftime('%f')

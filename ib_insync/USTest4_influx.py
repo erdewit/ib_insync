@@ -423,8 +423,8 @@ def CreateDollarBars(_bars_, units):
     
     _bars_ = _bars_.rename(columns={"Vol": "vol", "Price": "price"})
     print(_bars_.columns)
-    print(_bars_)
-    print('df_leftoverticks' ,df_leftoverticks)
+    #print(_bars_)
+    #print('df_leftoverticks' ,df_leftoverticks)
     return _bars_, df_leftoverticks, df_originalticks
 #
 
@@ -709,8 +709,8 @@ def AddStudies(dollar_bars):
     shorts = dollar_bars['shorts']
     longs = np.nan_to_num(longs)
     shorts = np.nan_to_num(shorts)
-    print('long Vol Adj EMAC', np.mean(longs))
-    print('short Vol Adj EMAC', np.mean(shorts))
+    #print('long Vol Adj EMAC', np.mean(longs))
+    #print('short Vol Adj EMAC', np.mean(shorts))
 
     dollar_bars['longs'] = np.where(longs > 20, 20, longs)  # longs#
     dollar_bars['shorts'] = np.where(shorts < -20, -20, shorts)  # shorts#
@@ -726,9 +726,9 @@ def AddForecasts(dollar_bars, Train=True):
 
     if Train:
         forecasts_S = scaler.fit_transform(dollar_bars[['shorts']])
-        print("forecasts_S - ", forecasts_S)
+        #print("forecasts_S - ", forecasts_S)
         forecasts_L = scaler.fit_transform(dollar_bars[['longs']])
-        print("forecasts_L - ", forecasts_L)
+        #print("forecasts_L - ", forecasts_L)
 
     else:
         #TODO: if scaler is not fitted, need to fit it first
@@ -810,8 +810,7 @@ def AddStopLoss(dollar_bars):
     #print (dollar_bars[['position_stoploss_start', 'position_stoploss_seq','trade_number']])
     dollar_bars['stop_loss'] = dollar_bars.groupby(
         ['trade_number'])['position_stoploss_start'].cumsum()
-    print(
-        dollar_bars[['stop_loss', 'position_stoploss_start', 'trade_number']])
+    print(dollar_bars[['stop_loss', 'position_stoploss_start', 'trade_number']])
     #dollar_bars['temp'] = np.where((dollar_bars['position_stoploss_start']==dollar_bars.index),dollar_bars['position'])
     # |((dollar_bars['trade_number'].shift(1)==dollar_bars['trade_number']) &
     # (np.min(dollar_bars.groupby(['trade_number'])['IntraTrade_P_DD']) <= stop_loss))
@@ -868,11 +867,11 @@ def CalcAnalytics(dollar_bars):
     print('Bars in the black', len(dollar_bars.loc[dollar_bars['NetPL'] < 0]))
     print('Bars in the red  ', len(dollar_bars.loc[dollar_bars['NetPL'] > 0]))
 
-    plt.hist(dollar_bars['FCs'], normed=True, bins=5)
-    plt.ylabel('Probability')
+    #plt.hist(dollar_bars['FCs'], normed=True, bins=5)
+    #plt.ylabel('Probability')
 
     # dollar_bars['BBmiddle'].values
-    print(dollar_bars['NetCumPL'])
+    print('NetCumPL', dollar_bars.iloc[-1]['NetCumPL'])
     print('max Eq ', np.max(dollar_bars['NetCumPL']))
 
 
@@ -954,7 +953,9 @@ def GetNewTicksInDB(df_original_ticks, table):
     dt_last_tick_time_in_df = df_original_ticks.iloc[-1]['Timestamp']
     dt_last_tick_time_in_df = datetime.datetime.timestamp(dt_last_tick_time_in_df)
     ts_time = str(dt_last_tick_time_in_df).replace('.', '') + '00000000'
+    ts_time = ts_time[:19]
     q = "select * from " + table + " where time>" + ts_time
+    print('q',q)
     result = client.query(q) # epoch='ns')
     result = pd.DataFrame(result[table.replace('"', '')])
     return result
@@ -986,7 +987,7 @@ def RecalcNewBarsStudies(dollar_bars):
     new_dollar_bars = AddStudies(dollar_bars)
     new_dollar_bars = AddForecasts(new_dollar_bars, Train=False)
     new_dollar_bars = AddStopLoss(new_dollar_bars)
-    print(new_dollar_bars)
+    print(new_dollar_bars.iloc[-1])
     #new_dollar_bars = AddPL(new_dollar_bars)
     #CalcAnalytics(new_dollar_bars)
     #new_dollar_bars.to_csv(r'c:\test\new_dollar_bars.csv')
