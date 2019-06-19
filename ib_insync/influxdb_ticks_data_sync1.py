@@ -155,7 +155,8 @@ def Delete_existing_live_ticks(table):
         if dt_earliest_live_tick_in_db < (datetime.datetime.now() - datetime.timedelta(weeks=104)):
             raise ValueError
 
-        ts_time = str(dt_earliest_live_tick_in_db.timestamp()).replace('.', '') + '000'
+        ts_time = str(dt_earliest_live_tick_in_db.timestamp()).replace('.', '') + '000000000000'
+        ts_time = ts_time[:19]
         q = "delete from " + table + " where time>=" + ts_time
         result = client.query(q) # epoch='ns')
         return result

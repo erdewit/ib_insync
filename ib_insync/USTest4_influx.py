@@ -952,7 +952,7 @@ def GetHistoricalTicksInDB(table):
 def GetNewTicksInDB(df_original_ticks, table):
     dt_last_tick_time_in_df = df_original_ticks.iloc[-1]['Timestamp']
     dt_last_tick_time_in_df = datetime.datetime.timestamp(dt_last_tick_time_in_df)
-    ts_time = str(dt_last_tick_time_in_df).replace('.', '') + '00000000'
+    ts_time = str(dt_last_tick_time_in_df).replace('.', '') + '000000000000'
     ts_time = ts_time[:19]
     q = "select * from " + table + " where time>" + ts_time
     print('q',q)
