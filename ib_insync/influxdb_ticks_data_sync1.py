@@ -19,8 +19,8 @@ remeber to always change clientid, table name and contract name and open a new i
 import os
 import sys
 try:
-    os.chdir(sys.path[0])
-    #os.chdir(os.path.join(os.getcwd(), r'..\..\ib_insync'))
+    #os.chdir(sys.path[0])
+    os.chdir( r'C:\Users\bgeorgi\Google Drive\code\ib_insync\ib_insync')
     print(os.getcwd())
 except BaseException:
     pass
@@ -138,10 +138,7 @@ def Delete_existing_live_ticks(table):
     # assumes the db has only one patch of live ticks, i.e. historical tick
     # has to overwrite live ticks everyday before market opens, and after a
     # system crash
-    result = client.query(
-        "select * from " +
-        table +
-        " where hist=0 order by time asc limit 1")  # epoch='ns')
+    result = client.query("select * from " + table + " where hist=0 order by time asc limit 1")  # epoch='ns')
     result
 
     try:
@@ -149,18 +146,17 @@ def Delete_existing_live_ticks(table):
         # ,tz=datetime.timezone.utc)
         dt_earliest_live_tick_in_db = df_result.index[0]
 
-        dt_earliest_live_tick_in_db = pd.datetime.timestamp(
-            dt_earliest_live_tick_in_db)
-        dt_earliest_live_tick_in_db = datetime.datetime.fromtimestamp(
-            dt_earliest_live_tick_in_db)
-        ts_time = str(
-            dt_earliest_live_tick_in_db.timestamp()).replace(
-            '.', '') + '000'
-        result = client.query(
-            "delete from " +
-            table +
-            " where time>=" +
-            ts_time)  # epoch='ns')
+        dt_earliest_live_tick_in_db = pd.datetime.timestamp(dt_earliest_live_tick_in_db)
+        dt_earliest_live_tick_in_db = datetime.datetime.fromtimestamp(dt_earliest_live_tick_in_db)
+
+        # to avoid deleting everything in the table if an incorrect date is returned
+        # if date is older than 2 years, raise an exception
+        if dt_earliest_live_tick_in_db < (datetime.datetime.now() - datetime.timedelta(weeks=104)):
+            raise ValueError
+
+        ts_time = str(dt_earliest_live_tick_in_db.timestamp()).replace('.', '') + '000'
+        q = "delete from " + table + " where time>=" + ts_time
+        result = client.query(q) # epoch='ns')
         return result
     except BaseException:
         return 0
@@ -238,8 +234,7 @@ def insert_mid_ticks_to_db(
     for tick in ticks:
         # print(tick.time)
         tick_time = tick.time.timestamp()
-        if tick_time <= first_live_tick_time_in_db.timestamp(
-        ):  # last_hist_tick_time_in_db already has 1 second added, hence the >= condition
+        if tick_time <= first_live_tick_time_in_db:  # last_hist_tick_time_in_db already has 1 second added, hence the >= condition
 
             if tick_time != last_tick_time:
                 i = 0
@@ -423,7 +418,7 @@ def onPendingTickers(tickers):
 
         # call function to calc bars & studies on new data
         if data_ready:
-            AddLiveTicks(df_ticks, contracts[0])
+            AddLiveTicks( contracts[0])
 
 
         # result=True
@@ -439,15 +434,12 @@ ib.pendingTickersEvent += onPendingTickers
 # this code assumes that not more than 1000 ticks can be returned per 10
 # second, which is safe for ZB
 
-sleep(60)  # give some time for the live ticks to start
+sleep(30)  # give some time for the live ticks to start
 # %%
 prev_req_data_live = 0
 
 dt_earliest_live_tick_in_db = Get_earliest_live_tick_time_in_db()
-dt_earliest_live_tick_in_db = pd.datetime.timestamp(
-    dt_earliest_live_tick_in_db)
-dt_earliest_live_tick_in_db = datetime.datetime.fromtimestamp(
-    dt_earliest_live_tick_in_db)
+dt_earliest_live_tick_in_db = datetime.datetime.timestamp(dt_earliest_live_tick_in_db)
 dt_earliest_live_tick_in_db
 # get any additional missing hist ticks between the time last hist ticks were saved and live ticks started
 # %%
@@ -486,7 +478,7 @@ df_result = pd.DataFrame(result[table])
 '''
 # concatdf_result with existing df
 data_ready = True
-
+print ('data_ready')
 # %%
 '''
 # pd.DatetimeIndex(df_result.index).strftime('%f')
