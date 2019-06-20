@@ -444,7 +444,7 @@ dt_earliest_live_tick_in_db = Get_earliest_live_tick_time_in_db()
 dt_earliest_live_tick_in_db = datetime.datetime.timestamp(dt_earliest_live_tick_in_db)
 dt_earliest_live_tick_in_db
 # get any additional missing hist ticks between the time last hist ticks were saved and live ticks started
-# %%
+
 while True:
 
     dt = datetime.datetime.now()
@@ -466,13 +466,14 @@ while True:
         if str(result) != '204':
             break
         sleep(15)
+        
+# concatdf_result with existing df
+data_ready = True
+print ('data_ready')
 # %% has to be done when market data is very slow to give time for initial calculations without missing new live ticks
 # call function to calc bars & studies
 # get last time for hist tick in dataframe, use that as condition below
 
-# concatdf_result with existing df
-data_ready = True
-print ('data_ready')
 '''
 result = client.query(
     "select * from " +
