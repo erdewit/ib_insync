@@ -388,7 +388,8 @@ while True:
 zb_ticker = ib.reqTickByTickData(contracts[0], 'Last')
 
 from USTest4_influx import AddLiveTicks
-sleep(30)
+
+sleep(10)
 
 def onPendingTickers(tickers):
     df_ticks = pd.DataFrame(columns=['time', 'id', 'price', 'size', 'hist'])

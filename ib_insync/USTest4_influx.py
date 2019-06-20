@@ -387,7 +387,7 @@ def CreateDollarBars(_bars_, units):
     _bars_['cumsum_vol']=_bars_['Vol'].cumsum()
 
     ##df2.loc[: , "2005"]
-    _bars_.to_csv(r'c:\test\bars_ticks.csv')
+    #_bars_.to_csv(r'c:\test\bars_ticks.csv')
     _bars_['transaction'] = _bars_['Price'] * _bars_['Vol']
     column_ = 'transaction'
     #print(units)
@@ -431,7 +431,7 @@ def CreateDollarBars(_bars_, units):
     #print('_bars_.tail()',_bars_.tail())
     print(_bars_)
     print('df_leftoverticks' ,df_leftoverticks)
-    _bars_.to_csv(r'c:\test\bars_bars.csv')
+    #_bars_.to_csv(r'c:\test\bars_bars.csv')
 
     return _bars_, df_leftoverticks, df_originalticks
 #
@@ -935,7 +935,7 @@ def RecalcNewBarsStudies(dollar_bars):
     new_dollar_bars = AddStudies(dollar_bars)
     new_dollar_bars = AddForecasts(new_dollar_bars, Train=False)
     new_dollar_bars = AddStopLoss(new_dollar_bars)
-    print(new_dollar_bars.iloc[-1])
+    #print(new_dollar_bars.tail(5))
     #new_dollar_bars = AddPL(new_dollar_bars)
     #CalcAnalytics(new_dollar_bars)
     #new_dollar_bars.to_csv(r'c:\test\new_dollar_bars.csv')
@@ -957,12 +957,16 @@ def SyncPosition(dollar_bars, contract):
         size=positions[0].position
     else:
         size=0
-        
-    if math.isnan(dollar_bars.iloc[-1]['position_with_stoploss']) :
-        forecasted_position = dollar_bars.iloc[-2]['position_with_stoploss']
-    else:
-        forecasted_position = dollar_bars.iloc[-1]['position_with_stoploss']
+    #keep going up the rows till we find a forecasted position that has been calculated
     
+
+    if math.isnan(dollar_bars.iloc[-3]['periodVolStd']) == False:
+        forecasted_position = dollar_bars.iloc[-3]['position_with_stoploss']
+    if math.isnan(dollar_bars.iloc[-2]['periodVolStd']) == False:
+        forecasted_position = dollar_bars.iloc[-2]['position_with_stoploss']    
+    if math.isnan(dollar_bars.iloc[-1]['periodVolStd']) == False:
+        forecasted_position = dollar_bars.iloc[-1]['position_with_stoploss']
+
     if size != forecasted_position :
         order_size = forecasted_position - size
 
@@ -1083,45 +1087,52 @@ def Load_dollar_bars():
     bar_size=bar_size*32
     print('bar_size',bar_size)
     
+    
     return dollar_bars, bar_size
 
-# %%    
+# %%
+from threading import Lock
+lock = Lock()
+
 def AddLiveTicks(contract):
-    #ToDo: query to get new ticks from db after last timestamp present
-    #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
-    global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table 
-    df_ticks = GetNewTicksInDB(df_original_ticks, table)
-    #print('AddLiveTicks 1086')
-    #if len(dollar_bars)>0:
-    #transaction_size=dollar_bars[[-1,'transaction']]
-    if len(df_ticks)>0:
-        current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,df_ticks)
-    else:
-        current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,pd.DataFrame())
-
-    #print('AddLiveTicks 1094')
-
-    df_new_bars,df_leftoverticks, df_temp_ticks = CreateDollarBars(current_ticks_not_in_bars, bar_size)
     
-    old_len = len(dollar_bars)
+    with lock:
+        #ToDo: query to get new ticks from db after last timestamp present
+        #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
+        global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table 
+        print('bar_size',bar_size)
+        df_ticks = GetNewTicksInDB(df_original_ticks, table)
+        #print('AddLiveTicks 1086')
+        #if len(dollar_bars)>0:
+        #transaction_size=dollar_bars[[-1,'transaction']]
+        if len(df_ticks)>0:
+            current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,df_ticks)
+        else:
+            current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,pd.DataFrame())
     
-    if(dollar_bars.iloc[-2]['transaction'] - dollar_bars.iloc[-1]['transaction']) > dollar_bars.iloc[-1]['close']:
-        dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
-
-    dollar_bars = concat_and_reindex(dollar_bars, df_new_bars)
-    print('dollar_bars tail: ',dollar_bars.tail(5))
+        #print('AddLiveTicks 1094')
     
-    if old_len < len(dollar_bars):
-        dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
-
-        print(dollar_bars)
-        dollar_bars = RecalcNewBarsStudies(dollar_bars)
-        print(dollar_bars)
-        SyncPosition(dollar_bars, contract)
-        print(dollar_bars)
-        dollar_bars = AddPL(dollar_bars)
-        df_original_ticks = df_temp_ticks
-    return 0
+        df_new_bars,df_leftoverticks, df_temp_ticks = CreateDollarBars(current_ticks_not_in_bars, bar_size)
+        
+        old_len = len(dollar_bars)
+        
+        if(dollar_bars.iloc[-2]['transaction'] - dollar_bars.iloc[-1]['transaction']) > dollar_bars.iloc[-1]['close']:
+            dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
+    
+        dollar_bars = concat_and_reindex(dollar_bars, df_new_bars)
+        print('dollar_bars tail: ',dollar_bars.tail(5))
+        
+        if old_len < len(dollar_bars):
+            #dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
+            
+            dollar_bars = RecalcNewBarsStudies(dollar_bars)
+            SyncPosition(dollar_bars, contract)
+            dollar_bars = AddPL(dollar_bars)
+            df_original_ticks = df_temp_ticks
+            dollar_bars.tail(20).to_csv(r'c:\test\dollar_bars.csv')
+            #print(dollar_bars)
+            
+        return True
 #%%
 
 def main():    
