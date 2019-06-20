@@ -436,7 +436,7 @@ ib.pendingTickersEvent += onPendingTickers
 # this code assumes that not more than 1000 ticks can be returned per 10
 # second, which is safe for ZB
 
-sleep(30)  # give some time for the live ticks to start
+#sleep(30)  # give some time for the live ticks to start
 # %%
 prev_req_data_live = 0
 

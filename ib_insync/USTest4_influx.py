@@ -376,12 +376,15 @@ def CalculateLabels(
 
 def CreateDollarBars(_bars_, units):
     _bars_ = _bars_.rename(columns={"vol": "Vol", "price": "Price"})
+    _bars_['id']=_bars_['id'].astype(int)
+    _bars_['Timestamp']=_bars_['Timestamp'].astype('datetime64[ns]')
     _bars_ = _bars_.sort_values(by=['Timestamp','id'])
     _bars_=_bars_.reset_index(drop=True) 
-    
+    print('_bars_ 383',_bars_)
     df_originalticks=_bars_.copy()
     df_originalticks['cumsum_vol']=df_originalticks['Vol'].cumsum()
     ##df2.loc[: , "2005"]
+    _bars_.to_csv(r'c:\test\bars.csv')
     _bars_['transaction'] = _bars_['Price'] * _bars_['Vol']
     column_ = 'transaction'
     # units=75000
@@ -389,7 +392,7 @@ def CreateDollarBars(_bars_, units):
     # _bars_[column_].dropna()
     _bars_ = _bars_[~_bars_.isin([np.nan, np.inf, -np.inf]).any(1)]
     _bars_['filter'] = _bars_[column_].cumsum()
-    # print(_bars_)
+    print('_bars_',_bars_)
     _bars_['group'] = 0
     # print(_bars_)
     _bars_['filter'] = _bars_['filter'] / units
@@ -916,66 +919,6 @@ def GetInfluxdbPandasClient(db_name):
 
 # %%
 
-def GetAllTicksInDB(table):
-
-    result = client.query(
-        "select * from " +
-        table +
-        " order by time asc")  # epoch='ns')
-    result
-
-    try:
-        df_result = pd.DataFrame(result[table.replace('"', '')])
-
-        return df_result
-
-    except BaseException:
-        return 'no ticks'  # d
-
-
-def GetHistoricalTicksInDB(table):
-
-    result = client.query(
-        "select * from " +
-        table +
-        " where hist=1 order by time asc")  # epoch='ns')
-    result
-
-    try:
-        df_result = pd.DataFrame(result[table.replace('"', '')])
-
-        return df_result
-
-    except BaseException:
-        return 'no ticks'  # d
-
-def GetNewTicksInDB(df_original_ticks, table):
-    dt_last_tick_time_in_df = df_original_ticks.iloc[-1]['Timestamp']
-    dt_last_tick_time_in_df = datetime.datetime.timestamp(dt_last_tick_time_in_df)
-    ts_time = str(dt_last_tick_time_in_df).replace('.', '') + '000000000000'
-    ts_time = ts_time[:19]
-    q = "select * from " + table + " where time>" + ts_time
-    print('q',q)
-    result = client.query(q) # epoch='ns')
-    result = pd.DataFrame(result[table.replace('"', '')])
-    return result
-
-def GetLiveTicksInDB(table):
-
-    result = client.query(
-        "select * from " +
-        table +
-        " where hist=0 order by time asc")  # epoch='ns')
-    result
-
-    try:
-        df_result = pd.DataFrame(result[table.replace('"', '')])
-
-        return df_result
-
-    except BaseException:
-        return 'no ticks'  # d
-
 def CheckCalc(df1,df2):
     if df1['position']==df2['position']:
         return True
@@ -1042,29 +985,88 @@ def concat_and_reindex(df1, df2):
     df = df.reset_index(drop=True)
     return df
 
+def GetAllTicksInDB(table):
+
+    result = client.query(
+        "select * from " +
+        table +
+        " order by time asc")  # epoch='ns')
+    result
+
+    try:
+        df_result = pd.DataFrame(result[table.replace('"', '')])
+
+        return df_result
+
+    except BaseException:
+        return 'no ticks'  # d
+
+def GetNewTicksInDB(df_original_ticks, table):
+    dt_last_tick_time_in_df = df_original_ticks.iloc[-1]['Timestamp']
+    dt_last_tick_time_in_df = datetime.datetime.timestamp(dt_last_tick_time_in_df)
+    ts_time = str(dt_last_tick_time_in_df).replace('.', '') + '000000000000'
+    ts_time = ts_time[:19]
+    q = "select * from " + table + " where time>" + ts_time
+    print('q',q)
+    result = client.query(q) # epoch='ns')
+    try:
+        result = pd.DataFrame(result[table.replace('"', '')])
+        result = cleanup_ticks_df(result)
+
+        return result
+
+    except BaseException:
+        return 'no ticks'  # d
+
+def GetHistoricalTicksInDB(table):
+
+    result = client.query(
+        "select * from " +
+        table +
+        " where hist=1 order by time asc")  # epoch='ns')
+    result
+
+    try:
+        df_result = pd.DataFrame(result[table.replace('"', '')])
+
+        return df_result
+
+    except BaseException:
+        return 'no ticks'  # d
+
+def GetLiveTicksInDB(table):
+
+    result = client.query(
+        "select * from " +
+        table +
+        " where hist=0 order by time asc")  # epoch='ns')
+    result
+
+    try:
+        df_result = pd.DataFrame(result[table.replace('"', '')])
+
+        return df_result
+
+    except BaseException:
+        return 'no ticks'  # d
+
+def cleanup_ticks_df(df):
+    df['Timestamp'] = df.index.astype('datetime64[ns]')
+    df = df.sort_values(by=['Timestamp', 'id'])
+    df = df.reset_index(drop=True)
+    df['Time'] = [d.time() for d in df['Timestamp']]
+    df['Date'] = [d.date() for d in df['Timestamp']]
+    df.columns
+    df.index
+    df = df.rename(columns={"price": "Price", "size": "Vol"})  # used for tickdata exported files
+        
+    df['Vol'] = 1
+    return df
+
 def Load_dollar_bars():
     global dollar_bars, bar_size 
     dollar_bars = GetAllTicksInDB(table)
-    dollar_bars['Timestamp'] = dollar_bars.index.astype('datetime64[ns]')
-    dollar_bars = dollar_bars.sort_values(by=['Timestamp', 'id'])
-    dollar_bars = dollar_bars.reset_index(drop=True)
-    dollar_bars['Time'] = [d.time() for d in dollar_bars['Timestamp']]
-    dollar_bars['Date'] = [d.date() for d in dollar_bars['Timestamp']]
-    dollar_bars.columns
-    dollar_bars.index
-    dollar_bars = dollar_bars.rename(columns={"price": "Price", "size": "Vol"})  # used for tickdata exported files
-    
-    '''
-    dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype(
-        'datetime64[ns]') <= datetime.datetime(2019, 3, 20))].index)
-    dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype(
-        'datetime64[ns]') >= datetime.datetime(2019, 5, 31))].index)
-    #dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype('datetime64[ns]')<=datetime.datetime(2018,12,20))].index)
-    #dollar_bars = dollar_bars.drop(dollar_bars[(dollar_bars['Date'].astype('datetime64[ns]')>=datetime.datetime(2019,2,28))].index)
-    '''
-    AllData = dollar_bars.copy()
-    
-    dollar_bars['Vol'] = 1
+    dollar_bars = cleanup_ticks_df(dollar_bars)
     # dollar_bars=AllData
     # execute this block in train, skip in test
     # calculate bar size to the nearest smaller 32 multiple
@@ -1077,32 +1079,6 @@ def Load_dollar_bars():
     
     return dollar_bars, bar_size
 
-# %%    
-def AddLiveTicks(contract):
-    #ToDo: query to get new ticks from db after last timestamp present
-    #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
-    global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table 
-    df_ticks = GetNewTicksInDB(df_original_ticks, table)
-    
-    #if len(dollar_bars)>0:
-    #transaction_size=dollar_bars[[-1,'transaction']]
-    if len(df_ticks)>0:
-        current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,df_ticks)
-    else:
-        current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,pd.DataFrame())
-        
-    df_new_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(current_ticks_not_in_bars, bar_size)
-    old_len = len(dollar_bars)
-    if(dollar_bars.iloc[-2]['transaction'] - dollar_bars.iloc[-1]['transaction']) > dollar_bars.iloc[-1]['close']:
-        dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
-    dollar_bars = concat_and_reindex(dollar_bars, df_new_bars)
-    dollar_bars.columns
-    if old_len < len(dollar_bars):
-        dollar_bars = RecalcNewBarsStudies(dollar_bars)
-        SyncPosition(dollar_bars, contract)
-        dollar_bars = AddPL(dollar_bars)
-
-    return 0
 # %%
 bar_size = 0
 df_liveticks = pd.DataFrame()
@@ -1146,6 +1122,44 @@ contract = contracts[0]
 
 #%%
 client = GetInfluxdbPandasClient('demo')
+
+# %%    
+def AddLiveTicks(contract):
+    #ToDo: query to get new ticks from db after last timestamp present
+    #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
+    global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table 
+    df_ticks = GetNewTicksInDB(df_original_ticks, table)
+    #print('AddLiveTicks 1086')
+    #if len(dollar_bars)>0:
+    #transaction_size=dollar_bars[[-1,'transaction']]
+    if len(df_ticks)>0:
+        current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,df_ticks)
+    else:
+        current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,pd.DataFrame())
+
+    #print('AddLiveTicks 1094')
+
+    df_new_bars,df_leftoverticks, df_temp_ticks = CreateDollarBars(current_ticks_not_in_bars, bar_size)
+    
+    print('AddLiveTicks 1098')
+    old_len = len(dollar_bars)
+    
+    print('AddLiveTicks 1101')
+    if(dollar_bars.iloc[-2]['transaction'] - dollar_bars.iloc[-1]['transaction']) > dollar_bars.iloc[-1]['close']:
+        dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
+
+    dollar_bars = concat_and_reindex(dollar_bars, df_new_bars)
+    print(dollar_bars.tail())
+    
+    if old_len < len(dollar_bars):
+        print('AddLiveTicks 1108')
+        dollar_bars = RecalcNewBarsStudies(dollar_bars)
+        print('AddLiveTicks 1110')
+        SyncPosition(dollar_bars, contract)
+        print('AddLiveTicks 1112')
+        dollar_bars = AddPL(dollar_bars)
+        df_original_ticks = df_temp_ticks
+    return 0
 #%%
 
 def main():    
