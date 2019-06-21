@@ -38,7 +38,7 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 # %%
-cont_id = "1909"
+cont_id = "1906"
 cont_symbol = 'ZB'
 ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
 #ib.connect('127.0.0.1', 7498, clientId=1903)#
@@ -443,7 +443,8 @@ prev_req_data_live = 0
 
 dt_earliest_live_tick_in_db = Get_earliest_live_tick_time_in_db()
 dt_earliest_live_tick_in_db = datetime.datetime.timestamp(dt_earliest_live_tick_in_db)
-dt_earliest_live_tick_in_db
+#%%
+#dt_earliest_live_tick_in_db = datetime.datetime.timestamp(datetime.datetime.now())
 # get any additional missing hist ticks between the time last hist ticks were saved and live ticks started
 
 while True:

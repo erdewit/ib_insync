@@ -56,8 +56,8 @@ np.random.seed(42)
 from ib_insync import *
 util.startLoop()
 ib = IB()
-
 pd.core.common.is_list_like = pd.api.types.is_list_like
+log_file = open('./log-'+ str(datetime.datetime.now().timestamp()) +'.txt', 'w+')
 # In[6]:
 
 def split_time(x):
@@ -429,8 +429,8 @@ def CreateDollarBars(_bars_, units):
     
     _bars_ = _bars_.rename(columns={"Vol": "vol", "Price": "price"})
     #print('_bars_.tail()',_bars_.tail())
-    print(_bars_)
-    print('df_leftoverticks' ,df_leftoverticks)
+    print(_bars_, file = log_file)
+    print('df_leftoverticks' ,df_leftoverticks, file = log_file)
     #_bars_.to_csv(r'c:\test\bars_bars.csv')
 
     return _bars_, df_leftoverticks, df_originalticks
@@ -818,7 +818,7 @@ def AddStopLoss(dollar_bars):
     #print (dollar_bars[['position_stoploss_start', 'position_stoploss_seq','trade_number']])
     dollar_bars['stop_loss'] = dollar_bars.groupby(
         ['trade_number'])['position_stoploss_start'].cumsum()
-    print(dollar_bars[['stop_loss', 'position_stoploss_start', 'trade_number']])
+    #print(dollar_bars[['stop_loss', 'position_stoploss_start', 'trade_number']])
     #dollar_bars['temp'] = np.where((dollar_bars['position_stoploss_start']==dollar_bars.index),dollar_bars['position'])
     # |((dollar_bars['trade_number'].shift(1)==dollar_bars['trade_number']) &
     # (np.min(dollar_bars.groupby(['trade_number'])['IntraTrade_P_DD']) <= stop_loss))
@@ -947,44 +947,48 @@ def RecalcNewBarsStudies(dollar_bars):
 
 def SyncPosition(dollar_bars, contract):
     order_size = 0
-    print("inside SyncPosition")
+    
+    print("inside SyncPosition", file = log_file)
     for order in ib.openOrders():
         ib.cancelOrder(order)
+        
     positions = ib.positions()
-    print("Position: ", positions)
+    print("Position: ", positions, file = log_file)
     
     if len(positions)>0:
-        size=positions[0].position
+        size = positions[0].position
     else:
-        size=0
-    #keep going up the rows till we find a forecasted position that has been calculated
-    
+        size = 0
+    print('position size', size, file = log_file)
 
+    #keep going up the rows till we find a forecasted position that has been calculated
+    idx = -3
     if math.isnan(dollar_bars.iloc[-3]['periodVolStd']) == False:
         forecasted_position = dollar_bars.iloc[-3]['position_with_stoploss']
     if math.isnan(dollar_bars.iloc[-2]['periodVolStd']) == False:
+        idx = -2
         forecasted_position = dollar_bars.iloc[-2]['position_with_stoploss']    
     if math.isnan(dollar_bars.iloc[-1]['periodVolStd']) == False:
+        idx = -1
         forecasted_position = dollar_bars.iloc[-1]['position_with_stoploss']
 
     if size != forecasted_position :
         order_size = forecasted_position - size
 
-    print('forecasted position', forecasted_position )
+    print('forecasted position', forecasted_position, file = log_file )
 
     orderType = 'SELL'
     if order_size > 0:
         orderType = 'BUY'
     
     
-    limitOrder = LimitOrder(orderType, abs(order_size), dollar_bars.iloc[-1]['close'])
-    print(limitOrder)
-    limitTrade = ib.placeOrder(contract, limitOrder)  
-    print(limitTrade)
+    limitOrder = LimitOrder(orderType, abs(order_size), dollar_bars.iloc[idx]['close'])
+    print('limit order', limitOrder, file = log_file)
+    #limitTrade = ib.placeOrder(contract, limitOrder)  
+    #print(limitTrade)
+    #print(limitTrade.log)
     
-    print(limitTrade.log)
-    
-    print('position', ib.positions())
+    print('position', ib.positions(), file = log_file)
 
     return True
 
@@ -1048,7 +1052,7 @@ def GetNewTicksInDB(df_original_ticks, table):
     ts_time = str(dt_last_tick_time_in_df).replace('.', '') + '000000000000'
     ts_time = ts_time[:19]
     q = "select * from " + table + " where time>" + ts_time
-    print('q',q)
+    print('query: ',q, file = log_file)
     result = client.query(q) # epoch='ns')
     try:
         result = pd.DataFrame(result[table.replace('"', '')])
@@ -1081,11 +1085,11 @@ def Load_dollar_bars():
     # execute this block in train, skip in test
     # calculate bar size to the nearest smaller 32 multiple
     
-    bar_size=Get_Dollar_Bar_Size(dollar_bars)
+    bar_size = Get_Dollar_Bar_Size(dollar_bars)
     
     bar_size=bar_size//32
     bar_size=bar_size*32
-    print('bar_size',bar_size)
+    print('bar_size',bar_size, file = log_file)
     
     
     return dollar_bars, bar_size
@@ -1100,7 +1104,7 @@ def AddLiveTicks(contract):
         #ToDo: query to get new ticks from db after last timestamp present
         #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
         global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table 
-        print('bar_size',bar_size)
+        print('bar_size',bar_size, file = log_file)
         df_ticks = GetNewTicksInDB(df_original_ticks, table)
         #print('AddLiveTicks 1086')
         #if len(dollar_bars)>0:
@@ -1120,7 +1124,7 @@ def AddLiveTicks(contract):
             dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
     
         dollar_bars = concat_and_reindex(dollar_bars, df_new_bars)
-        print('dollar_bars tail: ',dollar_bars.tail(5))
+        print('dollar_bars tail: ',dollar_bars.tail(5), file = log_file)
         
         if old_len < len(dollar_bars):
             #dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
@@ -1129,7 +1133,7 @@ def AddLiveTicks(contract):
             SyncPosition(dollar_bars, contract)
             dollar_bars = AddPL(dollar_bars)
             df_original_ticks = df_temp_ticks
-            dollar_bars.tail(20).to_csv(r'c:\test\dollar_bars.csv')
+            dollar_bars.tail(20).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now.timestamp()) +'.csv')
             #print(dollar_bars)
             
         return True
@@ -1171,7 +1175,7 @@ year = today.year
 month = today.month
 # -1 because we want the last Thursday
 date = get_thursday(cal, year, month, -1)
-print('date: {0}'.format(date))  # date: 2017-08-31
+print('date: {0}'.format(date), file = log_file)  # date: 2017-08-31
 
 #%%
 cont_id = "1909"
