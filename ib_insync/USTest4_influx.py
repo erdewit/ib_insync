@@ -41,6 +41,7 @@ import matplotlib.mlab as mlab
 import warnings
 warnings.filterwarnings('ignore')
 
+pd.set_option('display.max_columns', None)
 
 hv.extension('bokeh')
 
@@ -726,9 +727,12 @@ def AddStudies(dollar_bars):
 
 
 # %%
+from sklearn.externals import joblib
 
-def AddForecasts(dollar_bars, Train=True):
+scaler = StandardScaler()
 
+def AddForecasts(dollar_bars, Train = True):
+    global scaler 
     # toggle between fit and transform for training and testing data sets
     # forecasts=scaler.fit_transform(dollar_bars[['shorts','longs']])
 
@@ -737,12 +741,15 @@ def AddForecasts(dollar_bars, Train=True):
         #print("forecasts_S - ", forecasts_S)
         forecasts_L = scaler.fit_transform(dollar_bars[['longs']])
         #print("forecasts_L - ", forecasts_L)
+        joblib.dump(scaler , 'my_scaler.pkl')     # save to disk
 
     else:
+        
+        scaler = joblib.load('my_scaler.pkl')  # load from disk
         #TODO: if scaler is not fitted, need to fit it first
         forecasts_S = scaler.transform(dollar_bars[['shorts']])
         forecasts_L = scaler.transform(dollar_bars[['longs']])
-
+    
     dollar_bars['shortFCs'] = pd.DataFrame(forecasts_S[:, 0])
     dollar_bars['longFCs'] = pd.DataFrame(forecasts_L[:, 0])
     dollar_bars['shortFCs'] = dollar_bars['shortFCs'] - .5
@@ -962,33 +969,45 @@ def SyncPosition(dollar_bars, contract):
     print('position size', size, file = log_file)
 
     #keep going up the rows till we find a forecasted position that has been calculated
-    idx = -3
+    idx = -4
     
-    if math.isnan(dollar_bars.iloc[-2]['diff_leadsine']) == False:
+    if math.isnan(dollar_bars.iloc[-3]['CumPL']) == False:
+        idx = -3
+    
+    if math.isnan(dollar_bars.iloc[-2]['CumPL']) == False:
         idx = -2
     
-    if math.isnan(dollar_bars.iloc[-1]['diff_leadsine']) == False:
+    if math.isnan(dollar_bars.iloc[-1]['CumPL']) == False:
         idx = -1
     
     forecasted_position = dollar_bars.iloc[idx]['position_with_stoploss']
 
-    if -1*size != forecasted_position :
-        order_size = -1*forecasted_position - size
+    # prevent the bars that have a swift change from +x to -x positions
+    if forecasted_position == -1*size:
+        forecasted_position = 0
 
-    print('forecasted position', -1*forecasted_position, file = log_file )
+    if size != forecasted_position :
+        order_size = forecasted_position - size
 
-    orderType = 'SELL'
-    if order_size > 0:
-        orderType = 'BUY'
-    
-    
-    limitOrder = LimitOrder(orderType, abs(order_size), dollar_bars.iloc[idx]['close'])
-    print('limit order', limitOrder, file = log_file)
-    limitTrade = ib.placeOrder(contract, limitOrder)  
-    print(limitTrade)
-    print(limitTrade.log, file = log_file)
-    
-    print('position', ib.positions(), file = log_file)
+    #if -1*size != forecasted_position :
+    #    order_size = -1*forecasted_position - size
+    #print('forecasted position', -1*forecasted_position, file = log_file )
+
+    print('forecasted position', forecasted_position, file = log_file )
+
+    if order_size != 0:
+        orderType = 'SELL'
+        if order_size > 0:
+            orderType = 'BUY'
+        
+        
+        limitOrder = LimitOrder(orderType, abs(order_size), dollar_bars.iloc[idx]['close'])
+        print('limit order', limitOrder, file = log_file)
+        limitTrade = ib.placeOrder(contract, limitOrder)  
+        print(limitTrade)
+        print(limitTrade.log, file = log_file)
+        
+        print('position', ib.positions(), file = log_file)
 
     return True
 
@@ -1166,7 +1185,6 @@ df_leftover_ticks = pd.DataFrame()
 df_original_ticks = pd.DataFrame()
 
 # AddStudies(62500)
-scaler = StandardScaler()
 forecasts_S = pd.DataFrame()
 forecasts_L = pd.DataFrame()
 # %% comment to test second wave of data after train (fit) was done
