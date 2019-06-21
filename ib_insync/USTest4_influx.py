@@ -963,19 +963,19 @@ def SyncPosition(dollar_bars, contract):
 
     #keep going up the rows till we find a forecasted position that has been calculated
     idx = -3
-    if math.isnan(dollar_bars.iloc[-3]['periodVolStd']) == False:
-        forecasted_position = dollar_bars.iloc[-3]['position_with_stoploss']
-    if math.isnan(dollar_bars.iloc[-2]['periodVolStd']) == False:
+    
+    if math.isnan(dollar_bars.iloc[-2]['diff_leadsine']) == False:
         idx = -2
-        forecasted_position = dollar_bars.iloc[-2]['position_with_stoploss']    
-    if math.isnan(dollar_bars.iloc[-1]['periodVolStd']) == False:
+    
+    if math.isnan(dollar_bars.iloc[-1]['diff_leadsine']) == False:
         idx = -1
-        forecasted_position = dollar_bars.iloc[-1]['position_with_stoploss']
+    
+    forecasted_position = dollar_bars.iloc[idx]['position_with_stoploss']
 
-    if size != forecasted_position :
-        order_size = forecasted_position - size
+    if -1*size != forecasted_position :
+        order_size = -1*forecasted_position - size
 
-    print('forecasted position', forecasted_position, file = log_file )
+    print('forecasted position', -1*forecasted_position, file = log_file )
 
     orderType = 'SELL'
     if order_size > 0:
@@ -984,9 +984,9 @@ def SyncPosition(dollar_bars, contract):
     
     limitOrder = LimitOrder(orderType, abs(order_size), dollar_bars.iloc[idx]['close'])
     print('limit order', limitOrder, file = log_file)
-    #limitTrade = ib.placeOrder(contract, limitOrder)  
-    #print(limitTrade)
-    #print(limitTrade.log)
+    limitTrade = ib.placeOrder(contract, limitOrder)  
+    print(limitTrade)
+    print(limitTrade.log, file = log_file)
     
     print('position', ib.positions(), file = log_file)
 
@@ -1095,6 +1095,7 @@ def Load_dollar_bars():
     return dollar_bars, bar_size
 
 # %%
+import pdb
 from threading import Lock
 lock = Lock()
 
@@ -1109,6 +1110,8 @@ def AddLiveTicks(contract):
         #print('AddLiveTicks 1086')
         #if len(dollar_bars)>0:
         #transaction_size=dollar_bars[[-1,'transaction']]
+        #pdb.set_trace()
+
         if len(df_ticks)>0:
             current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,df_ticks)
         else:
@@ -1133,7 +1136,7 @@ def AddLiveTicks(contract):
             SyncPosition(dollar_bars, contract)
             dollar_bars = AddPL(dollar_bars)
             df_original_ticks = df_temp_ticks
-            dollar_bars.tail(20).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now.timestamp()) +'.csv')
+            dollar_bars.tail(20).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
             #print(dollar_bars)
             
         return True

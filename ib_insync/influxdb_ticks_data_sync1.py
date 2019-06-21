@@ -32,13 +32,17 @@ from influxdb import DataFrameClient
 
 import datetime
 import pandas as pd
-
+import pdb
+#python3 -m pdb myscript.py
+#import rook
+# rest of your code go here
+#rook.start(token='359fe28d6c0a3b3495c68b1eaa3372d6cd5222d4d717250056ce476f5b05d416')
 #%%
 from ib_insync import *
 util.startLoop()
 ib = IB()
 # %%
-cont_id = "1906"
+cont_id = "1909"
 cont_symbol = 'ZB'
 ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
 #ib.connect('127.0.0.1', 7498, clientId=1903)#
@@ -421,6 +425,7 @@ def onPendingTickers(tickers):
 
         # call function to calc bars & studies on new data
         if data_ready:
+            #pdb.set_trace()
             AddLiveTicks( contracts[0])
 
 
@@ -440,9 +445,11 @@ ib.pendingTickersEvent += onPendingTickers
 #sleep(30)  # give some time for the live ticks to start
 # %%
 prev_req_data_live = 0
-
-dt_earliest_live_tick_in_db = Get_earliest_live_tick_time_in_db()
-dt_earliest_live_tick_in_db = datetime.datetime.timestamp(dt_earliest_live_tick_in_db)
+try:
+    dt_earliest_live_tick_in_db = Get_earliest_live_tick_time_in_db()
+    dt_earliest_live_tick_in_db = datetime.datetime.timestamp(dt_earliest_live_tick_in_db)
+except:
+    dt_earliest_live_tick_in_db = datetime.datetime.now().timestamp()
 #%%
 #dt_earliest_live_tick_in_db = datetime.datetime.timestamp(datetime.datetime.now())
 # get any additional missing hist ticks between the time last hist ticks were saved and live ticks started
