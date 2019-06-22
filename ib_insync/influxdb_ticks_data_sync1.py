@@ -391,7 +391,7 @@ while True:
 
 zb_ticker = ib.reqTickByTickData(contracts[0], 'Last')
 
-from USTest4_influx import AddLiveTicks
+from USTest4_influx import AddLiveTicks,  save_dollar_bars
 
 sleep(10)
 
@@ -484,6 +484,7 @@ print ('data ready')
 # call function to calc bars & studies
 # get last time for hist tick in dataframe, use that as condition below
 
+save_dollar_bars()
 '''
 result = client.query(
     "select * from " +

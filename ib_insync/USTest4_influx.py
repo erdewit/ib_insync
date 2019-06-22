@@ -928,7 +928,10 @@ def GetInfluxdbPandasClient(db_name):
     client = DataFrameClient(host, port, user, password, dbname)
     return client
 
-
+# %%
+def save_dollar_bars():
+    dollar_bars.to_csv(r'c:\test\dollar_bars_final.csv')
+        
 # %%
 
 def CheckCalc(df1,df2):
@@ -1117,7 +1120,7 @@ def Load_dollar_bars():
 import pdb
 from threading import Lock
 lock = Lock()
-
+'''
 def AddLiveTicks(contract):
     
     with lock:
@@ -1159,17 +1162,55 @@ def AddLiveTicks(contract):
             #print(dollar_bars)
             
         return True
+'''
+def AddLiveTicks(contract):
+    
+    with lock:
+        #ToDo: query to get new ticks from db after last timestamp present
+        #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
+        global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table 
+        print('bar_size',bar_size, file = log_file)
+        df_ticks = GetNewTicksInDB(df_original_ticks, table)
+        #print('AddLiveTicks 1086')
+        #if len(dollar_bars)>0:
+        #transaction_size=dollar_bars[[-1,'transaction']]
+        #pdb.set_trace()
+        new_ticks = pd.DataFrame()
+        
+        if len(df_ticks)>0:
+            new_ticks = concat_and_reindex( df_original_ticks,df_ticks)
+       
+        #print('AddLiveTicks 1094')
+        
+            df_new_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(new_ticks, bar_size)
+            
+            old_len = len(dollar_bars)
+            
+            dollar_bars = df_new_bars
+            print('dollar_bars tail: ',dollar_bars.tail(5), file = log_file)
+            
+            if old_len < len(dollar_bars):
+                #dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
+                
+                dollar_bars = AddStudies(dollar_bars)
+                dollar_bars = AddForecasts(dollar_bars, Train=False)
+                dollar_bars = AddStopLoss(dollar_bars)
+                
+                SyncPosition(dollar_bars, contract)
+                dollar_bars = AddPL(dollar_bars)
+                dollar_bars.tail(20).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
+                #print(dollar_bars)
+                
+    return True
 #%%
-
+    
+#%%
 def main():    
     global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size 
     dollar_bars, bar_size = Load_dollar_bars()
-    dollar_bars.columns
-    dollar_bars.index
-    dollar_bars.index[dollar_bars.index.duplicated()].unique
     dollar_bars, df_leftover_ticks, df_original_ticks = CreateDollarBars(dollar_bars, bar_size)
     dollar_bars = AddStudies(dollar_bars)
-    dollar_bars = AddForecasts(dollar_bars)#, Train=False)
+    dollar_bars = AddForecasts(dollar_bars, Train=True)
     dollar_bars = AddStopLoss(dollar_bars)
     dollar_bars = AddPL(dollar_bars)
     CalcAnalytics(dollar_bars)
