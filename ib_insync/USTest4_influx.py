@@ -1163,12 +1163,13 @@ def AddLiveTicks(contract):
             
         return True
 '''
+num_bars_original = 0
+
 def AddLiveTicks(contract):
-    
     with lock:
         #ToDo: query to get new ticks from db after last timestamp present
         #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
-        global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table 
+        global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table , num_bars_original
         print('bar_size',bar_size, file = log_file)
         df_ticks = GetNewTicksInDB(df_original_ticks, table)
         #print('AddLiveTicks 1086')
@@ -1180,16 +1181,15 @@ def AddLiveTicks(contract):
         if len(df_ticks)>0:
             new_ticks = concat_and_reindex( df_original_ticks,df_ticks)
        
-        #print('AddLiveTicks 1094')
+            #num_bars_original = df_original_ticks['price'].cumsum()/bar_size
+            num_bars_new = new_ticks['price'].cumsum()/bar_size
+            if num_bars_new>num_bars_original:
+                #print('AddLiveTicks 1094')
         
-            df_new_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(new_ticks, bar_size)
-            
-            old_len = len(dollar_bars)
-            
-            dollar_bars = df_new_bars
-            print('dollar_bars tail: ',dollar_bars.tail(5), file = log_file)
-            
-            if old_len < len(dollar_bars):
+                dollar_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(new_ticks, bar_size)
+                
+                print('dollar_bars tail: ',dollar_bars.tail(5), file = log_file)
+                
                 #dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
                 
                 dollar_bars = AddStudies(dollar_bars)
@@ -1198,21 +1198,23 @@ def AddLiveTicks(contract):
                 
                 SyncPosition(dollar_bars, contract)
                 dollar_bars = AddPL(dollar_bars)
+                num_bars_original = len(dollar_bars)
                 dollar_bars.tail(20).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
                 #print(dollar_bars)
-                
+                dollar_bars
     return True
 #%%
     
 #%%
 def main():    
-    global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size 
+    global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size , num_bars_original
     dollar_bars, bar_size = Load_dollar_bars()
     dollar_bars, df_leftover_ticks, df_original_ticks = CreateDollarBars(dollar_bars, bar_size)
     dollar_bars = AddStudies(dollar_bars)
     dollar_bars = AddForecasts(dollar_bars, Train=True)
     dollar_bars = AddStopLoss(dollar_bars)
     dollar_bars = AddPL(dollar_bars)
+    num_bars_original = len(dollar_bars)
     CalcAnalytics(dollar_bars)
     
     #dollar_bars.to_csv(r'c:\test\ewmac-ib-influx-' + table + '.csv')
