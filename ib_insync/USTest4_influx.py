@@ -376,15 +376,15 @@ def CalculateLabels(
 
 
 def CreateDollarBars(_bars_, units):
-    global df_originalticks
+    #global df_originalticks
     _bars_ = _bars_.rename(columns={"vol": "Vol", "price": "Price"})
     _bars_['id']=_bars_['id'].astype(int)
     _bars_['Timestamp']=_bars_['Timestamp'].astype('datetime64[ns]')
     _bars_ = _bars_.sort_values(by=['Timestamp','id'])
     _bars_=_bars_.reset_index(drop=True) 
     ##print('_bars_ passed to CreateDollarBars',_bars_)
-    df_originalticks =_bars_.copy()
-    df_originalticks['cumsum_vol']=df_originalticks['Vol'].cumsum()
+    #df_originalticks =_bars_.copy()
+    #df_originalticks['cumsum_vol']=df_originalticks['Vol'].cumsum()
     _bars_['cumsum_vol']=_bars_['Vol'].cumsum()
 
     ##df2.loc[: , "2005"]
@@ -426,15 +426,15 @@ def CreateDollarBars(_bars_, units):
     #print(_bars_)
     #
     
-    df_leftoverticks = df_originalticks[-1* _bars_.iloc[-1]['Vol']:]
+    #df_leftoverticks = df_originalticks[-1* _bars_.iloc[-1]['Vol']:]
     
     _bars_ = _bars_.rename(columns={"Vol": "vol", "Price": "price"})
     #print('_bars_.tail()',_bars_.tail())
     print(_bars_, file = log_file)
-    print('df_leftoverticks' ,df_leftoverticks, file = log_file)
+    #print('df_leftoverticks' ,df_leftoverticks, file = log_file)
     #_bars_.to_csv(r'c:\test\bars_bars.csv')
 
-    return _bars_, df_leftoverticks, df_originalticks
+    return _bars_#, df_leftoverticks, df_originalticks
 #
 
 
@@ -1020,22 +1020,6 @@ def concat_and_reindex(df1, df2):
     df = df.reset_index(drop=True)
     return df
 
-def GetAllTicksInDB(table):
-
-    result = client.query(
-        "select * from " +
-        table +
-        " order by time asc")  # epoch='ns')
-    result
-
-    try:
-        df_result = pd.DataFrame(result[table.replace('"', '')])
-
-        return df_result
-
-    except BaseException:
-        return 'no ticks'  # d
-
 def GetHistoricalTicksInDB(table):
 
     result = client.query(
@@ -1058,6 +1042,22 @@ def GetLiveTicksInDB(table):
         "select * from " +
         table +
         " where hist=0 order by time asc")  # epoch='ns')
+    result
+
+    try:
+        df_result = pd.DataFrame(result[table.replace('"', '')])
+
+        return df_result
+
+    except BaseException:
+        return 'no ticks'  # d
+
+def GetAllTicksInDB(table):
+
+    result = client.query(
+        "select * from " +
+        table +
+        " order by time asc")  # epoch='ns')
     result
 
     try:
@@ -1165,28 +1165,30 @@ def AddLiveTicks(contract):
 '''
 num_bars_original = 0
 
-def AddLiveTicks(contract):
+def AddLiveTicks():#contractId):
     with lock:
         #ToDo: query to get new ticks from db after last timestamp present
         #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
         global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table , num_bars_original
         print('bar_size',bar_size, file = log_file)
         df_ticks = GetNewTicksInDB(df_original_ticks, table)
-        #print('AddLiveTicks 1086')
+        print('df_ticks', df_ticks)
+        print('df_original_ticks', df_original_ticks)
         #if len(dollar_bars)>0:
         #transaction_size=dollar_bars[[-1,'transaction']]
         #pdb.set_trace()
         new_ticks = pd.DataFrame()
         
         if len(df_ticks)>0:
-            new_ticks = concat_and_reindex( df_original_ticks,df_ticks)
-       
+            new_ticks = concat_and_reindex(df_original_ticks, df_ticks)
+            df_original_ticks = new_ticks
             #num_bars_original = df_original_ticks['price'].cumsum()/bar_size
-            num_bars_new = new_ticks['price'].cumsum()/bar_size
-            if num_bars_new>num_bars_original:
+            num_bars_new = new_ticks['Price'].sum()/bar_size
+            if num_bars_new > num_bars_original:
                 #print('AddLiveTicks 1094')
-        
-                dollar_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(new_ticks, bar_size)
+                
+                #dollar_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(new_ticks, bar_size)
+                dollar_bars = CreateDollarBars(new_ticks, bar_size)
                 
                 print('dollar_bars tail: ',dollar_bars.tail(5), file = log_file)
                 
@@ -1202,6 +1204,7 @@ def AddLiveTicks(contract):
                 dollar_bars.tail(20).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
                 #print(dollar_bars)
                 dollar_bars
+                
     return True
 #%%
     
@@ -1209,7 +1212,9 @@ def AddLiveTicks(contract):
 def main():    
     global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size , num_bars_original
     dollar_bars, bar_size = Load_dollar_bars()
-    dollar_bars, df_leftover_ticks, df_original_ticks = CreateDollarBars(dollar_bars, bar_size)
+    print (dollar_bars)
+    df_original_ticks = dollar_bars
+    dollar_bars = CreateDollarBars(dollar_bars, bar_size)
     dollar_bars = AddStudies(dollar_bars)
     dollar_bars = AddForecasts(dollar_bars, Train=True)
     dollar_bars = AddStopLoss(dollar_bars)
