@@ -840,8 +840,9 @@ def AddStopLoss(dollar_bars):
 
 
 def AddPL(dollar_bars):
-    dollar_bars['PL'] = dollar_bars['position_with_stoploss'] * \
-        dollar_bars['dollar_returns'] * 1000
+    dollar_bars['prev_position_with_stoploss'] = dollar_bars['position_with_stoploss'].shift(1)
+
+    dollar_bars['PL'] = dollar_bars['prev_position_with_stoploss'] * dollar_bars['dollar_returns'] * 1000
     # dollar_bars['PL']=dollar_bars['position']*dollar_bars['dollar_returns']*1000
     dollar_bars['CumPL'] = dollar_bars['PL'].cumsum()
     dollar_bars['Signals'] = (dollar_bars['FCs'].diff())
@@ -984,13 +985,14 @@ def SyncPosition(dollar_bars, contract):
         idx = -1
     
     if(dollar_bars.iloc[-2]['transaction'] - dollar_bars.iloc[-1]['transaction']) > dollar_bars.iloc[-1]['close']:
-        idx=math.min(idx,-2)
+        idx=min(idx,-2) # if there is a leftover ticks bar, don't take its forecasted position
 
     forecasted_position = dollar_bars.iloc[idx]['position_with_stoploss']
 
     # prevent the bars that have a swift change from +x to -x positions
-    if forecasted_position == -1*size:
+    if (forecasted_position > 0 and size < 0) or (forecasted_position < 0 and size > 0):
         forecasted_position = 0
+        dollar_bars.iloc[idx]['position_with_stoploss'] = forecasted_position 
 
     if size != forecasted_position :
         order_size = forecasted_position - size
@@ -1098,7 +1100,7 @@ def cleanup_ticks_df(df):
     #df.index
     df = df.rename(columns={"price": "Price", "size": "Vol"})  # used for tickdata exported files
         
-    df['Vol'] = 1
+    #df['Vol'] = 1
     
     return df
 
@@ -1175,8 +1177,8 @@ def AddLiveTicks():#contractId):
         global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table , num_bars_original
         print('bar_size',bar_size, file = log_file)
         df_ticks = GetNewTicksInDB(df_original_ticks, table)
-        print('df_ticks', df_ticks)
-        print('df_original_ticks', df_original_ticks)
+        print('df_ticks', df_ticks, file = log_file)
+        print('df_original_ticks', df_original_ticks,file = log_file)
         #if len(dollar_bars)>0:
         #transaction_size=dollar_bars[[-1,'transaction']]
         #pdb.set_trace()
@@ -1186,14 +1188,14 @@ def AddLiveTicks():#contractId):
             new_ticks = concat_and_reindex(df_original_ticks, df_ticks)
             df_original_ticks = new_ticks
             #num_bars_original = df_original_ticks['price'].cumsum()/bar_size
-            num_bars_new = new_ticks['Price'].sum()/bar_size
+            num_bars_new = (new_ticks['Price']*new_ticks['Vol']).sum()/bar_size
             if num_bars_new > num_bars_original:
                 #print('AddLiveTicks 1094')
                 
                 #dollar_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(new_ticks, bar_size)
                 dollar_bars = CreateDollarBars(new_ticks, bar_size)
                 
-                print('dollar_bars tail: ',dollar_bars.tail(5), file = log_file)
+                print('dollar_bars tail: ', dollar_bars.tail(5), file = log_file)
                 
                 #dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
                 
@@ -1204,7 +1206,7 @@ def AddLiveTicks():#contractId):
                 SyncPosition(dollar_bars, contract)
                 dollar_bars = AddPL(dollar_bars)
                 num_bars_original = len(dollar_bars)
-                dollar_bars.tail(20).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
+                dollar_bars.tail(35).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
                 #print(dollar_bars)
                 dollar_bars
                 
