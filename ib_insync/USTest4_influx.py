@@ -729,26 +729,29 @@ def AddStudies(dollar_bars):
 # %%
 from sklearn.externals import joblib
 
-scaler = StandardScaler()
+scaler_S = StandardScaler()
+scaler_L = StandardScaler()
 
 def AddForecasts(dollar_bars, Train = True):
-    global scaler 
+    global scaler_S, scaler_L 
     # toggle between fit and transform for training and testing data sets
     # forecasts=scaler.fit_transform(dollar_bars[['shorts','longs']])
 
     if Train:
-        forecasts_S = scaler.fit_transform(dollar_bars[['shorts']])
+        forecasts_S = scaler_S.fit_transform(dollar_bars[['shorts']])
         #print("forecasts_S - ", forecasts_S)
-        forecasts_L = scaler.fit_transform(dollar_bars[['longs']])
+        forecasts_L = scaler_L.fit_transform(dollar_bars[['longs']])
         #print("forecasts_L - ", forecasts_L)
-        joblib.dump(scaler , 'my_scaler.pkl')     # save to disk
+        joblib.dump(scaler_S , 'my_scaler_S.pkl')     # save to disk
+        joblib.dump(scaler_L , 'my_scaler_L.pkl')     # save to disk
 
     else:
         
-        scaler = joblib.load('my_scaler.pkl')  # load from disk
+        scaler_S = joblib.load('my_scaler_S.pkl')  # load from disk
+        scaler_L = joblib.load('my_scaler_L.pkl')  # load from disk
         #TODO: if scaler is not fitted, need to fit it first
-        forecasts_S = scaler.transform(dollar_bars[['shorts']])
-        forecasts_L = scaler.transform(dollar_bars[['longs']])
+        forecasts_S = scaler_S.transform(dollar_bars[['shorts']])
+        forecasts_L = scaler_L.transform(dollar_bars[['longs']])
     
     dollar_bars['shortFCs'] = pd.DataFrame(forecasts_S[:, 0])
     dollar_bars['longFCs'] = pd.DataFrame(forecasts_L[:, 0])
@@ -1106,7 +1109,7 @@ def cleanup_ticks_df(df):
     #df.index
     df = df.rename(columns={"price": "Price", "size": "Vol"})  # used for tickdata exported files
         
-    #df['Vol'] = 1
+    df['Vol'] = 1
     
     return df
 
