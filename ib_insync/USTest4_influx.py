@@ -960,6 +960,12 @@ def SyncPosition(dollar_bars, contract):
     order_size = 0
     
     print("inside SyncPosition", file = log_file)
+    '''
+    ToDo: 
+        - if opening a position and price got worse, don't chase, i.e. don't cancel prev order
+        - if closing a trade or filling a stop loss, close at market price
+        - if closing a trade and opening a new one, close at market price and open at limit only, don't chase
+    '''
     for order in ib.openOrders():
         ib.cancelOrder(order)
         
