@@ -974,15 +974,18 @@ def SyncPosition(dollar_bars, contract):
     #keep going up the rows till we find a forecasted position that has been calculated
     idx = -4
     
-    if math.isnan(dollar_bars.iloc[-3]['CumPL']) == False:
+    if math.isnan(dollar_bars.iloc[-3]['position_with_stoploss']) == False:
         idx = -3
     
-    if math.isnan(dollar_bars.iloc[-2]['CumPL']) == False:
+    if math.isnan(dollar_bars.iloc[-2]['position_with_stoploss']) == False:
         idx = -2
     
-    if math.isnan(dollar_bars.iloc[-1]['CumPL']) == False:
+    if math.isnan(dollar_bars.iloc[-1]['position_with_stoploss']) == False:
         idx = -1
     
+    if(dollar_bars.iloc[-2]['transaction'] - dollar_bars.iloc[-1]['transaction']) > dollar_bars.iloc[-1]['close']:
+        idx=math.min(idx,-2)
+
     forecasted_position = dollar_bars.iloc[idx]['position_with_stoploss']
 
     # prevent the bars that have a swift change from +x to -x positions
