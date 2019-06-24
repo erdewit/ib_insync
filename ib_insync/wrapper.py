@@ -236,7 +236,7 @@ class Wrapper:
             positions.pop(contract.conId, None)
         else:
             positions[contract.conId] = position
-        self._logger.info(f'position: {position}')
+        #self._logger.info(f'position: {position}')
         results = self._results.get('positions')
         if results is not None:
             results.append(position)
