@@ -225,7 +225,7 @@ class Wrapper:
             portfolioItems.pop(contract.conId, None)
         else:
             portfolioItems[contract.conId] = portfItem
-        self._logger.info(f'updatePortfolio: {portfItem}')
+        #self._logger.info(f'updatePortfolio: {portfItem}')
         self.ib.updatePortfolioEvent.emit(portfItem)
 
     def position(self, account, contract, posSize, avgCost):
