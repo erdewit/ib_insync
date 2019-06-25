@@ -1006,7 +1006,14 @@ def SyncPosition(dollar_bars, contract):
     # prevent the bars that have a swift change from +x to -x positions
     if (forecasted_position > 0 and size < 0) or (forecasted_position < 0 and size > 0):
         forecasted_position = 0
-        dollar_bars.iloc[idx]['position_with_stoploss'] = forecasted_position 
+    # prevent opening a position with 2 or 3 contracts, instead always open with 1
+    if (size == 0):
+        if (forecasted_position < 0 ):
+            forecasted_position = -1
+        if (forecasted_position > 0 ):
+            forecasted_position = 1
+        
+    dollar_bars.iloc[idx]['position_with_stoploss'] = forecasted_position 
     
     if size != forecasted_position :
         order_size = forecasted_position - size
@@ -1312,12 +1319,14 @@ table = cont_symbol + '20' + cont_id
 # USH19=322458851, USU19=346233386, USZ19=358060606
 contracts = [Future(symbol=cont_symbol,lastTradeDateOrContractMonth="20" + cont_id)]  # ,exchange = "GLOBEX")]
 try: 
-    ib.connect('127.0.0.1', 7498, cont_id)
+    ib.connect('127.0.0.1', 7498, 0)
     contracts = ib.qualifyContracts(*contracts)
     contracts[0].includeExpired = True
-    contract = contracts[0]
 except:
     print("Connection or Contract Error") 
+    
+contract = contracts[0]
+
 #%%
 client = GetInfluxdbPandasClient('demo')
 
