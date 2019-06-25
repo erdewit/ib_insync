@@ -58,7 +58,7 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 pd.core.common.is_list_like = pd.api.types.is_list_like
-log_file = open('./log-'+ str(datetime.datetime.now().timestamp()) +'.txt', 'w+')
+log_file = open('./logs/log-'+ str(datetime.datetime.now().timestamp()) +'.txt', 'w+')
 # In[6]:
 
 def split_time(x):
@@ -890,13 +890,13 @@ def CalcAnalytics(dollar_bars):
     print('Total Trades     ', dollar_bars['Trades'].sum())
     print('Bars in the black', len(dollar_bars.loc[dollar_bars['NetPL'] < 0]))
     print('Bars in the red  ', len(dollar_bars.loc[dollar_bars['NetPL'] > 0]))
-
+    print('Bar_Size         ', bar_size)
     #plt.hist(dollar_bars['FCs'], normed=True, bins=5)
     #plt.ylabel('Probability')
 
     # dollar_bars['BBmiddle'].values
-    print('NetCumPL', dollar_bars.iloc[-1]['NetCumPL'])
-    print('max Eq ', np.max(dollar_bars['NetCumPL']))
+    print('Net Cum PL       ', dollar_bars.iloc[-1]['NetCumPL'])
+    print('Max Equity       ', np.max(dollar_bars['NetCumPL']))
 
 
 # %%
@@ -939,7 +939,7 @@ def GetInfluxdbPandasClient(db_name):
 
 # %%
 def save_dollar_bars():
-    dollar_bars.to_csv(r'c:\test\dollar_bars_final.csv')
+    dollar_bars.to_csv(r'c:\test\dollar_bars_final' + table + '-' + str(datetime.datetime.now().timestamp()) +'.csv')
         
 # %%
 
@@ -1086,6 +1086,32 @@ def GetAllTicksInDB(table):
 
     except BaseException:
         return 'no ticks'  # d
+    
+    
+def GetTrainTicksInDB(table, start_date=datetime.datetime(2019,3,21), end_date=datetime.datetime(2019,5,29)):
+    start_date = start_date.astimezone(tz=datetime.timezone.utc)
+    end_date = end_date.astimezone(tz=datetime.timezone.utc)
+
+    ts_start_date = start_date.timestamp()
+    ts_end_date = end_date.timestamp()
+    ts_start_date = str(ts_start_date).replace('.', '') + '000000000000'
+    ts_start_date = ts_start_date[:19]    
+    ts_end_date = str(ts_end_date).replace('.', '') + '000000000000'
+    ts_end_date = ts_end_date[:19]    
+   
+    result = client.query(
+        "select * from " +
+        table + " where time>" + ts_start_date + " and time<" + ts_end_date +
+        " order by time asc")  # epoch='ns')
+    result
+
+    try:
+        df_result = pd.DataFrame(result[table.replace('"', '')])
+
+        return df_result
+
+    except BaseException:
+        return 'no ticks'  # d
 
 def GetNewTicksInDB(df_original_ticks, table):
     dt_last_tick_time_in_df = df_original_ticks.iloc[-1]['Timestamp']
@@ -1120,7 +1146,7 @@ def cleanup_ticks_df(df):
 
 def Load_dollar_bars():
     global dollar_bars, bar_size 
-    dollar_bars = GetAllTicksInDB(table)
+
     dollar_bars = cleanup_ticks_df(dollar_bars)
     # dollar_bars=AllData
     # execute this block in train, skip in test
@@ -1230,18 +1256,30 @@ def AddLiveTicks():#contractId):
 #%%
 def main():    
     global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size , num_bars_original
-    dollar_bars, bar_size = Load_dollar_bars()
-    print (dollar_bars)
-    df_original_ticks = dollar_bars
+    # during trainingn set train=true, cont_id = train database table
+    # during test and live, set train = false, bar_size=train bar_size, cont_id = live database table
+    train = False
+    if (train):
+        dollar_bars = GetTrainTicksInDB(table)
+        dollar_bars, bar_size = Load_dollar_bars()
+        df_original_ticks = dollar_bars
+       
+    else:
+        dollar_bars = GetAllTicksInDB(table)
+        dollar_bars, bar_size = Load_dollar_bars()
+        df_original_ticks = dollar_bars
+        bar_size = 49376 
+
+    print ('ticks - ', dollar_bars)
     dollar_bars = CreateDollarBars(dollar_bars, bar_size)
     dollar_bars = AddStudies(dollar_bars)
-    dollar_bars = AddForecasts(dollar_bars, Train=True)
+    dollar_bars = AddForecasts(dollar_bars, Train=train)
     dollar_bars = AddStopLoss(dollar_bars)
     dollar_bars = AddPL(dollar_bars)
     num_bars_original = len(dollar_bars)
     CalcAnalytics(dollar_bars)
-    
-    #dollar_bars.to_csv(r'c:\test\ewmac-ib-influx-' + table + '.csv')
+
+    dollar_bars.to_csv(r'c:\test\ewmac-ib-influx-' + table + '-' + str(datetime.datetime.now().timestamp()) +'.csv')
 
 # %%
 bar_size = 0
@@ -1272,17 +1310,14 @@ table = cont_symbol + '20' + cont_id
 # table='USM1903'
 # contracts = [Future(conId='346233386')] #USM19=333866981,
 # USH19=322458851, USU19=346233386, USZ19=358060606
-contracts = [
-    Future(
-        symbol=cont_symbol,
-        lastTradeDateOrContractMonth="20" +
-        cont_id)]  # ,exchange = "GLOBEX")]
-
-ib.connect('127.0.0.1', 7498, 0)
-contracts = ib.qualifyContracts(*contracts)
-contracts[0].includeExpired = True
-contract = contracts[0]
-
+contracts = [Future(symbol=cont_symbol,lastTradeDateOrContractMonth="20" + cont_id)]  # ,exchange = "GLOBEX")]
+try: 
+    ib.connect('127.0.0.1', 7498, cont_id)
+    contracts = ib.qualifyContracts(*contracts)
+    contracts[0].includeExpired = True
+    contract = contracts[0]
+except:
+    print("Connection or Contract Error") 
 #%%
 client = GetInfluxdbPandasClient('demo')
 
