@@ -790,13 +790,18 @@ def AddForecasts(dollar_bars, Train = True):
     dollar_bars['trend_following'] = np.where(trend_following > 0, 1, -1)
     dollar_bars['trend_following'] = dollar_bars['trend_following'].shift(1)
     # dollar_bars=dollar_bars.dropna()
-    # new system
+    # new system from rocket science for traders book
+
     dollar_bars['position'] = np.where(
         dollar_bars['trend_following'] == -1, np.where(
             dollar_bars['diff_leadsine'] > 0, abs(
                 dollar_bars['position']), -1 * abs(
                 dollar_bars['position'])), dollar_bars['position'])
-
+    '''
+    dollar_bars['position'] = np.where(
+        dollar_bars['trend_following'] == -1,  -1 * (
+                dollar_bars['position']), dollar_bars['position'])
+    '''
     dollar_bars['prev_position'] = dollar_bars['position'].shift(1)
 
     # calculate trade number and whether this is a new trade or not, to be
@@ -1002,16 +1007,16 @@ def SyncPosition(dollar_bars, contract):
     if (forecasted_position > 0 and size < 0) or (forecasted_position < 0 and size > 0):
         forecasted_position = 0
         dollar_bars.iloc[idx]['position_with_stoploss'] = forecasted_position 
-
+    
     if size != forecasted_position :
         order_size = forecasted_position - size
-
-    #if -1*size != forecasted_position :
-    #    order_size = -1*forecasted_position - size
-    #print('forecasted position', -1*forecasted_position, file = log_file )
-
-    print('forecasted position', forecasted_position, file = log_file )
-
+        print('forecasted position', forecasted_position, file = log_file )
+    '''
+    if -1*size != forecasted_position :
+        order_size = -1*forecasted_position - size
+        print('forecasted position', -1*forecasted_position, file = log_file )
+    '''
+ 
     if order_size != 0:
         orderType = 'SELL'
         if order_size > 0:
