@@ -781,8 +781,7 @@ def AddForecasts(dollar_bars, Train = True):
     # shift down 1, since position will be entered on bar close
     trend_following = (dollar_bars['sine'] - dollar_bars['leadsine'])
     dollar_bars['shifted_leadsine'] = dollar_bars['leadsine'].shift(-1)
-    dollar_bars['diff_leadsine'] = dollar_bars['shifted_leadsine'] - \
-        dollar_bars['leadsine']
+    dollar_bars['diff_leadsine'] = dollar_bars['shifted_leadsine'] - dollar_bars['leadsine']
     #dollar_bars['position']=dollar_bars['FCs'].shift(1)*(np.where( trend_following  > 0 ,1,-1))
     dollar_bars['position'] = dollar_bars['FCs'].shift(
         1) * (np.where(trend_following > 0, 1, -1))
@@ -792,11 +791,11 @@ def AddForecasts(dollar_bars, Train = True):
     # dollar_bars=dollar_bars.dropna()
     # new system from rocket science for traders book
 
-    dollar_bars['position'] = np.where(
-        dollar_bars['trend_following'] == -1, np.where(
-            dollar_bars['diff_leadsine'] > 0, abs(
-                dollar_bars['position']), -1 * abs(
-                dollar_bars['position'])), dollar_bars['position'])
+    dollar_bars['position'] = np.where(dollar_bars['trend_following'] == -1, 
+               #np.where(dollar_bars['diff_leadsine'] > 0, abs(dollar_bars['position']), -1 * abs(dollar_bars['position'])), 
+               np.where(dollar_bars['diff_leadsine'] > 0, dollar_bars['position'], -1* dollar_bars['position'])
+               #-1 * (dollar_bars['position'])
+               , dollar_bars['position'])
     '''
     dollar_bars['position'] = np.where(
         dollar_bars['trend_following'] == -1,  -1 * (
@@ -1172,49 +1171,6 @@ def Load_dollar_bars():
 import pdb
 from threading import Lock
 lock = Lock()
-'''
-def AddLiveTicks(contract):
-    
-    with lock:
-        #ToDo: query to get new ticks from db after last timestamp present
-        #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
-        global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table 
-        print('bar_size',bar_size, file = log_file)
-        df_ticks = GetNewTicksInDB(df_original_ticks, table)
-        #print('AddLiveTicks 1086')
-        #if len(dollar_bars)>0:
-        #transaction_size=dollar_bars[[-1,'transaction']]
-        #pdb.set_trace()
-
-        if len(df_ticks)>0:
-            current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,df_ticks)
-        else:
-            current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,pd.DataFrame())
-    
-        #print('AddLiveTicks 1094')
-    
-        df_new_bars,df_leftoverticks, df_temp_ticks = CreateDollarBars(current_ticks_not_in_bars, bar_size)
-        
-        old_len = len(dollar_bars)
-        
-        if(dollar_bars.iloc[-2]['transaction'] - dollar_bars.iloc[-1]['transaction']) > dollar_bars.iloc[-1]['close']:
-            dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
-    
-        dollar_bars = concat_and_reindex(dollar_bars, df_new_bars)
-        print('dollar_bars tail: ',dollar_bars.tail(5), file = log_file)
-        
-        if old_len < len(dollar_bars):
-            #dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
-            
-            dollar_bars = RecalcNewBarsStudies(dollar_bars)
-            SyncPosition(dollar_bars, contract)
-            dollar_bars = AddPL(dollar_bars)
-            df_original_ticks = df_temp_ticks
-            dollar_bars.tail(20).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
-            #print(dollar_bars)
-            
-        return True
-'''
 num_bars_original = 0
 
 def AddLiveTicks():#contractId):
@@ -1319,7 +1275,7 @@ table = cont_symbol + '20' + cont_id
 # USH19=322458851, USU19=346233386, USZ19=358060606
 contracts = [Future(symbol=cont_symbol,lastTradeDateOrContractMonth="20" + cont_id)]  # ,exchange = "GLOBEX")]
 try: 
-    ib.connect('127.0.0.1', 7498, 0)
+    ib.connect('127.0.0.1', 7498, 10)
     contracts = ib.qualifyContracts(*contracts)
     contracts[0].includeExpired = True
 except:
@@ -1333,6 +1289,50 @@ client = GetInfluxdbPandasClient('demo')
 main()
 
 #%%
+
+'''
+def AddLiveTicks(contract):
+    
+    with lock:
+        #ToDo: query to get new ticks from db after last timestamp present
+        #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
+        global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table 
+        print('bar_size',bar_size, file = log_file)
+        df_ticks = GetNewTicksInDB(df_original_ticks, table)
+        #print('AddLiveTicks 1086')
+        #if len(dollar_bars)>0:
+        #transaction_size=dollar_bars[[-1,'transaction']]
+        #pdb.set_trace()
+
+        if len(df_ticks)>0:
+            current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,df_ticks)
+        else:
+            current_ticks_not_in_bars = concat_and_reindex( df_leftover_ticks,pd.DataFrame())
+    
+        #print('AddLiveTicks 1094')
+    
+        df_new_bars,df_leftoverticks, df_temp_ticks = CreateDollarBars(current_ticks_not_in_bars, bar_size)
+        
+        old_len = len(dollar_bars)
+        
+        if(dollar_bars.iloc[-2]['transaction'] - dollar_bars.iloc[-1]['transaction']) > dollar_bars.iloc[-1]['close']:
+            dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
+    
+        dollar_bars = concat_and_reindex(dollar_bars, df_new_bars)
+        print('dollar_bars tail: ',dollar_bars.tail(5), file = log_file)
+        
+        if old_len < len(dollar_bars):
+            #dollar_bars = dollar_bars.drop(dollar_bars.index[len(dollar_bars)-1])
+            
+            dollar_bars = RecalcNewBarsStudies(dollar_bars)
+            SyncPosition(dollar_bars, contract)
+            dollar_bars = AddPL(dollar_bars)
+            df_original_ticks = df_temp_ticks
+            dollar_bars.tail(20).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
+            #print(dollar_bars)
+            
+        return True
+'''
 # dollar_bars=pd.read_csv(r'e:\onedrive\data\IB-USM19-notCont-data.csv')
 # dollar_bars=pd.read_csv(r'e:\onedrive\data\TickData.US.csv')
 # dollar_bars=pd.read_csv(r'e:\onedrive\data\@USM19price.csv')
