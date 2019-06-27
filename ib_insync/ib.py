@@ -1623,7 +1623,7 @@ class IB:
             await asyncio.gather(
                 self.reqAccountUpdatesAsync(accounts[0]),
                 *(self.reqAccountUpdatesMultiAsync(a) for a in accounts),
-                self.reqPositionsAsync(),
+                #self.reqPositionsAsync(),
                 self.reqExecutionsAsync())
             if clientId == 0:
                 # autobind manual orders
