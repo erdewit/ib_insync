@@ -426,6 +426,7 @@ def onPendingTickers(tickers):
         # call function to calc bars & studies on new data
         if data_ready:
             #pdb.set_trace()
+
             AddLiveTicks( )#contracts[0].conId)
 
 

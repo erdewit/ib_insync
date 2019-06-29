@@ -1021,8 +1021,8 @@ def SyncPosition(dollar_bars, contract):
     if -1*size != forecasted_position :
         order_size = -1*forecasted_position - size
         print('forecasted position', -1*forecasted_position, file = log_file )
+    
     '''
- 
     if order_size != 0:
         orderType = 'SELL'
         if order_size > 0:
@@ -1189,7 +1189,7 @@ def AddLiveTicks():#contractId):
         
         if len(df_ticks)>0:
             new_ticks = concat_and_reindex(df_original_ticks, df_ticks)
-            df_original_ticks = new_ticks
+            
             #num_bars_original = df_original_ticks['price'].cumsum()/bar_size
             num_bars_new = (new_ticks['Price']*new_ticks['Vol']).sum()/bar_size
             if num_bars_new > num_bars_original:
@@ -1212,7 +1212,7 @@ def AddLiveTicks():#contractId):
                 dollar_bars.tail(35).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
                 #print(dollar_bars)
                 dollar_bars
-                
+                df_original_ticks = new_ticks
     return True
 #%%
     
