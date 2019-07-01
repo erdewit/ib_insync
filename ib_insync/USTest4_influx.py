@@ -1229,6 +1229,8 @@ def main():
        
     else:
         dollar_bars = GetAllTicksInDB(table)
+        #dollar_bars = GetTrainTicksInDB(table,start_date=datetime.datetime(2019,6,21), end_date=datetime.datetime(2019,7,29))
+
         dollar_bars, bar_size = Load_dollar_bars()
         df_original_ticks = dollar_bars
         bar_size = 49376 
