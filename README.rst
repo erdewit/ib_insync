@@ -89,13 +89,28 @@ Discussion
 The `insync user group <https://groups.io/g/insync>`_ is the place to discuss
 IB-insync and anything related to it.
 
+Consultancy & Development
+-------------------------
+
+IB-insync offers an easy entry into building automated trading systems
+for both individual traders and fintech companies. However, to get the most out
+of it is not a trivial matter and is beyond the reach of most developers.
+
+If you need expert help, you can contact me. This can be for a small project,
+such as fixing something in your own code, or it can be creating an entire new
+trading infrastructure.
+Please provide enough details so that I can assess both the feasibility and
+the scope. Many folks worry about having to provide their 'secret sauce',
+but that is never necessary (although you're perfectly welcome
+to send that as well!)
+
+
 Disclaimer
 ----------
 
 The software is provided on the conditions of the simplified BSD license.
 
 This project is not affiliated with Interactive Brokers Group, Inc.'s.
-
 
 Good luck and enjoy,
 
@@ -127,6 +142,6 @@ Good luck and enjoy,
 .. |Downloads| image:: https://pepy.tech/badge/ib-insync
    :alt: Number of downloads
    :target: https://pepy.tech/project/ib-insync
-   
+
 .. |Build| image:: https://travis-ci.org/erdewit/ib_insync.svg?branch=master
    :target: https://travis-ci.org/erdewit/ib_insync
