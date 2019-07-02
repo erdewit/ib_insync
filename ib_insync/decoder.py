@@ -424,14 +424,14 @@ class Decoder:
         get = iter(fields).__next__
 
         bar = BarData(
-            barCount=int(get()),
+            barCount=int(get() or 0),
             date=get(),
-            open=float(get()),
-            close=float(get()),
-            high=float(get()),
-            low=float(get()),
-            average=float(get()),
-            volume=int(get()))
+            open=float(get() or 0),
+            close=float(get() or 0),
+            high=float(get() or 0),
+            low=float(get() or 0),
+            average=float(get() or 0),
+            volume=int(get() or 0))
 
         self.wrapper.historicalDataUpdate(int(reqId), bar)
 
