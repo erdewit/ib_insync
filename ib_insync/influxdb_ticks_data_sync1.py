@@ -27,6 +27,7 @@ except BaseException:
 
 from time import sleep
 import calendar
+
 import requests
 from influxdb import DataFrameClient
 
@@ -47,7 +48,7 @@ cont_symbol = 'ZB'
 ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
 #ib.connect('127.0.0.1', 7498, clientId=1903)#
 # table='ContUSM190604'
-table = cont_symbol + '20' + cont_id
+table = cont_symbol + '20' + cont_id + 'HistOnly'
 # table='USM1903'
 # contracts = [Future(conId='346233386')] #USM19=333866981,
 # USH19=322458851, USU19=346233386, USZ19=358060606
@@ -312,7 +313,7 @@ dt_now = datetime.datetime.now()
 dt_now = dt_now.astimezone(tz=datetime.timezone.utc)
 
 data_ready = False
-download_all_history = False
+download_all_history = True
 # %% download hist ticks from earliest hist tick in db till earliest hist tick available for this contract
 if download_all_history:
     dt_first_hist_tick_in_db = Get_first_hist_tick_time_in_db()

@@ -1215,7 +1215,7 @@ def AddLiveTicks():#contractId):
                 df_original_ticks = new_ticks
     return True
 #%%
-    
+
 #%%
 def main():    
     global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size , num_bars_original
