@@ -16,7 +16,12 @@ select * from ZB201909 where time > 1561754754000000000 and time < 1561754755000
 
 influx -database "demo" -execute "SELECT * FROM ZB201909HistLive062819" -format csv > c:\test\ZB201909HistLive062819.csv
 influx -database "demo" -execute "SELECT * FROM ZB201909" -format csv > c:\test\ZB201909.csv
+influx -database "demo" -execute "SELECT * FROM ZB201909HistOnly" -format csv > c:\test\ZB201909HistOnly.csv
 
+1561743103000000000
+
+1561743103
+000000000
 
 DELETE from "USM190529" where time>=
 influxd backup -portable c:\influx_bkp
@@ -68,3 +73,8 @@ select count(*) from US201909
 
 
 SELECT * INTO ZB201909HistLive062719 FROM ZB201909 GROUP BY *
+
+
+todo: get historical ticks
+see if there is anything with timestamp newer than last_hist_tick in db (and greater than earliest live ticks start timestamp)
+if so, delete live ticks with timestamp < new hist ticks smallest timestamp and > last hist tick timestamp in db (common between hist ticks in db and latest hist query performed earlier here)
