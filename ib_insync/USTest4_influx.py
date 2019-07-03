@@ -58,7 +58,7 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 pd.core.common.is_list_like = pd.api.types.is_list_like
-log_file = open('./logs/log-'+ str(datetime.datetime.now().timestamp()) +'.txt', 'w+')
+log_file = open(r'c:\logs\log-'+ str(datetime.datetime.now().timestamp()) +'.txt', 'w+')
 # In[6]:
 
 def split_time(x):
