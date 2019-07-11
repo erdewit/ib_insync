@@ -65,7 +65,11 @@ class Trade(Object):
         """
         Number of shares filled.
         """
-        return sum(f.execution.shares for f in self.fills)
+        fills = self.fills
+        if self.contract.secType == 'BAG':
+            # don't count fills for the leg contracts
+            fills = [f for f in fills if f.contract.secType == 'BAG']
+        return sum(f.execution.shares for f in fills)
 
     def remaining(self):
         """
