@@ -58,7 +58,7 @@ from ib_insync import *
 util.startLoop()
 ib = IB()
 pd.core.common.is_list_like = pd.api.types.is_list_like
-log_file = open(r'c:\logs\log-'+ str(datetime.datetime.now().timestamp()) +'.txt', 'w+')
+log_file = open(r'c:\test\logs\log-'+ str(datetime.datetime.now().timestamp()) +'.txt', 'w+')
 # In[6]:
 
 def split_time(x):
@@ -1119,6 +1119,36 @@ def GetTrainTicksInDB(table, start_date=datetime.datetime(2019,3,21), end_date=d
     except BaseException:
         return 'no ticks'  # d
 
+def PanamaStitch(df_old,df_new, dt_last):
+    df1 = cleanup_ticks_df(df_old)
+    df2 = cleanup_ticks_df(df_new)
+    
+    df1 = df1.drop(df1.index<dt_last)
+    df2 = df2.drop(df2.index>dt_last)
+    
+    same_timestamp = np.where(df1.index == df2.index, df1.index,-1)
+    
+    old_price = df1.iloc[same_timestamp]['Price']
+    new_price = df2.iloc[same_timestamp]['Price']
+    factor = new_price - old_price
+    #find most common number in array and use it as the factor
+    df_old['price'] = df_old['price'] - stitch_factor
+    return df_old, df_new
+    
+def MergeData(df1, df2):
+    df1 = cleanup_ticks_df(df1)
+    df2 = cleanup_ticks_df(df2)
+    result = concat_and_reindex(df1,df2)
+    return result;
+
+#%%
+'''
+def moo():
+    print('James')
+
+moo()
+'''
+#%%
 def GetNewTicksInDB(df_original_ticks, table):
     dt_last_tick_time_in_df = df_original_ticks.iloc[-1]['Timestamp']
     dt_last_tick_time_in_df = datetime.datetime.timestamp(dt_last_tick_time_in_df)
@@ -1214,7 +1244,6 @@ def AddLiveTicks():#contractId):
                 dollar_bars
                 df_original_ticks = new_ticks
     return True
-#%%
 
 #%%
 def main():    
@@ -1228,8 +1257,8 @@ def main():
         df_original_ticks = dollar_bars
        
     else:
-        dollar_bars = GetAllTicksInDB(table)
-        #dollar_bars = GetTrainTicksInDB(table,start_date=datetime.datetime(2019,6,21), end_date=datetime.datetime(2019,7,29))
+        #dollar_bars = GetAllTicksInDB(table)
+        dollar_bars = GetTrainTicksInDB(table,start_date=datetime.datetime(2019,5,30), end_date=datetime.datetime(2019,7,29))
 
         dollar_bars, bar_size = Load_dollar_bars()
         df_original_ticks = dollar_bars

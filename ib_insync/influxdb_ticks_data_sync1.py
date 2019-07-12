@@ -90,7 +90,6 @@ def GetInfluxdbPandasClient(db_name):
 
 client = GetInfluxdbPandasClient('demo')
 
-# %%
 # %% download historical ticks from a current moment to a past date then exit
 
 
@@ -433,10 +432,10 @@ while True:
 
 zb_ticker = ib.reqTickByTickData(contracts[0], 'Last')
 
-from USTest4_influx import AddLiveTicks,  save_dollar_bars
+from USTest5_influx import AddLiveTicks,  save_dollar_bars
 
 sleep(10)
-
+#%%
 def onPendingTickers(tickers):
     df_ticks = pd.DataFrame(columns=['time', 'id', 'price', 'size', 'hist'])
 
@@ -519,7 +518,7 @@ while True:
             break
         sleep(15)
 #%%
-        
+#todo uncomment line below        
 Delete_extra_live_ticks()
 # concatdf_result with existing df
 data_ready = True

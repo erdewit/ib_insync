@@ -2,6 +2,8 @@ PEIMw8ig76
 Platform username: top000211
 Platform password: M3VkpsqbJn
 
+byacoube80
+bIckev1
 
 select * FROM "USM190528" order by time desc limit 10
 select * FROM "USM190528"  where id>=1000 order by time desc limit 1
@@ -11,12 +13,15 @@ select * from "ContUSM190604" where time>1559002366000000000 oder by time asc li
 select count(*) from "USM19-5-28" where time>=1559189701019838976
 select * from "USM190529" where hist=0 order by time asc limit 1
 
+select * from ZB201909HistLive062819 where hist=0 and time < 1561743103000000000
+
 select * from ZB201909HistLive062819 where hist=0 and time > 1561754754000000000 and time < 1561754755000000000 limit 100
 select * from ZB201909 where time > 1561754754000000000 and time < 1561754755000000000 limit 100
 
 influx -database "demo" -execute "SELECT * FROM ZB201909HistLive062819" -format csv > c:\test\ZB201909HistLive062819.csv
-influx -database "demo" -execute "SELECT * FROM ZB201909" -format csv > c:\test\ZB201909.csv
 influx -database "demo" -execute "SELECT * FROM ZB201909HistOnly" -format csv > c:\test\ZB201909HistOnly.csv
+influx -database "demo" -execute "SELECT * FROM ZB201909HistLive070319" -format csv > c:\test\ZB201909HistLive070319.csv
+influx -database "demo" -execute "SELECT * FROM ZB201909" -format csv > c:\test\ZB201909.csv
 
 1561743103000000000
 
@@ -72,7 +77,8 @@ select count(*) from US201906
 select count(*) from US201909
 
 
-SELECT * INTO ZB201909HistLive062719 FROM ZB201909 GROUP BY *
+SELECT * INTO ZB201909HistLive071119 FROM ZB201909 GROUP BY *
+SELECT * INTO ZB201909HistLive070319 FROM ZB201909 GROUP BY *
 
 
 todo: get historical ticks
