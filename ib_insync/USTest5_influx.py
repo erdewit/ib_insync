@@ -1286,8 +1286,13 @@ def main():
         '''
         bar_size = 55680 
 
-    #df_original_ticks = dollar_bars.set_index('Timestamp')
 
+    df_original_ticks = dollar_bars.copy()
+    
+    df_original_ticks.Timestamp = df_original_ticks.Timestamp.astype('datetime64[ns]')
+    df_original_ticks = df_original_ticks.set_index('Timestamp')
+    df_original_ticks['Timestamp'] = df_original_ticks.index
+    
     print ('ticks - ', dollar_bars)
     dollar_bars = CreateDollarBars(dollar_bars, bar_size)
     dollar_bars = AddStudies(dollar_bars)
@@ -1322,11 +1327,13 @@ date = get_thursday(cal, year, month, -1)
 print('date: {0}'.format(date), file = log_file)  # date: 2017-08-31
 
 #%%
+new_cont_id = "1912"
 old_cont_id = "1906"
 cont_id = "1909"
 cont_symbol = 'ZB'
 table = cont_symbol + '20' + cont_id
 old_table = cont_symbol + '20' + old_cont_id
+new_table = cont_symbol + '20' + new_cont_id
 # table='USM1903'
 # contracts = [Future(conId='346233386')] #USM19=333866981,
 # USH19=322458851, USU19=346233386, USZ19=358060606

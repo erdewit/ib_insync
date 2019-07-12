@@ -84,3 +84,10 @@ SELECT * INTO ZB201909HistLive070319 FROM ZB201909 GROUP BY *
 todo: get historical ticks
 see if there is anything with timestamp newer than last_hist_tick in db (and greater than earliest live ticks start timestamp)
 if so, delete live ticks with timestamp < new hist ticks smallest timestamp and > last hist tick timestamp in db (common between hist ticks in db and latest hist query performed earlier here)
+
+
+check live ticks behaviour matches hist ticks behaviour
+backtest with all influxdb data sets stored in last 2 years
+backtest without setting Vol=1
+backtest with using active contract only 
+backtest with using back and front contracts for train then active and new contracts for test
