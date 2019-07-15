@@ -81,7 +81,7 @@ class Client:
     MaxRequests = 45
     RequestsInterval = 1
 
-    MinClientVersion = 137
+    MinClientVersion = 142
     MaxClientVersion = 151
 
     (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
@@ -330,6 +330,10 @@ class Client:
                 # this concludes the handshake
                 version, _connTime = fields
                 self._serverVersion = int(version)
+                if self._serverVersion < self.MinClientVersion:
+                    self._onSocketHasError(
+                        'TWS/gateway version must be >= 972')
+                    return
                 self.decoder.serverVersion = self._serverVersion
                 self.connState = Client.CONNECTED
                 self.startApi()
