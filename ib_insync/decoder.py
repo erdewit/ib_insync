@@ -290,7 +290,10 @@ class Decoder:
             cd.underSymbol,
             cd.underSecType,
             cd.marketRuleIds,
-            cd.realExpirationDate) = fields
+            cd.realExpirationDate,
+            *fields) = fields
+        if self.serverVersion >= 152:
+            (cd.stockType, ) = fields
 
         times = lastTimes.split()
         if len(times) > 0:

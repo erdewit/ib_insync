@@ -140,6 +140,7 @@ class ContractDetails(Object):
         secIdList=None,
         realExpirationDate='',
         lastTradeTime='',
+        stockType='',
         cusip='',
         ratings='',
         descAppend='',
