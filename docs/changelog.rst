@@ -4,6 +4,13 @@ Changelog
 0.9
 ---
 
+Version 0.9.54
+^^^^^^^^^^^^^^
+
+* ``ContractDetails.stockType`` added.
+* Fixed ``Trade.filled()`` for combo (BAG) contracts.
+* Server version check added to make sure TWS/gateway version is at least 972.
+
 Version 0.9.53
 ^^^^^^^^^^^^^^
 

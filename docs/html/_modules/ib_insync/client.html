@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.client &mdash; ib_insync 0.9.53 documentation</title>
+  <title>ib_insync.client &mdash; ib_insync 0.9.54 documentation</title>
   
 
   
@@ -238,8 +238,8 @@
     <span class="n">MaxRequests</span> <span class="o">=</span> <span class="mi">45</span>
     <span class="n">RequestsInterval</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="n">MinClientVersion</span> <span class="o">=</span> <span class="mi">137</span>
-    <span class="n">MaxClientVersion</span> <span class="o">=</span> <span class="mi">151</span>
+    <span class="n">MinClientVersion</span> <span class="o">=</span> <span class="mi">142</span>
+    <span class="n">MaxClientVersion</span> <span class="o">=</span> <span class="mi">152</span>
 
     <span class="p">(</span><span class="n">DISCONNECTED</span><span class="p">,</span> <span class="n">CONNECTING</span><span class="p">,</span> <span class="n">CONNECTED</span><span class="p">)</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
@@ -487,6 +487,10 @@
                 <span class="c1"># this concludes the handshake</span>
                 <span class="n">version</span><span class="p">,</span> <span class="n">_connTime</span> <span class="o">=</span> <span class="n">fields</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">MinClientVersion</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketHasError</span><span class="p">(</span>
+                        <span class="s1">&#39;TWS/gateway version must be &gt;= 972&#39;</span><span class="p">)</span>
+                    <span class="k">return</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">serverVersion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">=</span> <span class="n">Client</span><span class="o">.</span><span class="n">CONNECTED</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">startApi</span><span class="p">()</span>
