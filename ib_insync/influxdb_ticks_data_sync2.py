@@ -149,36 +149,35 @@ def Get_earliest_live_tick_time_in_db():
 def Delete_extra_live_ticks():
 #todo: get historical ticks see if there is an immediate hist ticks (with timestamp newer than last_hist_tick in db, and also greater than earliest live ticks start timestamp)
 #if so, delete live ticks with timestamp < new hist ticks smallest timestamp and > last hist tick timestamp in db (common between hist ticks in db and latest hist query performed earlier here)
-    try:
-        last_hist_tick_time_in_db = Get_last_hist_tick_time_in_db()
-        ticks = ib.reqHistoricalTicks(contracts[0], last_hist_tick_time_in_db, None, 10, "TRADES", False)
-        dt_earliest_live_tick_in_db = Get_earliest_live_tick_date_in_db()
-        dt_earliest_live_tick_in_db = datetime.datetime.timestamp(dt_earliest_live_tick_in_db)
-        last_hist_tick_time_in_db = datetime.datetime.timestamp(last_hist_tick_time_in_db)
-       
-        if len(ticks) > 2:
-            tick_time = 0
-    
-            for tick in ticks:
-                # get time of first hist tick not in db
-                tick_time = tick.time.timestamp()
-                break
+    last_hist_tick_time_in_db = Get_last_hist_tick_time_in_db()
+    ticks = ib.reqHistoricalTicks(contracts[0], last_hist_tick_time_in_db, None, 10, "TRADES", False)
+    dt_earliest_live_tick_in_db = Get_earliest_live_tick_date_in_db()
+    dt_earliest_live_tick_in_db = datetime.datetime.timestamp(dt_earliest_live_tick_in_db)
+    last_hist_tick_time_in_db = datetime.datetime.timestamp(last_hist_tick_time_in_db)
+   
+    if len(ticks) > 2:
+        tick_time = 0
+
+        for tick in ticks:
+            # get time of first hist tick not in db
+            tick_time = tick.time.timestamp()
+            break
+        
+        if (tick_time > last_hist_tick_time_in_db) & (dt_earliest_live_tick_in_db < tick_time):
+            #print(tick_time)
+            ts_time = str(tick_time).replace('.', '') + '000000000000'
+            ts_time = ts_time[:19]
+            q = "delete from " + table + " where hist=0 and time<" + ts_time  # delete extra live ticks
             
-            if (tick_time > last_hist_tick_time_in_db) & (dt_earliest_live_tick_in_db < tick_time):
-                #print(tick_time)
-                ts_time = str(tick_time).replace('.', '') + '000000000000'
-                ts_time = ts_time[:19]
-                q = "delete from " + table + " where hist=0 and time<" + ts_time  # delete extra live ticks
-                
-                print(q)
-                #result = client.query(q) # epoch='ns')
-    
-                
-    
+            print(q)
+            #result = client.query(q) # epoch='ns')
+
+            try:
+
                 result = client.query(q) # epoch='ns')
                 return result
-    except BaseException:
-        return 'Error occured. No rows deleted'
+            except BaseException:
+                return 'Error occured. No rows deleted'
 
     
     return 'no extra live ticks to delete'
@@ -278,7 +277,7 @@ def insert_mid_ticks_to_db(
         prev_req_data_live = last_tick_time
         return r.status_code, prev_req_data_live
     else:
-        return 'no points to insert', prev_req_data_live 
+        return 'no points to insert', prev_req_data_live
 
 
 
@@ -297,7 +296,7 @@ def onPendingTickers(tickers):
     df_ticks = pd.DataFrame(columns=['time', 'id', 'price', 'size', 'hist'])
 
     i = 0
-    for t in tickers: 
+    for t in tickers:
         for tick in t.tickByTicks:
             new_entry = {
                 'time': datetime.datetime.fromtimestamp(
@@ -337,7 +336,7 @@ def onPendingTickers(tickers):
 # %%
 
 
-cont_id = "1909"
+cont_id = "1812"
 cont_symbol = 'ZB'
 if (ib.isConnected() == False):
     ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
@@ -396,7 +395,7 @@ dt_now = datetime.datetime.now()
 dt_now = dt_now.astimezone(tz=datetime.timezone.utc)
 
 data_ready = False
-download_all_history = False
+download_all_history = True
 # %% download hist ticks from earliest hist tick in db till earliest hist tick available for this contract
 if download_all_history:
     dt_first_hist_tick_in_db = Get_first_hist_tick_time_in_db()
@@ -475,7 +474,7 @@ while True:
 
 zb_ticker = ib.reqTickByTickData(contracts[0], 'Last')
 
-from USTest5_influx import AddLiveTicks, save_dollar_bars
+from USTest5_influx import AddLiveTicks,  save_dollar_bars
 
 sleep(10)
 #%%

@@ -742,13 +742,13 @@ def AddForecasts(dollar_bars, Train = True):
         #print("forecasts_S - ", forecasts_S)
         forecasts_L = scaler_L.fit_transform(dollar_bars[['longs']])
         #print("forecasts_L - ", forecasts_L)
-        joblib.dump(scaler_S , 'my_scaler_S.pkl')     # save to disk
-        joblib.dump(scaler_L , 'my_scaler_L.pkl')     # save to disk
+        joblib.dump(scaler_S , 'my_scaler_S-Active.pkl')     # save to disk
+        joblib.dump(scaler_L , 'my_scaler_L-Active.pkl')     # save to disk
 
     else:
         
-        scaler_S = joblib.load('my_scaler_S.pkl')  # load from disk
-        scaler_L = joblib.load('my_scaler_L.pkl')  # load from disk
+        scaler_S = joblib.load('my_scaler_S-Active.pkl')  # load from disk
+        scaler_L = joblib.load('my_scaler_L-Active.pkl')  # load from disk
         #TODO: if scaler is not fitted, need to fit it first
         forecasts_S = scaler_S.transform(dollar_bars[['shorts']])
         forecasts_L = scaler_L.transform(dollar_bars[['longs']])
@@ -1176,6 +1176,8 @@ def GetNewTicksInDB(df_original_ticks, table):
         return 'no ticks'  # d
 
 def cleanup_ticks_df(df):
+    print(df)
+    
     df['Timestamp'] = df.index.astype('datetime64[ns]')
     df = df.sort_values(by=['Timestamp', 'id'])
     df = df.reset_index(drop=True)
@@ -1255,45 +1257,128 @@ def AddLiveTicks():#contractId):
     return True
 
 #%%
+
 def main():    
     global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size , num_bars_original
     # during trainingn set train=true, cont_id = train database table
     # during test and live, set train = false, bar_size=train bar_size, cont_id = live database table
+ 
     train = False
-  
+    stitch = False
 
     if (train):
-        dollar_bars = GetTrainTicksInDB(table,start_date=datetime.datetime(2019,5,28), end_date=datetime.datetime(2019,5,30))
-        old_dollar_bars = GetTrainTicksInDB(old_table, start_date=datetime.datetime(2019,5,28), end_date=datetime.datetime(2019,5,30))
-        stitch_factor = get_panama_stitch_factor(old_dollar_bars,dollar_bars, datetime.datetime(2019,5,29))
-        
-        #dollar_bars = GetAllTicksInDB(table)
-        dollar_bars = GetTrainTicksInDB(table,start_date = datetime.datetime(2017,6,25), end_date = datetime.datetime(2019,6,26))
-        old_dollar_bars = GetAllTicksInDB(old_table)
-        stitched_dollar_bars = MergeData(old_dollar_bars, dollar_bars, stitch_factor)
+        # calculate panama stitch factor
+        if (stitch):
+            dollar_bars = GetTrainTicksInDB(table,start_date=datetime.datetime(2019,5,28), end_date=datetime.datetime(2019,5,30))
+            old_dollar_bars = GetTrainTicksInDB(old_table, start_date=datetime.datetime(2019,5,28), end_date=datetime.datetime(2019,5,30))
+            stitch_factor = get_panama_stitch_factor(old_dollar_bars,dollar_bars, datetime.datetime(2019,5,29))
             
-        dollar_bars, bar_size = Load_dollar_bars(stitched_dollar_bars)
+            #dollar_bars = GetAllTicksInDB(table)
+            dollar_bars = GetTrainTicksInDB(table,start_date = datetime.datetime(2017,6,25), end_date = datetime.datetime(2019,6,26))
+            old_dollar_bars = GetAllTicksInDB(old_table)
+            stitched_dollar_bars = MergeData(old_dollar_bars, dollar_bars, stitch_factor)
+            
+            dollar_bars, bar_size = Load_dollar_bars(stitched_dollar_bars)
+        else:
+            dollar_bars = GetAllTicksInDB(old_table)
+            dollar_bars, bar_size = Load_dollar_bars(dollar_bars, bar_size_factor = 60) # optimize with increments of 5 from 30-120
 
+        
     else:
         #dollar_bars = GetAllTicksInDB(table)
-        dollar_bars = GetTrainTicksInDB(table,start_date=datetime.datetime(2019,6,25), end_date=datetime.datetime(2019,9,29))
+        dollar_bars = GetTrainTicksInDB(table,start_date=datetime.datetime(2019,6,1), end_date=datetime.datetime(2019,9,29))
         dollar_bars = cleanup_ticks_df(dollar_bars )
         '''
+    df_original_ticks = df_original_ticks.set_index('Timestamp')
+    df_original_ticks['Timestamp'] = df_original_ticks.index
+    
+    print ('ticks - ', dollar_bars)
         dollar_bars = GetAllTicksInDB(table)
         old_dollar_bars = GetAllTicksInDB(old_table)
         stitched_dollar_bars = MergeData(old_dollar_bars, dollar_bars, -0.625)
         dollar_bars = cleanup_ticks_df(stitched_dollar_bars )
         '''
-        bar_size = 55680 
+        bar_size = 44416#49120#42048#71328#53088#63712#50624#63392#55488# 48032#44416# 55680 
 
 
     df_original_ticks = dollar_bars.copy()
     
     df_original_ticks.Timestamp = df_original_ticks.Timestamp.astype('datetime64[ns]')
-    df_original_ticks = df_original_ticks.set_index('Timestamp')
-    df_original_ticks['Timestamp'] = df_original_ticks.index
+    dollar_bars = CreateDollarBars(dollar_bars, bar_size)
+    dollar_bars = AddStudies(dollar_bars)
+    dollar_bars = AddForecasts(dollar_bars, Train=train)
+    dollar_bars = AddStopLoss(dollar_bars)
+    dollar_bars = AddPL(dollar_bars)
+    num_bars_original = len(dollar_bars)
+    CalcAnalytics(dollar_bars)
+
+    dollar_bars.to_csv(r'c:\test\ewmac-ib-influx-' + table + '-' + str(datetime.datetime.now().timestamp()) +'.csv')
+#%%
+def Test_Stitching():    
+    global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size , num_bars_original
+    # during trainingn set train=true, cont_id = train database table
+    # during test and live, set train = false, bar_size=train bar_size, cont_id = live database table
+    #stitch1_train = pd.DataFrame() #2018-12 contract with 2019-03 contract stitch-on 12-14-2018, from 9-27-2018
+    #stitch2_train = pd.DataFrame() #2019-03 contract with 2019-06 contract on/till 3-15-2019, from stitch1_train
+    #stitch3_live = pd.DataFrame() #2019-06 contract with 2019-09 contract stitch on 6-25-2019, starting from 3-15-2019
+        
+    backtest = False
+    cont1_id = "1812"
+    cont2_id = "1903"
+    cont3_id = "1906"
+    cont4_id = "1909"
     
-    print ('ticks - ', dollar_bars)
+    cont_symbol = 'ZB'
+    old_cont_symbol = 'ZB'
+    table1 = cont_symbol + '20' + cont1_id
+    table2 = cont_symbol + '20' + cont2_id
+    table3 = cont_symbol + '20' + cont3_id
+    table4 = cont_symbol + '20' + cont4_id
+    
+    train = True
+    stitch = True
+
+    if (train):
+        # calculate panama stitch factor
+        if (stitch):
+            cont1_bars = GetTrainTicksInDB(table1,start_date=datetime.datetime(2018,12,13), end_date=datetime.datetime(2018,12,15))
+            cont2_bars = GetTrainTicksInDB(table2,start_date=datetime.datetime(2018,12,13), end_date=datetime.datetime(2019,3,16))
+            cont3_bars = GetTrainTicksInDB(table3,start_date=datetime.datetime(2019,3,14), end_date=datetime.datetime(2019,3,16))
+            
+            
+            stitch1_factor = get_panama_stitch_factor(cont1_bars, cont2_bars, datetime.datetime(2018,12,14))
+            stitch2_factor = get_panama_stitch_factor(cont2_bars, cont3_bars, datetime.datetime(2018,3,15))
+            
+            
+            #dollar_bars = GetAllTicksInDB(table)
+            cont1_bars = GetTrainTicksInDB(table1,start_date=datetime.datetime(2018,9,26), end_date=datetime.datetime(2019,12,30))
+            cont2_bars = GetTrainTicksInDB(table2,start_date=datetime.datetime(2018,9,26), end_date=datetime.datetime(2019,12,30))
+            cont3_bars = GetAllTicksInDB(table3)
+            #cont4_bars = GetTrainTicksInDB(table4,start_date=datetime.datetime(2018,9,26), end_date=datetime.datetime(2019,6,26))
+            
+            stitch1_train = MergeData(cont1_bars, cont2_bars , stitch1_factor)
+            stitch2_train = MergeData(stitch1_train, cont3_bars , stitch2_factor)
+            #stitch3_live = MergeData(cont3_bars,cont4_bars , None)
+            
+            dollar_bars, bar_size = Load_dollar_bars(stitch2_train)
+        
+
+        
+    else:
+        cont3_bars = GetAllTicksInDB(table3)
+        cont4_bars = GetTrainTicksInDB(table4,start_date=datetime.datetime(2018,9,26), end_date=datetime.datetime(2019,6,26))
+            
+        stitch3_live = MergeData(cont3_bars,cont4_bars , None)
+               #dollar_bars = GetAllTicksInDB(table)
+        
+        dollar_bars = cleanup_ticks_df(stitch3_live)
+        
+        bar_size = 44416#49120#42048#71328#53088#63712#50624#63392#55488# 48032#44416# 55680 
+
+
+    df_original_ticks = dollar_bars.copy()
+    
+    df_original_ticks.Timestamp = df_original_ticks.Timestamp.astype('datetime64[ns]')
     dollar_bars = CreateDollarBars(dollar_bars, bar_size)
     dollar_bars = AddStudies(dollar_bars)
     dollar_bars = AddForecasts(dollar_bars, Train=train)
@@ -1327,31 +1412,37 @@ date = get_thursday(cal, year, month, -1)
 print('date: {0}'.format(date), file = log_file)  # date: 2017-08-31
 
 #%%
+backtest = False
 new_cont_id = "1912"
+
 old_cont_id = "1906"
 cont_id = "1909"
+
 cont_symbol = 'ZB'
+old_cont_symbol = 'ZB'
 table = cont_symbol + '20' + cont_id
-old_table = cont_symbol + '20' + old_cont_id
+old_table = old_cont_symbol + '20' + old_cont_id
 new_table = cont_symbol + '20' + new_cont_id
 # table='USM1903'
 # contracts = [Future(conId='346233386')] #USM19=333866981,
 # USH19=322458851, USU19=346233386, USZ19=358060606
 contracts = [Future(symbol=cont_symbol,lastTradeDateOrContractMonth="20" + cont_id)]  # ,exchange = "GLOBEX")]
-try: 
-    ib.connect('127.0.0.1', 7498, 1)
-    contracts = ib.qualifyContracts(*contracts)
-    contracts[0].includeExpired = True
-except:
-    print("Connection or Contract Error") 
-    
-contract = contracts[0]
+#contracts = [Future(symbol=cont_symbol)]#,lastTradeDateOrContractMonth="20" + cont_id)]  # ,exchange = "GLOBEX")]
+if backtest == False:
+    try: 
+        ib.connect('127.0.0.1', 7498, 11)
+        contracts[0].includeExpired = True
+        
+        contracts = ib.qualifyContracts(*contracts)
+        contract = contracts[0]
+    except:
+        print("Connection or Contract Error") 
 
 #%%
 client = GetInfluxdbPandasClient('demo')
 #%%
 main()
-
+#Test_Stitching()
 #%%
 
 '''
