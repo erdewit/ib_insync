@@ -363,6 +363,7 @@ class Wrapper:
         """
         This wrapper handles both live fills and responses to reqExecutions.
         """
+        self._logger.info(f'execDetails {execution}')
         if execution.orderId == UNSET_INTEGER:
             # bug in TWS: executions of manual orders have unset value
             execution.orderId = 0
@@ -418,8 +419,8 @@ class Wrapper:
                 # before this connection started
                 pass
         else:
-            self._logger.error(
-                f'commissionReport: No execution found for {commissionReport}')
+            # commission report is not for this client
+            pass
 
     def orderBound(self, reqId, apiClientId, apiOrderId):
         pass
