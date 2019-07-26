@@ -1,4 +1,4 @@
-|Build| |Group| |PyVersion| |Status| |PyPiVersion| |License| |Docs| |Downloads|
+|Build| |Group| |PyVersion| |Status| |PyPiVersion| |CondaVersion| |License| |Docs| |Downloads|
 
 Introduction
 ============
@@ -125,6 +125,10 @@ Good luck and enjoy,
 .. |PyPiVersion| image:: https://img.shields.io/pypi/v/ib_insync.svg
    :alt: PyPi
    :target: https://pypi.python.org/pypi/ib_insync
+
+.. |CondaVersion| image:: https://img.shields.io/conda/vn/conda-forge/ib-insync.svg
+   :alt: Conda
+   :target: https://anaconda.org/conda-forge/ib-insync
 
 .. |PyVersion| image:: https://img.shields.io/badge/python-3.6+-blue.svg
    :alt:
