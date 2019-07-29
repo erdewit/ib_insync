@@ -21,7 +21,7 @@ from bokeh.io import output_notebook
 from plotly.tools import FigureFactory as FF
 import plotly.tools
 import plotly.graph_objs as go
-import plotly.plotly as py
+#import plotly.plotly as py
 import hvplot.pandas
 import holoviews as hv
 from bokeh.plotting import figure, output_file, show
@@ -1220,24 +1220,24 @@ def AddLiveTicks():#contractId):
         #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
         global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table , num_bars_original
         print('bar_size',bar_size, file = log_file)
-        df_ticks = GetNewTicksInDB(df_original_ticks, table)
-        print('df_ticks', df_ticks, file = log_file)
+        df_new_ticks = GetNewTicksInDB(df_original_ticks, table)
+        print('df_new_ticks', df_new_ticks, file = log_file)
         print('df_original_ticks', df_original_ticks,file = log_file)
         #if len(dollar_bars)>0:
         #transaction_size=dollar_bars[[-1,'transaction']]
         #pdb.set_trace()
-        new_ticks = pd.DataFrame()
+        all_ticks = pd.DataFrame()
         
-        if len(df_ticks)>0:
-            new_ticks = concat_and_reindex(df_original_ticks, df_ticks)
+        if len(df_new_ticks)>0:
+            all_ticks= concat_and_reindex(df_original_ticks, df_new_ticks)
             
             #num_bars_original = df_original_ticks['price'].cumsum()/bar_size
-            num_bars_new = (new_ticks['Price']*new_ticks['Vol']).sum()/bar_size
+            num_bars_new = (all_ticks['Price']*all_ticks['Vol']).sum()/bar_size
             if num_bars_new > num_bars_original:
                 #print('AddLiveTicks 1094')
                 
-                #dollar_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(new_ticks, bar_size)
-                dollar_bars = CreateDollarBars(new_ticks, bar_size)
+                #dollar_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(all_ticks, bar_size)
+                dollar_bars = CreateDollarBars(all_ticks, bar_size)
                 
                 print('dollar_bars tail: ', dollar_bars.tail(5), file = log_file)
                 
@@ -1253,7 +1253,7 @@ def AddLiveTicks():#contractId):
                 dollar_bars.tail(35).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
                 #print(dollar_bars)
                 dollar_bars
-                df_original_ticks = new_ticks
+                df_original_ticks = all_ticks
     return True
 
 #%%
@@ -1412,7 +1412,7 @@ date = get_thursday(cal, year, month, -1)
 print('date: {0}'.format(date), file = log_file)  # date: 2017-08-31
 
 #%%
-backtest = False
+backtest = True
 new_cont_id = "1912"
 
 old_cont_id = "1906"
@@ -1420,7 +1420,11 @@ cont_id = "1909"
 
 cont_symbol = 'ZB'
 old_cont_symbol = 'ZB'
-table = cont_symbol + '20' + cont_id
+table = cont_symbol + '20' + cont_id 
+
+if backtest:
+    table = cont_symbol + '20' + cont_id + 'HistLive072319'
+
 old_table = old_cont_symbol + '20' + old_cont_id
 new_table = cont_symbol + '20' + new_cont_id
 # table='USM1903'

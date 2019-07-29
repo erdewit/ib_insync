@@ -21,7 +21,7 @@ from bokeh.io import output_notebook
 from plotly.tools import FigureFactory as FF
 import plotly.tools
 import plotly.graph_objs as go
-import plotly.plotly as py
+#import plotly.plotly as py
 import hvplot.pandas
 import holoviews as hv
 from bokeh.plotting import figure, output_file, show
