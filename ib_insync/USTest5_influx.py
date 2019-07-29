@@ -1423,7 +1423,7 @@ old_cont_symbol = 'ZB'
 table = cont_symbol + '20' + cont_id 
 
 if backtest:
-    table = cont_symbol + '20' + cont_id + 'HistLive072319'
+    table = cont_symbol + '20' + cont_id + 'HistLive072919'
 
 old_table = old_cont_symbol + '20' + old_cont_id
 new_table = cont_symbol + '20' + new_cont_id
