@@ -1163,10 +1163,26 @@ def concat_and_reindex(df1, df2):
     df = df.reset_index(drop=True)
     return df
 
+
+def cleanup_ticks_df(df):
+    print(df)
+    df['TickTS'] = df.index.astype('int64')
+    df['Timestamp'] = df.index.astype('datetime64[ns]')
+    df = df.sort_values(by=['TickTS', 'id'])
+    df = df.reset_index(drop=True)
+    df['Time'] = [d.time() for d in df['Timestamp']]
+    df['Date'] = [d.date() for d in df['Timestamp']]
+    #df.columns
+    #df.index
+    df = df.rename(columns={"price": "Price", "size": "Vol"})  # used for tickdata exported files
+        
+    df['Vol'] = 1
+    
+    return df
 #%%
 def GetNewTicksInDB(df_original_ticks, table):
-    dt_last_tick_time_in_df = df_original_ticks.iloc[-1]['Timestamp']
-    dt_last_tick_time_in_df = datetime.datetime.timestamp(dt_last_tick_time_in_df)
+    dt_last_tick_time_in_df = df_original_ticks.iloc[-1]['TickTS']
+    #dt_last_tick_time_in_df = datetime.datetime.timestamp(dt_last_tick_time_in_df)
     ts_time = str(dt_last_tick_time_in_df).replace('.', '') + '000000000000'
     ts_time = ts_time[:19]
     q = "select * from " + table + " where time>" + ts_time
@@ -1226,24 +1242,24 @@ def AddLiveTicks():#contractId):
         #anything new becomes part of df_leftoverticks. always keep track of df_original_ticks
         global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table , num_bars_original
         print('bar_size',bar_size, file = log_file)
-        df_ticks = GetNewTicksInDB(df_original_ticks, table)
-        print('df_ticks', df_ticks, file = log_file)
+        df_new_ticks = GetNewTicksInDB(df_original_ticks, table)
+        print('df_new_ticks', df_new_ticks, file = log_file)
         print('df_original_ticks', df_original_ticks,file = log_file)
         #if len(dollar_bars)>0:
         #transaction_size=dollar_bars[[-1,'transaction']]
         #pdb.set_trace()
-        new_ticks = pd.DataFrame()
+        all_ticks = pd.DataFrame()
         
-        if len(df_ticks)>0:
-            new_ticks = concat_and_reindex(df_original_ticks, df_ticks)
+        if len(df_new_ticks)>0:
+            all_ticks= concat_and_reindex(df_original_ticks, df_new_ticks)
             
             #num_bars_original = df_original_ticks['price'].cumsum()/bar_size
-            num_bars_new = (new_ticks['Price']*new_ticks['Vol']).sum()/bar_size
+            num_bars_new = (all_ticks['Price']*all_ticks['Vol']).sum()/bar_size
             if num_bars_new > num_bars_original:
                 #print('AddLiveTicks 1094')
                 
-                #dollar_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(new_ticks, bar_size)
-                dollar_bars = CreateDollarBars(new_ticks, bar_size)
+                #dollar_bars,df_leftoverticks, df_original_ticks = CreateDollarBars(all_ticks, bar_size)
+                dollar_bars = CreateDollarBars(all_ticks, bar_size)
                 
                 print('dollar_bars tail: ', dollar_bars.tail(5), file = log_file)
                 
@@ -1259,8 +1275,9 @@ def AddLiveTicks():#contractId):
                 dollar_bars.tail(35).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
                 #print(dollar_bars)
                 dollar_bars
-                df_original_ticks = new_ticks
+                df_original_ticks = all_ticks
     return True
+
 
 #%%
 
@@ -1438,7 +1455,7 @@ new_table = cont_symbol + '20' + new_cont_id
 # table='USM1903'
 # contracts = [Future(conId='346233386')] #USM19=333866981,
 # USH19=322458851, USU19=346233386, USZ19=358060606
-contracts = [Future(symbol=cont_symbol,lastTradeDateOrContractMonth="20" + cont_id)]  # ,exchange = "GLOBEX")]
+contracts = [Future(symbol=cont_symbol,exchange='ECBOT',lastTradeDateOrContractMonth="20" + cont_id)]  # ,exchange = "GLOBEX")]
 #contracts = [Future(symbol=cont_symbol)]#,lastTradeDateOrContractMonth="20" + cont_id)]  # ,exchange = "GLOBEX")]
 if backtest == False:
     try: 

@@ -349,7 +349,7 @@ table = cont_symbol + '20' + cont_id #+ 'HistLive062819'
 # USH19=322458851, USU19=346233386, USZ19=358060606
 contracts = [
     Future(
-        symbol=cont_symbol,
+        symbol=cont_symbol,exchange='ECBOT',
         lastTradeDateOrContractMonth="20" +
         cont_id)]  # ,exchange = "GLOBEX")]
 contracts[0].includeExpired = True

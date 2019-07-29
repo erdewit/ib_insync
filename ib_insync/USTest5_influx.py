@@ -1153,14 +1153,29 @@ def MergeData(df1, df2, stitch_factor):
 
 def concat_and_reindex(df1, df2):
     df = pd.concat([df1,df2], ignore_index=True)
-    df = df.sort_values(by=['Date','Time'])
+    df = df.sort_values(by=['TickTS', 'id'])#'Date','Time'])
     df = df.reset_index(drop=True)
     return df
 
-#%%
+def cleanup_ticks_df(df):
+    print(df)
+    df['TickTS'] = df.index.astype('int64')
+    df['Timestamp'] = df.index.astype('datetime64[ns]')
+    df = df.sort_values(by=['TickTS', 'id'])
+    df = df.reset_index(drop=True)
+    df['Time'] = [d.time() for d in df['Timestamp']]
+    df['Date'] = [d.date() for d in df['Timestamp']]
+    #df.columns
+    #df.index
+    df = df.rename(columns={"price": "Price", "size": "Vol"})  # used for tickdata exported files
+        
+    df['Vol'] = 1
+    
+    return df
+#%% todo bug, need to fix timestamp
 def GetNewTicksInDB(df_original_ticks, table):
-    dt_last_tick_time_in_df = df_original_ticks.iloc[-1]['Timestamp']
-    dt_last_tick_time_in_df = datetime.datetime.timestamp(dt_last_tick_time_in_df)
+    dt_last_tick_time_in_df = df_original_ticks.iloc[-1]['TickTS']
+    #dt_last_tick_time_in_df = datetime.datetime.timestamp(dt_last_tick_time_in_df)
     ts_time = str(dt_last_tick_time_in_df).replace('.', '') + '000000000000'
     ts_time = ts_time[:19]
     q = "select * from " + table + " where time>" + ts_time
@@ -1175,21 +1190,6 @@ def GetNewTicksInDB(df_original_ticks, table):
     except BaseException:
         return 'no ticks'  # d
 
-def cleanup_ticks_df(df):
-    print(df)
-    
-    df['Timestamp'] = df.index.astype('datetime64[ns]')
-    df = df.sort_values(by=['Timestamp', 'id'])
-    df = df.reset_index(drop=True)
-    df['Time'] = [d.time() for d in df['Timestamp']]
-    df['Date'] = [d.date() for d in df['Timestamp']]
-    #df.columns
-    #df.index
-    df = df.rename(columns={"price": "Price", "size": "Vol"})  # used for tickdata exported files
-        
-    df['Vol'] = 1
-    
-    return df
 
 def Load_dollar_bars(df, bar_size_factor=8000):
     global dollar_bars, bar_size 
@@ -1412,7 +1412,7 @@ date = get_thursday(cal, year, month, -1)
 print('date: {0}'.format(date), file = log_file)  # date: 2017-08-31
 
 #%%
-backtest = True
+backtest = False
 new_cont_id = "1912"
 
 old_cont_id = "1906"
@@ -1430,7 +1430,7 @@ new_table = cont_symbol + '20' + new_cont_id
 # table='USM1903'
 # contracts = [Future(conId='346233386')] #USM19=333866981,
 # USH19=322458851, USU19=346233386, USZ19=358060606
-contracts = [Future(symbol=cont_symbol,lastTradeDateOrContractMonth="20" + cont_id)]  # ,exchange = "GLOBEX")]
+contracts = [Future(symbol=cont_symbol,exchange='ECBOT', lastTradeDateOrContractMonth="20" + cont_id)]  # ,exchange = "GLOBEX")]
 #contracts = [Future(symbol=cont_symbol)]#,lastTradeDateOrContractMonth="20" + cont_id)]  # ,exchange = "GLOBEX")]
 if backtest == False:
     try: 
