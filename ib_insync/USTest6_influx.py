@@ -1158,6 +1158,8 @@ def MergeData(df1, df2, stitch_factor):
     return result
 
 def concat_and_reindex(df1, df2):
+    df1 = cleanup_ticks_df(df1)
+    df2 = cleanup_ticks_df(df2)
     df = pd.concat([df1,df2], ignore_index=True)
     df = df.sort_values(by=['Date','Time'])
     df = df.reset_index(drop=True)
@@ -1166,8 +1168,10 @@ def concat_and_reindex(df1, df2):
 
 def cleanup_ticks_df(df):
     print(df)
-    df['TickTS'] = df.index.astype('int64')
-    df['Timestamp'] = df.index.astype('datetime64[ns]')
+    if 'TickTS' not in df.columns:
+        df['TickTS'] = df.index.astype('int64')
+    if 'Timestamp' not in df.columns:
+        df['Timestamp'] = df.index.astype('datetime64[ns]')
     df = df.sort_values(by=['TickTS', 'id'])
     df = df.reset_index(drop=True)
     df['Time'] = [d.time() for d in df['Timestamp']]
@@ -1196,22 +1200,6 @@ def GetNewTicksInDB(df_original_ticks, table):
 
     except BaseException:
         return 'no ticks'  # d
-
-def cleanup_ticks_df(df):
-    print(df)
-    
-    df['Timestamp'] = df.index.astype('datetime64[ns]')
-    df = df.sort_values(by=['Timestamp', 'id'])
-    df = df.reset_index(drop=True)
-    df['Time'] = [d.time() for d in df['Timestamp']]
-    df['Date'] = [d.date() for d in df['Timestamp']]
-    #df.columns
-    #df.index
-    df = df.rename(columns={"price": "Price", "size": "Vol"})  # used for tickdata exported files
-        
-    df['Vol'] = 1
-    
-    return df
 
 def Load_dollar_bars(df, bar_size_factor=10000):
     global dollar_bars, bar_size 
