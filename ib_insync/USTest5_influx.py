@@ -998,10 +998,11 @@ def SyncPosition(dollar_bars, contract):
         idx = -1
     
     if(dollar_bars.iloc[-2]['transaction'] - dollar_bars.iloc[-1]['transaction']) > dollar_bars.iloc[-1]['close']:
-        idx=min(idx,-2) # if there is a leftover ticks bar, don't take its forecasted position
+        idx = min(idx,-2) # if there is a leftover ticks bar, don't take its forecasted position
 
     forecasted_position = dollar_bars.iloc[idx]['position_with_stoploss']
-
+    ''' 
+    uncomment but make sure same logic gets implemented when calculating dollar_bars fields to avoid discr in 'position_with_stoploss'
     # prevent the bars that have a swift change from +x to -x positions
     if (forecasted_position > 0 and size < 0) or (forecasted_position < 0 and size > 0):
         forecasted_position = 0
@@ -1013,11 +1014,11 @@ def SyncPosition(dollar_bars, contract):
             forecasted_position = 1
         
     dollar_bars.iloc[idx]['position_with_stoploss'] = forecasted_position 
-    
+    '''
     if size != forecasted_position :
         order_size = forecasted_position - size
         print('forecasted position', forecasted_position, file = log_file )
-    '''
+    ''' quick way to try the inverse of the forecasted position
     if -1*size != forecasted_position :
         order_size = -1*forecasted_position - size
         print('forecasted position', -1*forecasted_position, file = log_file )
