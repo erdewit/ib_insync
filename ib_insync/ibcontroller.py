@@ -97,13 +97,13 @@ class IBC(Object):
         fixpassword=(None, '--fix-pw=', '/FIXPW:'))
 
     defaults = {k: v[0] for k, v in _Args.items()}
-    __slots__ = list(defaults) + ['_proc', '_logger', '_monitor']
+    __slots__ = list(defaults) + ['_proc', '_logger', '_monitor', '_isWindows']
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
-        self._is_win32 = os.sys.platform == 'win32'
+        self._isWindows = os.sys.platform == 'win32'
         if not self.ibcPath:
-            self.ibcPath = '/opt/ibc' if not self._is_win32 else 'C:\\IBC'
+            self.ibcPath = '/opt/ibc' if not self._isWindows else 'C:\\IBC'
         self._proc = None
         self._monitor = None
         self._logger = logging.getLogger('ib_insync.IBC')
@@ -134,10 +134,10 @@ class IBC(Object):
 
         # create shell command
         cmd = [
-            f'{self.ibcPath}\\scripts\\StartIBC.bat' if self._is_win32 else
+            f'{self.ibcPath}\\scripts\\StartIBC.bat' if self._isWindows else
             f'{self.ibcPath}/scripts/ibcstart.sh']
         for k, v in self.dict().items():
-            arg = IBC._Args[k][2 if self._is_win32 else 1]
+            arg = IBC._Args[k][2 if self._isWindows else 1]
             if v:
                 if arg.endswith('=') or arg.endswith(':'):
                     cmd.append(f'{arg}{v}')
@@ -158,7 +158,7 @@ class IBC(Object):
         if self._monitor:
             self._monitor.cancel()
             self._monitor = None
-        if self._is_win32:
+        if self._isWindows:
             import subprocess
             subprocess.call(
                 ['taskkill', '/F', '/T', '/PID', str(self._proc.pid)])
