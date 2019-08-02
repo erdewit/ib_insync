@@ -7,8 +7,7 @@ __all__ = (
     'Trade OrderStatus Order '
     'LimitOrder MarketOrder StopOrder StopLimitOrder '
     'OrderCondition ExecutionCondition MarginCondition TimeCondition '
-    'PriceCondition PercentChangeCondition VolumeCondition '
-    ).split()
+    'PriceCondition PercentChangeCondition VolumeCondition').split()
 
 
 class Trade(Object):
