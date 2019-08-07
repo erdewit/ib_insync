@@ -819,7 +819,7 @@ def AddForecasts(dollar_bars, Train = True):
 def AddStopLoss(dollar_bars):
 
     # if it is a new trade, keep adding PL, else, put 0
-    stop_loss = -600
+    stop_loss = -500
     # dollar_bars['IntraTrade_P_DD']=dollar_bars['PL'].copy()
     dollar_bars['IntraTrade_P_DD'] = dollar_bars.groupby(
         ['trade_number'])['dollar_returns'].cumsum() * 1000
@@ -845,8 +845,8 @@ def AddStopLoss(dollar_bars):
 
 # %%
 
-
 def AddPL(dollar_bars):
+    global NetCumPL_copy
     dollar_bars['prev_position_with_stoploss'] = dollar_bars['position_with_stoploss'].shift(1)
 
     dollar_bars['PL'] = dollar_bars['prev_position_with_stoploss'] * dollar_bars['dollar_returns'] * 1000
@@ -857,6 +857,7 @@ def AddPL(dollar_bars):
     dollar_bars['Trades'] = abs(dollar_bars['position_with_stoploss'].diff())
     dollar_bars['commission'] = dollar_bars['Trades'].cumsum() * 2.5
     dollar_bars['NetCumPL'] = dollar_bars['CumPL'] - dollar_bars['commission']
+    NetCumPL_copy = dollar_bars['NetCumPL'].copy()
     dollar_bars['NetPL'] = dollar_bars['PL'] - dollar_bars['Trades'] * 2.5
     dollar_bars['MaxEquity'] = dollar_bars['NetPL'].rolling(2).max()
     return dollar_bars
@@ -984,7 +985,6 @@ def SyncPosition(dollar_bars, contract):
     else:
         size = 0
     print('position size', size, file = log_file)
-
     #keep going up the rows till we find a forecasted position that has been calculated
     idx = -4
     
@@ -1015,7 +1015,8 @@ def SyncPosition(dollar_bars, contract):
         
     dollar_bars.iloc[idx]['position_with_stoploss'] = forecasted_position 
     '''
-    if size != forecasted_position :
+    peak_value = NetCumPL_copy.max()
+    if (size != forecasted_position) & ((datetime.datetime.now().time()>datetime.time(20,0,0)) & (datetime.datetime.now().time()<datetime.time(21,59,59)) == False) & (NetCumPL_copy.iloc[-1]>(peak_value-1000)):
         order_size = forecasted_position - size
         print('forecasted position', forecasted_position, file = log_file )
     ''' quick way to try the inverse of the forecasted position
@@ -1024,8 +1025,10 @@ def SyncPosition(dollar_bars, contract):
         print('forecasted position', -1*forecasted_position, file = log_file )
     
     '''
+    #order_size = 0 #to disable placing orders
     if order_size != 0:
-        orderType = 'SELL'
+        if order_size < 0:
+            orderType = 'SELL'
         if order_size > 0:
             orderType = 'BUY'
         
@@ -1038,8 +1041,41 @@ def SyncPosition(dollar_bars, contract):
         
         print('position', ib.positions(), file = log_file)
 
-    return True
+    if len(positions)>0:
+        size = positions[0].position
+        print(size)
+    else:
+        size = 0
 
+    
+
+    if  (size != 0): #(forecasted_position != 0)
+        print(positions[0].avgCost)
+        print(size)
+        if int(size) < 0: #forecasted_position
+            stopOrderType = 'BUY'
+            stopPrice = (positions[0].avgCost/1000) + (500/1000/abs(size)) #forecasted_position
+        if int(size) > 0: #forecasted_position
+            stopOrderType = 'SELL'
+            stopPrice = (positions[0].avgCost/1000) - (500/1000/abs(size))#forecasted_position
+        
+        print(stopPrice)
+        
+        dec_stopPrice = stopPrice - int(stopPrice)
+        
+        dec_stopPrice  = (dec_stopPrice*1000/31.25)
+        print(dec_stopPrice)
+        dec_stopPrice  = int(dec_stopPrice)
+        print(dec_stopPrice)
+        stopPrice = int(stopPrice)+(dec_stopPrice*31.25/1000)
+        
+        stop_order = StopOrder(stopOrderType, abs(size), stopPrice) #forecasted_position
+        print('stop order', stop_order, file = log_file)
+        stopTrade = ib.placeOrder(contract, stop_order)
+        print(stopTrade)
+        print(stopTrade.log, file = log_file)
+        
+    return True
 
 def GetHistoricalTicksInDB(table):
 
@@ -1222,8 +1258,8 @@ def AddLiveTicks():#contractId):
         global dollar_bars, df_leftover_ticks, df_original_ticks, bar_size, table , num_bars_original
         print('bar_size',bar_size, file = log_file)
         df_new_ticks = GetNewTicksInDB(df_original_ticks, table)
-        print('df_new_ticks', df_new_ticks, file = log_file)
-        print('df_original_ticks', df_original_ticks,file = log_file)
+        print('df_new_ticks', df_new_ticks.tail(5), file = log_file)
+        print('df_original_ticks', df_original_ticks.tail(5),file = log_file)
         #if len(dollar_bars)>0:
         #transaction_size=dollar_bars[[-1,'transaction']]
         #pdb.set_trace()
@@ -1266,6 +1302,8 @@ def main():
  
     train = False
     stitch = False
+    
+
 
     if (train):
         # calculate panama stitch factor
@@ -1398,6 +1436,7 @@ dollar_bars = pd.DataFrame()
 df_leftover_ticks = pd.DataFrame()
 df_original_ticks = pd.DataFrame()
 
+NetCumPL_copy =  pd.DataFrame()
 # AddStudies(62500)
 forecasts_S = pd.DataFrame()
 forecasts_L = pd.DataFrame()
