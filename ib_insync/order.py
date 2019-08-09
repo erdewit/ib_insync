@@ -119,7 +119,7 @@ class Order(Object):
         clientId=0,
         permId=0,
         action='',
-        totalQuantity=0,
+        totalQuantity=0.0,
         orderType='',
         lmtPrice=UNSET_DOUBLE,
         auxPrice=UNSET_DOUBLE,
