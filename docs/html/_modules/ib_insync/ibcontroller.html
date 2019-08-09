@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.ibcontroller &mdash; ib_insync 0.9.54 documentation</title>
+  <title>ib_insync.ibcontroller &mdash; ib_insync 0.9.56 documentation</title>
   
 
   
@@ -254,13 +254,13 @@
         <span class="n">fixpassword</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;--fix-pw=&#39;</span><span class="p">,</span> <span class="s1">&#39;/FIXPW:&#39;</span><span class="p">))</span>
 
     <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_Args</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;_proc&#39;</span><span class="p">,</span> <span class="s1">&#39;_logger&#39;</span><span class="p">,</span> <span class="s1">&#39;_monitor&#39;</span><span class="p">]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;_proc&#39;</span><span class="p">,</span> <span class="s1">&#39;_logger&#39;</span><span class="p">,</span> <span class="s1">&#39;_monitor&#39;</span><span class="p">,</span> <span class="s1">&#39;_isWindows&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isWindows</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibcPath</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ibcPath</span> <span class="o">=</span> <span class="s1">&#39;/opt/ibc&#39;</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">!=</span> <span class="s1">&#39;win32&#39;</span> \
-                <span class="k">else</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">IBC&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ibcPath</span> <span class="o">=</span> <span class="s1">&#39;/opt/ibc&#39;</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isWindows</span> <span class="k">else</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">IBC&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.IBC&#39;</span><span class="p">)</span>
@@ -290,12 +290,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting&#39;</span><span class="p">)</span>
 
         <span class="c1"># create shell command</span>
-        <span class="n">win32</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.ibcPath}</span><span class="se">\\</span><span class="s1">scripts</span><span class="se">\\</span><span class="s1">StartIBC.bat&#39;</span> <span class="k">if</span> <span class="n">win32</span> <span class="k">else</span>
+            <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.ibcPath}</span><span class="se">\\</span><span class="s1">scripts</span><span class="se">\\</span><span class="s1">StartIBC.bat&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isWindows</span> <span class="k">else</span>
             <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.ibcPath}</span><span class="s1">/scripts/ibcstart.sh&#39;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">arg</span> <span class="o">=</span> <span class="n">IBC</span><span class="o">.</span><span class="n">_Args</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">2</span> <span class="k">if</span> <span class="n">win32</span> <span class="k">else</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">IBC</span><span class="o">.</span><span class="n">_Args</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">2</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isWindows</span> <span class="k">else</span> <span class="mi">1</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">v</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">arg</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
                     <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{arg}{v}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -316,7 +315,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isWindows</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">subprocess</span>
             <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
                 <span class="p">[</span><span class="s1">&#39;taskkill&#39;</span><span class="p">,</span> <span class="s1">&#39;/F&#39;</span><span class="p">,</span> <span class="s1">&#39;/T&#39;</span><span class="p">,</span> <span class="s1">&#39;/PID&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">pid</span><span class="p">)])</span>
@@ -499,7 +498,7 @@
 <span class="sd">        ib.connectedEvent += onConnected</span>
 <span class="sd">        watchdog = Watchdog(ibc, ib, port=4002)</span>
 <span class="sd">        watchdog.start()</span>
-<span class="sd">        IB.run()</span>
+<span class="sd">        ib.run()</span>
 
 <span class="sd">    Events:</span>
 <span class="sd">        * ``startingEvent`` (watchdog: :class:`.Watchdog`)</span>

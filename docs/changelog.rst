@@ -4,6 +4,16 @@ Changelog
 0.9
 ---
 
+Version 0.9.56
+^^^^^^^^^^^^^^
+
+* Fix bug #178: ``Order.totalQuantity`` is now float.
+
+Version 0.9.55
+^^^^^^^^^^^^^^
+
+* Sphinx update for documentation.
+
 Version 0.9.54
 ^^^^^^^^^^^^^^
 

@@ -39,10 +39,10 @@ github_url = 'https://github.com/erdewit/ib_insync'
 
 autoclass_content = 'both'
 autodoc_member_order = "bysource"
-autodoc_default_flags = [
-    'members',
-    'undoc-members',
-    ]
+autodoc_default_options = {
+    'members': True,
+    'undoc-members': True
+    }
 
 
 def onDocstring(app, what, name, obj, options, lines):
