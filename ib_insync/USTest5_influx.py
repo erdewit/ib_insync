@@ -59,6 +59,7 @@ util.startLoop()
 ib = IB()
 pd.core.common.is_list_like = pd.api.types.is_list_like
 log_file = open(r'c:\test\logs\log-'+ str(datetime.datetime.now().timestamp()) +'.txt', 'w+')
+positions_log = open(r'c:\test\logs\positions_log-'+ str(datetime.datetime.now().timestamp()) +'.txt', 'w+')
 # In[6]:
 
 def split_time(x):
@@ -1020,8 +1021,8 @@ def SyncPosition(dollar_bars, contract):
         order_size = forecasted_position - size
         print('forecasted position', forecasted_position, file = log_file )
         #quick way to try the inverse of the forecasted position
-        order_size = -1*order_size
-        print('forecasted position', -1*forecasted_position, file = log_file )
+        #order_size = -1*order_size
+        #print('forecasted position', -1*forecasted_position, file = log_file )
     
     
     #order_size = 0 #to disable placing orders
@@ -1037,8 +1038,6 @@ def SyncPosition(dollar_bars, contract):
         limitTrade = ib.placeOrder(contract, limitOrder)  
         print(limitTrade)
         print(limitTrade.log, file = log_file)
-        
-        print('position', ib.positions(), file = log_file)
 
     if len(positions)>0:
         size = positions[0].position
@@ -1046,6 +1045,7 @@ def SyncPosition(dollar_bars, contract):
     else:
         size = 0
 
+    print(datetime.datetime.now(),',', ib.positions(), ',', ib.orders() , file = positions_log) #using positions() and orders() instead of positions[0] in case the later is null
     
 
     if  (size != 0): #(forecasted_position != 0)
