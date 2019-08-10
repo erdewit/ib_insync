@@ -1019,12 +1019,11 @@ def SyncPosition(dollar_bars, contract):
     if (size != forecasted_position) & ((datetime.datetime.now().time()>datetime.time(20,0,0)) & (datetime.datetime.now().time()<datetime.time(21,59,59)) == False) & (NetCumPL_copy.iloc[-1]>(peak_value-1000)):
         order_size = forecasted_position - size
         print('forecasted position', forecasted_position, file = log_file )
-    ''' quick way to try the inverse of the forecasted position
-    if -1*size != forecasted_position :
-        order_size = -1*forecasted_position - size
+        #quick way to try the inverse of the forecasted position
+        order_size = -1*order_size
         print('forecasted position', -1*forecasted_position, file = log_file )
     
-    '''
+    
     #order_size = 0 #to disable placing orders
     if order_size != 0:
         if order_size < 0:
@@ -1474,7 +1473,7 @@ contracts = [Future(symbol=cont_symbol,exchange='ECBOT', lastTradeDateOrContract
 #contracts = [Future(symbol=cont_symbol)]#,lastTradeDateOrContractMonth="20" + cont_id)]  # ,exchange = "GLOBEX")]
 if backtest == False:
     try: 
-        ib.connect('127.0.0.1', 7498, 11)
+        ib.connect('127.0.0.1', 7498, 0)
         contracts[0].includeExpired = True
         
         contracts = ib.qualifyContracts(*contracts)
