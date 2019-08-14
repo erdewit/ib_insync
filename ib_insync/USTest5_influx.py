@@ -59,7 +59,7 @@ util.startLoop()
 ib = IB()
 pd.core.common.is_list_like = pd.api.types.is_list_like
 log_file = open(r'c:\test\logs\log-'+ str(datetime.datetime.now().timestamp()) +'.txt', 'w+')
-positions_log = open(r'c:\test\logs\positions_log-'+ str(datetime.datetime.now().timestamp()) +'.txt', 'w+')
+positions_log = open(r'c:\test\logs\positions_log-'+ str(datetime.datetime.now().timestamp()) +'.txt', 'a+')
 # In[6]:
 
 def split_time(x):
@@ -848,7 +848,7 @@ def AddStopLoss(dollar_bars):
 
 def AddPL(dollar_bars):
     global NetCumPL_copy
-    dollar_bars['prev_position_with_stoploss'] = dollar_bars['position_with_stoploss'].shift(1)
+    dollar_bars['prev_position_with_stoploss'] = dollar_bars['position_with_stoploss'].shift(1)#2)#1
 
     dollar_bars['PL'] = dollar_bars['prev_position_with_stoploss'] * dollar_bars['dollar_returns'] * 1000
     # dollar_bars['PL']=dollar_bars['position']*dollar_bars['dollar_returns']*1000
@@ -967,7 +967,7 @@ def RecalcNewBarsStudies(dollar_bars):
 
 def SyncPosition(dollar_bars, contract):
     order_size = 0
-    
+    df_positions_log = pd.DataFrame(columns=['time', 'position', 'order', 'forecast'])
     print("inside SyncPosition", file = log_file)
     '''
     ToDo: 
@@ -1001,7 +1001,8 @@ def SyncPosition(dollar_bars, contract):
     if(dollar_bars.iloc[-2]['transaction'] - dollar_bars.iloc[-1]['transaction']) > dollar_bars.iloc[-1]['close']:
         idx = min(idx,-2) # if there is a leftover ticks bar, don't take its forecasted position
 
-    forecasted_position = dollar_bars.iloc[idx]['position_with_stoploss']
+    forecasted_position = dollar_bars.iloc[idx]['position_with_stoploss']#idx-1
+    print('forecasted position', forecasted_position, file = log_file )
     ''' 
     uncomment but make sure same logic gets implemented when calculating dollar_bars fields to avoid discr in 'position_with_stoploss'
     # prevent the bars that have a swift change from +x to -x positions
@@ -1019,7 +1020,7 @@ def SyncPosition(dollar_bars, contract):
     peak_value = NetCumPL_copy.max()
     if (size != forecasted_position) & ((datetime.datetime.now().time()>datetime.time(20,0,0)) & (datetime.datetime.now().time()<datetime.time(21,59,59)) == False) & (NetCumPL_copy.iloc[-1]>(peak_value-1000)):
         order_size = forecasted_position - size
-        print('forecasted position', forecasted_position, file = log_file )
+        print('order_size ', order_size, file = log_file )
         #quick way to try the inverse of the forecasted position
         #order_size = -1*order_size
         #print('forecasted position', -1*forecasted_position, file = log_file )
@@ -1041,12 +1042,24 @@ def SyncPosition(dollar_bars, contract):
 
     if len(positions)>0:
         size = positions[0].position
-        print(size)
     else:
         size = 0
-
-    print(datetime.datetime.now(),',', ib.positions(), ',', ib.orders() , file = positions_log) #using positions() and orders() instead of positions[0] in case the later is null
     
+    order_size = forecasted_position - size
+
+    print(str(datetime.datetime.now()),'    position    ', size,'    order    ', order_size, file = log_file)
+    df_positions_log=df_positions_log.append({'time':datetime.datetime.now(),'position':str(size),'order':str(order_size), 'forecast':forecasted_position}, ignore_index=True)
+    df_positions_log=df_positions_log.set_index('time')
+    print(df_positions_log) 
+    client.write_points(df_positions_log,'positions_log')
+    #print(str(datetime.datetime.now()),'    position    ', size,'    order    ', order_size, file = positions_log)
+    #print(str(datetime.datetime.now()),'    position    ', size,'    order    ', order_size, file = positions_log)
+    #
+        
+    #print(datetime.datetime.now(), file = log_file) #using positions() and orders() instead of positions[0] in case the later is null
+    #print(ib.positions(), file = log_file) #using positions() and orders() instead of positions[0] in case the later is null
+    #print(ib.orders() , file = log_file) #using positions() and orders() instead of positions[0] in case the later is null
+    #,",",  ",", 
 
     if  (size != 0): #(forecasted_position != 0)
         print(positions[0].avgCost)
@@ -1073,7 +1086,8 @@ def SyncPosition(dollar_bars, contract):
         stopTrade = ib.placeOrder(contract, stop_order)
         print(stopTrade)
         print(stopTrade.log, file = log_file)
-        
+        #print(str(datetime.datetime.now()),'    stop    ', size,'    price    ', stopPrice, file = positions_log)
+
     return True
 
 def GetHistoricalTicksInDB(table):
@@ -1283,10 +1297,10 @@ def AddLiveTicks():#contractId):
                 dollar_bars = AddForecasts(dollar_bars, Train=False)
                 dollar_bars = AddStopLoss(dollar_bars)
                 
-                SyncPosition(dollar_bars, contract)
                 dollar_bars = AddPL(dollar_bars)
+                SyncPosition(dollar_bars, contract)
                 num_bars_original = len(dollar_bars)
-                dollar_bars.tail(35).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
+                dollar_bars.tail(30).to_csv(r'c:\test\dollar_bars'+ str(datetime.datetime.now().timestamp()) +'.csv')
                 #print(dollar_bars)
                 dollar_bars
                 df_original_ticks = all_ticks
