@@ -967,7 +967,7 @@ def RecalcNewBarsStudies(dollar_bars):
 
 def SyncPosition(dollar_bars, contract):
     order_size = 0
-    df_positions_log = pd.DataFrame(columns=['time', 'position', 'order', 'forecast'])
+    df_positions_log = pd.DataFrame(columns=['time', 'position', 'order', 'forecast', 'price'])
     print("inside SyncPosition", file = log_file)
     '''
     ToDo: 
@@ -980,7 +980,7 @@ def SyncPosition(dollar_bars, contract):
         
     positions = ib.positions()
     print("Position: ", positions, file = log_file)
-    
+
     if len(positions)>0:
         size = positions[0].position
     else:
@@ -1018,14 +1018,14 @@ def SyncPosition(dollar_bars, contract):
     dollar_bars.iloc[idx]['position_with_stoploss'] = forecasted_position 
     '''
     peak_value = NetCumPL_copy.max()
-    if (size != forecasted_position) & ((datetime.datetime.now().time()>datetime.time(20,0,0)) & (datetime.datetime.now().time()<datetime.time(21,59,59)) == False) & (NetCumPL_copy.iloc[-1]>(peak_value-1000)):
+    if (size != forecasted_position) & ((datetime.datetime.now().time()>datetime.time(20,0,0)) & (datetime.datetime.now().time()<datetime.time(21,59,59)) == False):# & (NetCumPL_copy.iloc[-1]>(peak_value-1000)):
         order_size = forecasted_position - size
         print('order_size ', order_size, file = log_file )
         #quick way to try the inverse of the forecasted position
         #order_size = -1*order_size
         #print('forecasted position', -1*forecasted_position, file = log_file )
     
-    
+    limit_price = dollar_bars.iloc[idx]['close']
     #order_size = 0 #to disable placing orders
     if order_size != 0:
         if order_size < 0:
@@ -1034,7 +1034,8 @@ def SyncPosition(dollar_bars, contract):
             orderType = 'BUY'
         
         
-        limitOrder = LimitOrder(orderType, abs(order_size), dollar_bars.iloc[idx]['close'])
+        limitOrder = LimitOrder(orderType, abs(order_size), limit_price)
+
         print('limit order', limitOrder, file = log_file)
         limitTrade = ib.placeOrder(contract, limitOrder)  
         print(limitTrade)
@@ -1048,7 +1049,7 @@ def SyncPosition(dollar_bars, contract):
     order_size = forecasted_position - size
 
     print(str(datetime.datetime.now()),'    position    ', size,'    order    ', order_size, file = log_file)
-    df_positions_log=df_positions_log.append({'time':datetime.datetime.now(),'position':str(size),'order':str(order_size), 'forecast':forecasted_position}, ignore_index=True)
+    df_positions_log=df_positions_log.append({'time':datetime.datetime.now(),'position':str(size),'price':str(limit_price),'order':str(order_size), 'forecast':forecasted_position}, ignore_index=True)
     df_positions_log=df_positions_log.set_index('time')
     print(df_positions_log) 
     client.write_points(df_positions_log,'positions_log')
@@ -1081,7 +1082,8 @@ def SyncPosition(dollar_bars, contract):
         print(dec_stopPrice)
         stopPrice = int(stopPrice)+(dec_stopPrice*31.25/1000)
         
-        stop_order = StopOrder(stopOrderType, abs(size), stopPrice) #forecasted_position
+        stop_order = StopOrder(stopOrderType, abs(size), stopPrice)#, outsideRth=True) #forecasted_position
+        stop_order.outsideRth = True
         print('stop order', stop_order, file = log_file)
         stopTrade = ib.placeOrder(contract, stop_order)
         print(stopTrade)

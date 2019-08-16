@@ -21,10 +21,12 @@ select * from ZB201909 where time > 1561754754000000000 and time < 1561754755000
 influx -database "demo" -execute "SELECT * FROM ZB201909HistLive062819" -format csv > c:\test\ZB201909HistLive062819.csv
 influx -database "demo" -execute "SELECT * FROM ZB201909HistOnly" -format csv > c:\test\ZB201909HistOnly.csv
 influx -database "demo" -execute "SELECT * FROM ZB201909HistLive070319" -format csv > c:\test\ZB201909HistLive070319.csv
-influx -database "demo" -execute "SELECT * FROM ZB201909" -format csv > c:\test\ZB201909.csv
-influx -database "demo" -execute "SELECT * FROM ZB201909HistLive072319" -format csv > c:\test\ZB201909HistLive072319.csv
+influx -database "demo" -execute "SELECT time,hist,id,price,size FROM ZB201909" -format csv > c:\test\ZB201909.csv
+influx -database "demo" -execute "SELECT time,hist,id,price,size FROM ZB201909HistLive072319" -format csv > c:\test\ZB201909HistLive072319.csv
 
 1561743103000000000
+1564088398736841984
+sys.maxint = 9223372036854775807
 
 1561743103
 000000000
@@ -83,6 +85,11 @@ SELECT * INTO ZB201909HistLive070319 FROM ZB201909 GROUP BY *
 SELECT * INTO ZB201909HistLive071719 FROM ZB201909 GROUP BY *
 SELECT * INTO ZB201909HistLive071919 FROM ZB201909 GROUP BY *
 SELECT * INTO ZB201909HistLive072319 FROM ZB201909 GROUP BY *
+SELECT * INTO ZB201909HistLive072919 FROM ZB201909 GROUP BY *
+SELECT * INTO ZB201909HistLive080819 FROM ZB201909 GROUP BY *
+SELECT * INTO ZB201909HistLive080919 FROM ZB201909 GROUP BY *
+SELECT * INTO positions_log_old1 FROM positions_log GROUP BY *
+SELECT * INTO positions_log_old1 FROM positions_log GROUP BY *
 
 
 todo: get historical ticks
