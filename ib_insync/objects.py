@@ -176,8 +176,7 @@ class ComboLeg(Object):
         openClose=0,
         shortSaleSlot=0,
         designatedLocation='',
-        exemptCode=-1
-        )
+        exemptCode=-1)
     __slots__ = defaults.keys()
 
 
