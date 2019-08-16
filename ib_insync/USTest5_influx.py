@@ -1018,7 +1018,7 @@ def SyncPosition(dollar_bars, contract):
     dollar_bars.iloc[idx]['position_with_stoploss'] = forecasted_position 
     '''
     peak_value = NetCumPL_copy.max()
-    if (size != forecasted_position) & ((datetime.datetime.now().time()>datetime.time(20,0,0)) & (datetime.datetime.now().time()<datetime.time(21,59,59)) == False):# & (NetCumPL_copy.iloc[-1]>(peak_value-1000)):
+    if (size != forecasted_position) & ((datetime.datetime.now().time()>datetime.time(20,0,0)) & (datetime.datetime.now().time()<datetime.time(21,59,59)) == False) & (NetCumPL_copy.iloc[-1]>(peak_value-1000)):
         order_size = forecasted_position - size
         print('order_size ', order_size, file = log_file )
         #quick way to try the inverse of the forecasted position
