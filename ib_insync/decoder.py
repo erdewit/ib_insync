@@ -1160,7 +1160,7 @@ class Decoder:
         if int(dncPresent):
             conId, delta, price, *fields = fields
             c.deltaNeutralContract = DeltaNeutralContract(
-                int(price or 0), float(delta or 0), float(price or 0))
+                int(conId or 0), float(delta or 0), float(price or 0))
 
         o.algoStrategy = fields.pop(0)
         if o.algoStrategy:
