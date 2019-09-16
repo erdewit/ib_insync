@@ -1173,6 +1173,7 @@ class IB:
                 293    ``tradeCount``
                 294    ``tradeRate``
                 295    ``volumeRate``
+                375    ``RTTradeVolume``
                 411    ``rtHistVolatility``
                 456    ``dividends`` (of type
                        :class:`ib_insync.objects.Dividends`)
