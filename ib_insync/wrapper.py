@@ -729,6 +729,29 @@ class Wrapper:
                     float(next12) if next12 else None,
                     util.parseIBDatetime(nextDate) if nextDate else None,
                     float(nextAmount) if nextAmount else None)
+            elif tickType == 77:
+                # RT Trade Volume
+                # price;size;ms since epoch;total volume;VWAP;single trade
+                # example value: '90.31;1;1568407233444;19015;90.07778509;true'
+                price, size, _, rtTradeVolume, vwap, _ = value.split(';')
+                if rtTradeVolume:
+                    ticker.rtTradeVolume = int(rtTradeVolume)
+                if vwap:
+                    ticker.vwap = float(vwap)
+                if price == '':
+                    return
+                price = float(price)
+                size = float(size)
+                if price and size:
+                    if ticker.prevLast != ticker.last:
+                        ticker.prevLast = ticker.last
+                        ticker.last = price
+                    if ticker.prevLastSize != ticker.lastSize:
+                        ticker.prevLastSize = ticker.lastSize
+                        ticker.lastSize = size
+                    tick = TickData(self.lastTime, tickType, price, size)
+                    ticker.ticks.append(tick)
+                    self.pendingTickers.add(ticker)
         except ValueError:
             self._logger.error(
                 f'tickString with tickType {tickType}: '

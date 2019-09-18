@@ -66,6 +66,7 @@ class Ticker(Object):
         halted=nan,
         rtHistVolatility=nan,
         rtVolume=nan,
+        rtTradeVolume=nan,
         avVolume=nan,
         tradeCount=nan,
         tradeRate=nan,
