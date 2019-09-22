@@ -613,6 +613,12 @@ class Wrapper:
             ticker.callVolume = size
         elif tickType == 30:
             ticker.putVolume = size
+        elif tickType == 34:
+            ticker.auctionVolume = size
+        elif tickType == 35:
+            ticker.auctionPrice = size
+        elif tickType == 36:
+            ticker.auctionImbalance = size
         elif tickType == 86:
             ticker.futuresOpenInterest = size
         elif tickType == 87:

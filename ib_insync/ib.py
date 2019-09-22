@@ -1165,6 +1165,7 @@ class IB:
                        ``high26week``, ``low52week``, ``high52week``,
                        ``avVolume``
                 221    ``markPrice``
+                225    ``auctionVolume``, ``auctionPrice``, ``auctionImbalance``
                 233    ``last``, ``lastSize``, ``rtVolume``, ``vwap``
                        (Time & Sales)
                 236    ``shortableShares``

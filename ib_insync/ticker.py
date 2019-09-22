@@ -91,7 +91,10 @@ class Ticker(Object):
         bidGreeks=None,
         askGreeks=None,
         lastGreeks=None,
-        modelGreeks=None
+        modelGreeks=None,
+        auctionVolume=nan,
+        auctionPrice=nan,
+        auctionImbalance=nan
     )
     __slots__ = tuple(defaults.keys()) + events + ('__dict__',)
 
