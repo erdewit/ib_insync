@@ -113,8 +113,8 @@ class Ticker(Object):
         See if this ticker has a valid bid and ask.
         """
         return (
-            self.bid != -1 and not isNan(self.bid) and self.bidSize > 0 and
-            self.ask != -1 and not isNan(self.ask) and self.askSize > 0)
+            self.bid != -1 and not isNan(self.bid) and self.bidSize > 0
+            and self.ask != -1 and not isNan(self.ask) and self.askSize > 0)
 
     def midpoint(self) -> float:
         """

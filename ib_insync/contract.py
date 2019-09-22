@@ -139,9 +139,10 @@ class Contract(Object):
             self.secType not in ('BAG', 'CONTFUT')
 
     def __eq__(self, other):
-        return self.isHashable() and isinstance(other, Contract) and \
-                self.conId == other.conId \
-                or Object.__eq__(self, other)
+        return (
+            self.isHashable() and isinstance(other, Contract)
+            and self.conId == other.conId
+            or Object.__eq__(self, other))
 
     def __hash__(self):
         if not self.isHashable():
@@ -203,10 +204,10 @@ class Option(Contract):
             currency: Underlying currency.
         """
         Contract.__init__(
-                self, 'OPT', symbol=symbol,
-                lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
-                strike=strike, right=right, exchange=exchange,
-                multiplier=multiplier, currency=currency, **kwargs)
+            self, 'OPT', symbol=symbol,
+            lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
+            strike=strike, right=right, exchange=exchange,
+            multiplier=multiplier, currency=currency, **kwargs)
 
 
 class Future(Contract):
@@ -232,10 +233,10 @@ class Future(Contract):
             currency: Underlying currency.
         """
         Contract.__init__(
-                self, 'FUT', symbol=symbol,
-                lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
-                exchange=exchange, localSymbol=localSymbol,
-                multiplier=multiplier, currency=currency, **kwargs)
+            self, 'FUT', symbol=symbol,
+            lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
+            exchange=exchange, localSymbol=localSymbol,
+            multiplier=multiplier, currency=currency, **kwargs)
 
 
 class ContFuture(Contract):
@@ -255,9 +256,9 @@ class ContFuture(Contract):
             currency: Underlying currency.
         """
         Contract.__init__(
-                self, 'CONTFUT', symbol=symbol,
-                exchange=exchange, localSymbol=localSymbol,
-                multiplier=multiplier, currency=currency, **kwargs)
+            self, 'CONTFUT', symbol=symbol,
+            exchange=exchange, localSymbol=localSymbol,
+            multiplier=multiplier, currency=currency, **kwargs)
 
 
 class Forex(Contract):
@@ -280,8 +281,8 @@ class Forex(Contract):
             symbol = symbol or pair[:3]
             currency = currency or pair[3:]
         Contract.__init__(
-                self, 'CASH', symbol=symbol,
-                exchange=exchange, currency=currency, **kwargs)
+            self, 'CASH', symbol=symbol,
+            exchange=exchange, currency=currency, **kwargs)
 
     def __repr__(self):
         attrs = self.nonDefaults()
@@ -319,8 +320,8 @@ class Index(Contract):
             currency: Underlying currency.
         """
         Contract.__init__(
-                self, 'IND', symbol=symbol,
-                exchange=exchange, currency=currency, **kwargs)
+            self, 'IND', symbol=symbol,
+            exchange=exchange, currency=currency, **kwargs)
 
 
 class CFD(Contract):
@@ -338,8 +339,8 @@ class CFD(Contract):
             currency: Underlying currency.
         """
         Contract.__init__(
-                self, 'CFD', symbol=symbol,
-                exchange=exchange, currency=currency, **kwargs)
+            self, 'CFD', symbol=symbol,
+            exchange=exchange, currency=currency, **kwargs)
 
 
 class Commodity(Contract):
@@ -357,8 +358,8 @@ class Commodity(Contract):
             currency: Underlying currency.
         """
         Contract.__init__(
-                self, 'CMDTY', symbol=symbol,
-                exchange=exchange, currency=currency, **kwargs)
+            self, 'CMDTY', symbol=symbol,
+            exchange=exchange, currency=currency, **kwargs)
 
 
 class Bond(Contract):
@@ -396,10 +397,10 @@ class FuturesOption(Contract):
             currency: Underlying currency.
         """
         Contract.__init__(
-                self, 'FOP', symbol=symbol,
-                lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
-                strike=strike, right=right, exchange=exchange,
-                multiplier=multiplier, currency=currency, **kwargs)
+            self, 'FOP', symbol=symbol,
+            lastTradeDateOrContractMonth=lastTradeDateOrContractMonth,
+            strike=strike, right=right, exchange=exchange,
+            multiplier=multiplier, currency=currency, **kwargs)
 
 
 class MutualFund(Contract):
