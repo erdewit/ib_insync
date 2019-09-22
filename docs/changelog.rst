@@ -4,6 +4,10 @@ Changelog
 0.9
 ---
 
+* PR #184, #185 and #186 have added support for Ticker fields
+  ``rtTradeVolume``, ``auctionVolume``, ``auctionPrice`` and
+  ``auctionImbalance``.
+
 Version 0.9.56
 ^^^^^^^^^^^^^^
 

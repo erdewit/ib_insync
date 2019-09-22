@@ -421,8 +421,8 @@ class IB:
             modelCode: If specified, filter for this account model.
         """
         return [v for v in self.wrapper.pnls.values() if
-                (not account or v.account == account) and
-                (not modelCode or v.modelCode == modelCode)]
+                (not account or v.account == account)
+                and (not modelCode or v.modelCode == modelCode)]
 
     def pnlSingle(
             self, account: str = '', modelCode: str = '',
@@ -439,9 +439,9 @@ class IB:
             conId: If specified, filter for this contract ID.
         """
         return [v for v in self.wrapper.pnlSingles.values() if
-                (not account or v.account == account) and
-                (not modelCode or v.modelCode == modelCode) and
-                (not conId or v.conId == conId)]
+                (not account or v.account == account)
+                and (not modelCode or v.modelCode == modelCode)
+                and (not conId or v.conId == conId)]
 
     def trades(self) -> List[Trade]:
         """
