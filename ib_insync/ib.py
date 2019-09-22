@@ -774,7 +774,7 @@ class IB:
 
     def reqOpenOrders(self) -> List[Order]:
         """
-        Request and return a list a list of open orders.
+        Request and return a list of open orders.
 
         This method can give stale information where a new open order is not
         reported or an already filled or cancelled order is reported as open.
@@ -809,7 +809,7 @@ class IB:
         It is recommended to use :meth:`.fills`  or
         :meth:`.executions` instead.
 
-        Request and return a list a list of fills.
+        Request and return a list of fills.
 
         This method is blocking.
 
