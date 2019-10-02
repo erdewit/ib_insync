@@ -14,6 +14,10 @@ exec(open(os.path.join(here, 'ib_insync', 'version.py')).read())
 with codecs.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
+install_requires = []
+with open("./requirements.txt") as f:
+    install_requires = f.read().splitlines()
+
 setup(
     name='ib_insync',
     version=__version__,
@@ -34,5 +38,5 @@ setup(
     ],
     keywords='ibapi tws asyncio jupyter interactive brokers async',
     packages=['ib_insync'],
-    install_requires=['eventkit', 'nest_asyncio']
+    install_requires=install_requires
 )
