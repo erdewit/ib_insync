@@ -74,9 +74,11 @@ class Client:
       * ``apiStart`` ()
       * ``apiEnd`` ()
       * ``apiError`` (errorMsg: str)
+      * ``throttleStart`` ()
+      * ``throttleEnd`` ()
     """
 
-    events = ('apiStart', 'apiEnd', 'apiError')
+    events = ('apiStart', 'apiEnd', 'apiError', 'throttleStart', 'throttleEnd')
 
     MaxRequests = 45
     RequestsInterval = 1
@@ -92,6 +94,8 @@ class Client:
         self.apiStart = Event('apiStart')
         self.apiEnd = Event('apiEnd')
         self.apiError = Event('apiError')
+        self.throttleStart = Event('throttleStart')
+        self.throttleEnd = Event('throttleEnd')
         self._readyEvent = asyncio.Event()
         self._loop = asyncio.get_event_loop()
         self._logger = logging.getLogger('ib_insync.client')
@@ -288,6 +292,7 @@ class Client:
         if msgs:
             if not self._isThrottling:
                 self._isThrottling = True
+                self.throttleStart.emit()
                 self._logger.debug('Started to throttle requests')
             self._loop.call_at(
                 times[0] + self.RequestsInterval,
@@ -295,6 +300,7 @@ class Client:
         else:
             if self._isThrottling:
                 self._isThrottling = False
+                self.throttleEnd.emit()
                 self._logger.debug('Stopped to throttle requests')
 
     def _prefix(self, msg):
