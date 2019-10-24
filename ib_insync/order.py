@@ -7,8 +7,7 @@ __all__ = (
     'Trade OrderStatus Order '
     'LimitOrder MarketOrder StopOrder StopLimitOrder '
     'OrderCondition ExecutionCondition MarginCondition TimeCondition '
-    'PriceCondition PercentChangeCondition VolumeCondition '
-    ).split()
+    'PriceCondition PercentChangeCondition VolumeCondition').split()
 
 
 class Trade(Object):
@@ -120,7 +119,7 @@ class Order(Object):
         clientId=0,
         permId=0,
         action='',
-        totalQuantity=0,
+        totalQuantity=0.0,
         orderType='',
         lmtPrice=UNSET_DOUBLE,
         auxPrice=UNSET_DOUBLE,

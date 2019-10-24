@@ -336,8 +336,8 @@ class Wrapper:
             if isChanged:
                 trade.orderStatus.update(**new)
                 msg = ''
-            elif (status == 'Submitted' and trade.log and
-                    trade.log[-1].message == 'Modify'):
+            elif (status == 'Submitted' and trade.log
+                    and trade.log[-1].message == 'Modify'):
                 # order modifications are acknowledged
                 msg = 'Modified'
             else:
@@ -562,6 +562,8 @@ class Wrapper:
             ticker.low52week = price
         elif tickType == 20:
             ticker.high52week = price
+        elif tickType == 35:
+            ticker.auctionPrice = price
         elif tickType == 37:
             ticker.markPrice = price
         elif tickType == 50:
@@ -613,6 +615,10 @@ class Wrapper:
             ticker.callVolume = size
         elif tickType == 30:
             ticker.putVolume = size
+        elif tickType == 34:
+            ticker.auctionVolume = size
+        elif tickType == 36:
+            ticker.auctionImbalance = size
         elif tickType == 86:
             ticker.futuresOpenInterest = size
         elif tickType == 87:
@@ -695,14 +701,17 @@ class Wrapper:
                         d[k] = float(v)
                         d[k] = int(v)
                 ticker.fundamentalRatios = FundamentalRatios(**d)
-            elif tickType == 48:
-                # RTVolume string format:
+            elif tickType in (48, 77):
+                # RT Volume or RT Trade Volume string format:
                 # price;size;ms since epoch;total volume;VWAP;single trade
                 # example:
                 # 701.28;1;1348075471534;67854;701.46918464;true
-                price, size, _, rtVolume, vwap, _ = value.split(';')
-                if rtVolume:
-                    ticker.rtVolume = int(rtVolume)
+                price, size, _, volume, vwap, _ = value.split(';')
+                if volume:
+                    if tickType == 48:
+                        ticker.rtVolume = int(volume)
+                    elif tickType == 77:
+                        ticker.rtTradeVolume = int(volume)
                 if vwap:
                     ticker.vwap = float(vwap)
                 if price == '':
@@ -729,6 +738,29 @@ class Wrapper:
                     float(next12) if next12 else None,
                     util.parseIBDatetime(nextDate) if nextDate else None,
                     float(nextAmount) if nextAmount else None)
+            elif tickType == 77:
+                # RT Trade Volume
+                # price;size;ms since epoch;total volume;VWAP;single trade
+                # example value: '90.31;1;1568407233444;19015;90.07778509;true'
+                price, size, _, rtTradeVolume, vwap, _ = value.split(';')
+                if rtTradeVolume:
+                    ticker.rtTradeVolume = int(rtTradeVolume)
+                if vwap:
+                    ticker.vwap = float(vwap)
+                if price == '':
+                    return
+                price = float(price)
+                size = float(size)
+                if price and size:
+                    if ticker.prevLast != ticker.last:
+                        ticker.prevLast = ticker.last
+                        ticker.last = price
+                    if ticker.prevLastSize != ticker.lastSize:
+                        ticker.prevLastSize = ticker.lastSize
+                        ticker.lastSize = size
+                    tick = TickData(self.lastTime, tickType, price, size)
+                    ticker.ticks.append(tick)
+                    self.pendingTickers.add(ticker)
         except ValueError:
             self._logger.error(
                 f'tickString with tickType {tickType}: '
@@ -903,7 +935,7 @@ class Wrapper:
         self._endReq('currentTime', dt)
 
     def tickEFP(
-            self,  reqId, tickType, basisPoints, formattedBasisPoints,
+            self, reqId, tickType, basisPoints, formattedBasisPoints,
             totalDividends, holdDays, futureLastTradeDate, dividendImpact,
             dividendsToLastTradeDate):
         pass

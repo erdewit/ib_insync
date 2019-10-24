@@ -421,8 +421,8 @@ class IB:
             modelCode: If specified, filter for this account model.
         """
         return [v for v in self.wrapper.pnls.values() if
-                (not account or v.account == account) and
-                (not modelCode or v.modelCode == modelCode)]
+                (not account or v.account == account)
+                and (not modelCode or v.modelCode == modelCode)]
 
     def pnlSingle(
             self, account: str = '', modelCode: str = '',
@@ -439,9 +439,9 @@ class IB:
             conId: If specified, filter for this contract ID.
         """
         return [v for v in self.wrapper.pnlSingles.values() if
-                (not account or v.account == account) and
-                (not modelCode or v.modelCode == modelCode) and
-                (not conId or v.conId == conId)]
+                (not account or v.account == account)
+                and (not modelCode or v.modelCode == modelCode)
+                and (not conId or v.conId == conId)]
 
     def trades(self) -> List[Trade]:
         """
@@ -774,7 +774,7 @@ class IB:
 
     def reqOpenOrders(self) -> List[Order]:
         """
-        Request and return a list a list of open orders.
+        Request and return a list of open orders.
 
         This method can give stale information where a new open order is not
         reported or an already filled or cancelled order is reported as open.
@@ -809,7 +809,7 @@ class IB:
         It is recommended to use :meth:`.fills`  or
         :meth:`.executions` instead.
 
-        Request and return a list a list of fills.
+        Request and return a list of fills.
 
         This method is blocking.
 
@@ -1165,6 +1165,7 @@ class IB:
                        ``high26week``, ``low52week``, ``high52week``,
                        ``avVolume``
                 221    ``markPrice``
+                225    ``auctionVolume``, ``auctionPrice``, ``auctionImbalance``
                 233    ``last``, ``lastSize``, ``rtVolume``, ``vwap``
                        (Time & Sales)
                 236    ``shortableShares``
@@ -1173,6 +1174,7 @@ class IB:
                 293    ``tradeCount``
                 294    ``tradeRate``
                 295    ``volumeRate``
+                375    ``rtTradeVolume``
                 411    ``rtHistVolatility``
                 456    ``dividends`` (of type
                        :class:`ib_insync.objects.Dividends`)

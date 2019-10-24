@@ -288,14 +288,14 @@ class Client:
         if msgs:
             if not self._isThrottling:
                 self._isThrottling = True
-                self._logger.warning('Started to throttle requests')
+                self._logger.debug('Started to throttle requests')
             self._loop.call_at(
                 times[0] + self.RequestsInterval,
                 self.sendMsg, None)
         else:
             if self._isThrottling:
                 self._isThrottling = False
-                self._logger.warning('Stopped to throttle requests')
+                self._logger.debug('Stopped to throttle requests')
 
     def _prefix(self, msg):
         # prefix a message with its length

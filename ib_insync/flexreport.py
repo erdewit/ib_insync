@@ -81,9 +81,9 @@ class FlexReport:
         Download report for the given ``token`` and ``queryId``.
         """
         url = (
-                'https://gdcdyn.interactivebrokers.com'
-                f'/Universal/servlet/FlexStatementService.SendRequest?'
-                f't={token}&q={queryId}&v=3')
+            'https://gdcdyn.interactivebrokers.com'
+            f'/Universal/servlet/FlexStatementService.SendRequest?'
+            f't={token}&q={queryId}&v=3')
         resp = urlopen(url)
         data = resp.read()
 

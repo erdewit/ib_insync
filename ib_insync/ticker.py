@@ -66,6 +66,7 @@ class Ticker(Object):
         halted=nan,
         rtHistVolatility=nan,
         rtVolume=nan,
+        rtTradeVolume=nan,
         avVolume=nan,
         tradeCount=nan,
         tradeRate=nan,
@@ -90,7 +91,10 @@ class Ticker(Object):
         bidGreeks=None,
         askGreeks=None,
         lastGreeks=None,
-        modelGreeks=None
+        modelGreeks=None,
+        auctionVolume=nan,
+        auctionPrice=nan,
+        auctionImbalance=nan
     )
     __slots__ = tuple(defaults.keys()) + events + ('__dict__',)
 
@@ -109,8 +113,8 @@ class Ticker(Object):
         See if this ticker has a valid bid and ask.
         """
         return (
-            self.bid != -1 and not isNan(self.bid) and self.bidSize > 0 and
-            self.ask != -1 and not isNan(self.ask) and self.askSize > 0)
+            self.bid != -1 and not isNan(self.bid) and self.bidSize > 0
+            and self.ask != -1 and not isNan(self.ask) and self.askSize > 0)
 
     def midpoint(self) -> float:
         """
