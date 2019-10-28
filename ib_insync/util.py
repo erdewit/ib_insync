@@ -49,6 +49,18 @@ def df(objs, labels=None):
     return df
 
 
+# from https://stackoverflow.com/a/2166841/6067848
+def isnamedtupleinstance(x):
+    t = type(x)
+    b = t.__bases__
+    if len(b) != 1 or b[0] != tuple: 
+        return False
+    f = getattr(t, '_fields', None)
+    if not isinstance(f, tuple): 
+        return False
+    return all(type(n)==str for n in f)
+
+
 def tree(obj):
     """
     Convert object to a tree of lists, dicts and simple values.
@@ -61,6 +73,8 @@ def tree(obj):
         return obj.isoformat()
     elif isinstance(obj, dict):
         return {k: tree(v) for k, v in obj.items()}
+    elif isnamedtupleinstance(obj):
+        return {f: tree(getattr(obj, f)) for f in obj._fields}
     elif isinstance(obj, (list, tuple, set)):
         return [tree(i) for i in obj]
     elif isinstance(obj, Object):
