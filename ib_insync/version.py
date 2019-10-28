@@ -1,2 +1,1 @@
-__version_info__ = (0, 9, 56)
-__version__ = '.'.join(str(v) for v in __version_info__)
+__version__ = 0.9.56.dev20+g15fb8d9

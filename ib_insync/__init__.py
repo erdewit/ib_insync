@@ -6,7 +6,7 @@ if sys.version_info < (3, 6, 0):
 
 from eventkit import Event
 
-from .version import __version__, __version_info__
+from .version import __version__
 from .objects import (
     Object, ContractDetails, ContractDescription,
     ComboLeg, DeltaNeutralContract, OrderComboLeg, OrderState,

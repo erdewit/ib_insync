@@ -1,6 +1,7 @@
 import os
 import sys
 import codecs
+import subprocess
 from setuptools import setup
 
 if sys.version_info < (3, 6, 0):
@@ -8,8 +9,19 @@ if sys.version_info < (3, 6, 0):
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-__version__ = None
-exec(open(os.path.join(here, 'ib_insync', 'version.py')).read())
+def git_pep440_version(path):
+    def git_command(args):
+        prefix = ['git', '-C', path]
+        return subprocess.check_output(prefix + args).decode().strip()
+    version_full = git_command(['describe', '--tags', '--dirty=.dirty'])
+    version_tag = git_command(['describe', '--tags', '--abbrev=0'])
+    version_tail = version_full[len(version_tag):]
+    return version_tag + version_tail.replace('-', '.dev', 1).replace('-', '+', 1)
+
+__version__ = git_pep440_version(here)
+
+with open(os.path.join(here, 'ib_insync', 'version.py'), "w") as vf:
+    print(f"__version__ = {__version__}", file=vf)
 
 with codecs.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
