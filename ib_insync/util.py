@@ -272,6 +272,7 @@ def schedule(
     """
     Schedule the callback to be run at the given time with
     the given arguments.
+    This will return the Event Handle.
 
     Args:
         time: Time to run callback. If given as :py:class:`datetime.time`
@@ -283,7 +284,7 @@ def schedule(
     now = datetime.datetime.now(dt.tzinfo)
     delay = (dt - now).total_seconds()
     loop = asyncio.get_event_loop()
-    loop.call_later(delay, callback, *args)
+    return loop.call_later(delay, callback, *args)
 
 
 def sleep(secs: float = 0.02) -> bool:
