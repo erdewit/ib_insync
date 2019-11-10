@@ -1,4 +1,4 @@
-|Build| |Group| |PyVersion| |Status| |PyPiVersion| |CondaVersion| |License| |Docs| |Downloads|
+|Build| |Group| |PyVersion| |Status| |PyPiVersion| |CondaVersion| |License| |Downloads| |Docs|
 
 Introduction
 ============
@@ -139,9 +139,9 @@ Good luck and enjoy,
 .. |License| image:: https://img.shields.io/badge/license-BSD-blue.svg
    :alt:
 
-.. |Docs| image:: https://readthedocs.org/projects/ib-insync/badge/?version=latest
+.. |Docs| image:: https://img.shields.io/badge/Documentation-green.svg
    :alt: Documentation
-   :target: https://ib-insync.readthedocs.io
+   :target: https://rawcdn.githack.com/erdewit/ib_insync/09bd4bf1a40857bb0c3329973c650f68779f4dcd/docs/html/api.html
 
 .. |Downloads| image:: https://pepy.tech/badge/ib-insync
    :alt: Number of downloads
