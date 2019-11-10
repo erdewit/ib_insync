@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.client &mdash; ib_insync 0.9.56 documentation</title>
+  <title>ib_insync.client &mdash; ib_insync 0.9.57 documentation</title>
   
 
   
@@ -231,9 +231,11 @@
 <span class="sd">      * ``apiStart`` ()</span>
 <span class="sd">      * ``apiEnd`` ()</span>
 <span class="sd">      * ``apiError`` (errorMsg: str)</span>
+<span class="sd">      * ``throttleStart`` ()</span>
+<span class="sd">      * ``throttleEnd`` ()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;apiStart&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEnd&#39;</span><span class="p">,</span> <span class="s1">&#39;apiError&#39;</span><span class="p">)</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;apiStart&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEnd&#39;</span><span class="p">,</span> <span class="s1">&#39;apiError&#39;</span><span class="p">,</span> <span class="s1">&#39;throttleStart&#39;</span><span class="p">,</span> <span class="s1">&#39;throttleEnd&#39;</span><span class="p">)</span>
 
     <span class="n">MaxRequests</span> <span class="o">=</span> <span class="mi">45</span>
     <span class="n">RequestsInterval</span> <span class="o">=</span> <span class="mi">1</span>
@@ -249,6 +251,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;apiStart&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">apiEnd</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;apiEnd&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;apiError&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">throttleStart</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;throttleStart&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">throttleEnd</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;throttleEnd&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.client&#39;</span><span class="p">)</span>
@@ -445,14 +449,16 @@
         <span class="k">if</span> <span class="n">msgs</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Started to throttle requests&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">throttleStart</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Started to throttle requests&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">call_at</span><span class="p">(</span>
                 <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">RequestsInterval</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Stopped to throttle requests&#39;</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">throttleEnd</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Stopped to throttle requests&#39;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="c1"># prefix a message with its length</span>

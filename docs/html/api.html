@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API docs &mdash; ib_insync 0.9.56 documentation</title>
+  <title>API docs &mdash; ib_insync 0.9.57 documentation</title>
   
 
   
@@ -173,7 +173,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.56.</p>
+<p>Release 0.9.57.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -371,7 +371,8 @@ timeout period.</p>
 <dt id="ib_insync.ib.IB.schedule">
 <em class="property">static </em><code class="sig-name descname">schedule</code><span class="sig-paren">(</span><em class="sig-param">callback</em>, <em class="sig-param">*args</em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.ib.IB.schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Schedule the callback to be run at the given time with
-the given arguments.</p>
+the given arguments.
+This will return the Event Handle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -958,7 +959,7 @@ to bind automatic orders” must be checked.</p>
 <dl class="method">
 <dt id="ib_insync.ib.IB.reqOpenOrders">
 <code class="sig-name descname">reqOpenOrders</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqOpenOrders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqOpenOrders" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request and return a list a list of open orders.</p>
+<dd><p>Request and return a list of open orders.</p>
 <p>This method can give stale information where a new open order is not
 reported or an already filled or cancelled order is reported as open.
 It is recommended to use the more reliable and much faster
@@ -1004,7 +1005,7 @@ client’s orders that are kept in sync.</p>
 <code class="sig-name descname">reqExecutions</code><span class="sig-paren">(</span><em class="sig-param">execFilter=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqExecutions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.reqExecutions" title="Permalink to this definition">¶</a></dt>
 <dd><p>It is recommended to use <a class="reference internal" href="#ib_insync.ib.IB.fills" title="ib_insync.ib.IB.fills"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fills()</span></code></a>  or
 <a class="reference internal" href="#ib_insync.ib.IB.executions" title="ib_insync.ib.IB.executions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">executions()</span></code></a> instead.</p>
-<p>Request and return a list a list of fills.</p>
+<p>Request and return a list of fills.</p>
 <p>This method is blocking.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1374,25 +1375,31 @@ to be filled:</p>
 <tr class="row-odd"><td><p>221</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">markPrice</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>233</p></td>
+<tr class="row-even"><td><p>225</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">auctionVolume</span></code>, <code class="docutils literal notranslate"><span class="pre">auctionPrice</span></code>, <code class="docutils literal notranslate"><span class="pre">auctionImbalance</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>233</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">last</span></code>, <code class="docutils literal notranslate"><span class="pre">lastSize</span></code>, <code class="docutils literal notranslate"><span class="pre">rtVolume</span></code>, <code class="docutils literal notranslate"><span class="pre">vwap</span></code>
 (Time &amp; Sales)</p></td>
 </tr>
-<tr class="row-odd"><td><p>236</p></td>
+<tr class="row-even"><td><p>236</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">shortableShares</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>258</p></td>
+<tr class="row-odd"><td><p>258</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">fundamentalRatios</span></code> (of type
 <a class="reference internal" href="#ib_insync.objects.FundamentalRatios" title="ib_insync.objects.FundamentalRatios"><code class="xref py py-class docutils literal notranslate"><span class="pre">ib_insync.objects.FundamentalRatios</span></code></a>)</p></td>
 </tr>
-<tr class="row-odd"><td><p>293</p></td>
+<tr class="row-even"><td><p>293</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">tradeCount</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>294</p></td>
+<tr class="row-odd"><td><p>294</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">tradeRate</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>295</p></td>
+<tr class="row-even"><td><p>295</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">volumeRate</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>375</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rtTradeVolume</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>411</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">rtHistVolatility</span></code></p></td>
@@ -2081,12 +2088,14 @@ one batch instead of item by item.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">apiStart</span></code> ()</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">apiEnd</span></code> ()</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">apiError</span></code> (errorMsg: str)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">throttleStart</span></code> ()</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">throttleEnd</span></code> ()</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="attribute">
 <dt id="ib_insync.client.Client.events">
-<code class="sig-name descname">events</code><em class="property"> = ('apiStart', 'apiEnd', 'apiError')</em><a class="headerlink" href="#ib_insync.client.Client.events" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">events</code><em class="property"> = ('apiStart', 'apiEnd', 'apiError', 'throttleStart', 'throttleEnd')</em><a class="headerlink" href="#ib_insync.client.Client.events" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -3884,7 +3893,7 @@ types are not available.</p></li>
 <li><p><strong>secIdType</strong> (<em>str</em>) – <p>Security identifier type. Examples for Apple:</p>
 <ul>
 <li><p>secIdType=’ISIN’, secId=’US0378331005’</p></li>
-<li><p>secIdType=’CUSIP’, secId=‘037833100’</p></li>
+<li><p>secIdType=’CUSIP’, secId=’037833100’</p></li>
 </ul>
 </p></li>
 <li><p><strong>secId</strong> (<em>str</em>) – Security identifier.</p></li>
@@ -4246,7 +4255,7 @@ the greeks as calculated by Interactive Brokers’ option model.</p>
 
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.defaults">
-<code class="sig-name descname">defaults</code><em class="property"> = {'ask': nan, 'askGreeks': None, 'askSize': nan, 'askYield': nan, 'avOptionVolume': nan, 'avVolume': nan, 'bid': nan, 'bidGreeks': None, 'bidSize': nan, 'bidYield': nan, 'callOpenInterest': nan, 'callVolume': nan, 'close': nan, 'contract': None, 'dividends': None, 'domAsks': None, 'domBids': None, 'domTicks': None, 'fundamentalRatios': None, 'futuresOpenInterest': nan, 'halted': nan, 'high': nan, 'high13week': nan, 'high26week': nan, 'high52week': nan, 'histVolatility': nan, 'impliedVolatility': nan, 'indexFuturePremium': nan, 'last': nan, 'lastGreeks': None, 'lastSize': nan, 'lastYield': nan, 'low': nan, 'low13week': nan, 'low26week': nan, 'low52week': nan, 'markPrice': nan, 'modelGreeks': None, 'open': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'putOpenInterest': nan, 'putVolume': nan, 'rtHistVolatility': nan, 'rtVolume': nan, 'shortableShares': nan, 'tickByTicks': None, 'ticks': None, 'time': None, 'tradeCount': nan, 'tradeRate': nan, 'volume': nan, 'volumeRate': nan, 'vwap': nan}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">defaults</code><em class="property"> = {'ask': nan, 'askGreeks': None, 'askSize': nan, 'askYield': nan, 'auctionImbalance': nan, 'auctionPrice': nan, 'auctionVolume': nan, 'avOptionVolume': nan, 'avVolume': nan, 'bid': nan, 'bidGreeks': None, 'bidSize': nan, 'bidYield': nan, 'callOpenInterest': nan, 'callVolume': nan, 'close': nan, 'contract': None, 'dividends': None, 'domAsks': None, 'domBids': None, 'domTicks': None, 'fundamentalRatios': None, 'futuresOpenInterest': nan, 'halted': nan, 'high': nan, 'high13week': nan, 'high26week': nan, 'high52week': nan, 'histVolatility': nan, 'impliedVolatility': nan, 'indexFuturePremium': nan, 'last': nan, 'lastGreeks': None, 'lastSize': nan, 'lastYield': nan, 'low': nan, 'low13week': nan, 'low26week': nan, 'low52week': nan, 'markPrice': nan, 'modelGreeks': None, 'open': nan, 'prevAsk': nan, 'prevAskSize': nan, 'prevBid': nan, 'prevBidSize': nan, 'prevLast': nan, 'prevLastSize': nan, 'putOpenInterest': nan, 'putVolume': nan, 'rtHistVolatility': nan, 'rtTradeVolume': nan, 'rtVolume': nan, 'shortableShares': nan, 'tickByTicks': None, 'ticks': None, 'time': None, 'tradeCount': nan, 'tradeRate': nan, 'volume': nan, 'volumeRate': nan, 'vwap': nan}</em><a class="headerlink" href="#ib_insync.ticker.Ticker.defaults" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4311,6 +4320,21 @@ are available.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.askYield">
 <code class="sig-name descname">askYield</code><a class="headerlink" href="#ib_insync.ticker.Ticker.askYield" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.auctionImbalance">
+<code class="sig-name descname">auctionImbalance</code><a class="headerlink" href="#ib_insync.ticker.Ticker.auctionImbalance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.auctionPrice">
+<code class="sig-name descname">auctionPrice</code><a class="headerlink" href="#ib_insync.ticker.Ticker.auctionPrice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.auctionVolume">
+<code class="sig-name descname">auctionVolume</code><a class="headerlink" href="#ib_insync.ticker.Ticker.auctionVolume" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4531,6 +4555,11 @@ are available.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.rtHistVolatility">
 <code class="sig-name descname">rtHistVolatility</code><a class="headerlink" href="#ib_insync.ticker.Ticker.rtHistVolatility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.rtTradeVolume">
+<code class="sig-name descname">rtTradeVolume</code><a class="headerlink" href="#ib_insync.ticker.Ticker.rtTradeVolume" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -6779,6 +6808,11 @@ drop the rest.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="ib_insync.util.isnamedtupleinstance">
+<code class="sig-prename descclassname">ib_insync.util.</code><code class="sig-name descname">isnamedtupleinstance</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#isnamedtupleinstance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.isnamedtupleinstance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="ib_insync.util.tree">
 <code class="sig-prename descclassname">ib_insync.util.</code><code class="sig-name descname">tree</code><span class="sig-paren">(</span><em class="sig-param">obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert object to a tree of lists, dicts and simple values.
@@ -6853,7 +6887,8 @@ timeout period.</p>
 <dt id="ib_insync.util.schedule">
 <code class="sig-prename descclassname">ib_insync.util.</code><code class="sig-name descname">schedule</code><span class="sig-paren">(</span><em class="sig-param">time</em>, <em class="sig-param">callback</em>, <em class="sig-param">*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#schedule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Schedule the callback to be run at the given time with
-the given arguments.</p>
+the given arguments.
+This will return the Event Handle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

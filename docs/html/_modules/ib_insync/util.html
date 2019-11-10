@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.util &mdash; ib_insync 0.9.56 documentation</title>
+  <title>ib_insync.util &mdash; ib_insync 0.9.57 documentation</title>
   
 
   
@@ -206,6 +206,18 @@
     <span class="k">return</span> <span class="n">df</span></div>
 
 
+<span class="c1"># from https://stackoverflow.com/a/2166841/6067848</span>
+<div class="viewcode-block" id="isnamedtupleinstance"><a class="viewcode-back" href="../../api.html#ib_insync.ib.isnamedtupleinstance">[docs]</a><span class="k">def</span> <span class="nf">isnamedtupleinstance</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="vm">__bases__</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s1">&#39;_fields&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">f</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="tree"><a class="viewcode-back" href="../../api.html#ib_insync.ib.tree">[docs]</a><span class="k">def</span> <span class="nf">tree</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert object to a tree of lists, dicts and simple values.</span>
@@ -218,6 +230,8 @@
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">tree</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">elif</span> <span class="n">isnamedtupleinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">f</span><span class="p">:</span> <span class="n">tree</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">_fields</span><span class="p">}</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">)):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">tree</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Object</span><span class="p">):</span>
@@ -429,6 +443,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Schedule the callback to be run at the given time with</span>
 <span class="sd">    the given arguments.</span>
+<span class="sd">    This will return the Event Handle.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        time: Time to run callback. If given as :py:class:`datetime.time`</span>
@@ -440,7 +455,7 @@
     <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span><span class="p">)</span>
     <span class="n">delay</span> <span class="o">=</span> <span class="p">(</span><span class="n">dt</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
     <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-    <span class="n">loop</span><span class="o">.</span><span class="n">call_later</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">loop</span><span class="o">.</span><span class="n">call_later</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="sleep"><a class="viewcode-back" href="../../api.html#ib_insync.ib.sleep">[docs]</a><span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">secs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>

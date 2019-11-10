@@ -4,9 +4,15 @@ Changelog
 0.9
 ---
 
-* PR #184, #185 and #186 have added support for Ticker fields
+Version 0.9.57
+^^^^^^^^^^^^^^
+
+* PR #184, #185 and #186 add the new Ticker fields
   ``rtTradeVolume``, ``auctionVolume``, ``auctionPrice`` and
   ``auctionImbalance``.
+* PR #191 lets ``util.schedule`` return a handle that can be canceled.
+* PR #192 adds ``throttleStart`` and ``throttleEnd`` events to the ``Client``.
+* PR #194 adds better JSON support for ``namedtuple`` objects.
 
 Version 0.9.56
 ^^^^^^^^^^^^^^

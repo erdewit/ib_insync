@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.ib &mdash; ib_insync 0.9.56 documentation</title>
+  <title>ib_insync.ib &mdash; ib_insync 0.9.57 documentation</title>
   
 
   
@@ -578,8 +578,8 @@
 <span class="sd">            modelCode: If specified, filter for this account model.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnls</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span>
-                <span class="p">(</span><span class="ow">not</span> <span class="n">account</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">account</span> <span class="o">==</span> <span class="n">account</span><span class="p">)</span> <span class="ow">and</span>
-                <span class="p">(</span><span class="ow">not</span> <span class="n">modelCode</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">modelCode</span> <span class="o">==</span> <span class="n">modelCode</span><span class="p">)]</span></div>
+                <span class="p">(</span><span class="ow">not</span> <span class="n">account</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">account</span> <span class="o">==</span> <span class="n">account</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">modelCode</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">modelCode</span> <span class="o">==</span> <span class="n">modelCode</span><span class="p">)]</span></div>
 
 <div class="viewcode-block" id="IB.pnlSingle"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.pnlSingle">[docs]</a>    <span class="k">def</span> <span class="nf">pnlSingle</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -596,9 +596,9 @@
 <span class="sd">            conId: If specified, filter for this contract ID.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">pnlSingles</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span>
-                <span class="p">(</span><span class="ow">not</span> <span class="n">account</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">account</span> <span class="o">==</span> <span class="n">account</span><span class="p">)</span> <span class="ow">and</span>
-                <span class="p">(</span><span class="ow">not</span> <span class="n">modelCode</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">modelCode</span> <span class="o">==</span> <span class="n">modelCode</span><span class="p">)</span> <span class="ow">and</span>
-                <span class="p">(</span><span class="ow">not</span> <span class="n">conId</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">conId</span> <span class="o">==</span> <span class="n">conId</span><span class="p">)]</span></div>
+                <span class="p">(</span><span class="ow">not</span> <span class="n">account</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">account</span> <span class="o">==</span> <span class="n">account</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">modelCode</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">modelCode</span> <span class="o">==</span> <span class="n">modelCode</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">conId</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">conId</span> <span class="o">==</span> <span class="n">conId</span><span class="p">)]</span></div>
 
 <div class="viewcode-block" id="IB.trades"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.trades">[docs]</a>    <span class="k">def</span> <span class="nf">trades</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Trade</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -931,7 +931,7 @@
 
 <div class="viewcode-block" id="IB.reqOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqOpenOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Request and return a list a list of open orders.</span>
+<span class="sd">        Request and return a list of open orders.</span>
 
 <span class="sd">        This method can give stale information where a new open order is not</span>
 <span class="sd">        reported or an already filled or cancelled order is reported as open.</span>
@@ -966,7 +966,7 @@
 <span class="sd">        It is recommended to use :meth:`.fills`  or</span>
 <span class="sd">        :meth:`.executions` instead.</span>
 
-<span class="sd">        Request and return a list a list of fills.</span>
+<span class="sd">        Request and return a list of fills.</span>
 
 <span class="sd">        This method is blocking.</span>
 
@@ -1322,6 +1322,7 @@
 <span class="sd">                       ``high26week``, ``low52week``, ``high52week``,</span>
 <span class="sd">                       ``avVolume``</span>
 <span class="sd">                221    ``markPrice``</span>
+<span class="sd">                225    ``auctionVolume``, ``auctionPrice``, ``auctionImbalance``</span>
 <span class="sd">                233    ``last``, ``lastSize``, ``rtVolume``, ``vwap``</span>
 <span class="sd">                       (Time &amp; Sales)</span>
 <span class="sd">                236    ``shortableShares``</span>
@@ -1330,6 +1331,7 @@
 <span class="sd">                293    ``tradeCount``</span>
 <span class="sd">                294    ``tradeRate``</span>
 <span class="sd">                295    ``volumeRate``</span>
+<span class="sd">                375    ``rtTradeVolume``</span>
 <span class="sd">                411    ``rtHistVolatility``</span>
 <span class="sd">                456    ``dividends`` (of type</span>
 <span class="sd">                       :class:`ib_insync.objects.Dividends`)</span>
