@@ -942,7 +942,7 @@ class Wrapper:
 
     def error(self, reqId, errorCode, errorString):
         # https://interactivebrokers.github.io/tws-api/message_codes.html
-        warningCodes = {165, 202, 399, 434, 10167}
+        warningCodes = {165, 202, 399, 434, 492, 10167}
         isWarning = errorCode in warningCodes or 2100 <= errorCode < 2200
         msg = (
             f'{"Warning" if isWarning else "Error"} '
