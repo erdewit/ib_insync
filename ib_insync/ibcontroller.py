@@ -327,7 +327,7 @@ class Watchdog(Object):
     a certain amount of time (the ``appTimeout`` parameter). This triggers
     a historical request to be placed just to see if the app is still alive
     and well. If yes, then continue, if no then restart the whole app
-    and reconnect. Restarting will also occur directly on error 1100.
+    and reconnect. Restarting will also occur directly on errors 1100 and 100.
 
     Example usage:
 
@@ -405,8 +405,8 @@ class Watchdog(Object):
                 waiter.set_result(None)
 
         def onError(reqId, errorCode, errorString, contract):
-            if errorCode == 1100 and not waiter.done():
-                waiter.set_exception(Warning('Error 1100'))
+            if errorCode in [1100, 100] and not waiter.done():
+                waiter.set_exception(Warning(f'Error {errorCode}'))
 
         def onDisconnected():
             if not waiter.done():
