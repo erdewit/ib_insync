@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.58
+^^^^^^^^^^^^^^
+
+* PR #196 treats error 492 as a warning so that scanner results can still
+  be used.
+
 Version 0.9.57
 ^^^^^^^^^^^^^^
 

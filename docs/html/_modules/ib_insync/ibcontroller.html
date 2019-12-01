@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.ibcontroller &mdash; ib_insync 0.9.57 documentation</title>
+  <title>ib_insync.ibcontroller &mdash; ib_insync 0.9.58 documentation</title>
   
 
   
@@ -484,7 +484,7 @@
 <span class="sd">    a certain amount of time (the ``appTimeout`` parameter). This triggers</span>
 <span class="sd">    a historical request to be placed just to see if the app is still alive</span>
 <span class="sd">    and well. If yes, then continue, if no then restart the whole app</span>
-<span class="sd">    and reconnect. Restarting will also occur directly on error 1100.</span>
+<span class="sd">    and reconnect. Restarting will also occur directly on errors 1100 and 100.</span>
 
 <span class="sd">    Example usage:</span>
 
@@ -562,8 +562,8 @@
                 <span class="n">waiter</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">onError</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">errorCode</span><span class="p">,</span> <span class="n">errorString</span><span class="p">,</span> <span class="n">contract</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">errorCode</span> <span class="o">==</span> <span class="mi">1100</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">waiter</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-                <span class="n">waiter</span><span class="o">.</span><span class="n">set_exception</span><span class="p">(</span><span class="ne">Warning</span><span class="p">(</span><span class="s1">&#39;Error 1100&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">errorCode</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1100</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">waiter</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
+                <span class="n">waiter</span><span class="o">.</span><span class="n">set_exception</span><span class="p">(</span><span class="ne">Warning</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Error </span><span class="si">{errorCode}</span><span class="s1">&#39;</span><span class="p">))</span>
 
         <span class="k">def</span> <span class="nf">onDisconnected</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">waiter</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
