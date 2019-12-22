@@ -233,7 +233,7 @@ class IB:
         return f'<{self.__class__.__qualname__} {conn}>'
 
     def connect(
-            self, host: str = '127.0.0.1', port: int = 7497,
+            self, host: str = '127.0.0.1', port: int = 7497, account: str = '',
             clientId: int = 1, timeout: float = 2, readonly: bool = False):
         """
         Connect to a running TWS or IB gateway application.
@@ -1614,7 +1614,7 @@ class IB:
 
     async def connectAsync(
             self, host='127.0.0.1', port=7497, clientId=1,
-            timeout=2, readonly=False):
+            timeout=2, readonly=False, account=''):
 
         async def connect():
             self.wrapper.clientId = clientId
@@ -1623,7 +1623,7 @@ class IB:
                 await self.reqCompletedOrdersAsync(False)
             accounts = self.client.getAccounts()
             await asyncio.gather(
-                self.reqAccountUpdatesAsync(accounts[0]),
+                self.reqAccountUpdatesAsync(accounts[0] if account=='' else account),
                 *(self.reqAccountUpdatesMultiAsync(a) for a in accounts),
                 self.reqPositionsAsync(),
                 self.reqExecutionsAsync())
