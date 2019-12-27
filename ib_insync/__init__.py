@@ -40,8 +40,8 @@ from .ibcontroller import IBC, IBController, Watchdog
 
 __all__ = ['util', 'Event']
 for _m in (
-        objects, contract, order, ticker, ib,
-        client, wrapper, flexreport, ibcontroller):
+        objects, contract, order, ticker, ib,  # type: ignore
+        client, wrapper, flexreport, ibcontroller):  # type: ignore
     __all__ += _m.__all__
 
 del sys

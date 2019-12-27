@@ -1,5 +1,6 @@
+from typing import List, Optional
 
-from ib_insync.objects import Object
+from ib_insync.objects import ComboLeg, DeltaNeutralContract, Object
 
 __all__ = (
     'Contract Stock Option Future ContFuture Forex Index CFD '
@@ -97,6 +98,25 @@ class Contract(Object):
         deltaNeutralContract=None
     )
     __slots__ = defaults.keys()
+
+    secType: str
+    conId: int
+    symbol: str
+    lastTradeDateOrContractMonth: str
+    strike: float
+    right: str
+    multiplier: str
+    exchange: str
+    primaryExchange: str
+    currency: str
+    localSymbol: str
+    tradingClass: str
+    includeExpired: bool
+    secIdType: str
+    secId: str
+    comboLegsDescrip: str
+    comboLegs: Optional[List[ComboLeg]]
+    deltaNeutralContract: Optional[DeltaNeutralContract]
 
     @staticmethod
     def create(**kwargs):

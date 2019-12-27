@@ -271,7 +271,7 @@ def run(*awaitables, timeout: float = None):
     return result
 
 
-def _fillDate(time):
+def _fillDate(time: Union[datetime.time, datetime.datetime]) -> datetime.datetime:
     # use today if date is absent
     if isinstance(time, datetime.time):
         dt = datetime.datetime.combine(datetime.date.today(), time)
@@ -314,7 +314,8 @@ def sleep(secs: float = 0.02) -> bool:
 
 
 def timeRange(
-        start: datetime.time, end: datetime.time,
+        start: Union[datetime.time, datetime.datetime],
+        end: Union[datetime.time, datetime.datetime],
         step: float) -> Iterator[datetime.datetime]:
     """
     Iterator that waits periodically until certain time points are
@@ -328,19 +329,17 @@ def timeRange(
         step (float): The number of seconds of each period
     """
     assert step > 0
-    start = _fillDate(start)
-    end = _fillDate(end)
     delta = datetime.timedelta(seconds=step)
-    t = start
+    t = _fillDate(start)
     while t < datetime.datetime.now():
         t += delta
-    while t <= end:
+    while t <= _fillDate(end):
         waitUntil(t)
         yield t
         t += delta
 
 
-def waitUntil(t: datetime.time) -> bool:
+def waitUntil(t: Union[datetime.time, datetime.datetime]) -> bool:
     """
     Wait until the given time t is reached.
 
@@ -348,39 +347,36 @@ def waitUntil(t: datetime.time) -> bool:
         t: The time t can be specified as datetime.datetime,
             or as datetime.time in which case today is used as the date.
     """
-    t = _fillDate(t)
     now = datetime.datetime.now(t.tzinfo)
-    secs = (t - now).total_seconds()
+    secs = (_fillDate(t) - now).total_seconds()
     run(asyncio.sleep(secs))
     return True
 
 
 async def timeRangeAsync(
-        start: datetime.time, end: datetime.time,
+        start: Union[datetime.time, datetime.datetime],
+        end: Union[datetime.time, datetime.datetime],
         step: float) -> AsyncIterator[datetime.datetime]:
     """
     Async version of :meth:`timeRange`.
     """
     assert step > 0
-    start = _fillDate(start)
-    end = _fillDate(end)
     delta = datetime.timedelta(seconds=step)
-    t = start
+    t = _fillDate(start)
     while t < datetime.datetime.now():
         t += delta
-    while t <= end:
+    while t <= _fillDate(end):
         await waitUntilAsync(t)
         yield t
         t += delta
 
 
-async def waitUntilAsync(t: datetime.time) -> bool:
+async def waitUntilAsync(t: Union[datetime.time, datetime.datetime]) -> bool:
     """
     Async version of :meth:`waitUntil`.
     """
-    t = _fillDate(t)
     now = datetime.datetime.now(t.tzinfo)
-    secs = (t - now).total_seconds()
+    secs = (_fillDate(t) - now).total_seconds()
     await asyncio.sleep(secs)
     return True
 
@@ -453,7 +449,7 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
         from PySide2.QtWidgets import QApplication
         from PySide2.QtCore import QTimer, QEventLoop
     global qApp
-    qApp = QApplication.instance() or QApplication(sys.argv)
+    qApp = QApplication.instance() or QApplication(sys.argv)  # type: ignore
     loop = asyncio.get_event_loop()
     stack: list = []
     qt_step()

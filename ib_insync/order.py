@@ -1,6 +1,9 @@
+from typing import Any, List, Optional
+
 from eventkit import Event
 
-from .objects import Object, SoftDollarTier
+from .contract import Contract
+from .objects import Fill, Object, OrderComboLeg, SoftDollarTier, TagValue, TradeLogEntry
 from .util import UNSET_DOUBLE, UNSET_INTEGER
 
 __all__ = (
@@ -10,71 +13,132 @@ __all__ = (
     'PriceCondition PercentChangeCondition VolumeCondition').split()
 
 
-class Trade(Object):
-    """
-    Trade keeps track of an order, its status and all its fills.
+class OrderCondition(Object):
+    __slots__ = ()
 
-    Events:
-        * ``statusEvent`` (trade: :class:`.Trade`)
-        * ``modifyEvent`` (trade: :class:`.Trade`)
-        * ``fillEvent`` (trade: :class:`.Trade`, fill: :class:`.Fill`)
-        * ``commissionReportEvent`` (trade: :class:`.Trade`,
-          fill: :class:`.Fill`, commissionReport: :class:`.CommissionReport`)
-        * ``filledEvent`` (trade: :class:`.Trade`)
-        * ``cancelEvent`` (trade: :class:`.Trade`)
-        * ``cancelledEvent`` (trade: :class:`.Trade`)
-    """
-    events = (
-        'statusEvent', 'modifyEvent', 'fillEvent',
-        'commissionReportEvent', 'filledEvent',
-        'cancelEvent', 'cancelledEvent')
+    @staticmethod
+    def createClass(condType):
+        d = {
+            1: PriceCondition,
+            3: TimeCondition,
+            4: MarginCondition,
+            5: ExecutionCondition,
+            6: VolumeCondition,
+            7: PercentChangeCondition}
+        return d[condType]
 
+    def __repr__(self):
+        clsName = self.__class__.__qualname__
+        kwargs = ', '.join(f'{k}={v!r}' for k, v in self.dict().items())
+        return f'{clsName}({kwargs})'
+
+    def And(self):
+        self.conjunction = 'a'
+        return self
+
+    def Or(self):
+        self.conjunction = 'o'
+        return self
+
+
+class PriceCondition(OrderCondition):
     defaults = dict(
-        contract=None,
-        order=None,
-        orderStatus=None,
-        fills=None,
-        log=None
-    )
-    __slots__ = tuple(defaults.keys()) + events + ('__dict__',)
+        condType=1,
+        conjunction='a',
+        isMore=True,
+        price=0.0,
+        conId=0,
+        exch='',
+        triggerMethod=0)
+    __slots__ = defaults.keys()
 
-    def __init__(self, *args, **kwargs):
-        Object.__init__(self, *args, **kwargs)
-        self.statusEvent = Event('statusEvent')
-        self.modifyEvent = Event('modifyEvent')
-        self.fillEvent = Event('fillEvent')
-        self.commissionReportEvent = Event('commissionReportEvent')
-        self.filledEvent = Event('filledEvent')
-        self.cancelEvent = Event('cancelEvent')
-        self.cancelledEvent = Event('cancelledEvent')
+    condType: int
+    conjunction: str
+    isMore: bool
+    price: float
+    conId: int
+    exch: str
+    triggerMethod: int
 
-    def isActive(self):
-        """
-        True if eligible for execution, false otherwise.
-        """
-        return self.orderStatus.status in OrderStatus.ActiveStates
 
-    def isDone(self):
-        """
-        True if completely filled or cancelled, false otherwise.
-        """
-        return self.orderStatus.status in OrderStatus.DoneStates
+class TimeCondition(OrderCondition):
+    defaults = dict(
+        condType=3,
+        conjunction='a',
+        isMore=True,
+        time='')
+    __slots__ = defaults.keys()
 
-    def filled(self):
-        """
-        Number of shares filled.
-        """
-        fills = self.fills
-        if self.contract.secType == 'BAG':
-            # don't count fills for the leg contracts
-            fills = [f for f in fills if f.contract.secType == 'BAG']
-        return sum(f.execution.shares for f in fills)
+    condType: int
+    conjunction: str
+    isMore: bool
+    time: str
 
-    def remaining(self):
-        """
-        Number of shares remaining to be filled.
-        """
-        return self.order.totalQuantity - self.filled()
+
+class MarginCondition(OrderCondition):
+    defaults = dict(
+        condType=4,
+        conjunction='a',
+        isMore=True,
+        percent=0)
+    __slots__ = defaults.keys()
+
+    condType: int
+    conjunction: str
+    isMore: bool
+    percent: int
+
+
+class ExecutionCondition(OrderCondition):
+    defaults = dict(
+        condType=5,
+        conjunction='a',
+        secType='',
+        exch='',
+        symbol='')
+    __slots__ = defaults.keys()
+
+    condType: int
+    conjunction: str
+    secType: str
+    exch: str
+    symbol: str
+
+
+class VolumeCondition(OrderCondition):
+    defaults = dict(
+        condType=6,
+        conjunction='a',
+        isMore=True,
+        volume=0,
+        conId=0,
+        exch='')
+    __slots__ = defaults.keys()
+
+    condType: int
+    conjunction: str
+    isMore: bool
+    volume: int
+    conId: int
+    exch: str
+
+
+class PercentChangeCondition(OrderCondition):
+    defaults = dict(
+        condType=7,
+        conjunction='a',
+        isMore=True,
+        changePercent=0.0,
+        conId=0,
+        exch='')
+    __slots__ = defaults.keys()
+
+    condType: int
+    conjunction: str
+    isMore: bool
+    changePercent: float
+    conId: int
+    exch: str
 
 
 class OrderStatus(Object):
@@ -93,6 +157,19 @@ class OrderStatus(Object):
         lastLiquidity=0
     )
     __slots__ = defaults.keys()
+
+    orderId: int
+    status: str
+    filled: int
+    remaining: int
+    avgFillPrice: float
+    permId: int
+    parentId: int
+    lastFillPrice: float
+    clientId: int
+    whyHeld: str
+    mktCapPrice: float
+    lastLiquidity: int
 
     PendingSubmit = 'PendingSubmit'
     PendingCancel = 'PendingCancel'
@@ -247,6 +324,137 @@ class Order(Object):
         usePriceMgmtAlgo=False)
     __slots__ = defaults.keys()
 
+    orderId: int
+    clientId: int
+    permId: int
+    action: str
+    totalQuantity: float
+    orderType: str
+    lmtPrice: float
+    auxPrice: float
+    tif: str
+    activeStartTime: str
+    activeStopTime: str
+    ocaGroup: str
+    ocaType: int
+    orderRef: str
+    transmit: bool
+    parentId: int
+    blockOrder: bool
+    sweepToFill: bool
+    displaySize: int
+    triggerMethod: int
+    outsideRth: bool
+    hidden: bool
+    goodAfterTime: str
+    goodTillDate: str
+    rule80A: str
+    allOrNone: bool
+    minQty: int
+    percentOffset: float
+    overridePercentageConstraints: bool
+    trailStopPrice: float
+    trailingPercent: float
+    faGroup: str
+    faProfile: str
+    faMethod: str
+    faPercentage: str
+    designatedLocation: str
+    openClose: str
+    origin: int
+    shortSaleSlot: int
+    exemptCode: int
+    discretionaryAmt: int
+    eTradeOnly: bool
+    firmQuoteOnly: bool
+    nbboPriceCap: float
+    optOutSmartRouting: bool
+    auctionStrategy: int
+    startingPrice: float
+    stockRefPrice: float
+    delta: float
+    stockRangeLower: float
+    stockRangeUpper: float
+    randomizePrice: bool
+    randomizeSize: bool
+    volatility: float
+    volatilityType: int
+    deltaNeutralOrderType: str
+    deltaNeutralAuxPrice: float
+    deltaNeutralConId: int
+    deltaNeutralSettlingFirm: str
+    deltaNeutralClearingAccount: str
+    deltaNeutralClearingIntent: str
+    deltaNeutralOpenClose: str
+    deltaNeutralShortSale: bool
+    deltaNeutralShortSaleSlot: int
+    deltaNeutralDesignatedLocation: str
+    continuousUpdate: bool
+    referencePriceType: int
+    basisPoints: float
+    basisPointsType: int
+    scaleInitLevelSize: int
+    scaleSubsLevelSize: int
+    scalePriceIncrement: float
+    scalePriceAdjustValue: float
+    scalePriceAdjustInterval: int
+    scaleProfitOffset: float
+    scaleAutoReset: bool
+    scaleInitPosition: int
+    scaleInitFillQty: int
+    scaleRandomPercent: bool
+    scaleTable: str
+    hedgeType: str
+    hedgeParam: str
+    account: str
+    settlingFirm: str
+    clearingAccount: str
+    clearingIntent: str
+    algoStrategy: str
+    algoParams: Optional[List[TagValue]]
+    smartComboRoutingParams: Optional[List[TagValue]]
+    algoId: str
+    whatIf: bool
+    notHeld: bool
+    solicited: bool
+    modelCode: str
+    orderComboLegs: Optional[List[OrderComboLeg]]
+    orderMiscOptions: Optional[Any]
+    referenceContractId: int
+    peggedChangeAmount: float
+    isPeggedChangeAmountDecrease: bool
+    referenceChangeAmount: float
+    referenceExchangeId: str
+    adjustedOrderType: str
+    triggerPrice: float
+    adjustedStopPrice: float
+    adjustedStopLimitPrice: float
+    adjustedTrailingAmount: float
+    adjustableTrailingUnit: int
+    lmtPriceOffset: float
+    conditions: Optional[List[OrderCondition]]
+    conditionsCancelOrder: bool
+    conditionsIgnoreRth: bool
+    extOperator: str
+    softDollarTier: Optional[SoftDollarTier]
+    cashQty: float
+    mifid2DecisionMaker: str
+    mifid2DecisionAlgo: str
+    mifid2ExecutionTrader: str
+    mifid2ExecutionAlgo: str
+    dontUseAutoPriceForHedge: bool
+    isOmsContainer: bool
+    discretionaryUpToLimitPrice: bool
+    autoCancelDate: str
+    filledQuantity: float
+    refFuturesConId: int
+    autoCancelParent: bool
+    shareholder: str
+    imbalanceOnly: bool
+    routeMarketableToBbo: bool
+    parentPermId: int
+    usePriceMgmtAlgo: bool
+
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
         if not self.conditions:
@@ -308,91 +516,74 @@ class StopLimitOrder(Order):
             auxPrice=stopPrice, **kwargs)
 
 
-class OrderCondition(Object):
-    __slots__ = ()
+class Trade(Object):
+    """
+    Trade keeps track of an order, its status and all its fills.
 
-    @staticmethod
-    def createClass(condType):
-        d = {
-            1: PriceCondition,
-            3: TimeCondition,
-            4: MarginCondition,
-            5: ExecutionCondition,
-            6: VolumeCondition,
-            7: PercentChangeCondition}
-        return d[condType]
+    Events:
+        * ``statusEvent`` (trade: :class:`.Trade`)
+        * ``modifyEvent`` (trade: :class:`.Trade`)
+        * ``fillEvent`` (trade: :class:`.Trade`, fill: :class:`.Fill`)
+        * ``commissionReportEvent`` (trade: :class:`.Trade`,
+          fill: :class:`.Fill`, commissionReport: :class:`.CommissionReport`)
+        * ``filledEvent`` (trade: :class:`.Trade`)
+        * ``cancelEvent`` (trade: :class:`.Trade`)
+        * ``cancelledEvent`` (trade: :class:`.Trade`)
+    """
+    events = (
+        'statusEvent', 'modifyEvent', 'fillEvent',
+        'commissionReportEvent', 'filledEvent',
+        'cancelEvent', 'cancelledEvent')
 
-    def __repr__(self):
-        clsName = self.__class__.__qualname__
-        kwargs = ', '.join(f'{k}={v!r}' for k, v in self.dict().items())
-        return f'{clsName}({kwargs})'
-
-    def And(self):
-        self.conjunction = 'a'
-        return self
-
-    def Or(self):
-        self.conjunction = 'o'
-        return self
-
-
-class PriceCondition(OrderCondition):
     defaults = dict(
-        condType=1,
-        conjunction='a',
-        isMore=True,
-        price=0.0,
-        conId=0,
-        exch='',
-        triggerMethod=0)
-    __slots__ = defaults.keys()
+        contract=None,
+        order=None,
+        orderStatus=None,
+        fills=None,
+        log=None
+    )
+    __slots__ = tuple(defaults.keys()) + events + ('__dict__',)
 
+    contract: Optional[Contract]
+    order: Optional[Order]
+    orderStatus: Optional[OrderStatus]
+    fills: Optional[List[Fill]]
+    log: Optional[List[TradeLogEntry]]
 
-class TimeCondition(OrderCondition):
-    defaults = dict(
-        condType=3,
-        conjunction='a',
-        isMore=True,
-        time='')
-    __slots__ = defaults.keys()
+    def __init__(self, *args, **kwargs):
+        Object.__init__(self, *args, **kwargs)
+        self.statusEvent = Event('statusEvent')
+        self.modifyEvent = Event('modifyEvent')
+        self.fillEvent = Event('fillEvent')
+        self.commissionReportEvent = Event('commissionReportEvent')
+        self.filledEvent = Event('filledEvent')
+        self.cancelEvent = Event('cancelEvent')
+        self.cancelledEvent = Event('cancelledEvent')
 
+    def isActive(self):
+        """
+        True if eligible for execution, false otherwise.
+        """
+        return self.orderStatus.status in OrderStatus.ActiveStates
 
-class MarginCondition(OrderCondition):
-    defaults = dict(
-        condType=4,
-        conjunction='a',
-        isMore=True,
-        percent=0)
-    __slots__ = defaults.keys()
+    def isDone(self):
+        """
+        True if completely filled or cancelled, false otherwise.
+        """
+        return self.orderStatus.status in OrderStatus.DoneStates
 
+    def filled(self):
+        """
+        Number of shares filled.
+        """
+        fills = self.fills
+        if self.contract.secType == 'BAG':
+            # don't count fills for the leg contracts
+            fills = [f for f in fills if f.contract.secType == 'BAG']
+        return sum(f.execution.shares for f in fills)
 
-class ExecutionCondition(OrderCondition):
-    defaults = dict(
-        condType=5,
-        conjunction='a',
-        secType='',
-        exch='',
-        symbol='')
-    __slots__ = defaults.keys()
-
-
-class VolumeCondition(OrderCondition):
-    defaults = dict(
-        condType=6,
-        conjunction='a',
-        isMore=True,
-        volume=0,
-        conId=0,
-        exch='')
-    __slots__ = defaults.keys()
-
-
-class PercentChangeCondition(OrderCondition):
-    defaults = dict(
-        condType=7,
-        conjunction='a',
-        isMore=True,
-        changePercent=0.0,
-        conId=0,
-        exch='')
-    __slots__ = defaults.keys()
+    def remaining(self):
+        """
+        Number of shares remaining to be filled.
+        """
+        return self.order.totalQuantity - self.filled()

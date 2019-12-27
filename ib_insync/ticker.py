@@ -1,6 +1,10 @@
+from datetime import datetime
+from typing import List, Optional, Union
+
 from eventkit import Event, Op
 
-from ib_insync.objects import Object, BarList
+from ib_insync.contract import Contract
+from ib_insync.objects import BarList, Dividends, DOMLevel, FundamentalRatios, MktDepthData, Object, OptionComputation, TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint, TickData
 from ib_insync.util import isNan
 
 __all__ = ['Ticker']
@@ -97,6 +101,69 @@ class Ticker(Object):
         auctionImbalance=nan
     )
     __slots__ = tuple(defaults.keys()) + events + ('__dict__',)
+
+    contract: Optional[Contract]
+    time: Optional[datetime]
+    bid: float
+    bidSize: float
+    ask: float
+    askSize: float
+    last: float
+    lastSize: float
+    prevBid: float
+    prevBidSize: float
+    prevAsk: float
+    prevAskSize: float
+    prevLast: float
+    prevLastSize: float
+    volume: float
+    open: float
+    high: float
+    low: float
+    close: float
+    vwap: float
+    low13week: float
+    high13week: float
+    low26week: float
+    high26week: float
+    low52week: float
+    high52week: float
+    bidYield: float
+    askYield: float
+    lastYield: float
+    markPrice: float
+    halted: float
+    rtHistVolatility: float
+    rtVolume: float
+    rtTradeVolume: float
+    avVolume: float
+    tradeCount: float
+    tradeRate: float
+    volumeRate: float
+    shortableShares: float
+    indexFuturePremium: float
+    futuresOpenInterest: float
+    putOpenInterest: float
+    callOpenInterest: float
+    putVolume: float
+    callVolume: float
+    avOptionVolume: float
+    histVolatility: float
+    impliedVolatility: float
+    dividends: Optional[Dividends]
+    fundamentalRatios: Optional[FundamentalRatios]
+    ticks: Optional[List[TickData]]
+    tickByTicks: Optional[List[Union[TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint]]]
+    domBids: Optional[List[DOMLevel]]
+    domAsks: Optional[List[DOMLevel]]
+    domTicks: Optional[List[MktDepthData]]
+    bidGreeks: Optional[OptionComputation]
+    askGreeks: Optional[OptionComputation]
+    lastGreeks: Optional[OptionComputation]
+    modelGreeks: Optional[OptionComputation]
+    auctionVolume: float
+    auctionPrice: float
+    auctionImbalance: float
 
     def __init__(self, *args, **kwargs):
         Object.__init__(self, *args, **kwargs)
@@ -235,6 +302,14 @@ class Bar(Object):
         count=0
     )
     __slots__ = defaults
+
+    time: Optional[datetime]
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: int
+    count: int
 
 
 class TimeBars(Op):

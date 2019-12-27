@@ -1,4 +1,9 @@
 from collections import namedtuple
+from datetime import date, datetime
+from typing import Any, List, Optional, Union, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .contract import Contract
 
 from .util import UNSET_DOUBLE, UNSET_INTEGER
 
@@ -22,6 +27,120 @@ __all__ = (
 ).split()
 
 nan = float('nan')
+
+
+TagValue = namedtuple(
+    'TagValue',
+    'tag value')
+
+AccountValue = namedtuple(
+    'AccountValue',
+    'account tag value currency modelCode')
+
+TickData = namedtuple(
+    'TickData',
+    'time tickType price size')
+
+HistoricalTick = namedtuple(
+    'HistoricalTick',
+    'time price size')
+
+HistoricalTickBidAsk = namedtuple(
+    'HistoricalTickBidAsk',
+    'time tickAttribBidAsk priceBid priceAsk sizeBid sizeAsk')
+
+HistoricalTickLast = namedtuple(
+    'HistoricalTickLast',
+    'time tickAttribLast price size exchange specialConditions')
+
+TickByTickAllLast = namedtuple(
+    'TickByTickAllLast',
+    'tickType time price size tickAttribLast exchange specialConditions')
+
+TickByTickBidAsk = namedtuple(
+    'TickByTickBidAsk',
+    'time bidPrice askPrice bidSize askSize tickAttribBidAsk')
+
+TickByTickMidPoint = namedtuple(
+    'TickByTickMidPoint',
+    'time midPoint')
+
+MktDepthData = namedtuple(
+    'MktDepthData',
+    'time position marketMaker operation side price size')
+
+DOMLevel = namedtuple(
+    'DOMLevel',
+    'price size marketMaker')
+
+BracketOrder = namedtuple(
+    'BracketOrder',
+    'parent takeProfit stopLoss')
+
+TradeLogEntry = namedtuple(
+    'TradeLogEntry',
+    'time status message')
+
+PriceIncrement = namedtuple(
+    'PriceIncrement',
+    'lowEdge increment')
+
+ScanData = namedtuple(
+    'ScanData',
+    'rank contractDetails distance benchmark projection legsStr')
+
+PortfolioItem = namedtuple(
+    'PortfolioItem',
+    'contract position marketPrice marketValue averageCost '
+    'unrealizedPNL realizedPNL account')
+
+Position = namedtuple(
+    'Position',
+    'account contract position avgCost')
+
+Fill = namedtuple(
+    'Fill',
+    'contract execution commissionReport time')
+
+OptionComputation = namedtuple(
+    'OptionComputation',
+    'impliedVol delta optPrice pvDividend gamma vega theta undPrice')
+
+OptionChain = namedtuple(
+    'OptionChain',
+    'exchange underlyingConId tradingClass multiplier expirations strikes')
+
+Dividends = namedtuple(
+    'Dividends',
+    'past12Months next12Months nextDate nextAmount')
+
+NewsArticle = namedtuple(
+    'NewsArticle',
+    'articleType articleText')
+
+HistoricalNews = namedtuple(
+    'HistoricalNews',
+    'time providerCode articleId headline')
+
+NewsTick = namedtuple(
+    'NewsTick',
+    'timeStamp providerCode articleId headline extraData')
+
+NewsBulletin = namedtuple(
+    'NewsBulletin',
+    'msgId msgType message origExchange')
+
+FamilyCode = namedtuple(
+    'FamilyCode',
+    'accountID familyCodeStr')
+
+SmartComponent = namedtuple(
+    'SmartComponent',
+    'bitNumber exchange exchangeLetter')
+
+ConnectionStats = namedtuple(
+    'ConnectionStats',
+    'startTime duration numBytesRecv numBytesSent numMsgRecv numMsgSent')
 
 
 class Object:
@@ -158,6 +277,48 @@ class ContractDetails(Object):
         notes='')
     __slots__ = defaults.keys()
 
+    contract: Optional['Contract']
+    marketName: str
+    minTick: float
+    orderTypes: str
+    validExchanges: str
+    priceMagnifier: int
+    underConId: int
+    longName: str
+    contractMonth: str
+    industry: str
+    category: str
+    subcategory: str
+    timeZoneId: str
+    tradingHours: str
+    liquidHours: str
+    evRule: str
+    evMultiplier: int
+    mdSizeMultiplier: int
+    aggGroup: int
+    underSymbol: str
+    underSecType: str
+    marketRuleIds: str
+    secIdList: Optional[List[TagValue]]
+    realExpirationDate: str
+    lastTradeTime: str
+    stockType: str
+    cusip: str
+    ratings: str
+    descAppend: str
+    bondType: str
+    couponType: str
+    callable: bool
+    putable: bool
+    coupon: int
+    convertible: bool
+    maturity: str
+    issueDate: str
+    nextOptionDate: str
+    nextOptionType: str
+    nextOptionPartial: bool
+    notes: str
+
 
 class ContractDescription(Object):
     defaults = dict(
@@ -165,6 +326,9 @@ class ContractDescription(Object):
         derivativeSecTypes=None
     )
     __slots__ = defaults.keys()
+
+    contract: Optional['Contract']
+    derivativeSecTypes: Optional[List[Any]]
 
 
 class ComboLeg(Object):
@@ -179,6 +343,15 @@ class ComboLeg(Object):
         exemptCode=-1)
     __slots__ = defaults.keys()
 
+    conId: int
+    ratio: int
+    action: str
+    exchange: str
+    openClose: int
+    shortSaleSlot: int
+    designatedLocation: str
+    exemptCode: int
+
 
 class DeltaNeutralContract(Object):
     defaults = dict(
@@ -187,11 +360,17 @@ class DeltaNeutralContract(Object):
         price=0.0)
     __slots__ = defaults.keys()
 
+    conId: int
+    delta: float
+    price: float
+
 
 class OrderComboLeg(Object):
     defaults = dict(
         price=UNSET_DOUBLE)
     __slots__ = defaults.keys()
+
+    price: float
 
 
 class OrderState(Object):
@@ -214,6 +393,24 @@ class OrderState(Object):
         completedTime='',
         completedStatus='')
     __slots__ = defaults.keys()
+
+    status: str
+    initMarginBefore: str
+    maintMarginBefore: str
+    equityWithLoanBefore: str
+    initMarginChange: str
+    maintMarginChange: str
+    equityWithLoanChange: str
+    initMarginAfter: str
+    maintMarginAfter: str
+    equityWithLoanAfter: str
+    commission: float
+    minCommission: float
+    maxCommission: float
+    commissionCurrency: str
+    warningText: str
+    completedTime: str
+    completedStatus: str
 
 
 class ScannerSubscription(Object):
@@ -241,6 +438,28 @@ class ScannerSubscription(Object):
         stockTypeFilter='')
     __slots__ = defaults.keys()
 
+    numberOfRows: int
+    instrument: str
+    locationCode: str
+    scanCode: str
+    abovePrice: float
+    belowPrice: float
+    aboveVolume: int
+    marketCapAbove: float
+    marketCapBelow: float
+    moodyRatingAbove: str
+    moodyRatingBelow: str
+    spRatingAbove: str
+    spRatingBelow: str
+    maturityDateAbove: str
+    maturityDateBelow: str
+    couponRateAbove: float
+    couponRateBelow: float
+    excludeConvertible: bool
+    averageOptionVolumeAbove: int
+    scannerSettingPairs: str
+    stockTypeFilter: str
+
 
 class SoftDollarTier(Object):
     defaults = dict(
@@ -248,6 +467,10 @@ class SoftDollarTier(Object):
         val='',
         displayName='')
     __slots__ = defaults.keys()
+
+    name: str
+    val: str
+    displayName: str
 
 
 class Execution(Object):
@@ -272,6 +495,25 @@ class Execution(Object):
         lastLiquidity=0)
     __slots__ = defaults.keys()
 
+    execId: str
+    time: str
+    acctNumber: str
+    exchange: str
+    side: str
+    shares: float
+    price: float
+    permId: int
+    clientId: int
+    orderId: int
+    liquidation: int
+    cumQty: float
+    avgPrice: float
+    orderRef: str
+    evRule: str
+    evMultiplier: float
+    modelCode: str
+    lastLiquidity: int
+
 
 class CommissionReport(Object):
     defaults = dict(
@@ -282,6 +524,13 @@ class CommissionReport(Object):
         yield_=0.0,
         yieldRedemptionDate=0)
     __slots__ = defaults.keys()
+
+    execId: str
+    commission: float
+    currency: str
+    realizedPNL: float
+    yield_: float
+    yieldRedemptionDate: int
 
 
 class ExecutionFilter(Object):
@@ -295,6 +544,14 @@ class ExecutionFilter(Object):
         side='')
     __slots__ = defaults.keys()
 
+    clientId: int
+    acctCode: str
+    time: str
+    symbol: str
+    secType: str
+    exchange: str
+    side: str
+
 
 class BarData(Object):
     defaults = dict(
@@ -307,6 +564,15 @@ class BarData(Object):
         average=0.0,
         barCount=0)
     __slots__ = defaults.keys()
+
+    date: str
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: int
+    average: float
+    barCount: int
 
 
 class RealTimeBar(Object):
@@ -322,6 +588,16 @@ class RealTimeBar(Object):
         count=0)
     __slots__ = defaults.keys()
 
+    time: int
+    endTime: int
+    open_: float
+    high: float
+    low: float
+    close: float
+    volume: float
+    wap: float
+    count: int
+
 
 class TickAttrib(Object):
     defaults = dict(
@@ -330,12 +606,19 @@ class TickAttrib(Object):
         preOpen=False)
     __slots__ = defaults.keys()
 
+    canAutoExecute: bool
+    pastLimit: bool
+    preOpen: bool
+
 
 class TickAttribBidAsk(Object):
     defaults = dict(
         bidPastLow=False,
         askPastHigh=False)
     __slots__ = defaults.keys()
+
+    bidPastLow: bool
+    askPastHigh: bool
 
 
 class TickAttribLast(Object):
@@ -344,6 +627,9 @@ class TickAttribLast(Object):
         unreported=False)
     __slots__ = defaults.keys()
 
+    pastLimit: bool
+    unreported: bool
+
 
 class HistogramData(Object):
     defaults = dict(
@@ -351,12 +637,18 @@ class HistogramData(Object):
         count=0)
     __slots__ = defaults.keys()
 
+    price: float
+    count: int
+
 
 class NewsProvider(Object):
     defaults = dict(
         code='',
         name='')
     __slots__ = defaults.keys()
+
+    code: str
+    name: str
 
 
 class DepthMktDataDescription(Object):
@@ -368,6 +660,12 @@ class DepthMktDataDescription(Object):
         aggGroup=UNSET_INTEGER)
     __slots__ = defaults.keys()
 
+    exchange: str
+    secType: str
+    listingExch: str
+    serviceDataType: str
+    aggGroup: int
+
 
 class PnL(Object):
     defaults = dict(
@@ -377,6 +675,12 @@ class PnL(Object):
         unrealizedPnL=nan,
         realizedPnL=nan)
     __slots__ = defaults.keys()
+
+    account: str
+    modelCode: str
+    dailyPnL: float
+    unrealizedPnL: float
+    realizedPnL: float
 
 
 class PnLSingle(Object):
@@ -390,6 +694,15 @@ class PnLSingle(Object):
         position=0,
         value=nan)
     __slots__ = defaults.keys()
+
+    account: str
+    modelCode: str
+    conId: int
+    dailyPnL: float
+    unrealizedPnL: float
+    realizedPnL: float
+    position: int
+    value: float
 
 
 class FundamentalRatios(DynamicObject):
@@ -432,6 +745,17 @@ class BarDataList(BarList):
         'barSizeSetting', 'whatToShow', 'useRTH', 'formatDate',
         'keepUpToDate', 'chartOptions')
 
+    reqId: int
+    contract: 'Contract'
+    endDateTime: Union[datetime, date, str, None]
+    durationStr: str
+    barSizeSetting: str
+    whatToShow: str
+    useRTH: bool
+    formatDate: int
+    keepUpToDate: bool
+    chartOptions: Optional[List[TagValue]]
+
 
 class RealTimeBarList(BarList):
     """
@@ -445,6 +769,13 @@ class RealTimeBarList(BarList):
     __slots__ = (
         'reqId', 'contract', 'barSize', 'whatToShow', 'useRTH',
         'realTimeBarsOptions')
+
+    reqId: int
+    contract: 'Contract'
+    barSize: int
+    whatToShow: str
+    useRTH: bool
+    realTimeBarsOptions: Optional[List[TagValue]]
 
 
 class ScanDataList(list):
@@ -460,6 +791,11 @@ class ScanDataList(list):
         'reqId', 'subscription', 'scannerSubscriptionOptions',
         'scannerSubscriptionFilterOptions', '__weakref__')
 
+    reqId: int
+    subscription: ScannerSubscription
+    scannerSubscriptionOptions: Optional[List[TagValue]]
+    scannerSubscriptionFilterOptions: Optional[List[TagValue]]
+
     def __init__(self, *args):
         list.__init__(self, *args)
         self.updateEvent = Event('updateEvent')
@@ -469,117 +805,3 @@ class ScanDataList(list):
 
     def __hash__(self):
         return id(self)
-
-
-TagValue = namedtuple(
-    'TagValue',
-    'tag value')
-
-AccountValue = namedtuple(
-    'AccountValue',
-    'account tag value currency modelCode')
-
-TickData = namedtuple(
-    'TickData',
-    'time tickType price size')
-
-HistoricalTick = namedtuple(
-    'HistoricalTick',
-    'time price size')
-
-HistoricalTickBidAsk = namedtuple(
-    'HistoricalTickBidAsk',
-    'time tickAttribBidAsk priceBid priceAsk sizeBid sizeAsk')
-
-HistoricalTickLast = namedtuple(
-    'HistoricalTickLast',
-    'time tickAttribLast price size exchange specialConditions')
-
-TickByTickAllLast = namedtuple(
-    'TickByTickAllLast',
-    'tickType time price size tickAttribLast exchange specialConditions')
-
-TickByTickBidAsk = namedtuple(
-    'TickByTickBidAsk',
-    'time bidPrice askPrice bidSize askSize tickAttribBidAsk')
-
-TickByTickMidPoint = namedtuple(
-    'TickByTickMidPoint',
-    'time midPoint')
-
-MktDepthData = namedtuple(
-    'MktDepthData',
-    'time position marketMaker operation side price size')
-
-DOMLevel = namedtuple(
-    'DOMLevel',
-    'price size marketMaker')
-
-BracketOrder = namedtuple(
-    'BracketOrder',
-    'parent takeProfit stopLoss')
-
-TradeLogEntry = namedtuple(
-    'TradeLogEntry',
-    'time status message')
-
-PriceIncrement = namedtuple(
-    'PriceIncrement',
-    'lowEdge increment')
-
-ScanData = namedtuple(
-    'ScanData',
-    'rank contractDetails distance benchmark projection legsStr')
-
-PortfolioItem = namedtuple(
-    'PortfolioItem',
-    'contract position marketPrice marketValue averageCost '
-    'unrealizedPNL realizedPNL account')
-
-Position = namedtuple(
-    'Position',
-    'account contract position avgCost')
-
-Fill = namedtuple(
-    'Fill',
-    'contract execution commissionReport time')
-
-OptionComputation = namedtuple(
-    'OptionComputation',
-    'impliedVol delta optPrice pvDividend gamma vega theta undPrice')
-
-OptionChain = namedtuple(
-    'OptionChain',
-    'exchange underlyingConId tradingClass multiplier expirations strikes')
-
-Dividends = namedtuple(
-    'Dividends',
-    'past12Months next12Months nextDate nextAmount')
-
-NewsArticle = namedtuple(
-    'NewsArticle',
-    'articleType articleText')
-
-HistoricalNews = namedtuple(
-    'HistoricalNews',
-    'time providerCode articleId headline')
-
-NewsTick = namedtuple(
-    'NewsTick',
-    'timeStamp providerCode articleId headline extraData')
-
-NewsBulletin = namedtuple(
-    'NewsBulletin',
-    'msgId msgType message origExchange')
-
-FamilyCode = namedtuple(
-    'FamilyCode',
-    'accountID familyCodeStr')
-
-SmartComponent = namedtuple(
-    'SmartComponent',
-    'bitNumber exchange exchangeLetter')
-
-ConnectionStats = namedtuple(
-    'ConnectionStats',
-    'startTime duration numBytesRecv numBytesSent numMsgRecv numMsgSent')
