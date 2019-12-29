@@ -1,26 +1,28 @@
+"""High-level interface to Interactive Brokers."""
+
 import asyncio
-import logging
 import datetime
+import logging
 import time
 from contextlib import suppress
-from typing import List, Iterator, Awaitable, Optional, Union
+from typing import Awaitable, Iterator, List, Optional, Union
 
 from eventkit import Event
 
 import ib_insync.util as util
 from ib_insync.client import Client
-from ib_insync.wrapper import Wrapper
 from ib_insync.contract import Contract
-from ib_insync.ticker import Ticker
-from ib_insync.order import Order, OrderStatus, Trade, LimitOrder, StopOrder
 from ib_insync.objects import (
-    BarList, BarDataList, RealTimeBarList,
-    AccountValue, PortfolioItem, Position, Fill, Execution, BracketOrder,
-    TradeLogEntry, OrderState, ExecutionFilter, TagValue, PnL, PnLSingle,
-    ContractDetails, ContractDescription, OptionChain, OptionComputation,
-    NewsTick, NewsBulletin, NewsArticle, NewsProvider, HistoricalNews,
-    ScannerSubscription, ScanDataList, HistogramData, PriceIncrement,
-    DepthMktDataDescription)
+    AccountValue, BarDataList, BarList, BracketOrder, ContractDescription,
+    ContractDetails, DepthMktDataDescription, Execution, ExecutionFilter, Fill,
+    HistogramData, HistoricalNews, NewsArticle, NewsBulletin, NewsProvider,
+    NewsTick, OptionChain, OptionComputation, OrderState, PnL, PnLSingle,
+    PortfolioItem, Position, PriceIncrement, RealTimeBarList, ScanDataList,
+    ScannerSubscription, TagValue, TradeLogEntry
+)
+from ib_insync.order import LimitOrder, Order, OrderStatus, StopOrder, Trade
+from ib_insync.ticker import Ticker
+from ib_insync.wrapper import Wrapper
 
 __all__ = ['IB']
 
@@ -233,8 +235,8 @@ class IB:
         return f'<{self.__class__.__qualname__} {conn}>'
 
     def connect(
-            self, host: str = '127.0.0.1', port: int = 7497, account: str = '',
-            clientId: int = 1, timeout: float = 2, readonly: bool = False):
+            self, host: str = '127.0.0.1', port: int = 7497, clientId: int = 1,
+            timeout: float = 2, readonly: bool = False, account: str = ''):
         """
         Connect to a running TWS or IB gateway application.
         After the connection is made the client is fully synchronized
@@ -252,9 +254,10 @@ class IB:
                 ``timeout`` seconds then the ``asyncio.TimeoutError`` exception
                 is raised. Set to 0 to disable timeout.
             readonly: Set to ``True`` when API is in read-only mode.
+            account: Main account to receive updates for.
         """
         return self._run(self.connectAsync(
-            host, port, clientId, timeout, readonly))
+            host, port, clientId, timeout, readonly, account))
 
     def disconnect(self):
         """
@@ -274,9 +277,7 @@ class IB:
         self.client.disconnect()
 
     def isConnected(self) -> bool:
-        """
-        Is there is an API connection to TWS or IB gateway?
-        """
+        """Is there is an API connection to TWS or IB gateway?"""
         return self.client.isConnected()
 
     run = staticmethod(util.run)
@@ -350,9 +351,7 @@ class IB:
         self.wrapper.setTimeout(timeout)
 
     def managedAccounts(self) -> List[str]:
-        """
-        List of account names.
-        """
+        """List of account names."""
         return list(self.wrapper.accounts)
 
     def accountValues(self, account: str = '') -> List[AccountValue]:
@@ -389,9 +388,7 @@ class IB:
             return list(self.wrapper.acctSummary.values())
 
     def portfolio(self) -> List[PortfolioItem]:
-        """
-        List of portfolio items of the default account.
-        """
+        """List of portfolio items of the default account."""
         account = self.wrapper.accounts[0]
         return [v for v in self.wrapper.portfolio[account].values()]
 
@@ -444,42 +441,30 @@ class IB:
                 and (not conId or v.conId == conId)]
 
     def trades(self) -> List[Trade]:
-        """
-        List of all order trades from this session.
-        """
+        """List of all order trades from this session."""
         return list(self.wrapper.trades.values())
 
     def openTrades(self) -> List[Trade]:
-        """
-        List of all open order trades.
-        """
+        """List of all open order trades."""
         return [v for v in self.wrapper.trades.values()
                 if v.orderStatus.status not in OrderStatus.DoneStates]
 
     def orders(self) -> List[Order]:
-        """
-        List of all orders from this session.
-        """
+        """List of all orders from this session."""
         return list(
             trade.order for trade in self.wrapper.trades.values())
 
     def openOrders(self) -> List[Order]:
-        """
-        List of all open orders.
-        """
+        """List of all open orders."""
         return [trade.order for trade in self.wrapper.trades.values()
                 if trade.orderStatus.status not in OrderStatus.DoneStates]
 
     def fills(self) -> List[Fill]:
-        """
-        List of all fills from this session.
-        """
+        """List of all fills from this session."""
         return list(self.wrapper.fills.values())
 
     def executions(self) -> List[Execution]:
-        """
-        List of all executions from this session.
-        """
+        """List of all executions from this session."""
         return list(fill.execution for fill in self.wrapper.fills.values())
 
     def ticker(self, contract: Contract) -> Ticker:
@@ -494,15 +479,11 @@ class IB:
         return self.wrapper.tickers.get(id(contract))
 
     def tickers(self) -> List[Ticker]:
-        """
-        Get a list of all tickers.
-        """
+        """Get a list of all tickers."""
         return list(self.wrapper.tickers.values())
 
     def pendingTickers(self) -> List[Ticker]:
-        """
-        Get a list of all tickers that have pending ticks or domTicks.
-        """
+        """Get a list of all tickers that have pending ticks or domTicks."""
         return list(self.wrapper.pendingTickers)
 
     def realtimeBars(self) -> BarList:
@@ -520,9 +501,7 @@ class IB:
         return self.wrapper.newsTicks
 
     def newsBulletins(self) -> List[NewsBulletin]:
-        """
-        List of IB news bulletins.
-        """
+        """List of IB news bulletins."""
         return list(self.wrapper.newsBulletins.values())
 
     def reqTickers(
@@ -1003,11 +982,11 @@ class IB:
         self.wrapper.endSubscription(bars)
 
     def reqHistoricalData(
-            self, contract: Contract, endDateTime: Union[datetime.datetime, datetime.date, str, None],
-            durationStr: str, barSizeSetting: str,
-            whatToShow: str, useRTH: bool,
-            formatDate: int = 1, keepUpToDate: bool = False,
-            chartOptions: List[TagValue] = None) -> BarDataList:
+            self, contract: Contract,
+            endDateTime: Union[datetime.datetime, datetime.date, str, None],
+            durationStr: str, barSizeSetting: str, whatToShow: str,
+            useRTH: bool, formatDate: int = 1, keepUpToDate: bool = False,
+            chartOptions: List[TagValue] = []) -> BarDataList:
         """
         Request historical bar data.
 
@@ -1069,7 +1048,7 @@ class IB:
             endDateTime: Union[str, datetime.date],
             numberOfTicks: int, whatToShow: str, useRth: bool,
             ignoreSize: bool = False,
-            miscOptions: List[TagValue] = None) -> List:
+            miscOptions: List[TagValue] = []) -> List:
         """
         Request historical ticks. The time resolution of the ticks
         is one second.
@@ -1165,7 +1144,8 @@ class IB:
                        ``high26week``, ``low52week``, ``high52week``,
                        ``avVolume``
                 221    ``markPrice``
-                225    ``auctionVolume``, ``auctionPrice``, ``auctionImbalance``
+                225    ``auctionVolume``, ``auctionPrice``,
+                       ``auctionImbalance``
                 233    ``last``, ``lastSize``, ``rtVolume``, ``vwap``
                        (Time & Sales)
                 236    ``shortableShares``
@@ -1317,7 +1297,7 @@ class IB:
 
     def reqFundamentalData(
             self, contract: Contract, reportType: str,
-            fundamentalDataOptions: List[TagValue] = None) -> str:
+            fundamentalDataOptions: List[TagValue] = []) -> str:
         """
         Get fundamental data of a contract in XML format.
 
@@ -1343,9 +1323,9 @@ class IB:
 
     def reqScannerData(
             self, subscription: ScannerSubscription,
-            scannerSubscriptionOptions: List[TagValue] = None,
-            scannerSubscriptionFilterOptions:
-            List[TagValue] = None) -> ScanDataList:
+            scannerSubscriptionOptions: List[TagValue] = [],
+            scannerSubscriptionFilterOptions: List[TagValue] = []) -> \
+            ScanDataList:
         """
         Do a blocking market scan by starting a subscription and canceling it
         after the initial list of results are in.
@@ -1416,7 +1396,7 @@ class IB:
     def calculateImpliedVolatility(
             self, contract: Contract,
             optionPrice: float, underPrice: float,
-            implVolOptions: List[TagValue] = None) -> OptionComputation:
+            implVolOptions: List[TagValue] = []) -> OptionComputation:
         """
         Calculate the volatility given the option price.
 
@@ -1575,9 +1555,7 @@ class IB:
         self.client.reqNewsBulletins(allMessages)
 
     def cancelNewsBulletins(self):
-        """
-        Cancel subscription to IB news bulletins.
-        """
+        """Cancel subscription to IB news bulletins."""
         self.client.cancelNewsBulletins()
 
     def requestFA(self, faDataType: int):
@@ -1614,7 +1592,8 @@ class IB:
 
     async def connectAsync(
             self, host: str = '127.0.0.1', port: int = 7497,
-            clientId: int = 1, timeout: float = 2, readonly: bool = False, account: str = ''):
+            clientId: int = 1, timeout: float = 2, readonly: bool = False,
+            account: str = ''):
 
         async def connect():
             self.wrapper.clientId = clientId
@@ -1623,7 +1602,7 @@ class IB:
                 await self.reqCompletedOrdersAsync(False)
             accounts = self.client.getAccounts()
             await asyncio.gather(
-                self.reqAccountUpdatesAsync(accounts[0] if account=='' else account),
+                self.reqAccountUpdatesAsync(account or accounts[0]),
                 *(self.reqAccountUpdatesMultiAsync(a) for a in accounts),
                 self.reqPositionsAsync(),
                 self.reqExecutionsAsync())
@@ -1643,7 +1622,8 @@ class IB:
             self._logger.warn('Already connected')
         return self
 
-    async def qualifyContractsAsync(self, *contracts: Contract) -> List[Contract]:
+    async def qualifyContractsAsync(self, *contracts: Contract) -> \
+            List[Contract]:
         detailsLists = await asyncio.gather(
             *(self.reqContractDetailsAsync(c) for c in contracts))
         result = []
@@ -1669,7 +1649,9 @@ class IB:
                 result.append(contract)
         return result
 
-    async def reqTickersAsync(self, *contracts: Contract, regulatorySnapshot: bool = False) -> List[Ticker]:
+    async def reqTickersAsync(
+            self, *contracts: Contract, regulatorySnapshot: bool = False) -> \
+            List[Ticker]:
         futures = []
         tickers = []
         for contract in contracts:
@@ -1685,7 +1667,8 @@ class IB:
             self.wrapper.endTicker(ticker, 'snapshot')
         return tickers
 
-    def whatIfOrderAsync(self, contract: Contract, order: Order) -> Awaitable[OrderState]:
+    def whatIfOrderAsync(self, contract: Contract, order: Order) -> \
+            Awaitable[OrderState]:
         whatIfOrder = Order(**order.dict()).update(whatIf=True)
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
@@ -1702,7 +1685,8 @@ class IB:
         self.client.reqAccountUpdates(True, account)
         return future
 
-    def reqAccountUpdatesMultiAsync(self, account: str, modelCode: str = '') -> Awaitable[None]:
+    def reqAccountUpdatesMultiAsync(
+            self, account: str, modelCode: str = '') -> Awaitable[None]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqAccountUpdatesMulti(reqId, account, modelCode, False)
@@ -1739,7 +1723,8 @@ class IB:
         self.client.reqCompletedOrders(apiOnly)
         return future
 
-    def reqExecutionsAsync(self, execFilter: ExecutionFilter = None) -> Awaitable[List[Fill]]:
+    def reqExecutionsAsync(
+            self, execFilter: ExecutionFilter = None) -> Awaitable[List[Fill]]:
         execFilter = execFilter or ExecutionFilter()
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
@@ -1751,13 +1736,15 @@ class IB:
         self.client.reqPositions()
         return future
 
-    def reqContractDetailsAsync(self, contract: Contract) -> Awaitable[List[ContractDetails]]:
+    def reqContractDetailsAsync(self, contract: Contract) -> \
+            Awaitable[List[ContractDetails]]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         self.client.reqContractDetails(reqId, contract)
         return future
 
-    async def reqMatchingSymbolsAsync(self, pattern: str) -> Optional[List[ContractDescription]]:
+    async def reqMatchingSymbolsAsync(self, pattern: str) -> \
+            Optional[List[ContractDescription]]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqMatchingSymbols(reqId, pattern)
@@ -1768,7 +1755,8 @@ class IB:
             self._logger.error('reqMatchingSymbolsAsync: Timeout')
             return None
 
-    async def reqMarketRuleAsync(self, marketRuleId: int) -> Optional[PriceIncrement]:
+    async def reqMarketRuleAsync(
+            self, marketRuleId: int) -> Optional[PriceIncrement]:
         future = self.wrapper.startReq(f'marketRule-{marketRuleId}')
         try:
             self.client.reqMarketRule(marketRuleId)
@@ -1779,11 +1767,13 @@ class IB:
             return None
 
     def reqHistoricalDataAsync(
-            self, contract: Contract, endDateTime: Union[datetime.datetime, datetime.date, str, None],
+            self, contract: Contract,
+            endDateTime: Union[datetime.datetime, datetime.date, str, None],
             durationStr: str, barSizeSetting: str,
             whatToShow: str, useRTH: bool,
             formatDate: int = 1, keepUpToDate: bool = False,
-            chartOptions: Optional[List[TagValue]] = None) -> Awaitable[BarDataList]:
+            chartOptions: List[TagValue] = []) -> \
+            Awaitable[BarDataList]:
         reqId = self.client.getReqId()
         bars = BarDataList()
         bars.reqId = reqId
@@ -1795,7 +1785,7 @@ class IB:
         bars.useRTH = useRTH
         bars.formatDate = formatDate
         bars.keepUpToDate = keepUpToDate
-        bars.chartOptions = chartOptions
+        bars.chartOptions = chartOptions or []
         future = self.wrapper.startReq(reqId, contract, container=bars)
         if keepUpToDate:
             self.wrapper.startSubscription(reqId, bars, contract)
@@ -1811,14 +1801,14 @@ class IB:
             endDateTime: Union[str, datetime.date],
             numberOfTicks: int, whatToShow: str, useRth: bool,
             ignoreSize: bool = False,
-            miscOptions: Optional[List[TagValue]] = None) -> Awaitable[List]:
+            miscOptions: List[TagValue] = []) -> Awaitable[List]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         start = util.formatIBDatetime(startDateTime)
         end = util.formatIBDatetime(endDateTime)
         self.client.reqHistoricalTicks(
             reqId, contract, start, end, numberOfTicks, whatToShow, useRth,
-            ignoreSize, miscOptions or [])
+            ignoreSize, miscOptions)
         return future
 
     def reqHeadTimeStampAsync(
@@ -1830,19 +1820,24 @@ class IB:
             reqId, contract, whatToShow, useRTH, formatDate)
         return future
 
-    def reqMktDepthExchangesAsync(self) -> Awaitable[List[DepthMktDataDescription]]:
+    def reqMktDepthExchangesAsync(self) -> \
+            Awaitable[List[DepthMktDataDescription]]:
         future = self.wrapper.startReq('mktDepthExchanges')
         self.client.reqMktDepthExchanges()
         return future
 
-    def reqHistogramDataAsync(self, contract: Contract, useRTH: bool, period: str) -> Awaitable[List[HistogramData]]:
+    def reqHistogramDataAsync(
+            self, contract: Contract, useRTH: bool, period: str) -> \
+            Awaitable[List[HistogramData]]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         self.client.reqHistogramData(reqId, contract, useRTH, period)
         return future
 
     def reqFundamentalDataAsync(
-            self, contract: Contract, reportType: str, fundamentalDataOptions: Optional[List[TagValue]] = None) -> Awaitable[str]:
+            self, contract: Contract, reportType: str,
+            fundamentalDataOptions: List[TagValue] = []) -> \
+            Awaitable[str]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         self.client.reqFundamentalData(
@@ -1850,11 +1845,13 @@ class IB:
         return future
 
     async def reqScannerDataAsync(
-            self, subscription: ScannerSubscription, scannerSubscriptionOptions: Optional[List[TagValue]] = None,
-            scannerSubscriptionFilterOptions: Optional[List[TagValue]] = None) -> ScanDataList:
+            self, subscription: ScannerSubscription,
+            scannerSubscriptionOptions: List[TagValue] = [],
+            scannerSubscriptionFilterOptions: List[TagValue] = []) \
+            -> ScanDataList:
         dataList = self.reqScannerSubscription(
-            subscription, scannerSubscriptionOptions,
-            scannerSubscriptionFilterOptions)
+            subscription, scannerSubscriptionOptions or [],
+            scannerSubscriptionFilterOptions or [])
         future = self.wrapper.startReq(dataList.reqId, container=dataList)
         await future
         self.client.cancelScannerSubscription(dataList.reqId)
@@ -1868,7 +1865,8 @@ class IB:
     async def calculateImpliedVolatilityAsync(
             self, contract: Contract,
             optionPrice: float, underPrice: float,
-            implVolOptions: List[TagValue] = None) -> Optional[OptionComputation]:
+            implVolOptions: List[TagValue] = []) -> \
+            Optional[OptionComputation]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         self.client.calculateImpliedVolatility(
@@ -1885,7 +1883,7 @@ class IB:
     async def calculateOptionPriceAsync(
             self, contract: Contract,
             volatility: float, underPrice: float,
-            optPrcOptions=None) -> Optional[OptionComputation]:
+            optPrcOptions: List[TagValue] = []) -> Optional[OptionComputation]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         self.client.calculateOptionPrice(
@@ -1916,7 +1914,9 @@ class IB:
         return future
 
     def reqNewsArticleAsync(
-            self, providerCode: str, articleId: str, newsArticleOptions: Optional[List[TagValue]]) -> Awaitable[NewsArticle]:
+            self, providerCode: str, articleId: str,
+            newsArticleOptions: Optional[List[TagValue]]) -> \
+            Awaitable[NewsArticle]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqNewsArticle(
@@ -1928,7 +1928,8 @@ class IB:
             startDateTime: Union[str, datetime.date],
             endDateTime: Union[str, datetime.date],
             totalResults: int,
-            historicalNewsOptions: List[TagValue] = None) -> Optional[HistoricalNews]:
+            historicalNewsOptions: List[TagValue] = None) -> \
+            Optional[HistoricalNews]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         start = util.formatIBDatetime(startDateTime)

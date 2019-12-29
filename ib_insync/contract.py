@@ -1,3 +1,5 @@
+"""Financial instrument types used by Interactive Brokers."""
+
 from typing import List, Optional
 
 from ib_insync.objects import ComboLeg, DeltaNeutralContract, Object
@@ -77,6 +79,7 @@ class Contract(Object):
         deltaNeutralContract (DeltaNeutralContract): Delta and underlying
             price for Delta-Neutral combo orders.
     """
+
     defaults = dict(
         secType='',
         conId=0,
@@ -319,9 +322,7 @@ class Forex(Contract):
     __str__ = __repr__
 
     def pair(self) -> str:
-        '''
-        Short name of pair.
-        '''
+        """Short name of pair."""
         return self.symbol + self.currency
 
 
@@ -386,9 +387,7 @@ class Bond(Contract):
     __slots__ = ()
 
     def __init__(self, **kwargs):
-        """
-        Bond.
-        """
+        """Bond."""
         Contract.__init__(self, 'BOND', **kwargs)
 
 
@@ -427,9 +426,7 @@ class MutualFund(Contract):
     __slots__ = ()
 
     def __init__(self, **kwargs):
-        """
-        Mutual fund.
-        """
+        """Mutual fund."""
         Contract.__init__(self, 'FUND', **kwargs)
 
 
@@ -437,9 +434,7 @@ class Warrant(Contract):
     __slots__ = ()
 
     def __init__(self, **kwargs):
-        """
-        Warrant option.
-        """
+        """Warrant option."""
         Contract.__init__(self, 'WAR', **kwargs)
 
 
@@ -447,7 +442,5 @@ class Bag(Contract):
     __slots__ = ()
 
     def __init__(self, **kwargs):
-        """
-        Bag contract.
-        """
+        """Bag contract."""
         Contract.__init__(self, 'BAG', **kwargs)

@@ -1,13 +1,14 @@
+"""Object hierarchy."""
+
 from collections import namedtuple
 from datetime import date, datetime
-from typing import Any, List, Optional, Union, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .contract import Contract
-
-from .util import UNSET_DOUBLE, UNSET_INTEGER
+from typing import Any, List, Optional, TYPE_CHECKING, Union
 
 from eventkit import Event
+
+from .util import UNSET_DOUBLE, UNSET_INTEGER
+if TYPE_CHECKING:
+    from .contract import Contract
 
 __all__ = (
     'Object ContractDetails ContractDescription '
@@ -152,6 +153,7 @@ class Object:
     * A general string representation;
     * A default equality testing that compares attributes.
     """
+
     __slots__ = ('__weakref__',)
     defaults: dict = {}
 
@@ -178,28 +180,23 @@ class Object:
         return isinstance(other, Object) and self.dict() == other.dict()
 
     def tuple(self):
-        """
-        Return values as a tuple.
-        """
+        """Return values as a tuple."""
         return tuple(getattr(self, k) for k in self.__class__.defaults)
 
     def dict(self):
-        """
-        Return key-value pairs as a dictionary.
-        """
+        """Return key-value pairs as a dictionary."""
         return {k: getattr(self, k) for k in self.__class__.defaults}
 
     def update(self, **kwargs):
-        """
-        Update key values.
-        """
+        """Update key values."""
         for k, v in kwargs.items():
             setattr(self, k, v)
         return self
 
     def diff(self, other):
         """
-        Return differences between self and other as dictionary of 2-tuples.
+        Return differences between self and other as dictionary
+        of 2-tuples.
         """
         diff = {}
         for k in self.__class__.defaults:
@@ -210,9 +207,7 @@ class Object:
         return diff
 
     def nonDefaults(self):
-        """
-        Get a dictionary of all attributes that differ from the default.
-        """
+        """Get a dictionary of all attributes that differ from the default."""
         nonDefaults = {}
         for k, d in self.__class__.defaults.items():
             v = getattr(self, k)
@@ -707,15 +702,16 @@ class PnLSingle(Object):
 
 class FundamentalRatios(DynamicObject):
     """
+    See:
     https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html
     """
+
     pass
 
 
 class BarList(list):
-    """
-    Base class for bar lists.
-    """
+    """Base class for bar lists."""
+
     events = ('updateEvent',)
 
     __slots__ = events + ('__weakref__',)
@@ -740,6 +736,7 @@ class BarDataList(BarList):
         * ``updateEvent``
           (bars: :class:`.BarDataList`, hasNewBar: bool)
     """
+
     __slots__ = (
         'reqId', 'contract', 'endDateTime', 'durationStr',
         'barSizeSetting', 'whatToShow', 'useRTH', 'formatDate',
@@ -766,6 +763,7 @@ class RealTimeBarList(BarList):
         * ``updateEvent``
           (bars: :class:`.RealTimeBarList`, hasNewBar: bool)
     """
+
     __slots__ = (
         'reqId', 'contract', 'barSize', 'whatToShow', 'useRTH',
         'realTimeBarsOptions')
@@ -785,6 +783,7 @@ class ScanDataList(list):
     Events:
         * ``updateEvent`` (:class:`.ScanDataList`)
     """
+
     events = ('updateEvent',)
 
     __slots__ = events + (

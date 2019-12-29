@@ -1,23 +1,24 @@
+"""Deserialize and dispatch messages."""
+
 import logging
 
 from .contract import Contract
-from .order import Order, OrderCondition
 from .objects import (
-    ContractDetails, ContractDescription, ComboLeg, OrderComboLeg,
-    OrderState, TagValue, Execution, CommissionReport,
-    BarData, DeltaNeutralContract, SoftDollarTier, FamilyCode,
-    SmartComponent, DepthMktDataDescription, NewsProvider,
-    TickAttribBidAsk, TickAttribLast, HistogramData, PriceIncrement,
-    HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast)
+    BarData, ComboLeg, CommissionReport, ContractDescription, ContractDetails,
+    DeltaNeutralContract, DepthMktDataDescription, Execution, FamilyCode,
+    HistogramData, HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
+    NewsProvider, OrderComboLeg, OrderState, PriceIncrement, SmartComponent,
+    SoftDollarTier, TagValue, TickAttribBidAsk, TickAttribLast
+)
+from .order import Order, OrderCondition
 from .util import UNSET_DOUBLE
 
 __all__ = ['Decoder']
 
 
 class Decoder:
-    """
-    Decode IB messages and invoke corresponding wrapper methods.
-    """
+    """Decode IB messages and invoke corresponding wrapper methods."""
+
     def __init__(self, wrapper, serverVersion):
         self.wrapper = wrapper
         self.serverVersion = serverVersion
@@ -179,9 +180,7 @@ class Decoder:
         return handler if method else lambda *args: None
 
     def interpret(self, fields):
-        """
-        Decode fields and invoke corresponding wrapper method.
-        """
+        """Decode fields and invoke corresponding wrapper method."""
         try:
             msgId = int(fields[0])
             handler = self.handlers[msgId]
@@ -190,9 +189,7 @@ class Decoder:
             self.logger.exception(f'Error handling fields: {fields}')
 
     def parse(self, obj):
-        """
-        Parse the object's properties according to its default types.
-        """
+        """Parse the object's properties according to its default types."""
         for k, default in obj.__class__.defaults.items():
             typ = type(default)
             if typ is str:

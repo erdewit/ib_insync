@@ -1,14 +1,15 @@
+"""Utilities."""
+
+import asyncio
 import datetime
 import logging
 import math
-import sys
 import signal
-import asyncio
+import sys
 import time
-from typing import Iterator, AsyncIterator, Callable, Union
+from typing import AsyncIterator, Callable, Iterator, Union
 
 import eventkit as ev
-
 
 globalErrorEvent = ev.Event()
 """
@@ -49,8 +50,8 @@ def df(objs, labels=None):
     return df
 
 
-# from https://stackoverflow.com/a/2166841/6067848
 def isnamedtupleinstance(x):
+    """From https://stackoverflow.com/a/2166841/6067848"""
     t = type(x)
     b = t.__bases__
     if len(b) != 1 or b[0] != tuple:
@@ -140,16 +141,12 @@ def barplot(bars, title='', upColor='blue', downColor='red'):
 
 
 def allowCtrlC():
-    """
-    Allow Control-C to end program.
-    """
+    """Allow Control-C to end program."""
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
 def logToFile(path, level=logging.INFO):
-    """
-    Create a log handler that logs to the given file.
-    """
+    """Create a log handler that logs to the given file."""
     logger = logging.getLogger()
     logger.setLevel(level)
     formatter = logging.Formatter(
@@ -160,9 +157,7 @@ def logToFile(path, level=logging.INFO):
 
 
 def logToConsole(level=logging.INFO):
-    """
-    Create a log handler that logs to the console.
-    """
+    """Create a log handler that logs to the console."""
     logger = logging.getLogger()
     logger.setLevel(level)
     formatter = logging.Formatter(
@@ -176,16 +171,12 @@ def logToConsole(level=logging.INFO):
 
 
 def isNan(x: float) -> bool:
-    """
-    Not a number test.
-    """
+    """Not a number test."""
     return x != x
 
 
 def formatSI(n) -> str:
-    """
-    Format the integer or float n to 3 significant digits + SI prefix.
-    """
+    """Format the integer or float n to 3 significant digits + SI prefix."""
     s = ''
     if n < 0:
         n = -n
@@ -212,9 +203,8 @@ def formatSI(n) -> str:
 
 
 class timeit:
-    """
-    Context manager for timing.
-    """
+    """Context manager for timing."""
+
     def __init__(self, title='Run'):
         self.title = title
 
@@ -271,7 +261,8 @@ def run(*awaitables, timeout: float = None):
     return result
 
 
-def _fillDate(time: Union[datetime.time, datetime.datetime]) -> datetime.datetime:
+def _fillDate(time: Union[datetime.time, datetime.datetime]) -> \
+        datetime.datetime:
     # use today if date is absent
     if isinstance(time, datetime.time):
         dt = datetime.datetime.combine(datetime.date.today(), time)
@@ -357,9 +348,7 @@ async def timeRangeAsync(
         start: Union[datetime.time, datetime.datetime],
         end: Union[datetime.time, datetime.datetime],
         step: float) -> AsyncIterator[datetime.datetime]:
-    """
-    Async version of :meth:`timeRange`.
-    """
+    """Async version of :meth:`timeRange`."""
     assert step > 0
     delta = datetime.timedelta(seconds=step)
     t = _fillDate(start)
@@ -372,9 +361,7 @@ async def timeRangeAsync(
 
 
 async def waitUntilAsync(t: Union[datetime.time, datetime.datetime]) -> bool:
-    """
-    Async version of :meth:`waitUntil`.
-    """
+    """Async version of :meth:`waitUntil`."""
     now = datetime.datetime.now(t.tzinfo)
     secs = (_fillDate(t) - now).total_seconds()
     await asyncio.sleep(secs)
@@ -382,9 +369,7 @@ async def waitUntilAsync(t: Union[datetime.time, datetime.datetime]) -> bool:
 
 
 def patchAsyncio():
-    """
-    Patch asyncio to allow nested event loops.
-    """
+    """Patch asyncio to allow nested event loops."""
     import nest_asyncio
     nest_asyncio.apply()
 
@@ -392,11 +377,11 @@ def patchAsyncio():
 def startLoop():
     """
     Use nested asyncio event loop for Jupyter notebooks.
+
+    This is not needed anymore in Jupyter versions 5 or higher.
     """
     def _ipython_loop_asyncio(kernel):
-        '''
-        Use asyncio event loop for the given IPython kernel.
-        '''
+        """Use asyncio event loop for the given IPython kernel."""
         loop = asyncio.get_event_loop()
 
         def kernel_handler():
@@ -456,9 +441,7 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
 
 
 def formatIBDatetime(dt) -> str:
-    """
-    Format date or datetime to string that IB uses.
-    """
+    """Format date or datetime to string that IB uses."""
     if not dt:
         s = ''
     elif isinstance(dt, datetime.datetime):
@@ -474,9 +457,7 @@ def formatIBDatetime(dt) -> str:
 
 
 def parseIBDatetime(s):
-    """
-    Parse string in IB date or datetime format to datetime.
-    """
+    """Parse string in IB date or datetime format to datetime."""
     if len(s) == 8:
         # YYYYmmdd
         y = int(s[0:4])

@@ -1,26 +1,27 @@
-import os
+"""Programmatic control over the TWS/gateway client software."""
+
 import asyncio
-import logging
 import configparser
+import logging
+import os
 from contextlib import suppress
 
 from eventkit import Event
 
-from ib_insync.objects import Object
+import ib_insync.util as util
 from ib_insync.contract import Forex
 from ib_insync.ib import IB
-import ib_insync.util as util
+from ib_insync.objects import Object
 
 __all__ = ['IBC', 'IBController', 'Watchdog']
 
 
 class IBC(Object):
-    """
+    r"""
     Programmatic control over starting and stopping TWS/Gateway
     using IBC (https://github.com/IbcAlpha/IBC).
 
     Args:
-
         twsVersion (int): (required) The major version number for
             TWS or gateway.
         gateway (bool):
@@ -35,7 +36,7 @@ class IBC(Object):
 
             * Linux:    ~/Jts
             * OS X:     ~/Applications
-            * Windows:  C:\\\\Jts
+            * Windows:  C:\\Jts
         twsSettingsPath (str): Path to the TWS settings folder.
             Defaults:
 
@@ -47,13 +48,13 @@ class IBC(Object):
 
             * Linux:     /opt/ibc
             * OS X:      /opt/ibc
-            * Windows:   C:\\\\IBC
+            * Windows:   C:\\IBC
         ibcIni (str): Path to the IBC configuration file.
             Defaults:
 
             * Linux:     ~/ibc/config.ini
             * OS X:      ~/ibc/config.ini
-            * Windows:   %%HOMEPATH%%\\\\Documents\\\\IBC\\\\config.ini
+            * Windows:   %%HOMEPATH%%\\Documents\IBC\\config.ini
         javaPath (str): Path to Java executable.
             Default is to use the Java VM included with TWS/gateway.
         fixuserid (str): FIX account user id (gateway only).
@@ -73,7 +74,7 @@ class IBC(Object):
 
     .. code-block:: python
 
-        ibc = IBC(974, gateway=True, tradingMode='live',
+        ibc = IBC(976, gateway=True, tradingMode='live',
             userid='edemo', password='demouser')
         ibc.start()
         IB.run()
@@ -116,15 +117,11 @@ class IBC(Object):
         self.terminate()
 
     def start(self):
-        """
-        Launch TWS/IBG.
-        """
+        """Launch TWS/IBG."""
         util.run(self.startAsync())
 
     def terminate(self):
-        """
-        Terminate TWS/IBG.
-        """
+        """Terminate TWS/IBG."""
         util.run(self.terminateAsync())
 
     async def startAsync(self):
@@ -192,6 +189,7 @@ class IBController(Object):
 
     This is not intended to be run in a notebook.
     """
+
     defaults = dict(
         APP='TWS',  # 'TWS' or 'GATEWAY'
         TWS_MAJOR_VRSN='969',
@@ -220,21 +218,15 @@ class IBController(Object):
         self.terminate()
 
     def start(self):
-        """
-        Launch TWS/IBG.
-        """
+        """Launch TWS/IBG."""
         util.run(self.startAsync())
 
     def stop(self):
-        """
-        Cleanly shutdown TWS/IBG.
-        """
+        """Cleanly shutdown TWS/IBG."""
         util.run(self.stopAsync())
 
     def terminate(self):
-        """
-        Terminate TWS/IBG.
-        """
+        """Terminate TWS/IBG."""
         util.run(self.terminateAsync())
 
     async def startAsync(self):
@@ -460,7 +452,7 @@ class Watchdog(Object):
 if __name__ == '__main__':
     asyncio.get_event_loop().set_debug(True)
     util.logToConsole(logging.DEBUG)
-    ibc = IBC(974, gateway=True, tradingMode='paper')
+    ibc = IBC(976, gateway=True, tradingMode='paper')
 #             userid='edemo', password='demouser')
     ib = IB()
     app = Watchdog(ibc, ib, port=4002, appStartupTime=15, appTimeout=10)

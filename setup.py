@@ -1,17 +1,20 @@
-import os
+"""IB-insync setup script."""
+
 import sys
-import codecs
+from pathlib import Path
+
 from setuptools import setup
 
 if sys.version_info < (3, 6, 0):
     raise RuntimeError("ib_insync requires Python 3.6 or higher")
 
-here = os.path.abspath(os.path.dirname(__file__))
+here = Path(__file__).parent.resolve()
 
 __version__ = None
-exec(open(os.path.join(here, 'ib_insync', 'version.py')).read())
+with open(here / 'ib_insync/version.py') as f:
+    exec(f.read())
 
-with codecs.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
+with open(here / 'README.rst', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
@@ -35,5 +38,6 @@ setup(
     keywords='ibapi tws asyncio jupyter interactive brokers async',
     packages=['ib_insync'],
     package_data={'ib_insync': ['py.typed']},
-    install_requires=['eventkit', 'nest_asyncio']
+    install_requires=['eventkit', 'nest_asyncio'],
+    setup_requires=['flake8']
 )

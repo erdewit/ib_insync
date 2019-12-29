@@ -1,18 +1,20 @@
-import struct
+"""Socket client for communicating with Interactive Brokers."""
+
 import asyncio
-import logging
-import time
 import io
+import logging
+import struct
+import time
 from collections import deque
 from typing import List
 
 from eventkit import Event
 
-from .contract import Contract
 from .connection import Connection
+from .contract import Contract
 from .decoder import Decoder
 from .objects import ConnectionStats
-from .util import run, UNSET_INTEGER, UNSET_DOUBLE
+from .util import UNSET_DOUBLE, UNSET_INTEGER, run
 
 __all__ = ['Client']
 
@@ -136,15 +138,11 @@ class Client:
         return self.connState == Client.CONNECTED
 
     def isReady(self) -> bool:
-        """
-        Is the API connection up and running?
-        """
+        """Is the API connection up and running?"""
         return self._readyEvent.is_set()
 
     def connectionStats(self) -> ConnectionStats:
-        """
-        Get statistics about the connection.
-        """
+        """Get statistics about the connection."""
         if not self.isReady():
             raise ConnectionError('Not connected')
         return ConnectionStats(
@@ -154,9 +152,7 @@ class Client:
             self._numMsgRecv, self.conn.numMsgSent)
 
     def getReqId(self) -> int:
-        """
-        Get new request ID.
-        """
+        """Get new request ID."""
         if not self.isReady():
             raise ConnectionError('Not connected')
         newId = self._reqIdSeq
@@ -164,9 +160,7 @@ class Client:
         return newId
 
     def getAccounts(self) -> List[str]:
-        """
-        Get the list of account names that are under management.
-        """
+        """Get the list of account names that are under management."""
         if not self.isReady():
             raise ConnectionError('Not connected')
         return self._accounts
@@ -233,9 +227,7 @@ class Client:
             raise
 
     def disconnect(self):
-        """
-        Disconnect from IB connection.
-        """
+        """Disconnect from IB connection."""
         self.connState = Client.DISCONNECTED
         if self.conn is not None:
             self._logger.info('Disconnecting')
@@ -243,9 +235,7 @@ class Client:
             self.reset()
 
     def send(self, *fields):
-        """
-        Serialize and send the given fields using the IB socket protocol.
-        """
+        """Serialize and send the given fields using the IB socket protocol."""
         if not self.isConnected():
             raise ConnectionError('Not connected')
 

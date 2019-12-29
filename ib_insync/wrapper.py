@@ -1,29 +1,31 @@
+"""Wrapper to handle incoming messages."""
+
 import asyncio
-import logging
 import datetime
+import logging
 from collections import defaultdict
 from contextlib import suppress
 
-from ib_insync.contract import Contract
-from ib_insync.ticker import Ticker
-from ib_insync.order import Order, OrderStatus, Trade
-from ib_insync.objects import (
-    AccountValue, PortfolioItem, Position, TradeLogEntry, PriceIncrement,
-    OptionChain, Fill, CommissionReport, RealTimeBar, Dividends,
-    NewsTick, NewsArticle, NewsBulletin, NewsProvider, HistoricalNews,
-    TickData, HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
-    TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint, FundamentalRatios,
-    MktDepthData, DOMLevel, OptionComputation, ScanData, HistogramData)
 import ib_insync.util as util
-from .util import UNSET_DOUBLE, UNSET_INTEGER
+from ib_insync.contract import Contract
+from ib_insync.objects import (
+    AccountValue, CommissionReport, DOMLevel, Dividends, Fill,
+    FundamentalRatios, HistogramData, HistoricalNews, HistoricalTick,
+    HistoricalTickBidAsk, HistoricalTickLast, MktDepthData, NewsArticle,
+    NewsBulletin, NewsProvider, NewsTick, OptionChain, OptionComputation,
+    PortfolioItem, Position, PriceIncrement, RealTimeBar, ScanData,
+    TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint, TickData,
+    TradeLogEntry
+)
+from ib_insync.order import Order, OrderStatus, Trade
+from ib_insync.ticker import Ticker
 
 __all__ = ['Wrapper']
 
 
 class Wrapper:
-    """
-    Wrapper implementation for use with the IB class.
-    """
+    """Wrapper implementation for use with the IB class."""
+
     def __init__(self, ib):
         self.ib = ib
         self._logger = logging.getLogger('ib_insync.wrapper')
@@ -125,16 +127,12 @@ class Wrapper:
         return reqId
 
     def startSubscription(self, reqId, subscriber, contract=None):
-        """
-        Register a live subscription.
-        """
+        """Register a live subscription."""
         self._reqId2Contract[reqId] = contract
         self.reqId2Subscriber[reqId] = subscriber
 
     def endSubscription(self, subscriber):
-        """
-        Unregister a live subscription.
-        """
+        """Unregister a live subscription."""
         self._reqId2Contract.pop(subscriber.reqId, None)
         self.reqId2Subscriber.pop(subscriber.reqId, None)
 
@@ -361,10 +359,11 @@ class Wrapper:
 
     def execDetails(self, reqId, contract, execution):
         """
-        This wrapper handles both live fills and responses to reqExecutions.
+        This wrapper handles both live fills and responses to
+        reqExecutions.
         """
         self._logger.info(f'execDetails {execution}')
-        if execution.orderId == UNSET_INTEGER:
+        if execution.orderId == util.UNSET_INTEGER:
             # bug in TWS: executions of manual orders have unset value
             execution.orderId = 0
         key = self.orderKey(
@@ -401,9 +400,9 @@ class Wrapper:
         self._endReq(reqId)
 
     def commissionReport(self, commissionReport):
-        if commissionReport.yield_ == UNSET_DOUBLE:
+        if commissionReport.yield_ == util.UNSET_DOUBLE:
             commissionReport.yield_ = 0.0
-        if commissionReport.realizedPNL == UNSET_DOUBLE:
+        if commissionReport.realizedPNL == util.UNSET_DOUBLE:
             commissionReport.realizedPNL = 0.0
         fill = self.fills.get(commissionReport.execId)
         if fill:

@@ -1,9 +1,13 @@
-dist: xenial   # required for Python >= 3.7
+dist: bionic  # ubuntu 18.04
 language: python
 python:
   - "3.6"
   - "3.7"
+  - "3.8"
   - "nightly"
+install:
+  - pip install flake8 mypy
 script:
   - python setup.py build install
-
+  - python setup.py flake8
+  - mypy -p ib_insync

@@ -1,9 +1,13 @@
+"""Order types used by Interactive Brokers."""
+
 from typing import Any, List, Optional
 
 from eventkit import Event
 
 from .contract import Contract
-from .objects import Fill, Object, OrderComboLeg, SoftDollarTier, TagValue, TradeLogEntry
+from .objects import (
+    Fill, Object, OrderComboLeg, SoftDollarTier, TagValue, TradeLogEntry
+)
 from .util import UNSET_DOUBLE, UNSET_INTEGER
 
 __all__ = (
@@ -191,6 +195,7 @@ class Order(Object):
 
     https://interactivebrokers.github.io/tws-api/available_orders.html
     """
+
     defaults = dict(
         orderId=0,
         clientId=0,
@@ -530,6 +535,7 @@ class Trade(Object):
         * ``cancelEvent`` (trade: :class:`.Trade`)
         * ``cancelledEvent`` (trade: :class:`.Trade`)
     """
+
     events = (
         'statusEvent', 'modifyEvent', 'fillEvent',
         'commissionReportEvent', 'filledEvent',
@@ -561,21 +567,15 @@ class Trade(Object):
         self.cancelledEvent = Event('cancelledEvent')
 
     def isActive(self):
-        """
-        True if eligible for execution, false otherwise.
-        """
+        """True if eligible for execution, false otherwise."""
         return self.orderStatus.status in OrderStatus.ActiveStates
 
     def isDone(self):
-        """
-        True if completely filled or cancelled, false otherwise.
-        """
+        """True if completely filled or cancelled, false otherwise."""
         return self.orderStatus.status in OrderStatus.DoneStates
 
     def filled(self):
-        """
-        Number of shares filled.
-        """
+        """Number of shares filled."""
         fills = self.fills
         if self.contract.secType == 'BAG':
             # don't count fills for the leg contracts
@@ -583,7 +583,5 @@ class Trade(Object):
         return sum(f.execution.shares for f in fills)
 
     def remaining(self):
-        """
-        Number of shares remaining to be filled.
-        """
+        """Number of shares remaining to be filled."""
         return self.order.totalQuantity - self.filled()

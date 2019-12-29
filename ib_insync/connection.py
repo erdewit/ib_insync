@@ -1,10 +1,11 @@
+"""Event-driven socket connection."""
+
 import asyncio
 
 
 class Connection(asyncio.Protocol):
-    """
-    Socket connection.
-    """
+    """Socket connection."""
+
     def __init__(self, host, port):
         self.host = host
         self.port = port

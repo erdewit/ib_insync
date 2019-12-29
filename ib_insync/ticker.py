@@ -1,10 +1,16 @@
+"""Access to realtime market information."""
+
 from datetime import datetime
 from typing import List, Optional, Union
 
 from eventkit import Event, Op
 
 from ib_insync.contract import Contract
-from ib_insync.objects import BarList, Dividends, DOMLevel, FundamentalRatios, MktDepthData, Object, OptionComputation, TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint, TickData
+from ib_insync.objects import (
+    BarList, DOMLevel, Dividends, FundamentalRatios, MktDepthData, Object,
+    OptionComputation, TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
+    TickData
+)
 from ib_insync.util import isNan
 
 __all__ = ['Ticker']
@@ -153,7 +159,8 @@ class Ticker(Object):
     dividends: Optional[Dividends]
     fundamentalRatios: Optional[FundamentalRatios]
     ticks: Optional[List[TickData]]
-    tickByTicks: Optional[List[Union[TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint]]]
+    tickByTicks: Optional[List[Union[
+        TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint]]]
     domBids: Optional[List[DOMLevel]]
     domAsks: Optional[List[DOMLevel]]
     domTicks: Optional[List[MktDepthData]]
@@ -176,9 +183,7 @@ class Ticker(Object):
         return id(self)
 
     def hasBidAsk(self) -> bool:
-        """
-        See if this ticker has a valid bid and ask.
-        """
+        """See if this ticker has a valid bid and ask."""
         return (
             self.bid != -1 and not isNan(self.bid) and self.bidSize > 0
             and self.ask != -1 and not isNan(self.ask) and self.askSize > 0)
@@ -210,40 +215,29 @@ class TickerUpdateEvent(Event):
     __slots__ = ()
 
     def trades(self) -> "Tickfilter":
-        """
-        Emit trade ticks.
-        """
+        """Emit trade ticks."""
         return Tickfilter((4, 5, 48, 68, 71), self)
 
     def bids(self) -> "Tickfilter":
-        """
-        Emit bid ticks.
-        """
+        """Emit bid ticks."""
         return Tickfilter((0, 1, 66, 69), self)
 
     def asks(self) -> "Tickfilter":
-        """
-        Emit ask ticks.
-        """
+        """Emit ask ticks."""
         return Tickfilter((2, 3, 67, 70), self)
 
     def bidasks(self) -> "Tickfilter":
-        """
-        Emit bid and ask ticks.
-        """
+        """Emit bid and ask ticks."""
         return Tickfilter((0, 1, 66, 69, 2, 3, 67, 70), self)
 
     def midpoints(self) -> "Tickfilter":
-        """
-        Emit midpoint ticks.
-        """
+        """Emit midpoint ticks."""
         return Midpoints((), self)
 
 
 class Tickfilter(Op):
-    """
-    Tick filtering event operators that ``emit(time, price, size)``.
-    """
+    """Tick filtering event operators that ``emit(time, price, size)``."""
+
     __slots__ = ('_tickTypes',)
 
     def __init__(self, tickTypes, source=None):

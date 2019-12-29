@@ -1,11 +1,13 @@
-import time
+"""Access to account statement webservice."""
+
 import logging
+import time
+import xml.etree.ElementTree as et
 from contextlib import suppress
 from urllib.request import urlopen
-import xml.etree.ElementTree as et
 
-from ib_insync.objects import DynamicObject
 from ib_insync import util
+from ib_insync.objects import DynamicObject
 
 __all__ = ('FlexReport', 'FlexError')
 
@@ -47,9 +49,7 @@ class FlexReport:
             self.load(path)
 
     def topics(self):
-        """
-        Get the set of topics that can be extracted from this report.
-        """
+        """Get the set of topics that can be extracted from this report."""
         return set(node.tag for node in self.root.iter() if node.attrib)
 
     def extract(self, topic: str, parseNumbers=True) -> list:
@@ -71,15 +71,11 @@ class FlexReport:
         return results
 
     def df(self, topic: str, parseNumbers=True):
-        """
-        Same as extract but return the result as a pandas DataFrame.
-        """
+        """Same as extract but return the result as a pandas DataFrame."""
         return util.df(self.extract(topic, parseNumbers))
 
     def download(self, token, queryId):
-        """
-        Download report for the given ``token`` and ``queryId``.
-        """
+        """Download report for the given ``token`` and ``queryId``."""
         url = (
             'https://gdcdyn.interactivebrokers.com'
             f'/Universal/servlet/FlexStatementService.SendRequest?'
@@ -114,17 +110,13 @@ class FlexReport:
         _logger.info('Statement retrieved.')
 
     def load(self, path):
-        """
-        Load report from XML file.
-        """
+        """Load report from XML file."""
         with open(path, 'rb') as f:
             self.data = f.read()
             self.root = et.fromstring(self.data)
 
     def save(self, path):
-        """
-        Save report to XML file.
-        """
+        """Save report to XML file."""
         with open(path, 'wb') as f:
             f.write(self.data)
 
