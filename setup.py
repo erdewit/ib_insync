@@ -34,5 +34,6 @@ setup(
     ],
     keywords='ibapi tws asyncio jupyter interactive brokers async',
     packages=['ib_insync'],
+    package_data={'ib_insync': ['py.typed']},
     install_requires=['eventkit', 'nest_asyncio']
 )
