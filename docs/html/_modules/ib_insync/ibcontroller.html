@@ -155,29 +155,32 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ib_insync.ibcontroller</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="sd">&quot;&quot;&quot;Programmatic control over the TWS/gateway client software.&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">configparser</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">suppress</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="k">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">eventkit</span> <span class="k">import</span> <span class="n">Event</span>
 
-<span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="n">Object</span>
+<span class="kn">import</span> <span class="nn">ib_insync.util</span> <span class="k">as</span> <span class="nn">util</span>
 <span class="kn">from</span> <span class="nn">ib_insync.contract</span> <span class="k">import</span> <span class="n">Forex</span>
 <span class="kn">from</span> <span class="nn">ib_insync.ib</span> <span class="k">import</span> <span class="n">IB</span>
-<span class="kn">import</span> <span class="nn">ib_insync.util</span> <span class="k">as</span> <span class="nn">util</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IBC&#39;</span><span class="p">,</span> <span class="s1">&#39;IBController&#39;</span><span class="p">,</span> <span class="s1">&#39;Watchdog&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="IBC"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC">[docs]</a><span class="k">class</span> <span class="nc">IBC</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="IBC"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">IBC</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Programmatic control over starting and stopping TWS/Gateway</span>
 <span class="sd">    using IBC (https://github.com/IbcAlpha/IBC).</span>
 
 <span class="sd">    Args:</span>
-
 <span class="sd">        twsVersion (int): (required) The major version number for</span>
 <span class="sd">            TWS or gateway.</span>
 <span class="sd">        gateway (bool):</span>
@@ -192,7 +195,7 @@
 
 <span class="sd">            * Linux:    ~/Jts</span>
 <span class="sd">            * OS X:     ~/Applications</span>
-<span class="sd">            * Windows:  C:\\\\Jts</span>
+<span class="sd">            * Windows:  C:\\Jts</span>
 <span class="sd">        twsSettingsPath (str): Path to the TWS settings folder.</span>
 <span class="sd">            Defaults:</span>
 
@@ -204,13 +207,13 @@
 
 <span class="sd">            * Linux:     /opt/ibc</span>
 <span class="sd">            * OS X:      /opt/ibc</span>
-<span class="sd">            * Windows:   C:\\\\IBC</span>
+<span class="sd">            * Windows:   C:\\IBC</span>
 <span class="sd">        ibcIni (str): Path to the IBC configuration file.</span>
 <span class="sd">            Defaults:</span>
 
 <span class="sd">            * Linux:     ~/ibc/config.ini</span>
 <span class="sd">            * OS X:      ~/ibc/config.ini</span>
-<span class="sd">            * Windows:   %%HOMEPATH%%\\\\Documents\\\\IBC\\\\config.ini</span>
+<span class="sd">            * Windows:   %%HOMEPATH%%\\Documents\IBC\\config.ini</span>
 <span class="sd">        javaPath (str): Path to Java executable.</span>
 <span class="sd">            Default is to use the Java VM included with TWS/gateway.</span>
 <span class="sd">        fixuserid (str): FIX account user id (gateway only).</span>
@@ -230,34 +233,28 @@
 
 <span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        ibc = IBC(974, gateway=True, tradingMode=&#39;live&#39;,</span>
+<span class="sd">        ibc = IBC(976, gateway=True, tradingMode=&#39;live&#39;,</span>
 <span class="sd">            userid=&#39;edemo&#39;, password=&#39;demouser&#39;)</span>
 <span class="sd">        ibc.start()</span>
 <span class="sd">        IB.run()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">IbcLogLevel</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
+    <span class="n">IbcLogLevel</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
 
-    <span class="n">_Args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-        <span class="c1"># key=(Default, UnixArg, WindowsArg)</span>
-        <span class="n">twsVersion</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
-        <span class="n">gateway</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;--gateway&#39;</span><span class="p">,</span> <span class="s1">&#39;/Gateway&#39;</span><span class="p">),</span>
-        <span class="n">tradingMode</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;--mode=&#39;</span><span class="p">,</span> <span class="s1">&#39;/Mode:&#39;</span><span class="p">),</span>
-        <span class="n">twsPath</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;--tws-path=&#39;</span><span class="p">,</span> <span class="s1">&#39;/TwsPath:&#39;</span><span class="p">),</span>
-        <span class="n">twsSettingsPath</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;--tws-settings-path=&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
-        <span class="n">ibcPath</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;--ibc-path=&#39;</span><span class="p">,</span> <span class="s1">&#39;/IbcPath:&#39;</span><span class="p">),</span>
-        <span class="n">ibcIni</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;--ibc-ini=&#39;</span><span class="p">,</span> <span class="s1">&#39;/Config:&#39;</span><span class="p">),</span>
-        <span class="n">javaPath</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;--java-path=&#39;</span><span class="p">,</span> <span class="s1">&#39;/JavaPath:&#39;</span><span class="p">),</span>
-        <span class="n">userid</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;--user=&#39;</span><span class="p">,</span> <span class="s1">&#39;/User:&#39;</span><span class="p">),</span>
-        <span class="n">password</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;--pw=&#39;</span><span class="p">,</span> <span class="s1">&#39;/PW:&#39;</span><span class="p">),</span>
-        <span class="n">fixuserid</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;--fix-user=&#39;</span><span class="p">,</span> <span class="s1">&#39;/FIXUser:&#39;</span><span class="p">),</span>
-        <span class="n">fixpassword</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;--fix-pw=&#39;</span><span class="p">,</span> <span class="s1">&#39;/FIXPW:&#39;</span><span class="p">))</span>
+    <span class="n">twsVersion</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">gateway</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">tradingMode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">twsPath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">twsSettingsPath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">ibcPath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">ibcIni</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">javaPath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">userid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">fixuserid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">fixpassword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
-    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_Args</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;_proc&#39;</span><span class="p">,</span> <span class="s1">&#39;_logger&#39;</span><span class="p">,</span> <span class="s1">&#39;_monitor&#39;</span><span class="p">,</span> <span class="s1">&#39;_isWindows&#39;</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_isWindows</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibcPath</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ibcPath</span> <span class="o">=</span> <span class="s1">&#39;/opt/ibc&#39;</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isWindows</span> <span class="k">else</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">IBC&#39;</span>
@@ -273,15 +270,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
 
 <div class="viewcode-block" id="IBC.start"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Launch TWS/IBG.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Launch TWS/IBG.&quot;&quot;&quot;</span>
         <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IBC.terminate"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.terminate">[docs]</a>    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Terminate TWS/IBG.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Terminate TWS/IBG.&quot;&quot;&quot;</span>
         <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminateAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IBC.startAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.startAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">startAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -289,12 +282,27 @@
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting&#39;</span><span class="p">)</span>
 
+        <span class="c1"># map from field names to cmd arguments; key=(UnixArg, WindowsArg)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">twsVersion</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+            <span class="n">gateway</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;--gateway&#39;</span><span class="p">,</span> <span class="s1">&#39;/Gateway&#39;</span><span class="p">),</span>
+            <span class="n">tradingMode</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;--mode=&#39;</span><span class="p">,</span> <span class="s1">&#39;/Mode:&#39;</span><span class="p">),</span>
+            <span class="n">twsPath</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;--tws-path=&#39;</span><span class="p">,</span> <span class="s1">&#39;/TwsPath:&#39;</span><span class="p">),</span>
+            <span class="n">twsSettingsPath</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;--tws-settings-path=&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+            <span class="n">ibcPath</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;--ibc-path=&#39;</span><span class="p">,</span> <span class="s1">&#39;/IbcPath:&#39;</span><span class="p">),</span>
+            <span class="n">ibcIni</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;--ibc-ini=&#39;</span><span class="p">,</span> <span class="s1">&#39;/Config:&#39;</span><span class="p">),</span>
+            <span class="n">javaPath</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;--java-path=&#39;</span><span class="p">,</span> <span class="s1">&#39;/JavaPath:&#39;</span><span class="p">),</span>
+            <span class="n">userid</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;--user=&#39;</span><span class="p">,</span> <span class="s1">&#39;/User:&#39;</span><span class="p">),</span>
+            <span class="n">password</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;--pw=&#39;</span><span class="p">,</span> <span class="s1">&#39;/PW:&#39;</span><span class="p">),</span>
+            <span class="n">fixuserid</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;--fix-user=&#39;</span><span class="p">,</span> <span class="s1">&#39;/FIXUser:&#39;</span><span class="p">),</span>
+            <span class="n">fixpassword</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;--fix-pw=&#39;</span><span class="p">,</span> <span class="s1">&#39;/FIXPW:&#39;</span><span class="p">))</span>
+
         <span class="c1"># create shell command</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.ibcPath}</span><span class="se">\\</span><span class="s1">scripts</span><span class="se">\\</span><span class="s1">StartIBC.bat&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isWindows</span> <span class="k">else</span>
             <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.ibcPath}</span><span class="s1">/scripts/ibcstart.sh&#39;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">arg</span> <span class="o">=</span> <span class="n">IBC</span><span class="o">.</span><span class="n">_Args</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">2</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isWindows</span> <span class="k">else</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">util</span><span class="o">.</span><span class="n">dataclassAsDict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_isWindows</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">v</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">arg</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
                     <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{arg}{v}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -333,7 +341,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">IBC</span><span class="o">.</span><span class="n">IbcLogLevel</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span></div></div>
 
 
-<div class="viewcode-block" id="IBController"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBController">[docs]</a><span class="k">class</span> <span class="nc">IBController</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+<div class="viewcode-block" id="IBController"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBController">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">IBController</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    For new installations it is recommended to use IBC instead.</span>
 
@@ -349,22 +358,20 @@
 
 <span class="sd">    This is not intended to be run in a notebook.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-        <span class="n">APP</span><span class="o">=</span><span class="s1">&#39;TWS&#39;</span><span class="p">,</span>  <span class="c1"># &#39;TWS&#39; or &#39;GATEWAY&#39;</span>
-        <span class="n">TWS_MAJOR_VRSN</span><span class="o">=</span><span class="s1">&#39;969&#39;</span><span class="p">,</span>
-        <span class="n">TRADING_MODE</span><span class="o">=</span><span class="s1">&#39;live&#39;</span><span class="p">,</span>  <span class="c1"># &#39;live&#39; or &#39;paper&#39;</span>
-        <span class="n">IBC_INI</span><span class="o">=</span><span class="s1">&#39;~/IBController/IBController.ini&#39;</span><span class="p">,</span>
-        <span class="n">IBC_PATH</span><span class="o">=</span><span class="s1">&#39;~/IBController&#39;</span><span class="p">,</span>
-        <span class="n">TWS_PATH</span><span class="o">=</span><span class="s1">&#39;~/Jts&#39;</span><span class="p">,</span>
-        <span class="n">LOG_PATH</span><span class="o">=</span><span class="s1">&#39;~/IBController/Logs&#39;</span><span class="p">,</span>
-        <span class="n">TWSUSERID</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">TWSPASSWORD</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">JAVA_PATH</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">TWS_CONFIG_PATH</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;_proc&#39;</span><span class="p">,</span> <span class="s1">&#39;_logger&#39;</span><span class="p">,</span> <span class="s1">&#39;_monitor&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">APP</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;TWS&#39;</span>  <span class="c1"># &#39;TWS&#39; or &#39;GATEWAY&#39;</span>
+    <span class="n">TWS_MAJOR_VRSN</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;969&#39;</span>
+    <span class="n">TRADING_MODE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;live&#39;</span>  <span class="c1"># &#39;live&#39; or &#39;paper&#39;</span>
+    <span class="n">IBC_INI</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;~/IBController/IBController.ini&#39;</span>
+    <span class="n">IBC_PATH</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;~/IBController&#39;</span>
+    <span class="n">TWS_PATH</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;~/Jts&#39;</span>
+    <span class="n">LOG_PATH</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;~/IBController/Logs&#39;</span>
+    <span class="n">TWSUSERID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">TWSPASSWORD</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">JAVA_PATH</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">TWS_CONFIG_PATH</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.IBController&#39;</span><span class="p">)</span>
@@ -377,21 +384,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
 
 <div class="viewcode-block" id="IBController.start"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBController.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Launch TWS/IBG.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Launch TWS/IBG.&quot;&quot;&quot;</span>
         <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IBController.stop"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBController.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Cleanly shutdown TWS/IBG.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Cleanly shutdown TWS/IBG.&quot;&quot;&quot;</span>
         <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stopAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IBController.terminate"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBController.terminate">[docs]</a>    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Terminate TWS/IBG.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Terminate TWS/IBG.&quot;&quot;&quot;</span>
         <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminateAsync</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="IBController.startAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBController.startAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">startAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -400,13 +401,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting&#39;</span><span class="p">)</span>
 
         <span class="c1"># expand paths</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">dataclassAsDict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_PATH&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_INI&#39;</span><span class="p">):</span>
                 <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;TWS_CONFIG_PATH&#39;</span><span class="p">]:</span>
             <span class="n">d</span><span class="p">[</span><span class="s1">&#39;TWS_CONFIG_PATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;TWS_PATH&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
 
         <span class="c1"># run shell command</span>
         <span class="n">ext</span> <span class="o">=</span> <span class="s1">&#39;bat&#39;</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span> <span class="k">else</span> <span class="s1">&#39;sh&#39;</span>
@@ -455,7 +456,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span></div></div>
 
 
-<div class="viewcode-block" id="Watchdog"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog">[docs]</a><span class="k">class</span> <span class="nc">Watchdog</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+<div class="viewcode-block" id="Watchdog"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Watchdog</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Start, connect and watch over the TWS or gateway app and try to keep it</span>
 <span class="sd">    up and running. It is intended to be used in an event-driven</span>
@@ -513,20 +515,17 @@
         <span class="s1">&#39;startingEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;startedEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;stoppingEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;stoppedEvent&#39;</span><span class="p">,</span>
         <span class="s1">&#39;softTimeoutEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;hardTimeoutEvent&#39;</span><span class="p">]</span>
 
-    <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-        <span class="n">controller</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">ib</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
-        <span class="n">port</span><span class="o">=</span><span class="s1">&#39;7497&#39;</span><span class="p">,</span>
-        <span class="n">clientId</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">connectTimeout</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">appStartupTime</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-        <span class="n">appTimeout</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-        <span class="n">retryDelay</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="n">events</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;_runner&#39;</span><span class="p">,</span> <span class="s1">&#39;_logger&#39;</span><span class="p">]</span>
+    <span class="n">controller</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">IBC</span><span class="p">,</span> <span class="n">IBController</span><span class="p">]</span>
+    <span class="n">ib</span><span class="p">:</span> <span class="n">IB</span>
+    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>
+    <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7497</span>
+    <span class="n">clientId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">connectTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">appStartupTime</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">appTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">retryDelay</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">Object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">startingEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;startingEvent&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">startedEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;startedEvent&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stoppingEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;stoppingEvent&#39;</span><span class="p">)</span>
@@ -617,7 +616,7 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">set_debug</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">util</span><span class="o">.</span><span class="n">logToConsole</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-    <span class="n">ibc</span> <span class="o">=</span> <span class="n">IBC</span><span class="p">(</span><span class="mi">974</span><span class="p">,</span> <span class="n">gateway</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tradingMode</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">)</span>
+    <span class="n">ibc</span> <span class="o">=</span> <span class="n">IBC</span><span class="p">(</span><span class="mi">976</span><span class="p">,</span> <span class="n">gateway</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tradingMode</span><span class="o">=</span><span class="s1">&#39;paper&#39;</span><span class="p">)</span>
 <span class="c1">#             userid=&#39;edemo&#39;, password=&#39;demouser&#39;)</span>
     <span class="n">ib</span> <span class="o">=</span> <span class="n">IB</span><span class="p">()</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">Watchdog</span><span class="p">(</span><span class="n">ibc</span><span class="p">,</span> <span class="n">ib</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">4002</span><span class="p">,</span> <span class="n">appStartupTime</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">appTimeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>

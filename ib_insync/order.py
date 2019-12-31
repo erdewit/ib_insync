@@ -1,478 +1,169 @@
 """Order types used by Interactive Brokers."""
 
-from typing import Any, List, Optional
+from dataclasses import dataclass, field
+from typing import ClassVar, List, Optional
 
 from eventkit import Event
 
 from .contract import Contract
-from .objects import (
-    Fill, Object, OrderComboLeg, SoftDollarTier, TagValue, TradeLogEntry
-)
-from .util import UNSET_DOUBLE, UNSET_INTEGER
+from .objects import Fill, SoftDollarTier, TagValue, TradeLogEntry
+from .util import UNSET_DOUBLE, UNSET_INTEGER, dataclassNonDefaults
 
 __all__ = (
-    'Trade OrderStatus Order '
-    'LimitOrder MarketOrder StopOrder StopLimitOrder '
+    'Trade Order OrderStatus OrderState OrderComboLeg '
+    'LimitOrder MarketOrder StopOrder StopLimitOrder BracketOrder '
     'OrderCondition ExecutionCondition MarginCondition TimeCondition '
     'PriceCondition PercentChangeCondition VolumeCondition').split()
 
 
-class OrderCondition(Object):
-    __slots__ = ()
-
-    @staticmethod
-    def createClass(condType):
-        d = {
-            1: PriceCondition,
-            3: TimeCondition,
-            4: MarginCondition,
-            5: ExecutionCondition,
-            6: VolumeCondition,
-            7: PercentChangeCondition}
-        return d[condType]
-
-    def __repr__(self):
-        clsName = self.__class__.__qualname__
-        kwargs = ', '.join(f'{k}={v!r}' for k, v in self.dict().items())
-        return f'{clsName}({kwargs})'
-
-    def And(self):
-        self.conjunction = 'a'
-        return self
-
-    def Or(self):
-        self.conjunction = 'o'
-        return self
-
-
-class PriceCondition(OrderCondition):
-    defaults = dict(
-        condType=1,
-        conjunction='a',
-        isMore=True,
-        price=0.0,
-        conId=0,
-        exch='',
-        triggerMethod=0)
-    __slots__ = defaults.keys()
-
-    condType: int
-    conjunction: str
-    isMore: bool
-    price: float
-    conId: int
-    exch: str
-    triggerMethod: int
-
-
-class TimeCondition(OrderCondition):
-    defaults = dict(
-        condType=3,
-        conjunction='a',
-        isMore=True,
-        time='')
-    __slots__ = defaults.keys()
-
-    condType: int
-    conjunction: str
-    isMore: bool
-    time: str
-
-
-class MarginCondition(OrderCondition):
-    defaults = dict(
-        condType=4,
-        conjunction='a',
-        isMore=True,
-        percent=0)
-    __slots__ = defaults.keys()
-
-    condType: int
-    conjunction: str
-    isMore: bool
-    percent: int
-
-
-class ExecutionCondition(OrderCondition):
-    defaults = dict(
-        condType=5,
-        conjunction='a',
-        secType='',
-        exch='',
-        symbol='')
-    __slots__ = defaults.keys()
-
-    condType: int
-    conjunction: str
-    secType: str
-    exch: str
-    symbol: str
-
-
-class VolumeCondition(OrderCondition):
-    defaults = dict(
-        condType=6,
-        conjunction='a',
-        isMore=True,
-        volume=0,
-        conId=0,
-        exch='')
-    __slots__ = defaults.keys()
-
-    condType: int
-    conjunction: str
-    isMore: bool
-    volume: int
-    conId: int
-    exch: str
-
-
-class PercentChangeCondition(OrderCondition):
-    defaults = dict(
-        condType=7,
-        conjunction='a',
-        isMore=True,
-        changePercent=0.0,
-        conId=0,
-        exch='')
-    __slots__ = defaults.keys()
-
-    condType: int
-    conjunction: str
-    isMore: bool
-    changePercent: float
-    conId: int
-    exch: str
-
-
-class OrderStatus(Object):
-    defaults = dict(
-        orderId=0,
-        status='',
-        filled=0,
-        remaining=0,
-        avgFillPrice=0.0,
-        permId=0,
-        parentId=0,
-        lastFillPrice=0.0,
-        clientId=0,
-        whyHeld='',
-        mktCapPrice=0.0,
-        lastLiquidity=0
-    )
-    __slots__ = defaults.keys()
-
-    orderId: int
-    status: str
-    filled: int
-    remaining: int
-    avgFillPrice: float
-    permId: int
-    parentId: int
-    lastFillPrice: float
-    clientId: int
-    whyHeld: str
-    mktCapPrice: float
-    lastLiquidity: int
-
-    PendingSubmit = 'PendingSubmit'
-    PendingCancel = 'PendingCancel'
-    PreSubmitted = 'PreSubmitted'
-    Submitted = 'Submitted'
-    ApiPending = 'ApiPending'
-    ApiCancelled = 'ApiCancelled'
-    Cancelled = 'Cancelled'
-    Filled = 'Filled'
-    Inactive = 'Inactive'
-
-    DoneStates = {'Filled', 'Cancelled', 'ApiCancelled'}
-    ActiveStates = {'PendingSubmit', 'ApiPending', 'PreSubmitted', 'Submitted'}
-
-
-class Order(Object):
+@dataclass
+class Order:
     """
     Order for trading contracts.
 
     https://interactivebrokers.github.io/tws-api/available_orders.html
     """
 
-    defaults = dict(
-        orderId=0,
-        clientId=0,
-        permId=0,
-        action='',
-        totalQuantity=0.0,
-        orderType='',
-        lmtPrice=UNSET_DOUBLE,
-        auxPrice=UNSET_DOUBLE,
-        tif='',
-        activeStartTime='',
-        activeStopTime='',
-        ocaGroup='',
-        ocaType=0,
-        orderRef='',
-        transmit=True,
-        parentId=0,
-        blockOrder=False,
-        sweepToFill=False,
-        displaySize=0,
-        triggerMethod=0,
-        outsideRth=False,
-        hidden=False,
-        goodAfterTime='',
-        goodTillDate='',
-        rule80A='',
-        allOrNone=False,
-        minQty=UNSET_INTEGER,
-        percentOffset=UNSET_DOUBLE,
-        overridePercentageConstraints=False,
-        trailStopPrice=UNSET_DOUBLE,
-        trailingPercent=UNSET_DOUBLE,
-        faGroup='',
-        faProfile='',
-        faMethod='',
-        faPercentage='',
-        designatedLocation='',
-        openClose="O",
-        origin=0,
-        shortSaleSlot=0,
-        exemptCode=-1,
-        discretionaryAmt=0,
-        eTradeOnly=True,
-        firmQuoteOnly=True,
-        nbboPriceCap=UNSET_DOUBLE,
-        optOutSmartRouting=False,
-        auctionStrategy=0,
-        startingPrice=UNSET_DOUBLE,
-        stockRefPrice=UNSET_DOUBLE,
-        delta=UNSET_DOUBLE,
-        stockRangeLower=UNSET_DOUBLE,
-        stockRangeUpper=UNSET_DOUBLE,
-        randomizePrice=False,
-        randomizeSize=False,
-        volatility=UNSET_DOUBLE,
-        volatilityType=UNSET_INTEGER,
-        deltaNeutralOrderType='',
-        deltaNeutralAuxPrice=UNSET_DOUBLE,
-        deltaNeutralConId=0,
-        deltaNeutralSettlingFirm='',
-        deltaNeutralClearingAccount='',
-        deltaNeutralClearingIntent='',
-        deltaNeutralOpenClose='',
-        deltaNeutralShortSale=False,
-        deltaNeutralShortSaleSlot=0,
-        deltaNeutralDesignatedLocation='',
-        continuousUpdate=False,
-        referencePriceType=UNSET_INTEGER,
-        basisPoints=UNSET_DOUBLE,
-        basisPointsType=UNSET_INTEGER,
-        scaleInitLevelSize=UNSET_INTEGER,
-        scaleSubsLevelSize=UNSET_INTEGER,
-        scalePriceIncrement=UNSET_DOUBLE,
-        scalePriceAdjustValue=UNSET_DOUBLE,
-        scalePriceAdjustInterval=UNSET_INTEGER,
-        scaleProfitOffset=UNSET_DOUBLE,
-        scaleAutoReset=False,
-        scaleInitPosition=UNSET_INTEGER,
-        scaleInitFillQty=UNSET_INTEGER,
-        scaleRandomPercent=False,
-        scaleTable='',
-        hedgeType='',
-        hedgeParam='',
-        account='',
-        settlingFirm='',
-        clearingAccount='',
-        clearingIntent='',
-        algoStrategy='',
-        algoParams=None,
-        smartComboRoutingParams=None,
-        algoId='',
-        whatIf=False,
-        notHeld=False,
-        solicited=False,
-        modelCode='',
-        orderComboLegs=None,
-        orderMiscOptions=None,
-        referenceContractId=0,
-        peggedChangeAmount=0.0,
-        isPeggedChangeAmountDecrease=False,
-        referenceChangeAmount=0.0,
-        referenceExchangeId='',
-        adjustedOrderType='',
-        triggerPrice=UNSET_DOUBLE,
-        adjustedStopPrice=UNSET_DOUBLE,
-        adjustedStopLimitPrice=UNSET_DOUBLE,
-        adjustedTrailingAmount=UNSET_DOUBLE,
-        adjustableTrailingUnit=0,
-        lmtPriceOffset=UNSET_DOUBLE,
-        conditions=None,
-        conditionsCancelOrder=False,
-        conditionsIgnoreRth=False,
-        extOperator='',
-        softDollarTier=None,
-        cashQty=UNSET_DOUBLE,
-        mifid2DecisionMaker='',
-        mifid2DecisionAlgo='',
-        mifid2ExecutionTrader='',
-        mifid2ExecutionAlgo='',
-        dontUseAutoPriceForHedge=False,
-        isOmsContainer=False,
-        discretionaryUpToLimitPrice=False,
-        autoCancelDate='',
-        filledQuantity=UNSET_DOUBLE,
-        refFuturesConId=0,
-        autoCancelParent=False,
-        shareholder='',
-        imbalanceOnly=False,
-        routeMarketableToBbo=False,
-        parentPermId=0,
-        usePriceMgmtAlgo=False)
-    __slots__ = defaults.keys()
-
-    orderId: int
-    clientId: int
-    permId: int
-    action: str
-    totalQuantity: float
-    orderType: str
-    lmtPrice: float
-    auxPrice: float
-    tif: str
-    activeStartTime: str
-    activeStopTime: str
-    ocaGroup: str
-    ocaType: int
-    orderRef: str
-    transmit: bool
-    parentId: int
-    blockOrder: bool
-    sweepToFill: bool
-    displaySize: int
-    triggerMethod: int
-    outsideRth: bool
-    hidden: bool
-    goodAfterTime: str
-    goodTillDate: str
-    rule80A: str
-    allOrNone: bool
-    minQty: int
-    percentOffset: float
-    overridePercentageConstraints: bool
-    trailStopPrice: float
-    trailingPercent: float
-    faGroup: str
-    faProfile: str
-    faMethod: str
-    faPercentage: str
-    designatedLocation: str
-    openClose: str
-    origin: int
-    shortSaleSlot: int
-    exemptCode: int
-    discretionaryAmt: int
-    eTradeOnly: bool
-    firmQuoteOnly: bool
-    nbboPriceCap: float
-    optOutSmartRouting: bool
-    auctionStrategy: int
-    startingPrice: float
-    stockRefPrice: float
-    delta: float
-    stockRangeLower: float
-    stockRangeUpper: float
-    randomizePrice: bool
-    randomizeSize: bool
-    volatility: float
-    volatilityType: int
-    deltaNeutralOrderType: str
-    deltaNeutralAuxPrice: float
-    deltaNeutralConId: int
-    deltaNeutralSettlingFirm: str
-    deltaNeutralClearingAccount: str
-    deltaNeutralClearingIntent: str
-    deltaNeutralOpenClose: str
-    deltaNeutralShortSale: bool
-    deltaNeutralShortSaleSlot: int
-    deltaNeutralDesignatedLocation: str
-    continuousUpdate: bool
-    referencePriceType: int
-    basisPoints: float
-    basisPointsType: int
-    scaleInitLevelSize: int
-    scaleSubsLevelSize: int
-    scalePriceIncrement: float
-    scalePriceAdjustValue: float
-    scalePriceAdjustInterval: int
-    scaleProfitOffset: float
-    scaleAutoReset: bool
-    scaleInitPosition: int
-    scaleInitFillQty: int
-    scaleRandomPercent: bool
-    scaleTable: str
-    hedgeType: str
-    hedgeParam: str
-    account: str
-    settlingFirm: str
-    clearingAccount: str
-    clearingIntent: str
-    algoStrategy: str
-    algoParams: Optional[List[TagValue]]
-    smartComboRoutingParams: Optional[List[TagValue]]
-    algoId: str
-    whatIf: bool
-    notHeld: bool
-    solicited: bool
-    modelCode: str
-    orderComboLegs: Optional[List[OrderComboLeg]]
-    orderMiscOptions: Optional[Any]
-    referenceContractId: int
-    peggedChangeAmount: float
-    isPeggedChangeAmountDecrease: bool
-    referenceChangeAmount: float
-    referenceExchangeId: str
-    adjustedOrderType: str
-    triggerPrice: float
-    adjustedStopPrice: float
-    adjustedStopLimitPrice: float
-    adjustedTrailingAmount: float
-    adjustableTrailingUnit: int
-    lmtPriceOffset: float
-    conditions: Optional[List[OrderCondition]]
-    conditionsCancelOrder: bool
-    conditionsIgnoreRth: bool
-    extOperator: str
-    softDollarTier: Optional[SoftDollarTier]
-    cashQty: float
-    mifid2DecisionMaker: str
-    mifid2DecisionAlgo: str
-    mifid2ExecutionTrader: str
-    mifid2ExecutionAlgo: str
-    dontUseAutoPriceForHedge: bool
-    isOmsContainer: bool
-    discretionaryUpToLimitPrice: bool
-    autoCancelDate: str
-    filledQuantity: float
-    refFuturesConId: int
-    autoCancelParent: bool
-    shareholder: str
-    imbalanceOnly: bool
-    routeMarketableToBbo: bool
-    parentPermId: int
-    usePriceMgmtAlgo: bool
-
-    def __init__(self, *args, **kwargs):
-        Object.__init__(self, *args, **kwargs)
-        if not self.conditions:
-            self.conditions = []
-        if not self.softDollarTier:
-            self.softDollarTier = SoftDollarTier()
+    orderId: int = 0
+    clientId: int = 0
+    permId: int = 0
+    action: str = ''
+    totalQuantity: float = 0.0
+    orderType: str = ''
+    lmtPrice: float = UNSET_DOUBLE
+    auxPrice: float = UNSET_DOUBLE
+    tif: str = ''
+    activeStartTime: str = ''
+    activeStopTime: str = ''
+    ocaGroup: str = ''
+    ocaType: int = 0
+    orderRef: str = ''
+    transmit: bool = True
+    parentId: int = 0
+    blockOrder: bool = False
+    sweepToFill: bool = False
+    displaySize: int = 0
+    triggerMethod: int = 0
+    outsideRth: bool = False
+    hidden: bool = False
+    goodAfterTime: str = ''
+    goodTillDate: str = ''
+    rule80A: str = ''
+    allOrNone: bool = False
+    minQty: int = UNSET_INTEGER
+    percentOffset: float = UNSET_DOUBLE
+    overridePercentageConstraints: bool = False
+    trailStopPrice: float = UNSET_DOUBLE
+    trailingPercent: float = UNSET_DOUBLE
+    faGroup: str = ''
+    faProfile: str = ''
+    faMethod: str = ''
+    faPercentage: str = ''
+    designatedLocation: str = ''
+    openClose: str = "O"
+    origin: int = 0
+    shortSaleSlot: int = 0
+    exemptCode: int = -1
+    discretionaryAmt: int = 0
+    eTradeOnly: bool = True
+    firmQuoteOnly: bool = True
+    nbboPriceCap: float = UNSET_DOUBLE
+    optOutSmartRouting: bool = False
+    auctionStrategy: int = 0
+    startingPrice: float = UNSET_DOUBLE
+    stockRefPrice: float = UNSET_DOUBLE
+    delta: float = UNSET_DOUBLE
+    stockRangeLower: float = UNSET_DOUBLE
+    stockRangeUpper: float = UNSET_DOUBLE
+    randomizePrice: bool = False
+    randomizeSize: bool = False
+    volatility: float = UNSET_DOUBLE
+    volatilityType: int = UNSET_INTEGER
+    deltaNeutralOrderType: str = ''
+    deltaNeutralAuxPrice: float = UNSET_DOUBLE
+    deltaNeutralConId: int = 0
+    deltaNeutralSettlingFirm: str = ''
+    deltaNeutralClearingAccount: str = ''
+    deltaNeutralClearingIntent: str = ''
+    deltaNeutralOpenClose: str = ''
+    deltaNeutralShortSale: bool = False
+    deltaNeutralShortSaleSlot: int = 0
+    deltaNeutralDesignatedLocation: str = ''
+    continuousUpdate: bool = False
+    referencePriceType: int = UNSET_INTEGER
+    basisPoints: float = UNSET_DOUBLE
+    basisPointsType: int = UNSET_INTEGER
+    scaleInitLevelSize: int = UNSET_INTEGER
+    scaleSubsLevelSize: int = UNSET_INTEGER
+    scalePriceIncrement: float = UNSET_DOUBLE
+    scalePriceAdjustValue: float = UNSET_DOUBLE
+    scalePriceAdjustInterval: int = UNSET_INTEGER
+    scaleProfitOffset: float = UNSET_DOUBLE
+    scaleAutoReset: bool = False
+    scaleInitPosition: int = UNSET_INTEGER
+    scaleInitFillQty: int = UNSET_INTEGER
+    scaleRandomPercent: bool = False
+    scaleTable: str = ''
+    hedgeType: str = ''
+    hedgeParam: str = ''
+    account: str = ''
+    settlingFirm: str = ''
+    clearingAccount: str = ''
+    clearingIntent: str = ''
+    algoStrategy: str = ''
+    algoParams: List[TagValue] = field(default_factory=list)
+    smartComboRoutingParams: List[TagValue] = field(default_factory=list)
+    algoId: str = ''
+    whatIf: bool = False
+    notHeld: bool = False
+    solicited: bool = False
+    modelCode: str = ''
+    orderComboLegs: List['OrderComboLeg'] = field(default_factory=list)
+    orderMiscOptions: List[TagValue] = field(default_factory=list)
+    referenceContractId: int = 0
+    peggedChangeAmount: float = 0.0
+    isPeggedChangeAmountDecrease: bool = False
+    referenceChangeAmount: float = 0.0
+    referenceExchangeId: str = ''
+    adjustedOrderType: str = ''
+    triggerPrice: float = UNSET_DOUBLE
+    adjustedStopPrice: float = UNSET_DOUBLE
+    adjustedStopLimitPrice: float = UNSET_DOUBLE
+    adjustedTrailingAmount: float = UNSET_DOUBLE
+    adjustableTrailingUnit: int = 0
+    lmtPriceOffset: float = UNSET_DOUBLE
+    conditions: List['OrderCondition'] = field(default_factory=list)
+    conditionsCancelOrder: bool = False
+    conditionsIgnoreRth: bool = False
+    extOperator: str = ''
+    softDollarTier: SoftDollarTier = field(default_factory=SoftDollarTier)
+    cashQty: float = UNSET_DOUBLE
+    mifid2DecisionMaker: str = ''
+    mifid2DecisionAlgo: str = ''
+    mifid2ExecutionTrader: str = ''
+    mifid2ExecutionAlgo: str = ''
+    dontUseAutoPriceForHedge: bool = False
+    isOmsContainer: bool = False
+    discretionaryUpToLimitPrice: bool = False
+    autoCancelDate: str = ''
+    filledQuantity: float = UNSET_DOUBLE
+    refFuturesConId: int = 0
+    autoCancelParent: bool = False
+    shareholder: str = ''
+    imbalanceOnly: bool = False
+    routeMarketableToBbo: bool = False
+    parentPermId: int = 0
+    usePriceMgmtAlgo: bool = False
 
     def __repr__(self):
-        attrs = self.nonDefaults()
+        attrs = dataclassNonDefaults(self)
         if self.__class__ is not Order:
             attrs.pop('orderType', None)
-        clsName = self.__class__.__name__
-        kwargs = ', '.join(f'{k}={v!r}' for k, v in attrs.items())
+        if not self.softDollarTier:
+            attrs.pop('softDollarTier')
+        clsName = self.__class__.__qualname__
+        kwargs = ', '.join(
+            f'{k}={v!r}' for k, v in attrs.items() if v != [])
         return f'{clsName}({kwargs})'
 
     __str__ = __repr__
@@ -485,7 +176,6 @@ class Order(Object):
 
 
 class LimitOrder(Order):
-    __slots__ = ()
 
     def __init__(self, action, totalQuantity, lmtPrice, **kwargs):
         Order.__init__(
@@ -494,7 +184,6 @@ class LimitOrder(Order):
 
 
 class MarketOrder(Order):
-    __slots__ = ()
 
     def __init__(self, action, totalQuantity, **kwargs):
         Order.__init__(
@@ -503,7 +192,6 @@ class MarketOrder(Order):
 
 
 class StopOrder(Order):
-    __slots__ = ()
 
     def __init__(self, action, totalQuantity, stopPrice, **kwargs):
         Order.__init__(
@@ -512,7 +200,6 @@ class StopOrder(Order):
 
 
 class StopLimitOrder(Order):
-    __slots__ = ()
 
     def __init__(self, action, totalQuantity, lmtPrice, stopPrice, **kwargs):
         Order.__init__(
@@ -521,7 +208,8 @@ class StopLimitOrder(Order):
             auxPrice=stopPrice, **kwargs)
 
 
-class Trade(Object):
+@dataclass
+class Trade:
     """
     Trade keeps track of an order, its status and all its fills.
 
@@ -536,28 +224,18 @@ class Trade(Object):
         * ``cancelledEvent`` (trade: :class:`.Trade`)
     """
 
-    events = (
+    events: ClassVar = (
         'statusEvent', 'modifyEvent', 'fillEvent',
         'commissionReportEvent', 'filledEvent',
         'cancelEvent', 'cancelledEvent')
 
-    defaults = dict(
-        contract=None,
-        order=None,
-        orderStatus=None,
-        fills=None,
-        log=None
-    )
-    __slots__ = tuple(defaults.keys()) + events + ('__dict__',)
+    contract: Optional[Contract] = None
+    order: Optional[Order] = None
+    orderStatus: Optional['OrderStatus'] = None
+    fills: List[Fill] = field(default_factory=list)
+    log: List[TradeLogEntry] = field(default_factory=list)
 
-    contract: Optional[Contract]
-    order: Optional[Order]
-    orderStatus: Optional[OrderStatus]
-    fills: Optional[List[Fill]]
-    log: Optional[List[TradeLogEntry]]
-
-    def __init__(self, *args, **kwargs):
-        Object.__init__(self, *args, **kwargs)
+    def __post_init__(self):
         self.statusEvent = Event('statusEvent')
         self.modifyEvent = Event('modifyEvent')
         self.fillEvent = Event('fillEvent')
@@ -585,3 +263,145 @@ class Trade(Object):
     def remaining(self):
         """Number of shares remaining to be filled."""
         return self.order.totalQuantity - self.filled()
+
+
+@dataclass
+class BracketOrder:
+    parent: Order
+    takeProfit: Order
+    stopLoss: Order
+
+
+@dataclass
+class OrderCondition:
+
+    @staticmethod
+    def createClass(condType):
+        d = {
+            1: PriceCondition,
+            3: TimeCondition,
+            4: MarginCondition,
+            5: ExecutionCondition,
+            6: VolumeCondition,
+            7: PercentChangeCondition}
+        return d[condType]
+
+    def And(self):
+        self.conjunction = 'a'
+        return self
+
+    def Or(self):
+        self.conjunction = 'o'
+        return self
+
+
+@dataclass
+class PriceCondition(OrderCondition):
+    condType: int = 1
+    conjunction: str = 'a'
+    isMore: bool = True
+    price: float = 0.0
+    conId: int = 0
+    exch: str = ''
+    triggerMethod: int = 0
+
+
+@dataclass
+class TimeCondition(OrderCondition):
+    condType: int = 3
+    conjunction: str = 'a'
+    isMore: bool = True
+    time: str = ''
+
+
+@dataclass
+class MarginCondition(OrderCondition):
+    condType: int = 4
+    conjunction: str = 'a'
+    isMore: bool = True
+    percent: int = 0
+
+
+@dataclass
+class ExecutionCondition(OrderCondition):
+    condType: int = 5
+    conjunction: str = 'a'
+    secType: str = ''
+    exch: str = ''
+    symbol: str = ''
+
+
+@dataclass
+class VolumeCondition(OrderCondition):
+    condType: int = 6
+    conjunction: str = 'a'
+    isMore: bool = True
+    volume: int = 0
+    conId: int = 0
+    exch: str = ''
+
+
+@dataclass
+class PercentChangeCondition(OrderCondition):
+    condType: int = 7
+    conjunction: str = 'a'
+    isMore: bool = True
+    changePercent: float = 0.0
+    conId: int = 0
+    exch: str = ''
+
+
+@dataclass
+class OrderStatus:
+    orderId: int = 0
+    status: str = ''
+    filled: int = 0
+    remaining: int = 0
+    avgFillPrice: float = 0.0
+    permId: int = 0
+    parentId: int = 0
+    lastFillPrice: float = 0.0
+    clientId: int = 0
+    whyHeld: str = ''
+    mktCapPrice: float = 0.0
+    lastLiquidity: int = 0
+
+    PendingSubmit: ClassVar = 'PendingSubmit'
+    PendingCancel: ClassVar = 'PendingCancel'
+    PreSubmitted: ClassVar = 'PreSubmitted'
+    Submitted: ClassVar = 'Submitted'
+    ApiPending: ClassVar = 'ApiPending'
+    ApiCancelled: ClassVar = 'ApiCancelled'
+    Cancelled: ClassVar = 'Cancelled'
+    Filled: ClassVar = 'Filled'
+    Inactive: ClassVar = 'Inactive'
+
+    DoneStates: ClassVar = {'Filled', 'Cancelled', 'ApiCancelled'}
+    ActiveStates: ClassVar = {
+        'PendingSubmit', 'ApiPending', 'PreSubmitted', 'Submitted'}
+
+
+@dataclass
+class OrderState:
+    status: str = ''
+    initMarginBefore: str = ''
+    maintMarginBefore: str = ''
+    equityWithLoanBefore: str = ''
+    initMarginChange: str = ''
+    maintMarginChange: str = ''
+    equityWithLoanChange: str = ''
+    initMarginAfter: str = ''
+    maintMarginAfter: str = ''
+    equityWithLoanAfter: str = ''
+    commission: float = UNSET_DOUBLE
+    minCommission: float = UNSET_DOUBLE
+    maxCommission: float = UNSET_DOUBLE
+    commissionCurrency: str = ''
+    warningText: str = ''
+    completedTime: str = ''
+    completedStatus: str = ''
+
+
+@dataclass
+class OrderComboLeg:
+    price: float = UNSET_DOUBLE

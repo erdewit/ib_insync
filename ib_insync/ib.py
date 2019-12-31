@@ -1,6 +1,7 @@
 """High-level interface to Interactive Brokers."""
 
 import asyncio
+import copy
 import datetime
 import logging
 import time
@@ -11,16 +12,16 @@ from eventkit import Event
 
 import ib_insync.util as util
 from ib_insync.client import Client
-from ib_insync.contract import Contract
+from ib_insync.contract import Contract, ContractDescription, ContractDetails
 from ib_insync.objects import (
-    AccountValue, BarDataList, BarList, BracketOrder, ContractDescription,
-    ContractDetails, DepthMktDataDescription, Execution, ExecutionFilter, Fill,
-    HistogramData, HistoricalNews, NewsArticle, NewsBulletin, NewsProvider,
-    NewsTick, OptionChain, OptionComputation, OrderState, PnL, PnLSingle,
-    PortfolioItem, Position, PriceIncrement, RealTimeBarList, ScanDataList,
-    ScannerSubscription, TagValue, TradeLogEntry
-)
-from ib_insync.order import LimitOrder, Order, OrderStatus, StopOrder, Trade
+    AccountValue, BarDataList, BarList, DepthMktDataDescription, Execution,
+    ExecutionFilter, Fill, HistogramData, HistoricalNews, NewsArticle,
+    NewsBulletin, NewsProvider, NewsTick, OptionChain, OptionComputation,
+    PnL, PnLSingle, PortfolioItem, Position, PriceIncrement,
+    RealTimeBarList, ScanDataList, ScannerSubscription, TagValue,
+    TradeLogEntry)
+from ib_insync.order import (
+    BracketOrder, LimitOrder, Order, OrderState, OrderStatus, StopOrder, Trade)
 from ib_insync.ticker import Ticker
 from ib_insync.wrapper import Wrapper
 
@@ -943,7 +944,7 @@ class IB:
     def reqRealTimeBars(
             self, contract: Contract, barSize: int,
             whatToShow: str, useRTH: bool,
-            realTimeBarsOptions: List[TagValue] = None) -> RealTimeBarList:
+            realTimeBarsOptions: List[TagValue] = []) -> RealTimeBarList:
         """
         Request realtime 5 second bars.
 
@@ -965,7 +966,7 @@ class IB:
         bars.barSize = barSize
         bars.whatToShow = whatToShow
         bars.useRTH = useRTH
-        bars.realTimeBarsOptions = realTimeBarsOptions
+        bars.realTimeBarsOptions = realTimeBarsOptions or []
         self.wrapper.startSubscription(reqId, bars, contract)
         self.client.reqRealTimeBars(
             reqId, contract, barSize, whatToShow, useRTH, realTimeBarsOptions)
@@ -1346,9 +1347,9 @@ class IB:
 
     def reqScannerSubscription(
             self, subscription: ScannerSubscription,
-            scannerSubscriptionOptions: List[TagValue] = None,
+            scannerSubscriptionOptions: List[TagValue] = [],
             scannerSubscriptionFilterOptions:
-            List[TagValue] = None) -> ScanDataList:
+            List[TagValue] = []) -> ScanDataList:
         """
         Subscribe to market scan data.
 
@@ -1363,9 +1364,9 @@ class IB:
         dataList = ScanDataList()
         dataList.reqId = reqId
         dataList.subscription = subscription
-        dataList.scannerSubscriptionOptions = scannerSubscriptionOptions
+        dataList.scannerSubscriptionOptions = scannerSubscriptionOptions or []
         dataList.scannerSubscriptionFilterOptions = \
-            scannerSubscriptionFilterOptions
+            scannerSubscriptionFilterOptions or []
         self.wrapper.startSubscription(reqId, dataList)
         self.client.reqScannerSubscription(
             reqId, subscription, scannerSubscriptionOptions,
@@ -1645,7 +1646,7 @@ class IB:
                 if contract.exchange == 'SMART':
                     # overwriting 'SMART' exchange can create invalid contract
                     c.exchange = contract.exchange
-                contract.update(**c.dict())
+                contract.__dict__.update(**util.dataclassAsDict(c))
                 result.append(contract)
         return result
 
@@ -1669,7 +1670,8 @@ class IB:
 
     def whatIfOrderAsync(self, contract: Contract, order: Order) -> \
             Awaitable[OrderState]:
-        whatIfOrder = Order(**order.dict()).update(whatIf=True)
+        whatIfOrder = copy.copy(order)
+        whatIfOrder.whatIf = True
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         self.client.placeOrder(reqId, contract, whatIfOrder)

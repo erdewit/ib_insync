@@ -5,18 +5,20 @@ import configparser
 import logging
 import os
 from contextlib import suppress
+from dataclasses import dataclass
+from typing import ClassVar, Union
 
 from eventkit import Event
 
 import ib_insync.util as util
 from ib_insync.contract import Forex
 from ib_insync.ib import IB
-from ib_insync.objects import Object
 
 __all__ = ['IBC', 'IBController', 'Watchdog']
 
 
-class IBC(Object):
+@dataclass
+class IBC:
     r"""
     Programmatic control over starting and stopping TWS/Gateway
     using IBC (https://github.com/IbcAlpha/IBC).
@@ -80,28 +82,22 @@ class IBC(Object):
         IB.run()
     """
 
-    IbcLogLevel = logging.DEBUG
+    IbcLogLevel: ClassVar = logging.DEBUG
 
-    _Args = dict(
-        # key=(Default, UnixArg, WindowsArg)
-        twsVersion=(None, '', ''),
-        gateway=(None, '--gateway', '/Gateway'),
-        tradingMode=(None, '--mode=', '/Mode:'),
-        twsPath=(None, '--tws-path=', '/TwsPath:'),
-        twsSettingsPath=(None, '--tws-settings-path=', ''),
-        ibcPath=(None, '--ibc-path=', '/IbcPath:'),
-        ibcIni=(None, '--ibc-ini=', '/Config:'),
-        javaPath=(None, '--java-path=', '/JavaPath:'),
-        userid=(None, '--user=', '/User:'),
-        password=(None, '--pw=', '/PW:'),
-        fixuserid=(None, '--fix-user=', '/FIXUser:'),
-        fixpassword=(None, '--fix-pw=', '/FIXPW:'))
+    twsVersion: int = 0
+    gateway: bool = False
+    tradingMode: str = ''
+    twsPath: str = ''
+    twsSettingsPath: str = ''
+    ibcPath: str = ''
+    ibcIni: str = ''
+    javaPath: str = ''
+    userid: str = ''
+    password: str = ''
+    fixuserid: str = ''
+    fixpassword: str = ''
 
-    defaults = {k: v[0] for k, v in _Args.items()}
-    __slots__ = list(defaults) + ['_proc', '_logger', '_monitor', '_isWindows']
-
-    def __init__(self, *args, **kwargs):
-        Object.__init__(self, *args, **kwargs)
+    def __post_init__(self):
         self._isWindows = os.sys.platform == 'win32'
         if not self.ibcPath:
             self.ibcPath = '/opt/ibc' if not self._isWindows else 'C:\\IBC'
@@ -129,12 +125,27 @@ class IBC(Object):
             return
         self._logger.info('Starting')
 
+        # map from field names to cmd arguments; key=(UnixArg, WindowsArg)
+        args = dict(
+            twsVersion=('', ''),
+            gateway=('--gateway', '/Gateway'),
+            tradingMode=('--mode=', '/Mode:'),
+            twsPath=('--tws-path=', '/TwsPath:'),
+            twsSettingsPath=('--tws-settings-path=', ''),
+            ibcPath=('--ibc-path=', '/IbcPath:'),
+            ibcIni=('--ibc-ini=', '/Config:'),
+            javaPath=('--java-path=', '/JavaPath:'),
+            userid=('--user=', '/User:'),
+            password=('--pw=', '/PW:'),
+            fixuserid=('--fix-user=', '/FIXUser:'),
+            fixpassword=('--fix-pw=', '/FIXPW:'))
+
         # create shell command
         cmd = [
             f'{self.ibcPath}\\scripts\\StartIBC.bat' if self._isWindows else
             f'{self.ibcPath}/scripts/ibcstart.sh']
-        for k, v in self.dict().items():
-            arg = IBC._Args[k][2 if self._isWindows else 1]
+        for k, v in util.dataclassAsDict(self).items():
+            arg = args[k][self._isWindows]
             if v:
                 if arg.endswith('=') or arg.endswith(':'):
                     cmd.append(f'{arg}{v}')
@@ -173,7 +184,8 @@ class IBC(Object):
             self._logger.log(IBC.IbcLogLevel, line.strip().decode())
 
 
-class IBController(Object):
+@dataclass
+class IBController:
     """
     For new installations it is recommended to use IBC instead.
 
@@ -190,22 +202,19 @@ class IBController(Object):
     This is not intended to be run in a notebook.
     """
 
-    defaults = dict(
-        APP='TWS',  # 'TWS' or 'GATEWAY'
-        TWS_MAJOR_VRSN='969',
-        TRADING_MODE='live',  # 'live' or 'paper'
-        IBC_INI='~/IBController/IBController.ini',
-        IBC_PATH='~/IBController',
-        TWS_PATH='~/Jts',
-        LOG_PATH='~/IBController/Logs',
-        TWSUSERID='',
-        TWSPASSWORD='',
-        JAVA_PATH='',
-        TWS_CONFIG_PATH='')
-    __slots__ = list(defaults) + ['_proc', '_logger', '_monitor']
+    APP: str = 'TWS'  # 'TWS' or 'GATEWAY'
+    TWS_MAJOR_VRSN: str = '969'
+    TRADING_MODE: str = 'live'  # 'live' or 'paper'
+    IBC_INI: str = '~/IBController/IBController.ini'
+    IBC_PATH: str = '~/IBController'
+    TWS_PATH: str = '~/Jts'
+    LOG_PATH: str = '~/IBController/Logs'
+    TWSUSERID: str = ''
+    TWSPASSWORD: str = ''
+    JAVA_PATH: str = ''
+    TWS_CONFIG_PATH: str = ''
 
-    def __init__(self, *args, **kwargs):
-        Object.__init__(self, *args, **kwargs)
+    def __post_init__(self):
         self._proc = None
         self._monitor = None
         self._logger = logging.getLogger('ib_insync.IBController')
@@ -235,13 +244,13 @@ class IBController(Object):
         self._logger.info('Starting')
 
         # expand paths
-        d = self.dict()
+        d = util.dataclassAsDict(self)
         for k, v in d.items():
             if k.endswith('_PATH') or k.endswith('_INI'):
                 d[k] = os.path.expanduser(v)
         if not d['TWS_CONFIG_PATH']:
             d['TWS_CONFIG_PATH'] = d['TWS_PATH']
-        self.update(**d)
+        self.__dict__.update(**d)
 
         # run shell command
         ext = 'bat' if os.sys.platform == 'win32' else 'sh'
@@ -290,7 +299,8 @@ class IBController(Object):
             self._logger.info(line.strip().decode())
 
 
-class Watchdog(Object):
+@dataclass
+class Watchdog:
     """
     Start, connect and watch over the TWS or gateway app and try to keep it
     up and running. It is intended to be used in an event-driven
@@ -348,20 +358,17 @@ class Watchdog(Object):
         'startingEvent', 'startedEvent', 'stoppingEvent', 'stoppedEvent',
         'softTimeoutEvent', 'hardTimeoutEvent']
 
-    defaults = dict(
-        controller=None,
-        ib=None,
-        host='127.0.0.1',
-        port='7497',
-        clientId=1,
-        connectTimeout=2,
-        appStartupTime=30,
-        appTimeout=20,
-        retryDelay=2)
-    __slots__ = list(defaults.keys()) + events + ['_runner', '_logger']
+    controller: Union[IBC, IBController]
+    ib: IB
+    host: str = '127.0.0.1'
+    port: int = 7497
+    clientId: int = 1
+    connectTimeout: float = 2
+    appStartupTime: float = 30
+    appTimeout: float = 20
+    retryDelay: float = 2
 
-    def __init__(self, *args, **kwargs):
-        Object.__init__(self, *args, **kwargs)
+    def __post_init__(self):
         self.startingEvent = Event('startingEvent')
         self.startedEvent = Event('startedEvent')
         self.stoppingEvent = Event('stoppingEvent')

@@ -14,7 +14,7 @@ from .connection import Connection
 from .contract import Contract
 from .decoder import Decoder
 from .objects import ConnectionStats
-from .util import UNSET_DOUBLE, UNSET_INTEGER, run
+from .util import UNSET_DOUBLE, UNSET_INTEGER, dataclassAsTuple, run
 
 __all__ = ['Client']
 
@@ -572,7 +572,7 @@ class Client:
         fields += [len(order.conditions)]
         if order.conditions:
             for cond in order.conditions:
-                fields += cond.dict().values()
+                fields += dataclassAsTuple(cond)
             fields += [
                 order.conditionsIgnoreRth,
                 order.conditionsCancelOrder]

@@ -8,29 +8,28 @@ from eventkit import Event
 
 from .version import __version__, __version_info__
 from .objects import (
-    Object, ContractDetails, ContractDescription,
-    ComboLeg, DeltaNeutralContract, OrderComboLeg, OrderState,
     SoftDollarTier, PriceIncrement, Execution, CommissionReport,
     BarList, BarDataList, RealTimeBarList, BarData, RealTimeBar,
     HistogramData, NewsProvider, DepthMktDataDescription,
-    ScannerSubscription, ScanData, ScanDataList,
+    ScannerSubscription, ScanDataList,
     ExecutionFilter, PnL, PnLSingle, AccountValue, TickData,
     TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
     HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
     TickAttrib, TickAttribBidAsk, TickAttribLast, FundamentalRatios,
-    MktDepthData, DOMLevel, BracketOrder, TradeLogEntry, TagValue,
+    MktDepthData, DOMLevel, TradeLogEntry, TagValue,
     FamilyCode, SmartComponent,
     PortfolioItem, Position, Fill, OptionComputation, OptionChain, Dividends,
     NewsArticle, HistoricalNews, NewsTick, NewsBulletin, ConnectionStats)
 from .contract import (
     Contract, Stock, Option, Future, ContFuture, Forex, Index, CFD,
-    Commodity, Bond, FuturesOption, MutualFund, Warrant, Bag)
+    Commodity, Bond, FuturesOption, MutualFund, Warrant, Bag,
+    ComboLeg, DeltaNeutralContract, ContractDetails, ContractDescription,
+    ScanData)
 from .order import (
-    Trade, OrderStatus, Order, LimitOrder, MarketOrder,
-    StopOrder, StopLimitOrder,
-    OrderCondition, ExecutionCondition, MarginCondition,
-    TimeCondition, PriceCondition, PercentChangeCondition,
-    VolumeCondition)
+    Order, Trade, LimitOrder, MarketOrder, StopOrder, StopLimitOrder,
+    BracketOrder, OrderCondition, ExecutionCondition, MarginCondition,
+    TimeCondition, PriceCondition, PercentChangeCondition, VolumeCondition,
+    OrderStatus, OrderState, OrderComboLeg)
 from .ticker import Ticker
 from .ib import IB
 from .client import Client

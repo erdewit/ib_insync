@@ -6,19 +6,19 @@ import logging
 from collections import defaultdict
 from contextlib import suppress
 
-import ib_insync.util as util
-from ib_insync.contract import Contract
+from ib_insync.contract import Contract, ScanData
 from ib_insync.objects import (
     AccountValue, CommissionReport, DOMLevel, Dividends, Fill,
     FundamentalRatios, HistogramData, HistoricalNews, HistoricalTick,
     HistoricalTickBidAsk, HistoricalTickLast, MktDepthData, NewsArticle,
     NewsBulletin, NewsProvider, NewsTick, OptionChain, OptionComputation,
-    PortfolioItem, Position, PriceIncrement, RealTimeBar, ScanData,
-    TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint, TickData,
-    TradeLogEntry
-)
+    PortfolioItem, Position, PriceIncrement, RealTimeBar, TickByTickAllLast,
+    TickByTickBidAsk, TickByTickMidPoint, TickData, TradeLogEntry)
 from ib_insync.order import Order, OrderStatus, Trade
 from ib_insync.ticker import Ticker
+from ib_insync.util import (
+    UNSET_DOUBLE, UNSET_INTEGER, dataclassAsDict, globalErrorEvent, isNan,
+    parseIBDatetime)
 
 __all__ = ['Wrapper']
 
@@ -74,7 +74,7 @@ class Wrapper:
         for future in self._futures.values():
             if not future.done():
                 future.set_exception(error)
-        util.globalErrorEvent.emit(error)
+        globalErrorEvent.emit(error)
         self.reset()
 
     def startReq(self, key, contract=None, container=None):
@@ -214,7 +214,7 @@ class Wrapper:
     def updatePortfolio(
             self, contract, posSize, marketPrice, marketValue,
             averageCost, unrealizedPNL, realizedPNL, account):
-        contract = Contract.create(**contract.dict())
+        contract = Contract.create(**dataclassAsDict(contract))
         portfItem = PortfolioItem(
             contract, posSize, marketPrice, marketValue,
             averageCost, unrealizedPNL, realizedPNL, account)
@@ -227,7 +227,7 @@ class Wrapper:
         self.ib.updatePortfolioEvent.emit(portfItem)
 
     def position(self, account, contract, posSize, avgCost):
-        contract = Contract.create(**contract.dict())
+        contract = Contract.create(**dataclassAsDict(contract))
         position = Position(account, contract, posSize, avgCost)
         positions = self.positions[account]
         if posSize == 0:
@@ -281,11 +281,11 @@ class Wrapper:
             key = self.orderKey(order.clientId, order.orderId, order.permId)
             trade = self.trades.get(key)
             # ignore '?' values in the order
-            d = {k: v for k, v in order.dict().items() if v != '?'}
+            d = {k: v for k, v in dataclassAsDict(order).items() if v != '?'}
             if trade:
-                trade.order.update(**d)
+                trade.order.__dict__.update(**d)
             else:
-                contract = Contract.create(**contract.dict())
+                contract = Contract.create(**dataclassAsDict(contract))
                 order = Order(**d)
                 orderStatus = OrderStatus(status=orderState.status)
                 trade = Trade(contract, order, orderStatus, [], [])
@@ -303,7 +303,7 @@ class Wrapper:
         self._endReq('openOrders')
 
     def completedOrder(self, contract, order, orderState):
-        contract = Contract.create(**contract.dict())
+        contract = Contract.create(**dataclassAsDict(contract))
         orderStatus = OrderStatus(status=orderState.status)
         trade = Trade(contract, order, orderStatus, [], [])
         self._results['completedOrders'].append(trade)
@@ -329,10 +329,10 @@ class Wrapper:
                 lastFillPrice=lastFillPrice, clientId=clientId,
                 whyHeld=whyHeld, mktCapPrice=mktCapPrice,
                 lastLiquidity=lastLiquidity)
-            curr = trade.orderStatus.dict()
+            curr = dataclassAsDict(trade.orderStatus)
             isChanged = curr != {**curr, **new}
             if isChanged:
-                trade.orderStatus.update(**new)
+                trade.orderStatus.__dict__.update(**new)
                 msg = ''
             elif (status == 'Submitted' and trade.log
                     and trade.log[-1].message == 'Modify'):
@@ -363,7 +363,7 @@ class Wrapper:
         reqExecutions.
         """
         self._logger.info(f'execDetails {execution}')
-        if execution.orderId == util.UNSET_INTEGER:
+        if execution.orderId == UNSET_INTEGER:
             # bug in TWS: executions of manual orders have unset value
             execution.orderId = 0
         key = self.orderKey(
@@ -372,9 +372,9 @@ class Wrapper:
         if trade and contract == trade.contract:
             contract = trade.contract
         else:
-            contract = Contract.create(**contract.dict())
+            contract = Contract.create(**dataclassAsDict(contract))
         execId = execution.execId
-        execution.time = util.parseIBDatetime(execution.time). \
+        execution.time = parseIBDatetime(execution.time). \
             astimezone(datetime.timezone.utc)
         isLive = reqId not in self._futures
         time = self.lastTime if isLive else execution.time
@@ -400,14 +400,14 @@ class Wrapper:
         self._endReq(reqId)
 
     def commissionReport(self, commissionReport):
-        if commissionReport.yield_ == util.UNSET_DOUBLE:
+        if commissionReport.yield_ == UNSET_DOUBLE:
             commissionReport.yield_ = 0.0
-        if commissionReport.realizedPNL == util.UNSET_DOUBLE:
+        if commissionReport.realizedPNL == UNSET_DOUBLE:
             commissionReport.realizedPNL = 0.0
         fill = self.fills.get(commissionReport.execId)
         if fill:
-            report = fill.commissionReport.update(
-                **commissionReport.dict())
+            report = fill.commissionReport.__dict__.update(
+                **dataclassAsDict(commissionReport))
             self._logger.info(f'commissionReport: {report}')
             trade = self.permId2Trade.get(fill.execution.permId)
             if trade:
@@ -452,7 +452,7 @@ class Wrapper:
             bars.updateEvent.emit(bars, True)
 
     def historicalData(self, reqId, bar):
-        bar.date = util.parseIBDatetime(bar.date)
+        bar.date = parseIBDatetime(bar.date)
         self._results[reqId].append(bar)
 
     def historicalDataEnd(self, reqId, _start, _end):
@@ -462,7 +462,7 @@ class Wrapper:
         bars = self.reqId2Subscriber.get(reqId)
         if not bars:
             return
-        bar.date = util.parseIBDatetime(bar.date)
+        bar.date = parseIBDatetime(bar.date)
         hasNewBar = len(bars) == 0 or bar.date > bars[-1].date
         if hasNewBar:
             bars.append(bar)
@@ -475,7 +475,7 @@ class Wrapper:
 
     def headTimestamp(self, reqId, headTimestamp):
         try:
-            dt = util.parseIBDatetime(headTimestamp)
+            dt = parseIBDatetime(headTimestamp)
             self._endReq(reqId, dt)
         except ValueError as exc:
             self._endReq(reqId, exc, False)
@@ -597,7 +597,7 @@ class Wrapper:
             ticker.askSize = size
         elif tickType in (5, 71):
             price = ticker.last
-            if util.isNan(price):
+            if isNan(price):
                 return
             if size != ticker.lastSize:
                 ticker.prevLastSize = ticker.lastSize
@@ -735,7 +735,7 @@ class Wrapper:
                 ticker.dividends = Dividends(
                     float(past12) if past12 else None,
                     float(next12) if next12 else None,
-                    util.parseIBDatetime(nextDate) if nextDate else None,
+                    parseIBDatetime(nextDate) if nextDate else None,
                     float(nextAmount) if nextAmount else None)
             elif tickType == 77:
                 # RT Trade Volume

@@ -155,23 +155,24 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ib_insync.util</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span></span><span class="sd">&quot;&quot;&quot;Utilities.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">signal</span>
-<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">AsyncIterator</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="k">import</span> <span class="n">fields</span><span class="p">,</span> <span class="n">is_dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">AsyncIterator</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">eventkit</span> <span class="k">as</span> <span class="nn">ev</span>
-
 
 <span class="n">globalErrorEvent</span> <span class="o">=</span> <span class="n">ev</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Event to emit global exceptions.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
 
 <span class="n">UNSET_INTEGER</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">31</span> <span class="o">-</span> <span class="mi">1</span>
 <span class="n">UNSET_DOUBLE</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">max</span>
@@ -184,13 +185,13 @@
 <span class="sd">    drop the rest.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-    <span class="kn">from</span> <span class="nn">.objects</span> <span class="k">import</span> <span class="n">Object</span><span class="p">,</span> <span class="n">DynamicObject</span>
+    <span class="kn">from</span> <span class="nn">.objects</span> <span class="k">import</span> <span class="n">DynamicObject</span>
     <span class="k">if</span> <span class="n">objs</span><span class="p">:</span>
         <span class="n">objs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">objs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Object</span><span class="p">):</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">tuple</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">)</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">defaults</span>
+        <span class="k">if</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">dataclassAsTuple</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">obj</span><span class="p">)]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">DynamicObject</span><span class="p">):</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="vm">__dict__</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -206,8 +207,52 @@
     <span class="k">return</span> <span class="n">df</span></div>
 
 
-<span class="c1"># from https://stackoverflow.com/a/2166841/6067848</span>
+<div class="viewcode-block" id="dataclassAsDict"><a class="viewcode-back" href="../../api.html#ib_insync.ib.dataclassAsDict">[docs]</a><span class="k">def</span> <span class="nf">dataclassAsDict</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return dataclass values as ``dict``.</span>
+<span class="sd">    This is a non-recursive variant of ``dataclasses.asdict``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Object </span><span class="si">{obj}</span><span class="s1"> is not a dataclass&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">obj</span><span class="p">)}</span></div>
+
+
+<div class="viewcode-block" id="dataclassAsTuple"><a class="viewcode-back" href="../../api.html#ib_insync.ib.dataclassAsTuple">[docs]</a><span class="k">def</span> <span class="nf">dataclassAsTuple</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return dataclass values as ``tuple``.</span>
+<span class="sd">    This is a non-recursive variant of ``dataclasses.astuple``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Object </span><span class="si">{obj}</span><span class="s1"> is not a dataclass&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="dataclassNonDefaults"><a class="viewcode-back" href="../../api.html#ib_insync.ib.dataclassNonDefaults">[docs]</a><span class="k">def</span> <span class="nf">dataclassNonDefaults</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For a ``dataclass`` instance get the fields that are different from the</span>
+<span class="sd">    default values and return as ``dict``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Object </span><span class="si">{obj}</span><span class="s1"> is not a dataclass&#39;</span><span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">obj</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fields</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">field</span><span class="o">.</span><span class="n">default</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">==</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">!=</span> <span class="p">[]}</span></div>
+
+
+<div class="viewcode-block" id="dataclassRepr"><a class="viewcode-back" href="../../api.html#ib_insync.ib.dataclassRepr">[docs]</a><span class="k">def</span> <span class="nf">dataclassRepr</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provide a culled representation of the given ``dataclass`` instance,</span>
+<span class="sd">    showing only the fields with a non-default value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="n">dataclassNonDefaults</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="n">clsName</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__qualname__</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{k}</span><span class="s1">=</span><span class="si">{v!r}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{clsName}</span><span class="s1">(</span><span class="si">{kwargs}</span><span class="s1">)&#39;</span></div>
+
+
 <div class="viewcode-block" id="isnamedtupleinstance"><a class="viewcode-back" href="../../api.html#ib_insync.ib.isnamedtupleinstance">[docs]</a><span class="k">def</span> <span class="nf">isnamedtupleinstance</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;From https://stackoverflow.com/a/2166841/6067848&quot;&quot;&quot;</span>
     <span class="n">t</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="vm">__bases__</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">:</span>
@@ -223,7 +268,6 @@
 <span class="sd">    Convert object to a tree of lists, dicts and simple values.</span>
 <span class="sd">    The result can be serialized to JSON.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.objects</span> <span class="k">import</span> <span class="n">Object</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
         <span class="k">return</span> <span class="n">obj</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">)):</span>
@@ -234,8 +278,8 @@
         <span class="k">return</span> <span class="p">{</span><span class="n">f</span><span class="p">:</span> <span class="n">tree</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">_fields</span><span class="p">}</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">)):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">tree</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Object</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">:</span> <span class="n">tree</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">nonDefaults</span><span class="p">())}</span>
+    <span class="k">elif</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">:</span> <span class="n">tree</span><span class="p">(</span><span class="n">dataclassNonDefaults</span><span class="p">(</span><span class="n">obj</span><span class="p">))}</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
 
@@ -297,16 +341,12 @@
 
 
 <div class="viewcode-block" id="allowCtrlC"><a class="viewcode-back" href="../../api.html#ib_insync.ib.allowCtrlC">[docs]</a><span class="k">def</span> <span class="nf">allowCtrlC</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Allow Control-C to end program.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Allow Control-C to end program.&quot;&quot;&quot;</span>
     <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="logToFile"><a class="viewcode-back" href="../../api.html#ib_insync.ib.logToFile">[docs]</a><span class="k">def</span> <span class="nf">logToFile</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a log handler that logs to the given file.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Create a log handler that logs to the given file.&quot;&quot;&quot;</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
     <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
@@ -317,9 +357,7 @@
 
 
 <div class="viewcode-block" id="logToConsole"><a class="viewcode-back" href="../../api.html#ib_insync.ib.logToConsole">[docs]</a><span class="k">def</span> <span class="nf">logToConsole</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a log handler that logs to the console.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Create a log handler that logs to the console.&quot;&quot;&quot;</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
     <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
@@ -333,16 +371,12 @@
 
 
 <div class="viewcode-block" id="isNan"><a class="viewcode-back" href="../../api.html#ib_insync.ib.isNan">[docs]</a><span class="k">def</span> <span class="nf">isNan</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Not a number test.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Not a number test.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">x</span></div>
 
 
 <div class="viewcode-block" id="formatSI"><a class="viewcode-back" href="../../api.html#ib_insync.ib.formatSI">[docs]</a><span class="k">def</span> <span class="nf">formatSI</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Format the integer or float n to 3 significant digits + SI prefix.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Format the integer or float n to 3 significant digits + SI prefix.&quot;&quot;&quot;</span>
     <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">n</span> <span class="o">=</span> <span class="o">-</span><span class="n">n</span>
@@ -369,9 +403,8 @@
 
 
 <div class="viewcode-block" id="timeit"><a class="viewcode-back" href="../../api.html#ib_insync.ib.timeit">[docs]</a><span class="k">class</span> <span class="nc">timeit</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Context manager for timing.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Context manager for timing.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Run&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
 
@@ -428,7 +461,8 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<span class="k">def</span> <span class="nf">_fillDate</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_fillDate</span><span class="p">(</span><span class="n">time</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">])</span> <span class="o">-&gt;</span> \
+        <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span>
     <span class="c1"># use today if date is absent</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">):</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span> <span class="n">time</span><span class="p">)</span>
@@ -471,7 +505,8 @@
 
 
 <div class="viewcode-block" id="timeRange"><a class="viewcode-back" href="../../api.html#ib_insync.ib.timeRange">[docs]</a><span class="k">def</span> <span class="nf">timeRange</span><span class="p">(</span>
-        <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">],</span>
+        <span class="n">end</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">],</span>
         <span class="n">step</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iterator that waits periodically until certain time points are</span>
@@ -485,19 +520,17 @@
 <span class="sd">        step (float): The number of seconds of each period</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">step</span> <span class="o">&gt;</span> <span class="mi">0</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">_fillDate</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">_fillDate</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">start</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">_fillDate</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
     <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">():</span>
         <span class="n">t</span> <span class="o">+=</span> <span class="n">delta</span>
-    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">end</span><span class="p">:</span>
+    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">_fillDate</span><span class="p">(</span><span class="n">end</span><span class="p">):</span>
         <span class="n">waitUntil</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">t</span>
         <span class="n">t</span> <span class="o">+=</span> <span class="n">delta</span></div>
 
 
-<div class="viewcode-block" id="waitUntil"><a class="viewcode-back" href="../../api.html#ib_insync.ib.waitUntil">[docs]</a><span class="k">def</span> <span class="nf">waitUntil</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="waitUntil"><a class="viewcode-back" href="../../api.html#ib_insync.ib.waitUntil">[docs]</a><span class="k">def</span> <span class="nf">waitUntil</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wait until the given time t is reached.</span>
 
@@ -505,47 +538,38 @@
 <span class="sd">        t: The time t can be specified as datetime.datetime,</span>
 <span class="sd">            or as datetime.time in which case today is used as the date.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">_fillDate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
     <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">tzinfo</span><span class="p">)</span>
-    <span class="n">secs</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+    <span class="n">secs</span> <span class="o">=</span> <span class="p">(</span><span class="n">_fillDate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
     <span class="n">run</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">secs</span><span class="p">))</span>
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="timeRangeAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.timeRangeAsync">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">timeRangeAsync</span><span class="p">(</span>
-        <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">],</span>
+        <span class="n">end</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">],</span>
         <span class="n">step</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Async version of :meth:`timeRange`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Async version of :meth:`timeRange`.&quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">step</span> <span class="o">&gt;</span> <span class="mi">0</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">_fillDate</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">_fillDate</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">start</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">_fillDate</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
     <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">():</span>
         <span class="n">t</span> <span class="o">+=</span> <span class="n">delta</span>
-    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">end</span><span class="p">:</span>
+    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">_fillDate</span><span class="p">(</span><span class="n">end</span><span class="p">):</span>
         <span class="k">await</span> <span class="n">waitUntilAsync</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">t</span>
         <span class="n">t</span> <span class="o">+=</span> <span class="n">delta</span></div>
 
 
-<div class="viewcode-block" id="waitUntilAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.waitUntilAsync">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">waitUntilAsync</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Async version of :meth:`waitUntil`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">_fillDate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<div class="viewcode-block" id="waitUntilAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.waitUntilAsync">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">waitUntilAsync</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Async version of :meth:`waitUntil`.&quot;&quot;&quot;</span>
     <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">tzinfo</span><span class="p">)</span>
-    <span class="n">secs</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+    <span class="n">secs</span> <span class="o">=</span> <span class="p">(</span><span class="n">_fillDate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
     <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">secs</span><span class="p">)</span>
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="patchAsyncio"><a class="viewcode-back" href="../../api.html#ib_insync.ib.patchAsyncio">[docs]</a><span class="k">def</span> <span class="nf">patchAsyncio</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Patch asyncio to allow nested event loops.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Patch asyncio to allow nested event loops.&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">nest_asyncio</span>
     <span class="n">nest_asyncio</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span></div>
 
@@ -553,11 +577,11 @@
 <div class="viewcode-block" id="startLoop"><a class="viewcode-back" href="../../api.html#ib_insync.ib.startLoop">[docs]</a><span class="k">def</span> <span class="nf">startLoop</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use nested asyncio event loop for Jupyter notebooks.</span>
+
+<span class="sd">    This is not needed anymore in Jupyter versions 5 or higher.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">_ipython_loop_asyncio</span><span class="p">(</span><span class="n">kernel</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Use asyncio event loop for the given IPython kernel.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;Use asyncio event loop for the given IPython kernel.&quot;&quot;&quot;</span>
         <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
 
         <span class="k">def</span> <span class="nf">kernel_handler</span><span class="p">():</span>
@@ -610,16 +634,14 @@
         <span class="kn">from</span> <span class="nn">PySide2.QtWidgets</span> <span class="k">import</span> <span class="n">QApplication</span>
         <span class="kn">from</span> <span class="nn">PySide2.QtCore</span> <span class="k">import</span> <span class="n">QTimer</span><span class="p">,</span> <span class="n">QEventLoop</span>
     <span class="k">global</span> <span class="n">qApp</span>
-    <span class="n">qApp</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span> <span class="ow">or</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">qApp</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span> <span class="ow">or</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
     <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
     <span class="n">stack</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">qt_step</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="formatIBDatetime"><a class="viewcode-back" href="../../api.html#ib_insync.ib.formatIBDatetime">[docs]</a><span class="k">def</span> <span class="nf">formatIBDatetime</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Format date or datetime to string that IB uses.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Format date or datetime to string that IB uses.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">dt</span><span class="p">:</span>
         <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
@@ -635,9 +657,7 @@
 
 
 <div class="viewcode-block" id="parseIBDatetime"><a class="viewcode-back" href="../../api.html#ib_insync.ib.parseIBDatetime">[docs]</a><span class="k">def</span> <span class="nf">parseIBDatetime</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse string in IB date or datetime format to datetime.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Parse string in IB date or datetime format to datetime.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
         <span class="c1"># YYYYmmdd</span>
         <span class="n">y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>

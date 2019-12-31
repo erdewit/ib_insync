@@ -1,24 +1,25 @@
 """Access to realtime market information."""
 
+from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Optional, Union
+from typing import ClassVar, List, Optional, Union
 
 from eventkit import Event, Op
 
 from ib_insync.contract import Contract
 from ib_insync.objects import (
-    BarList, DOMLevel, Dividends, FundamentalRatios, MktDepthData, Object,
+    BarList, DOMLevel, Dividends, FundamentalRatios, MktDepthData,
     OptionComputation, TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
-    TickData
-)
-from ib_insync.util import isNan
+    TickData)
+from ib_insync.util import dataclassRepr, isNan
 
 __all__ = ['Ticker']
 
 nan = float('nan')
 
 
-class Ticker(Object):
+@dataclass
+class Ticker:
     """
     Current market data such as bid, ask, last price, etc. for a contract.
 
@@ -40,140 +41,74 @@ class Ticker(Object):
         * ``updateEvent`` (ticker: :class:`.Ticker`)
     """
 
-    events = ('updateEvent',)
+    events: ClassVar = ('updateEvent',)
 
-    defaults = dict(
-        contract=None,
-        time=None,
-        bid=nan,
-        bidSize=nan,
-        ask=nan,
-        askSize=nan,
-        last=nan,
-        lastSize=nan,
-        prevBid=nan,
-        prevBidSize=nan,
-        prevAsk=nan,
-        prevAskSize=nan,
-        prevLast=nan,
-        prevLastSize=nan,
-        volume=nan,
-        open=nan,
-        high=nan,
-        low=nan,
-        close=nan,
-        vwap=nan,
-        low13week=nan,
-        high13week=nan,
-        low26week=nan,
-        high26week=nan,
-        low52week=nan,
-        high52week=nan,
-        bidYield=nan,
-        askYield=nan,
-        lastYield=nan,
-        markPrice=nan,
-        halted=nan,
-        rtHistVolatility=nan,
-        rtVolume=nan,
-        rtTradeVolume=nan,
-        avVolume=nan,
-        tradeCount=nan,
-        tradeRate=nan,
-        volumeRate=nan,
-        shortableShares=nan,
-        indexFuturePremium=nan,
-        futuresOpenInterest=nan,
-        putOpenInterest=nan,
-        callOpenInterest=nan,
-        putVolume=nan,
-        callVolume=nan,
-        avOptionVolume=nan,
-        histVolatility=nan,
-        impliedVolatility=nan,
-        dividends=None,
-        fundamentalRatios=None,
-        ticks=None,
-        tickByTicks=None,
-        domBids=None,
-        domAsks=None,
-        domTicks=None,
-        bidGreeks=None,
-        askGreeks=None,
-        lastGreeks=None,
-        modelGreeks=None,
-        auctionVolume=nan,
-        auctionPrice=nan,
-        auctionImbalance=nan
-    )
-    __slots__ = tuple(defaults.keys()) + events + ('__dict__',)
+    contract: Optional[Contract] = None
+    time: Optional[datetime] = None
+    bid: float = nan
+    bidSize: float = nan
+    ask: float = nan
+    askSize: float = nan
+    last: float = nan
+    lastSize: float = nan
+    prevBid: float = nan
+    prevBidSize: float = nan
+    prevAsk: float = nan
+    prevAskSize: float = nan
+    prevLast: float = nan
+    prevLastSize: float = nan
+    volume: float = nan
+    open: float = nan
+    high: float = nan
+    low: float = nan
+    close: float = nan
+    vwap: float = nan
+    low13week: float = nan
+    high13week: float = nan
+    low26week: float = nan
+    high26week: float = nan
+    low52week: float = nan
+    high52week: float = nan
+    bidYield: float = nan
+    askYield: float = nan
+    lastYield: float = nan
+    markPrice: float = nan
+    halted: float = nan
+    rtHistVolatility: float = nan
+    rtVolume: float = nan
+    rtTradeVolume: float = nan
+    avVolume: float = nan
+    tradeCount: float = nan
+    tradeRate: float = nan
+    volumeRate: float = nan
+    shortableShares: float = nan
+    indexFuturePremium: float = nan
+    futuresOpenInterest: float = nan
+    putOpenInterest: float = nan
+    callOpenInterest: float = nan
+    putVolume: float = nan
+    callVolume: float = nan
+    avOptionVolume: float = nan
+    histVolatility: float = nan
+    impliedVolatility: float = nan
+    dividends: Optional[Dividends] = None
+    fundamentalRatios: Optional[FundamentalRatios] = None
+    ticks: List[TickData] = field(default_factory=list)
+    tickByTicks: List[Union[
+        TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint]] = \
+        field(default_factory=list)
+    domBids: List[DOMLevel] = field(default_factory=list)
+    domAsks: List[DOMLevel] = field(default_factory=list)
+    domTicks: List[MktDepthData] = field(default_factory=list)
+    bidGreeks: Optional[OptionComputation] = None
+    askGreeks: Optional[OptionComputation] = None
+    lastGreeks: Optional[OptionComputation] = None
+    modelGreeks: Optional[OptionComputation] = None
+    auctionVolume: float = nan
+    auctionPrice: float = nan
+    auctionImbalance: float = nan
 
-    contract: Optional[Contract]
-    time: Optional[datetime]
-    bid: float
-    bidSize: float
-    ask: float
-    askSize: float
-    last: float
-    lastSize: float
-    prevBid: float
-    prevBidSize: float
-    prevAsk: float
-    prevAskSize: float
-    prevLast: float
-    prevLastSize: float
-    volume: float
-    open: float
-    high: float
-    low: float
-    close: float
-    vwap: float
-    low13week: float
-    high13week: float
-    low26week: float
-    high26week: float
-    low52week: float
-    high52week: float
-    bidYield: float
-    askYield: float
-    lastYield: float
-    markPrice: float
-    halted: float
-    rtHistVolatility: float
-    rtVolume: float
-    rtTradeVolume: float
-    avVolume: float
-    tradeCount: float
-    tradeRate: float
-    volumeRate: float
-    shortableShares: float
-    indexFuturePremium: float
-    futuresOpenInterest: float
-    putOpenInterest: float
-    callOpenInterest: float
-    putVolume: float
-    callVolume: float
-    avOptionVolume: float
-    histVolatility: float
-    impliedVolatility: float
-    dividends: Optional[Dividends]
-    fundamentalRatios: Optional[FundamentalRatios]
-    ticks: Optional[List[TickData]]
-    tickByTicks: Optional[List[Union[
-        TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint]]]
-    domBids: Optional[List[DOMLevel]]
-    domAsks: Optional[List[DOMLevel]]
-    domTicks: Optional[List[MktDepthData]]
-    bidGreeks: Optional[OptionComputation]
-    askGreeks: Optional[OptionComputation]
-    lastGreeks: Optional[OptionComputation]
-    modelGreeks: Optional[OptionComputation]
-    auctionVolume: float
-    auctionPrice: float
-    auctionImbalance: float
-
-    def __init__(self, *args, **kwargs):
-        Object.__init__(self, *args, **kwargs)
+    def __post_init__(self):
         self.updateEvent = TickerUpdateEvent('updateEvent')
 
     def __eq__(self, other):
@@ -181,6 +116,9 @@ class Ticker(Object):
 
     def __hash__(self):
         return id(self)
+
+    __repr__ = dataclassRepr
+    __str__ = dataclassRepr
 
     def hasBidAsk(self) -> bool:
         """See if this ticker has a valid bid and ask."""
@@ -285,25 +223,15 @@ class Midpoints(Tickfilter):
             self.emit(ticker.time, ticker.midpoint(), 0)
 
 
-class Bar(Object):
-    defaults = dict(
-        time=None,
-        open=nan,
-        high=nan,
-        low=nan,
-        close=nan,
-        volume=0,
-        count=0
-    )
-    __slots__ = defaults
-
+@dataclass
+class Bar:
     time: Optional[datetime]
-    open: float
-    high: float
-    low: float
-    close: float
-    volume: int
-    count: int
+    open: float = nan
+    high: float = nan
+    low: float = nan
+    close: float = nan
+    volume: int = 0
+    count: int = 0
 
 
 class TimeBars(Op):

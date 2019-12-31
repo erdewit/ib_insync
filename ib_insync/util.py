@@ -7,6 +7,7 @@ import math
 import signal
 import sys
 import time
+from dataclasses import fields, is_dataclass
 from typing import AsyncIterator, Callable, Iterator, Union
 
 import eventkit as ev
@@ -15,7 +16,6 @@ globalErrorEvent = ev.Event()
 """
 Event to emit global exceptions.
 """
-
 
 UNSET_INTEGER = 2 ** 31 - 1
 UNSET_DOUBLE = sys.float_info.max
@@ -28,13 +28,13 @@ def df(objs, labels=None):
     drop the rest.
     """
     import pandas as pd
-    from .objects import Object, DynamicObject
+    from .objects import DynamicObject
     if objs:
         objs = list(objs)
         obj = objs[0]
-        if isinstance(obj, Object):
-            df = pd.DataFrame.from_records(o.tuple() for o in objs)
-            df.columns = obj.__class__.defaults
+        if is_dataclass(obj):
+            df = pd.DataFrame.from_records(dataclassAsTuple(o) for o in objs)
+            df.columns = [field.name for field in fields(obj)]
         elif isinstance(obj, DynamicObject):
             df = pd.DataFrame.from_records(o.__dict__ for o in objs)
         else:
@@ -48,6 +48,50 @@ def df(objs, labels=None):
         exclude = [label for label in df if label not in labels]
         df = df.drop(exclude, axis=1)
     return df
+
+
+def dataclassAsDict(obj) -> dict:
+    """
+    Return dataclass values as ``dict``.
+    This is a non-recursive variant of ``dataclasses.asdict``.
+    """
+    if not is_dataclass(obj):
+        raise TypeError(f'Object {obj} is not a dataclass')
+    return {field.name: getattr(obj, field.name) for field in fields(obj)}
+
+
+def dataclassAsTuple(obj) -> tuple:
+    """
+    Return dataclass values as ``tuple``.
+    This is a non-recursive variant of ``dataclasses.astuple``.
+    """
+    if not is_dataclass(obj):
+        raise TypeError(f'Object {obj} is not a dataclass')
+    return tuple(getattr(obj, field.name) for field in fields(obj))
+
+
+def dataclassNonDefaults(obj) -> dict:
+    """
+    For a ``dataclass`` instance get the fields that are different from the
+    default values and return as ``dict``.
+    """
+    if not is_dataclass(obj):
+        raise TypeError(f'Object {obj} is not a dataclass')
+    values = [getattr(obj, field.name) for field in fields(obj)]
+    return {
+        field.name: value for field, value in zip(fields(obj), values)
+        if value != field.default and value == value and value != []}
+
+
+def dataclassRepr(obj) -> str:
+    """
+    Provide a culled representation of the given ``dataclass`` instance,
+    showing only the fields with a non-default value.
+    """
+    attrs = dataclassNonDefaults(obj)
+    clsName = obj.__class__.__qualname__
+    kwargs = ', '.join(f'{k}={v!r}' for k, v in attrs.items())
+    return f'{clsName}({kwargs})'
 
 
 def isnamedtupleinstance(x):
@@ -67,7 +111,6 @@ def tree(obj):
     Convert object to a tree of lists, dicts and simple values.
     The result can be serialized to JSON.
     """
-    from .objects import Object
     if isinstance(obj, (bool, int, float, str, bytes)):
         return obj
     elif isinstance(obj, (datetime.date, datetime.time)):
@@ -78,8 +121,8 @@ def tree(obj):
         return {f: tree(getattr(obj, f)) for f in obj._fields}
     elif isinstance(obj, (list, tuple, set)):
         return [tree(i) for i in obj]
-    elif isinstance(obj, Object):
-        return {obj.__class__.__qualname__: tree(obj.nonDefaults())}
+    elif is_dataclass(obj):
+        return {obj.__class__.__qualname__: tree(dataclassNonDefaults(obj))}
     else:
         return str(obj)
 

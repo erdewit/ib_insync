@@ -1,16 +1,17 @@
 """Deserialize and dispatch messages."""
 
+import dataclasses
 import logging
 
-from .contract import Contract
+from .contract import (
+    ComboLeg, Contract, ContractDescription, ContractDetails,
+    DeltaNeutralContract)
 from .objects import (
-    BarData, ComboLeg, CommissionReport, ContractDescription, ContractDetails,
-    DeltaNeutralContract, DepthMktDataDescription, Execution, FamilyCode,
+    BarData, CommissionReport, DepthMktDataDescription, Execution, FamilyCode,
     HistogramData, HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
-    NewsProvider, OrderComboLeg, OrderState, PriceIncrement, SmartComponent,
-    SoftDollarTier, TagValue, TickAttribBidAsk, TickAttribLast
-)
-from .order import Order, OrderCondition
+    NewsProvider, PriceIncrement, SmartComponent,
+    SoftDollarTier, TagValue, TickAttribBidAsk, TickAttribLast)
+from .order import Order, OrderComboLeg, OrderCondition, OrderState
 from .util import UNSET_DOUBLE
 
 __all__ = ['Decoder']
@@ -190,17 +191,17 @@ class Decoder:
 
     def parse(self, obj):
         """Parse the object's properties according to its default types."""
-        for k, default in obj.__class__.defaults.items():
-            typ = type(default)
+        for field in dataclasses.fields(obj):
+            typ = type(field.default)
             if typ is str:
                 continue
-            v = getattr(obj, k)
+            v = getattr(obj, field.name)
             if typ is int:
-                setattr(obj, k, int(v) if v else default)
+                setattr(obj, field.name, int(v) if v else field.default)
             elif typ is float:
-                setattr(obj, k, float(v) if v else default)
+                setattr(obj, field.name, float(v) if v else field.default)
             elif typ is bool:
-                setattr(obj, k, bool(int(v)) if v else default)
+                setattr(obj, field.name, bool(int(v)) if v else field.default)
 
     def priceSizeTick(self, fields):
         _, _, reqId, tickType, price, size, _ = fields
