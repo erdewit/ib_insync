@@ -30,11 +30,12 @@ Installation
 
 ::
 
-    pip3 install -U ib_insync
+    pip install ib_insync
 
-On some systems ``pip`` should be used instead of ``pip3``.
+For Python 3.6 install the ``dataclasses`` package (newer Python versions
+already have it):
 
-To install for a single user, add ``--user`` to the command.
+    pip install dataclasses
 
 Requirements:
 
@@ -60,21 +61,25 @@ This is a complete script to download historical data:
     ib.connect('127.0.0.1', 7497, clientId=1)
 
     contract = Forex('EURUSD')
-    bars = ib.reqHistoricalData(contract, endDateTime='', durationStr='30 D',
-            barSizeSetting='1 hour', whatToShow='MIDPOINT', useRTH=True)
+    bars = ib.reqHistoricalData(
+        contract, endDateTime='', durationStr='30 D',
+        barSizeSetting='1 hour', whatToShow='MIDPOINT', useRTH=True)
 
     # convert to pandas dataframe:
     df = util.df(bars)
-    print(df[['date', 'open', 'high', 'low', 'close']])
+    print(df)
 
 Output::
 
-                       date      open      high       low     close
-    0   2017-08-13 23:15:00  1.182850  1.183100  1.182100  1.182400
-    1   2017-08-14 00:00:00  1.182400  1.182450  1.181875  1.182175
-    2   2017-08-14 01:00:00  1.182175  1.182675  1.181900  1.182525
-    ...
-    719 2017-09-22 22:00:00  1.194425  1.195425  1.194225  1.195050
+                       date      open      high       low     close  volume  \
+    0   2019-11-19 23:15:00  1.107875  1.108050  1.107725  1.107825      -1
+    1   2019-11-20 00:00:00  1.107825  1.107925  1.107675  1.107825      -1
+    2   2019-11-20 01:00:00  1.107825  1.107975  1.107675  1.107875      -1
+    3   2019-11-20 02:00:00  1.107875  1.107975  1.107025  1.107225      -1
+    4   2019-11-20 03:00:00  1.107225  1.107725  1.107025  1.107525      -1
+    ..                  ...       ...       ...       ...       ...     ...
+    705 2020-01-02 14:00:00  1.119325  1.119675  1.119075  1.119225      -1
+
 
 Documentation
 -------------

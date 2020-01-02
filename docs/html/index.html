@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Contents &mdash; ib_insync 0.9.58 documentation</title>
+  <title>Contents &mdash; ib_insync 0.9.59 documentation</title>
   
 
   
@@ -224,7 +224,7 @@
 <li class="toctree-l1"><a class="reference internal" href="links.html">Links</a></li>
 </ul>
 </div>
-<p><a class="reference external" href="https://travis-ci.org/erdewit/ib_insync"><img alt="Build" src="https://travis-ci.org/erdewit/ib_insync.svg?branch=master" /></a> <a class="reference external" href="https://groups.io/g/insync"><img alt="Join the user group" src="https://img.shields.io/badge/groups.io-insync-green.svg" /></a> <img alt="" src="https://img.shields.io/badge/python-3.6+-blue.svg" /> <img alt="" src="https://img.shields.io/badge/status-beta-green.svg" /> <a class="reference external" href="https://pypi.python.org/pypi/ib_insync"><img alt="PyPi" src="https://img.shields.io/pypi/v/ib_insync.svg" /></a> <a class="reference external" href="https://anaconda.org/conda-forge/ib-insync"><img alt="Conda" src="https://img.shields.io/conda/vn/conda-forge/ib-insync.svg" /></a> <img alt="" src="https://img.shields.io/badge/license-BSD-blue.svg" /> <a class="reference external" href="https://pepy.tech/project/ib-insync"><img alt="Number of downloads" src="https://pepy.tech/badge/ib-insync" /></a> <a class="reference external" href="https://rawcdn.githack.com/erdewit/ib_insync/09bd4bf1a40857bb0c3329973c650f68779f4dcd/docs/html/api.html"><img alt="Documentation" src="https://img.shields.io/badge/Documentation-green.svg" /></a></p>
+<p><a class="reference external" href="https://travis-ci.org/erdewit/ib_insync"><img alt="Build" src="https://travis-ci.org/erdewit/ib_insync.svg?branch=master" /></a> <a class="reference external" href="https://groups.io/g/insync"><img alt="Join the user group" src="https://img.shields.io/badge/groups.io-insync-green.svg" /></a> <img alt="" src="https://img.shields.io/badge/python-3.6+-blue.svg" /> <img alt="" src="https://img.shields.io/badge/status-beta-green.svg" /> <a class="reference external" href="https://pypi.python.org/pypi/ib_insync"><img alt="PyPi" src="https://img.shields.io/pypi/v/ib_insync.svg" /></a> <a class="reference external" href="https://anaconda.org/conda-forge/ib-insync"><img alt="Conda" src="https://img.shields.io/conda/vn/conda-forge/ib-insync.svg" /></a> <img alt="" src="https://img.shields.io/badge/license-BSD-blue.svg" /> <a class="reference external" href="https://pepy.tech/project/ib-insync"><img alt="Number of downloads" src="https://pepy.tech/badge/ib-insync" /></a> <a class="reference external" href="https://ib-insync.readthedocs.io/api.html"><img alt="Documentation" src="https://img.shields.io/badge/Documentation-green.svg" /></a></p>
 </div>
 <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
@@ -249,11 +249,14 @@ the <a class="reference external" href="https://ib-insync.readthedocs.io/recipes
 and the <a class="reference external" href="https://ib-insync.readthedocs.io/api.html">API docs</a>.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">ib_insync</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">ib_insync</span>
 </pre></div>
 </div>
-<p>On some systems <code class="docutils literal notranslate"><span class="pre">pip</span></code> should be used instead of <code class="docutils literal notranslate"><span class="pre">pip3</span></code>.</p>
-<p>To install for a single user, add <code class="docutils literal notranslate"><span class="pre">--user</span></code> to the command.</p>
+<p>For Python 3.6 install the <code class="docutils literal notranslate"><span class="pre">dataclasses</span></code> package (newer Python versions
+already have it):</p>
+<blockquote>
+<div><p>pip install dataclasses</p>
+</div></blockquote>
 <p>Requirements:</p>
 <ul class="simple">
 <li><p>Python 3.6 or higher;</p></li>
@@ -274,21 +277,24 @@ and ‘Download open orders on connection’ is checked.</p></li>
 <span class="n">ib</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">7497</span><span class="p">,</span> <span class="n">clientId</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="n">contract</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;EURUSD&#39;</span><span class="p">)</span>
-<span class="n">bars</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalData</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="n">endDateTime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">durationStr</span><span class="o">=</span><span class="s1">&#39;30 D&#39;</span><span class="p">,</span>
-        <span class="n">barSizeSetting</span><span class="o">=</span><span class="s1">&#39;1 hour&#39;</span><span class="p">,</span> <span class="n">whatToShow</span><span class="o">=</span><span class="s1">&#39;MIDPOINT&#39;</span><span class="p">,</span> <span class="n">useRTH</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">bars</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalData</span><span class="p">(</span>
+    <span class="n">contract</span><span class="p">,</span> <span class="n">endDateTime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">durationStr</span><span class="o">=</span><span class="s1">&#39;30 D&#39;</span><span class="p">,</span>
+    <span class="n">barSizeSetting</span><span class="o">=</span><span class="s1">&#39;1 hour&#39;</span><span class="p">,</span> <span class="n">whatToShow</span><span class="o">=</span><span class="s1">&#39;MIDPOINT&#39;</span><span class="p">,</span> <span class="n">useRTH</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 <span class="c1"># convert to pandas dataframe:</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">df</span><span class="p">(</span><span class="n">bars</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">]])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                   <span class="n">date</span>      <span class="nb">open</span>      <span class="n">high</span>       <span class="n">low</span>     <span class="n">close</span>
-<span class="mi">0</span>   <span class="mi">2017</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">13</span> <span class="mi">23</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">1.182850</span>  <span class="mf">1.183100</span>  <span class="mf">1.182100</span>  <span class="mf">1.182400</span>
-<span class="mi">1</span>   <span class="mi">2017</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">14</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">1.182400</span>  <span class="mf">1.182450</span>  <span class="mf">1.181875</span>  <span class="mf">1.182175</span>
-<span class="mi">2</span>   <span class="mi">2017</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">14</span> <span class="mi">01</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">1.182175</span>  <span class="mf">1.182675</span>  <span class="mf">1.181900</span>  <span class="mf">1.182525</span>
-<span class="o">...</span>
-<span class="mi">719</span> <span class="mi">2017</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">22</span> <span class="mi">22</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">1.194425</span>  <span class="mf">1.195425</span>  <span class="mf">1.194225</span>  <span class="mf">1.195050</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                   <span class="n">date</span>      <span class="nb">open</span>      <span class="n">high</span>       <span class="n">low</span>     <span class="n">close</span>  <span class="n">volume</span>  \
+<span class="mi">0</span>   <span class="mi">2019</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">19</span> <span class="mi">23</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">1.107875</span>  <span class="mf">1.108050</span>  <span class="mf">1.107725</span>  <span class="mf">1.107825</span>      <span class="o">-</span><span class="mi">1</span>
+<span class="mi">1</span>   <span class="mi">2019</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">20</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">1.107825</span>  <span class="mf">1.107925</span>  <span class="mf">1.107675</span>  <span class="mf">1.107825</span>      <span class="o">-</span><span class="mi">1</span>
+<span class="mi">2</span>   <span class="mi">2019</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">20</span> <span class="mi">01</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">1.107825</span>  <span class="mf">1.107975</span>  <span class="mf">1.107675</span>  <span class="mf">1.107875</span>      <span class="o">-</span><span class="mi">1</span>
+<span class="mi">3</span>   <span class="mi">2019</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">20</span> <span class="mi">02</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">1.107875</span>  <span class="mf">1.107975</span>  <span class="mf">1.107025</span>  <span class="mf">1.107225</span>      <span class="o">-</span><span class="mi">1</span>
+<span class="mi">4</span>   <span class="mi">2019</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">20</span> <span class="mi">03</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">1.107225</span>  <span class="mf">1.107725</span>  <span class="mf">1.107025</span>  <span class="mf">1.107525</span>      <span class="o">-</span><span class="mi">1</span>
+<span class="o">..</span>                  <span class="o">...</span>       <span class="o">...</span>       <span class="o">...</span>       <span class="o">...</span>       <span class="o">...</span>     <span class="o">...</span>
+<span class="mi">705</span> <span class="mi">2020</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">02</span> <span class="mi">14</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">1.119325</span>  <span class="mf">1.119675</span>  <span class="mf">1.119075</span>  <span class="mf">1.119225</span>      <span class="o">-</span><span class="mi">1</span>
 </pre></div>
 </div>
 </div>
