@@ -83,6 +83,19 @@ def dataclassNonDefaults(obj) -> dict:
         if value != field.default and value == value and value != []}
 
 
+def dataclassUpdate(obj, *srcObjs, **kwargs) -> object:
+    """
+    Update fields of the given ``dataclass`` object from zero or more
+    ``dataclass`` source objects and/or from keyword arguments.
+    """
+    if not is_dataclass(obj):
+        raise TypeError(f'Object {obj} is not a dataclass')
+    for srcObj in srcObjs:
+        obj.__dict__.update(dataclassAsDict(srcObj))
+    obj.__dict__.update(**kwargs)
+    return obj
+
+
 def dataclassRepr(obj) -> str:
     """
     Provide a culled representation of the given ``dataclass`` instance,

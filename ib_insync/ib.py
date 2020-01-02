@@ -1646,7 +1646,7 @@ class IB:
                 if contract.exchange == 'SMART':
                     # overwriting 'SMART' exchange can create invalid contract
                     c.exchange = contract.exchange
-                contract.__dict__.update(**util.dataclassAsDict(c))
+                util.dataclassUpdate(contract, c)
                 result.append(contract)
         return result
 

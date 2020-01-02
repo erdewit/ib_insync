@@ -36,6 +36,7 @@ from .client import Client
 from .wrapper import Wrapper
 from .flexreport import FlexReport, FlexError
 from .ibcontroller import IBC, IBController, Watchdog
+import ib_insync.util as util
 
 __all__ = ['util', 'Event']
 for _m in (
@@ -43,4 +44,14 @@ for _m in (
         client, wrapper, flexreport, ibcontroller):  # type: ignore
     __all__ += _m.__all__
 
+# compatibility with old Object
+import dataclasses
+for obj in locals().copy().values():
+    if dataclasses.is_dataclass(obj):
+        obj.dict = util.dataclassAsDict
+        obj.tuple = util.dataclassAsTuple
+        obj.update = util.dataclassUpdate
+        obj.nonDefaults = util.dataclassNonDefaults
+
 del sys
+del dataclasses

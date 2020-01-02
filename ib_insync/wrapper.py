@@ -17,8 +17,8 @@ from ib_insync.objects import (
 from ib_insync.order import Order, OrderStatus, Trade
 from ib_insync.ticker import Ticker
 from ib_insync.util import (
-    UNSET_DOUBLE, UNSET_INTEGER, dataclassAsDict, globalErrorEvent, isNan,
-    parseIBDatetime)
+    UNSET_DOUBLE, UNSET_INTEGER, dataclassAsDict, dataclassUpdate,
+    globalErrorEvent, isNan, parseIBDatetime)
 
 __all__ = ['Wrapper']
 
@@ -283,7 +283,7 @@ class Wrapper:
             # ignore '?' values in the order
             d = {k: v for k, v in dataclassAsDict(order).items() if v != '?'}
             if trade:
-                trade.order.__dict__.update(**d)
+                dataclassUpdate(trade.order, **d)
             else:
                 contract = Contract.create(**dataclassAsDict(contract))
                 order = Order(**d)
@@ -319,7 +319,7 @@ class Wrapper:
             permId, parentId, lastFillPrice, clientId, whyHeld,
             mktCapPrice=0.0, lastLiquidity=0):
         key = self.orderKey(clientId, orderId, permId)
-        trade = self.trades.get(key)
+        trade: Trade = self.trades.get(key)
         if trade:
             oldStatus = trade.orderStatus.status
             new = dict(
@@ -332,7 +332,7 @@ class Wrapper:
             curr = dataclassAsDict(trade.orderStatus)
             isChanged = curr != {**curr, **new}
             if isChanged:
-                trade.orderStatus.__dict__.update(**new)
+                dataclassUpdate(trade.orderStatus, **new)
                 msg = ''
             elif (status == 'Submitted' and trade.log
                     and trade.log[-1].message == 'Modify'):
@@ -406,8 +406,7 @@ class Wrapper:
             commissionReport.realizedPNL = 0.0
         fill = self.fills.get(commissionReport.execId)
         if fill:
-            report = fill.commissionReport.__dict__.update(
-                **dataclassAsDict(commissionReport))
+            report = dataclassUpdate(fill.commissionReport, commissionReport)
             self._logger.info(f'commissionReport: {report}')
             trade = self.permId2Trade.get(fill.execution.permId)
             if trade:
