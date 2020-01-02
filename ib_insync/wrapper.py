@@ -66,7 +66,7 @@ class Wrapper:
         self.reqId2PnlSingle: Dict[int, PnLSingle] = {}
         #    reqId -> PnLSingle
         self.pnlKey2ReqId: Dict[tuple, int] = {}
-        #    (account, modelCode) -> req`Id
+        #    (account, modelCode) -> reqId
         self.pnlSingleKey2ReqId: Dict[tuple, int] = {}
         #    (account, modelCode, conId) -> reqId
 
