@@ -14,7 +14,7 @@ from ib_insync.objects import (
     NewsBulletin, NewsProvider, NewsTick, OptionChain, OptionComputation,
     PortfolioItem, Position, PriceIncrement, RealTimeBar, TickByTickAllLast,
     TickByTickBidAsk, TickByTickMidPoint, TickData, TradeLogEntry)
-from ib_insync.order import Order, OrderStatus, Trade
+from ib_insync.order import Order, OrderState, OrderStatus, Trade
 from ib_insync.ticker import Ticker
 from ib_insync.util import (
     UNSET_DOUBLE, UNSET_INTEGER, dataclassAsDict, dataclassUpdate,
@@ -287,7 +287,8 @@ class Wrapper:
             else:
                 contract = Contract.create(**dataclassAsDict(contract))
                 order = Order(**d)
-                orderStatus = OrderStatus(status=orderState.status)
+                orderStatus = OrderStatus(
+                    orderId=orderId, status=orderState.status)
                 trade = Trade(contract, order, orderStatus, [], [])
                 self.trades[key] = trade
                 self._logger.info(f'openOrder: {trade}')
@@ -302,9 +303,11 @@ class Wrapper:
     def openOrderEnd(self):
         self._endReq('openOrders')
 
-    def completedOrder(self, contract, order, orderState):
+    def completedOrder(
+            self, contract: Contract, order: Order, orderState: OrderState):
         contract = Contract.create(**dataclassAsDict(contract))
-        orderStatus = OrderStatus(status=orderState.status)
+        orderStatus = OrderStatus(
+            orderId=order.orderId, status=orderState.status)
         trade = Trade(contract, order, orderStatus, [], [])
         self._results['completedOrders'].append(trade)
         if order.permId not in self.permId2Trade:

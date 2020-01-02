@@ -636,7 +636,8 @@ class IB:
             # this is a new order
             order.clientId = self.wrapper.clientId
             order.orderId = orderId
-            orderStatus = OrderStatus(status=OrderStatus.PendingSubmit)
+            orderStatus = OrderStatus(
+                orderId=orderId, status=OrderStatus.PendingSubmit)
             logEntry = TradeLogEntry(now, orderStatus.status, '')
             trade = Trade(
                 contract, order, orderStatus, [], [logEntry])
