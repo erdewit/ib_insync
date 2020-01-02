@@ -977,7 +977,7 @@ class Decoder:
             for _ in range(numConditions):
                 condType = int(fields.pop(0))
                 condCls = OrderCondition.createClass(condType)
-                n = len(condCls.defaults) - 1
+                n = len(dataclasses.fields(condCls)) - 1
                 cond = condCls(condType, *fields[:n])
                 self.parse(cond)
                 o.conditions.append(cond)
@@ -1190,7 +1190,7 @@ class Decoder:
             for _ in range(numConditions):
                 condType = int(fields.pop(0))
                 condCls = OrderCondition.createClass(condType)
-                n = len(condCls.defaults) - 1
+                n = len(dataclasses.fields(condCls)) - 1
                 cond = condCls(condType, *fields[:n])
                 self.parse(cond)
                 o.conditions.append(cond)
