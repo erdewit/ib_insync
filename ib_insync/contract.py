@@ -104,7 +104,7 @@ class Contract:
     deltaNeutralContract: Optional['DeltaNeutralContract'] = None
 
     @staticmethod
-    def create(**kwargs):
+    def create(**kwargs) -> 'Contract':
         """
         Create and a return a specialized contract based on the given secType,
         or a general Contract if secType is not given.
@@ -132,7 +132,7 @@ class Contract:
             kwargs.pop('secType', '')
         return cls(**kwargs)
 
-    def isHashable(self):
+    def isHashable(self) -> bool:
         """
         See if this contract can be hashed by conId.
 
@@ -140,8 +140,9 @@ class Contract:
         same conId as the front contract, so these contract types are
         not hashable.
         """
-        return self.conId and self.conId != 28812380 and \
-            self.secType not in ('BAG', 'CONTFUT')
+        return bool(
+            self.conId and self.conId != 28812380
+            and self.secType not in ('BAG', 'CONTFUT'))
 
     def __eq__(self, other):
         if not isinstance(other, Contract):

@@ -13,6 +13,7 @@ from .objects import (
     SoftDollarTier, TagValue, TickAttribBidAsk, TickAttribLast)
 from .order import Order, OrderComboLeg, OrderCondition, OrderState
 from .util import UNSET_DOUBLE
+from .wrapper import Wrapper
 
 __all__ = ['Decoder']
 
@@ -20,7 +21,7 @@ __all__ = ['Decoder']
 class Decoder:
     """Decode IB messages and invoke corresponding wrapper methods."""
 
-    def __init__(self, wrapper, serverVersion):
+    def __init__(self, wrapper: Wrapper, serverVersion: int):
         self.wrapper = wrapper
         self.serverVersion = serverVersion
         self.logger = logging.getLogger('ib_insync.Decoder')

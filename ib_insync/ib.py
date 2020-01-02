@@ -418,7 +418,7 @@ class IB:
             account: If specified, filter for this account name.
             modelCode: If specified, filter for this account model.
         """
-        return [v for v in self.wrapper.pnls.values() if
+        return [v for v in self.wrapper.reqId2PnL.values() if
                 (not account or v.account == account)
                 and (not modelCode or v.modelCode == modelCode)]
 
@@ -436,7 +436,7 @@ class IB:
             modelCode: If specified, filter for this account model.
             conId: If specified, filter for this contract ID.
         """
-        return [v for v in self.wrapper.pnlSingles.values() if
+        return [v for v in self.wrapper.reqId2PnlSingle.values() if
                 (not account or v.account == account)
                 and (not modelCode or v.modelCode == modelCode)
                 and (not conId or v.conId == conId)]
@@ -503,7 +503,7 @@ class IB:
 
     def newsBulletins(self) -> List[NewsBulletin]:
         """List of IB news bulletins."""
-        return list(self.wrapper.newsBulletins.values())
+        return list(self.wrapper.msgId2NewsBulletin.values())
 
     def reqTickers(
             self, *contracts: Contract,
@@ -827,7 +827,7 @@ class IB:
         reqId = self.client.getReqId()
         self.wrapper.pnlKey2ReqId[key] = reqId
         pnl = PnL(account, modelCode)
-        self.wrapper.pnls[reqId] = pnl
+        self.wrapper.reqId2PnL[reqId] = pnl
         self.client.reqPnL(reqId, account, modelCode)
         return pnl
 
@@ -843,7 +843,7 @@ class IB:
         reqId = self.wrapper.pnlKey2ReqId.pop(key, None)
         if reqId:
             self.client.cancelPnL(reqId)
-            self.wrapper.pnls.pop(reqId, None)
+            self.wrapper.reqId2PnL.pop(reqId, None)
         else:
             self._logger.error(
                 'cancelPnL: No subscription for '
@@ -869,7 +869,7 @@ class IB:
         reqId = self.client.getReqId()
         self.wrapper.pnlSingleKey2ReqId[key] = reqId
         pnlSingle = PnLSingle(account, modelCode, conId)
-        self.wrapper.pnlSingles[reqId] = pnlSingle
+        self.wrapper.reqId2PnlSingle[reqId] = pnlSingle
         self.client.reqPnLSingle(reqId, account, modelCode, conId)
         return pnlSingle
 
@@ -888,7 +888,7 @@ class IB:
         reqId = self.wrapper.pnlSingleKey2ReqId.pop(key, None)
         if reqId:
             self.client.cancelPnLSingle(reqId)
-            self.wrapper.pnlSingles.pop(reqId, None)
+            self.wrapper.reqId2PnlSingle.pop(reqId, None)
         else:
             self._logger.error(
                 'cancelPnLSingle: No subscription for '
