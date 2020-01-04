@@ -1,7 +1,7 @@
 """Order types used by Interactive Brokers."""
 
 from dataclasses import dataclass, field
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, NamedTuple, Optional
 
 from eventkit import Event
 
@@ -265,8 +265,7 @@ class Trade:
         return self.order.totalQuantity - self.filled()
 
 
-@dataclass
-class BracketOrder:
+class BracketOrder(NamedTuple):
     parent: Order
     takeProfit: Order
     stopLoss: Order
@@ -364,7 +363,6 @@ class OrderStatus:
     clientId: int = 0
     whyHeld: str = ''
     mktCapPrice: float = 0.0
-    lastLiquidity: int = 0
 
     PendingSubmit: ClassVar = 'PendingSubmit'
     PendingCancel: ClassVar = 'PendingCancel'
