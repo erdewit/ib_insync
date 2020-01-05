@@ -1,15 +1,15 @@
 """Financial instrument types used by Interactive Brokers."""
 
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List, NamedTuple, Optional
 
 import ib_insync.util as util
 
 __all__ = (
     'Contract Stock Option Future ContFuture Forex Index CFD '
     'Commodity Bond FuturesOption MutualFund Warrant Bag '
-    'ComboLeg DeltaNeutralContract ContractDetails ContractDescription '
-    'ScanData').split()
+    'TagValue ComboLeg DeltaNeutralContract ContractDetails '
+    'ContractDescription ScanData').split()
 
 
 @dataclass
@@ -419,6 +419,11 @@ class Bag(Contract):
         Contract.__init__(self, 'BAG', **kwargs)
 
 
+class TagValue(NamedTuple):
+    tag: str
+    value: str
+
+
 @dataclass
 class ComboLeg:
     conId: int = 0
@@ -462,7 +467,7 @@ class ContractDetails:
     underSymbol: str = ''
     underSecType: str = ''
     marketRuleIds: str = ''
-    secIdList: List['TagValue'] = field(default_factory=list)
+    secIdList: List[TagValue] = field(default_factory=list)
     realExpirationDate: str = ''
     lastTradeTime: str = ''
     stockType: str = ''
@@ -497,6 +502,3 @@ class ScanData:
     benchmark: str
     projection: str
     legsStr: str
-
-
-from .objects import TagValue  # noqa

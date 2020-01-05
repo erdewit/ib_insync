@@ -16,15 +16,14 @@ from .objects import (
     TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
     HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
     TickAttrib, TickAttribBidAsk, TickAttribLast, FundamentalRatios,
-    MktDepthData, DOMLevel, TradeLogEntry, TagValue,
-    FamilyCode, SmartComponent,
+    MktDepthData, DOMLevel, TradeLogEntry, FamilyCode, SmartComponent,
     PortfolioItem, Position, Fill, OptionComputation, OptionChain, Dividends,
     NewsArticle, HistoricalNews, NewsTick, NewsBulletin, ConnectionStats)
 from .contract import (
     Contract, Stock, Option, Future, ContFuture, Forex, Index, CFD,
     Commodity, Bond, FuturesOption, MutualFund, Warrant, Bag,
-    ComboLeg, DeltaNeutralContract, ContractDetails, ContractDescription,
-    ScanData)
+    TagValue, ComboLeg, DeltaNeutralContract, ContractDetails,
+    ContractDescription, ScanData)
 from .order import (
     Order, Trade, LimitOrder, MarketOrder, StopOrder, StopLimitOrder,
     BracketOrder, OrderCondition, ExecutionCondition, MarginCondition,

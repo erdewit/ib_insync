@@ -1,14 +1,14 @@
 """Utilities."""
 
 import asyncio
-import datetime
 import logging
 import math
 import signal
 import sys
 import time
 from dataclasses import fields, is_dataclass
-from typing import AsyncIterator, Callable, Iterator, Union
+from datetime import date, datetime, time as time_, timedelta, timezone
+from typing import AsyncIterator, Awaitable, Callable, Iterator, Union
 
 import eventkit as ev
 
@@ -17,6 +17,7 @@ globalErrorEvent = ev.Event()
 Event to emit global exceptions.
 """
 
+EPOCH = datetime(1970, 1, 1, tzinfo=timezone.utc)
 UNSET_INTEGER = 2 ** 31 - 1
 UNSET_DOUBLE = sys.float_info.max
 
@@ -126,7 +127,7 @@ def tree(obj):
     """
     if isinstance(obj, (bool, int, float, str, bytes)):
         return obj
-    elif isinstance(obj, (datetime.date, datetime.time)):
+    elif isinstance(obj, (date, time_)):
         return obj.isoformat()
     elif isinstance(obj, dict):
         return {k: tree(v) for k, v in obj.items()}
@@ -231,7 +232,7 @@ def isNan(x: float) -> bool:
     return x != x
 
 
-def formatSI(n) -> str:
+def formatSI(n: float) -> str:
     """Format the integer or float n to 3 significant digits + SI prefix."""
     s = ''
     if n < 0:
@@ -271,7 +272,7 @@ class timeit:
         print(self.title + ' took ' + formatSI(time.time() - self.t0) + 's')
 
 
-def run(*awaitables, timeout: float = None):
+def run(*awaitables: Awaitable, timeout: float = None):
     """
     By default run the event loop forever.
 
@@ -317,19 +318,17 @@ def run(*awaitables, timeout: float = None):
     return result
 
 
-def _fillDate(time: Union[datetime.time, datetime.datetime]) -> \
-        datetime.datetime:
+def _fillDate(time: Union[time_, datetime]) -> datetime:
     # use today if date is absent
-    if isinstance(time, datetime.time):
-        dt = datetime.datetime.combine(datetime.date.today(), time)
+    if isinstance(time, time_):
+        dt = datetime.combine(date.today(), time)
     else:
         dt = time
     return dt
 
 
 def schedule(
-        time: Union[datetime.time, datetime.datetime],
-        callback: Callable, *args):
+        time: Union[time_, datetime], callback: Callable, *args):
     """
     Schedule the callback to be run at the given time with
     the given arguments.
@@ -342,7 +341,7 @@ def schedule(
         args: Arguments for to call callback with.
     """
     dt = _fillDate(time)
-    now = datetime.datetime.now(dt.tzinfo)
+    now = datetime.now(dt.tzinfo)
     delay = (dt - now).total_seconds()
     loop = asyncio.get_event_loop()
     return loop.call_later(delay, callback, *args)
@@ -361,9 +360,9 @@ def sleep(secs: float = 0.02) -> bool:
 
 
 def timeRange(
-        start: Union[datetime.time, datetime.datetime],
-        end: Union[datetime.time, datetime.datetime],
-        step: float) -> Iterator[datetime.datetime]:
+        start: Union[time_, datetime],
+        end: Union[time_, datetime],
+        step: float) -> Iterator[datetime]:
     """
     Iterator that waits periodically until certain time points are
     reached while yielding those time points.
@@ -376,9 +375,9 @@ def timeRange(
         step (float): The number of seconds of each period
     """
     assert step > 0
-    delta = datetime.timedelta(seconds=step)
+    delta = timedelta(seconds=step)
     t = _fillDate(start)
-    while t < datetime.datetime.now():
+    while t < datetime.now():
         t += delta
     while t <= _fillDate(end):
         waitUntil(t)
@@ -386,7 +385,7 @@ def timeRange(
         t += delta
 
 
-def waitUntil(t: Union[datetime.time, datetime.datetime]) -> bool:
+def waitUntil(t: Union[time_, datetime]) -> bool:
     """
     Wait until the given time t is reached.
 
@@ -394,21 +393,21 @@ def waitUntil(t: Union[datetime.time, datetime.datetime]) -> bool:
         t: The time t can be specified as datetime.datetime,
             or as datetime.time in which case today is used as the date.
     """
-    now = datetime.datetime.now(t.tzinfo)
+    now = datetime.now(t.tzinfo)
     secs = (_fillDate(t) - now).total_seconds()
     run(asyncio.sleep(secs))
     return True
 
 
 async def timeRangeAsync(
-        start: Union[datetime.time, datetime.datetime],
-        end: Union[datetime.time, datetime.datetime],
-        step: float) -> AsyncIterator[datetime.datetime]:
+        start: Union[time_, datetime],
+        end: Union[time_, datetime],
+        step: float) -> AsyncIterator[datetime]:
     """Async version of :meth:`timeRange`."""
     assert step > 0
-    delta = datetime.timedelta(seconds=step)
+    delta = timedelta(seconds=step)
     t = _fillDate(start)
-    while t < datetime.datetime.now():
+    while t < datetime.now():
         t += delta
     while t <= _fillDate(end):
         await waitUntilAsync(t)
@@ -416,9 +415,9 @@ async def timeRangeAsync(
         t += delta
 
 
-async def waitUntilAsync(t: Union[datetime.time, datetime.datetime]) -> bool:
+async def waitUntilAsync(t: Union[time_, datetime]) -> bool:
     """Async version of :meth:`waitUntil`."""
-    now = datetime.datetime.now(t.tzinfo)
+    now = datetime.now(t.tzinfo)
     secs = (_fillDate(t) - now).total_seconds()
     await asyncio.sleep(secs)
     return True
@@ -496,33 +495,32 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
     qt_step()
 
 
-def formatIBDatetime(dt) -> str:
+def formatIBDatetime(dt: Union[date, datetime, str, None]) -> str:
     """Format date or datetime to string that IB uses."""
     if not dt:
         s = ''
-    elif isinstance(dt, datetime.datetime):
+    elif isinstance(dt, datetime):
         if dt.tzinfo:
             # convert to local system timezone
             dt = dt.astimezone()
         s = dt.strftime('%Y%m%d %H:%M:%S')
-    elif isinstance(dt, datetime.date):
+    elif isinstance(dt, date):
         s = dt.strftime('%Y%m%d 23:59:59')
     else:
         s = dt
     return s
 
 
-def parseIBDatetime(s):
+def parseIBDatetime(s: str):
     """Parse string in IB date or datetime format to datetime."""
     if len(s) == 8:
         # YYYYmmdd
         y = int(s[0:4])
         m = int(s[4:6])
         d = int(s[6:8])
-        dt = datetime.date(y, m, d)
+        dt = date(y, m, d)
     elif s.isdigit():
-        dt = datetime.datetime.fromtimestamp(
-            int(s), datetime.timezone.utc)
+        dt = datetime.fromtimestamp(int(s), timezone.utc)
     else:
-        dt = datetime.datetime.strptime(s, '%Y%m%d  %H:%M:%S')
+        dt = datetime.strptime(s, '%Y%m%d  %H:%M:%S')
     return dt

@@ -1,12 +1,13 @@
 """Object hierarchy."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime
 from typing import ClassVar, List, NamedTuple, Optional, Union
 
 from eventkit import Event
 
-from .util import UNSET_DOUBLE, UNSET_INTEGER
+from .contract import Contract, TagValue
+from .util import EPOCH, UNSET_DOUBLE, UNSET_INTEGER
 
 __all__ = (
     'SoftDollarTier PriceIncrement Execution CommissionReport '
@@ -17,7 +18,7 @@ __all__ = (
     'TickByTickAllLast TickByTickBidAsk TickByTickMidPoint '
     'HistoricalTick HistoricalTickBidAsk HistoricalTickLast '
     'TickAttrib TickAttribBidAsk TickAttribLast '
-    'MktDepthData DOMLevel TradeLogEntry TagValue '
+    'MktDepthData DOMLevel TradeLogEntry '
     'FamilyCode SmartComponent '
     'PortfolioItem Position Fill OptionComputation OptionChain Dividends '
     'NewsArticle HistoricalNews NewsTick NewsBulletin ConnectionStats'
@@ -64,7 +65,7 @@ class SoftDollarTier:
 @dataclass
 class Execution:
     execId: str = ''
-    time: str = ''
+    time: datetime = field(default=EPOCH)
     acctNumber: str = ''
     exchange: str = ''
     side: str = ''
@@ -118,7 +119,7 @@ class BarData:
 
 @dataclass
 class RealTimeBar:
-    time: int = 0
+    time: datetime = EPOCH
     endTime: int = -1
     open_: float = 0.0
     high: float = 0.0
@@ -188,11 +189,6 @@ class PnLSingle:
     realizedPnL: float = nan
     position: int = 0
     value: float = nan
-
-
-class TagValue(NamedTuple):
-    tag: str
-    value: str
 
 
 class AccountValue(NamedTuple):
@@ -286,7 +282,7 @@ class PriceIncrement(NamedTuple):
 
 
 class PortfolioItem(NamedTuple):
-    contract: 'Contract'
+    contract: Contract
     position: float
     marketPrice: float
     marketValue: float
@@ -298,13 +294,13 @@ class PortfolioItem(NamedTuple):
 
 class Position(NamedTuple):
     account: str
-    contract: 'Contract'
+    contract: Contract
     position: float
     avgCost: float
 
 
 class Fill(NamedTuple):
-    contract: 'Contract'
+    contract: Contract
     execution: Execution
     commissionReport: CommissionReport
     time: datetime
@@ -411,7 +407,7 @@ class BarDataList(BarList):
     """
 
     reqId: int
-    contract: 'Contract'
+    contract: Contract
     endDateTime: Union[datetime, date, str, None]
     durationStr: str
     barSizeSetting: str
@@ -433,7 +429,7 @@ class RealTimeBarList(BarList):
     """
 
     reqId: int
-    contract: 'Contract'
+    contract: Contract
     barSize: int
     whatToShow: str
     useRTH: bool
@@ -484,6 +480,3 @@ class FundamentalRatios(DynamicObject):
     """
 
     pass
-
-
-from .contract import Contract  # noqa

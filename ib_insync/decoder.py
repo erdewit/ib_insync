@@ -2,6 +2,7 @@
 
 import dataclasses
 import logging
+from datetime import datetime, timezone
 
 from .contract import (
     ComboLeg, Contract, ContractDescription, ContractDetails,
@@ -9,10 +10,10 @@ from .contract import (
 from .objects import (
     BarData, CommissionReport, DepthMktDataDescription, Execution, FamilyCode,
     HistogramData, HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
-    NewsProvider, PriceIncrement, SmartComponent,
-    SoftDollarTier, TagValue, TickAttribBidAsk, TickAttribLast)
+    NewsProvider, PriceIncrement, SmartComponent, SoftDollarTier, TagValue,
+    TickAttribBidAsk, TickAttribLast)
 from .order import Order, OrderComboLeg, OrderCondition, OrderState
-from .util import UNSET_DOUBLE
+from .util import UNSET_DOUBLE, parseIBDatetime
 from .wrapper import Wrapper
 
 __all__ = ['Decoder']
@@ -382,7 +383,7 @@ class Decoder:
             c.localSymbol,
             c.tradingClass,
             ex.execId,
-            ex.time,
+            time,
             ex.acctNumber,
             ex.exchange,
             ex.side,
@@ -401,6 +402,7 @@ class Decoder:
 
         self.parse(c)
         self.parse(ex)
+        ex.time = parseIBDatetime(int(time)).astimezone(timezone.utc)
         self.wrapper.execDetails(int(reqId), c, ex)
 
     def historicalData(self, fields):
@@ -679,8 +681,9 @@ class Decoder:
             get()
             price = float(get())
             size = int(get())
+            dt = datetime.fromtimestamp(time, timezone.utc)
             ticks.append(
-                HistoricalTick(time, price, size))
+                HistoricalTick(dt, price, size))
 
         done = bool(int(get()))
         self.wrapper.historicalTicks(int(reqId), ticks, done)
@@ -700,9 +703,10 @@ class Decoder:
             priceAsk = float(get())
             sizeBid = int(get())
             sizeAsk = int(get())
+            dt = datetime.fromtimestamp(time, timezone.utc)
             ticks.append(
                 HistoricalTickBidAsk(
-                    time, attrib, priceBid, priceAsk, sizeBid, sizeAsk))
+                    dt, attrib, priceBid, priceAsk, sizeBid, sizeAsk))
 
         done = bool(int(get()))
         self.wrapper.historicalTicksBidAsk(int(reqId), ticks, done)
@@ -722,9 +726,10 @@ class Decoder:
             size = int(get())
             exchange = get()
             specialConditions = get()
+            dt = datetime.fromtimestamp(time, timezone.utc)
             ticks.append(
                 HistoricalTickLast(
-                    time, attrib, price, size, exchange, specialConditions))
+                    dt, attrib, price, size, exchange, specialConditions))
 
         done = bool(int(get()))
         self.wrapper.historicalTicksLast(int(reqId), ticks, done)

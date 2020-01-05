@@ -1,12 +1,12 @@
 """Order types used by Interactive Brokers."""
 
 from dataclasses import dataclass, field
-from typing import ClassVar, List, NamedTuple, Optional
+from typing import ClassVar, List, NamedTuple
 
 from eventkit import Event
 
-from .contract import Contract
-from .objects import Fill, SoftDollarTier, TagValue, TradeLogEntry
+from .contract import Contract, TagValue
+from .objects import Fill, SoftDollarTier, TradeLogEntry
 from .util import UNSET_DOUBLE, UNSET_INTEGER, dataclassNonDefaults
 
 __all__ = (
@@ -209,6 +209,61 @@ class StopLimitOrder(Order):
 
 
 @dataclass
+class OrderStatus:
+    orderId: int = 0
+    status: str = ''
+    filled: int = 0
+    remaining: int = 0
+    avgFillPrice: float = 0.0
+    permId: int = 0
+    parentId: int = 0
+    lastFillPrice: float = 0.0
+    clientId: int = 0
+    whyHeld: str = ''
+    mktCapPrice: float = 0.0
+
+    PendingSubmit: ClassVar = 'PendingSubmit'
+    PendingCancel: ClassVar = 'PendingCancel'
+    PreSubmitted: ClassVar = 'PreSubmitted'
+    Submitted: ClassVar = 'Submitted'
+    ApiPending: ClassVar = 'ApiPending'
+    ApiCancelled: ClassVar = 'ApiCancelled'
+    Cancelled: ClassVar = 'Cancelled'
+    Filled: ClassVar = 'Filled'
+    Inactive: ClassVar = 'Inactive'
+
+    DoneStates: ClassVar = {'Filled', 'Cancelled', 'ApiCancelled'}
+    ActiveStates: ClassVar = {
+        'PendingSubmit', 'ApiPending', 'PreSubmitted', 'Submitted'}
+
+
+@dataclass
+class OrderState:
+    status: str = ''
+    initMarginBefore: str = ''
+    maintMarginBefore: str = ''
+    equityWithLoanBefore: str = ''
+    initMarginChange: str = ''
+    maintMarginChange: str = ''
+    equityWithLoanChange: str = ''
+    initMarginAfter: str = ''
+    maintMarginAfter: str = ''
+    equityWithLoanAfter: str = ''
+    commission: float = UNSET_DOUBLE
+    minCommission: float = UNSET_DOUBLE
+    maxCommission: float = UNSET_DOUBLE
+    commissionCurrency: str = ''
+    warningText: str = ''
+    completedTime: str = ''
+    completedStatus: str = ''
+
+
+@dataclass
+class OrderComboLeg:
+    price: float = UNSET_DOUBLE
+
+
+@dataclass
 class Trade:
     """
     Trade keeps track of an order, its status and all its fills.
@@ -229,9 +284,9 @@ class Trade:
         'commissionReportEvent', 'filledEvent',
         'cancelEvent', 'cancelledEvent')
 
-    contract: Optional[Contract] = None
-    order: Optional[Order] = None
-    orderStatus: Optional['OrderStatus'] = None
+    contract: Contract = field(default_factory=Contract)
+    order: Order = field(default_factory=Order)
+    orderStatus: 'OrderStatus' = field(default_factory=OrderStatus)
     fills: List[Fill] = field(default_factory=list)
     log: List[TradeLogEntry] = field(default_factory=list)
 
@@ -348,58 +403,3 @@ class PercentChangeCondition(OrderCondition):
     changePercent: float = 0.0
     conId: int = 0
     exch: str = ''
-
-
-@dataclass
-class OrderStatus:
-    orderId: int = 0
-    status: str = ''
-    filled: int = 0
-    remaining: int = 0
-    avgFillPrice: float = 0.0
-    permId: int = 0
-    parentId: int = 0
-    lastFillPrice: float = 0.0
-    clientId: int = 0
-    whyHeld: str = ''
-    mktCapPrice: float = 0.0
-
-    PendingSubmit: ClassVar = 'PendingSubmit'
-    PendingCancel: ClassVar = 'PendingCancel'
-    PreSubmitted: ClassVar = 'PreSubmitted'
-    Submitted: ClassVar = 'Submitted'
-    ApiPending: ClassVar = 'ApiPending'
-    ApiCancelled: ClassVar = 'ApiCancelled'
-    Cancelled: ClassVar = 'Cancelled'
-    Filled: ClassVar = 'Filled'
-    Inactive: ClassVar = 'Inactive'
-
-    DoneStates: ClassVar = {'Filled', 'Cancelled', 'ApiCancelled'}
-    ActiveStates: ClassVar = {
-        'PendingSubmit', 'ApiPending', 'PreSubmitted', 'Submitted'}
-
-
-@dataclass
-class OrderState:
-    status: str = ''
-    initMarginBefore: str = ''
-    maintMarginBefore: str = ''
-    equityWithLoanBefore: str = ''
-    initMarginChange: str = ''
-    maintMarginChange: str = ''
-    equityWithLoanChange: str = ''
-    initMarginAfter: str = ''
-    maintMarginAfter: str = ''
-    equityWithLoanAfter: str = ''
-    commission: float = UNSET_DOUBLE
-    minCommission: float = UNSET_DOUBLE
-    maxCommission: float = UNSET_DOUBLE
-    commissionCurrency: str = ''
-    warningText: str = ''
-    completedTime: str = ''
-    completedStatus: str = ''
-
-
-@dataclass
-class OrderComboLeg:
-    price: float = UNSET_DOUBLE
