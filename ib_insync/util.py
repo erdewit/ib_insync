@@ -511,7 +511,7 @@ def formatIBDatetime(dt: Union[date, datetime, str, None]) -> str:
     return s
 
 
-def parseIBDatetime(s: str):
+def parseIBDatetime(s: str) -> datetime:
     """Parse string in IB date or datetime format to datetime."""
     if len(s) == 8:
         # YYYYmmdd
