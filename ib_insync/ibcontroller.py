@@ -417,7 +417,8 @@ class Watchdog:
                 await self.controller.startAsync()
                 await asyncio.sleep(self.appStartupTime)
                 await self.ib.connectAsync(
-                    self.host, self.port, self.clientId, self.connectTimeout, self.readonly)
+                    self.host, self.port, self.clientId, self.connectTimeout,
+                    self.readonly)
                 self.startedEvent.emit(self)
                 self.ib.setTimeout(self.appTimeout)
                 self.ib.timeoutEvent += onTimeout
