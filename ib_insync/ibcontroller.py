@@ -367,6 +367,7 @@ class Watchdog:
     appStartupTime: float = 30
     appTimeout: float = 20
     retryDelay: float = 2
+    readonly: bool = False
 
     def __post_init__(self):
         self.startingEvent = Event('startingEvent')
@@ -416,7 +417,7 @@ class Watchdog:
                 await self.controller.startAsync()
                 await asyncio.sleep(self.appStartupTime)
                 await self.ib.connectAsync(
-                    self.host, self.port, self.clientId, self.connectTimeout)
+                    self.host, self.port, self.clientId, self.connectTimeout, self.readonly)
                 self.startedEvent.emit(self)
                 self.ib.setTimeout(self.appTimeout)
                 self.ib.timeoutEvent += onTimeout
