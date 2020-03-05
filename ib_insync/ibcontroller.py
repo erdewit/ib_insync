@@ -319,6 +319,7 @@ class Watchdog:
         port (int):  Used for connecting IB instance.
         clientId (int):  Used for connecting IB instance.
         connectTimeout (float):  Used for connecting IB instance.
+        readonly (bool): Used for connecting IB instance.
         appStartupTime (float): Time (in seconds) that the app is given
             to start up. Make sure that it is given ample time.
         appTimeout (float): Timeout (in seconds) for network traffic idle time.
