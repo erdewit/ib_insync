@@ -1,7 +1,7 @@
 """Object hierarchy."""
 
 from dataclasses import dataclass, field
-from datetime import date, datetime
+from datetime import date as date_, datetime
 from typing import ClassVar, List, NamedTuple, Optional, Union
 
 from eventkit import Event
@@ -107,7 +107,7 @@ class ExecutionFilter:
 
 @dataclass
 class BarData:
-    date: str = ''
+    date: Union[date_, datetime] = EPOCH
     open: float = 0.0
     high: float = 0.0
     low: float = 0.0
@@ -329,7 +329,7 @@ class OptionChain(NamedTuple):
 class Dividends(NamedTuple):
     past12Months: Optional[float]
     next12Months: Optional[float]
-    nextDate: Optional[date]
+    nextDate: Optional[date_]
     nextAmount: Optional[float]
 
 
@@ -408,7 +408,7 @@ class BarDataList(BarList):
 
     reqId: int
     contract: Contract
-    endDateTime: Union[datetime, date, str, None]
+    endDateTime: Union[datetime, date_, str, None]
     durationStr: str
     barSizeSetting: str
     whatToShow: str

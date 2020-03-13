@@ -402,7 +402,7 @@ class Decoder:
 
         self.parse(c)
         self.parse(ex)
-        ex.time = parseIBDatetime(int(time)).astimezone(timezone.utc)
+        ex.time = parseIBDatetime(time).astimezone(timezone.utc)
         self.wrapper.execDetails(int(reqId), c, ex)
 
     def historicalData(self, fields):

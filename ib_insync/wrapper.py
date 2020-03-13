@@ -5,13 +5,14 @@ import logging
 from collections import defaultdict
 from contextlib import suppress
 from datetime import datetime, timezone
-from typing import Any, Awaitable, Dict, List, Optional, Set, Tuple, Union
+from typing import (
+    Any, Awaitable, Dict, List, Optional, Set, Tuple, Union, cast)
 
 from ib_insync.contract import (
     Contract, ContractDescription, ContractDetails, ScanData)
 from ib_insync.objects import (
-    AccountValue, BarData, CommissionReport, DOMLevel, DepthMktDataDescription,
-    Dividends, Execution, Fill, FundamentalRatios, HistogramData,
+    AccountValue, BarData, CommissionReport, DepthMktDataDescription,
+    Dividends, DOMLevel, Execution, Fill, FundamentalRatios, HistogramData,
     HistoricalNews, HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
     MktDepthData, NewsArticle, NewsBulletin, NewsProvider, NewsTick,
     OptionChain, OptionComputation, PnL, PnLSingle, PortfolioItem, Position,
@@ -493,7 +494,7 @@ class Wrapper:
             bars.updateEvent.emit(bars, True)
 
     def historicalData(self, reqId: int, bar: BarData):
-        bar.date = parseIBDatetime(bar.date)
+        bar.date = parseIBDatetime(bar.date)  # type: ignore
         self._results[reqId].append(bar)
 
     def historicalDataEnd(self, reqId, _start: str, _end: str):
@@ -503,7 +504,7 @@ class Wrapper:
         bars = self.reqId2Subscriber.get(reqId)
         if not bars:
             return
-        bar.date = parseIBDatetime(bar.date)
+        bar.date = parseIBDatetime(bar.date)  # type: ignore
         hasNewBar = len(bars) == 0 or bar.date > bars[-1].date
         if hasNewBar:
             bars.append(bar)
@@ -960,6 +961,7 @@ class Wrapper:
             self, reqId: int, time: str, providerCode: str,
             articleId: str, headline: str):
         dt = parseIBDatetime(time)
+        dt = cast(datetime, dt)
         article = HistoricalNews(dt, providerCode, articleId, headline)
         self._results[reqId].append(article)
 

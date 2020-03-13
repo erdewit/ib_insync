@@ -319,6 +319,7 @@ class Watchdog:
         port (int):  Used for connecting IB instance.
         clientId (int):  Used for connecting IB instance.
         connectTimeout (float):  Used for connecting IB instance.
+        readonly (bool): Used for connecting IB instance.
         appStartupTime (float): Time (in seconds) that the app is given
             to start up. Make sure that it is given ample time.
         appTimeout (float): Timeout (in seconds) for network traffic idle time.
@@ -367,6 +368,7 @@ class Watchdog:
     appStartupTime: float = 30
     appTimeout: float = 20
     retryDelay: float = 2
+    readonly: bool = False
 
     def __post_init__(self):
         self.startingEvent = Event('startingEvent')
@@ -416,7 +418,8 @@ class Watchdog:
                 await self.controller.startAsync()
                 await asyncio.sleep(self.appStartupTime)
                 await self.ib.connectAsync(
-                    self.host, self.port, self.clientId, self.connectTimeout)
+                    self.host, self.port, self.clientId, self.connectTimeout,
+                    self.readonly)
                 self.startedEvent.emit(self)
                 self.ib.setTimeout(self.appTimeout)
                 self.ib.timeoutEvent += onTimeout
