@@ -576,9 +576,9 @@ class Wrapper:
             ticker.high = price
         elif tickType in (7, 73):
             ticker.low = price
-        elif tickType == 9:
+        elif tickType in (9, 75):
             ticker.close = price
-        elif tickType == 14:
+        elif tickType in (14, 76):
             ticker.open = price
         elif tickType == 15:
             ticker.low13week = price
