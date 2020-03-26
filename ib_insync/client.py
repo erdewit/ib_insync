@@ -359,26 +359,31 @@ class Client:
             self._tcpDataProcessed()
 
     def _onSocketDisconnected(self):
+        wasReady = self.isReady()
         if self.isConnected():
             msg = f'Peer closed connection'
             self._logger.error(msg)
-            if not self.isReady():
+            if not wasReady:
                 msg = f'clientId {self.clientId} already in use?'
                 self._logger.error(msg)
             self.apiError.emit(msg)
         else:
             self._logger.info('Disconnected')
-        if self.isReady():
+        if wasReady:
             self.wrapper.connectionClosed()
         self.reset()
-        self.apiEnd.emit()
+        if wasReady:
+            self.apiEnd.emit()
 
     def _onSocketHasError(self, msg):
+        wasReady = self.isReady()
         self._logger.error(msg)
-        if self.isReady():
+        if wasReady:
             self.wrapper.connectionClosed()
         self.reset()
         self.apiError.emit(msg)
+        if wasReady:
+            self.apiEnd.emit()
 
     # client request methods
     # the message type id is sent first, often followed by a version number
