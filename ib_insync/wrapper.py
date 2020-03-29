@@ -320,13 +320,14 @@ class Wrapper:
         else:
             key = self.orderKey(order.clientId, order.orderId, order.permId)
             trade = self.trades.get(key)
-            # ignore '?' values in the order
-            d = {k: v for k, v in dataclassAsDict(order).items() if v != '?'}
             if trade:
-                dataclassUpdate(trade.order, **d)
+                trade.order.permId = order.permId
             else:
+                # ignore '?' values in the order
+                order = Order(**{
+                    k: v for k, v in dataclassAsDict(order).items()
+                    if v != '?'})
                 contract = Contract.create(**dataclassAsDict(contract))
-                order = Order(**d)
                 orderStatus = OrderStatus(
                     orderId=orderId, status=orderState.status)
                 trade = Trade(contract, order, orderStatus, [], [])
