@@ -11,8 +11,8 @@ from typing import (
 from ib_insync.contract import (
     Contract, ContractDescription, ContractDetails, ScanData)
 from ib_insync.objects import (
-    AccountValue, BarData, CommissionReport, DepthMktDataDescription,
-    Dividends, DOMLevel, Execution, Fill, FundamentalRatios, HistogramData,
+    AccountValue, BarData, CommissionReport, DOMLevel, DepthMktDataDescription,
+    Dividends, Execution, Fill, FundamentalRatios, HistogramData,
     HistoricalNews, HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
     MktDepthData, NewsArticle, NewsBulletin, NewsProvider, NewsTick,
     OptionChain, OptionComputation, PnL, PnLSingle, PortfolioItem, Position,

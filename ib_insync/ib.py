@@ -89,8 +89,8 @@ class IB:
           blocking request to finish before raising ``asyncio.TimeoutError``.
           The default value of 0 will wait indefinitely.
           Note: This timeout is not used for the ``*Async`` methods.
-        MaxSyncedSubAccounts (int): Do not use sub-account updates if the number
-          of sub-accounts exceeds this number (50 by default).
+        MaxSyncedSubAccounts (int): Do not use sub-account updates
+          if the number of sub-accounts exceeds this number (50 by default).
 
     Events:
         * ``connectedEvent`` ():
@@ -1635,7 +1635,7 @@ class IB:
                 await asyncio.wait_for(
                     asyncio.gather(
                         *(self.reqAccountUpdatesMultiAsync(a)
-                        for a in accounts)),
+                            for a in accounts)),
                     timeout or None)
             else:
                 self._logger.warning('Not requesting sub-account updates')
