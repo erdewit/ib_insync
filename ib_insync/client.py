@@ -159,6 +159,10 @@ class Client:
         self._reqIdSeq += 1
         return newId
 
+    def updateReqId(self, minReqId):
+        """Update the next reqId to be at least ``minReqId``."""
+        self._reqIdSeq = max(self._reqIdSeq, minReqId)
+
     def getAccounts(self) -> List[str]:
         """Get the list of account names that are under management."""
         if not self.isReady():

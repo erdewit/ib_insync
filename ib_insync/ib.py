@@ -89,7 +89,8 @@ class IB:
           blocking request to finish before raising ``asyncio.TimeoutError``.
           The default value of 0 will wait indefinitely.
           Note: This timeout is not used for the ``*Async`` methods.
-
+        MaxSyncedSubAccounts (int): Do not use sub-account updates if the number
+          of sub-accounts exceeds this number (50 by default).
 
     Events:
         * ``connectedEvent`` ():
@@ -186,7 +187,8 @@ class IB:
         'scannerDataEvent', 'tickNewsEvent', 'newsBulletinEvent',
         'errorEvent', 'timeoutEvent')
 
-    RequestTimeout = 0
+    RequestTimeout: float = 0
+    MaxSyncedSubAccounts: int = 50
 
     def __init__(self):
         self._createEvents()
@@ -237,7 +239,7 @@ class IB:
 
     def connect(
             self, host: str = '127.0.0.1', port: int = 7497, clientId: int = 1,
-            timeout: float = 2, readonly: bool = False, account: str = ''):
+            timeout: float = 4, readonly: bool = False, account: str = ''):
         """
         Connect to a running TWS or IB gateway application.
         After the connection is made the client is fully synchronized
@@ -1594,34 +1596,61 @@ class IB:
 
     async def connectAsync(
             self, host: str = '127.0.0.1', port: int = 7497,
-            clientId: int = 1, timeout: float = 2, readonly: bool = False,
+            clientId: int = 1, timeout: float = 4, readonly: bool = False,
             account: str = ''):
 
-        async def connect():
-            self.wrapper.clientId = clientId
-            await self.client.connectAsync(host, port, clientId, timeout)
-            if not readonly and self.client.serverVersion() >= 150:
-                await self.reqCompletedOrdersAsync(False)
-            accounts = self.client.getAccounts()
-            await asyncio.gather(
-                self.reqAccountUpdatesAsync(account or accounts[0]),
-                *(self.reqAccountUpdatesMultiAsync(a) for a in accounts),
-                self.reqPositionsAsync(),
-                self.reqExecutionsAsync())
+        if self.isConnected():
+            self._logger.warn('Already connected')
+            return self
+        self.wrapper.clientId = clientId
+
+        try:
+            # establish API connection
+            await self.client.connectAsync(
+                host, port, clientId, timeout or None)
+
+            # autobind manual orders
             if clientId == 0:
-                # autobind manual orders
                 self.reqAutoOpenOrders(True)
+
+            # request completed orders
+            if not readonly and self.client.serverVersion() >= 150:
+                try:
+                    await asyncio.wait_for(
+                        self.reqCompletedOrdersAsync(False), timeout or None)
+                except asyncio.TimeoutError:
+                    self._logger.error('reqCompletedOrders timed out')
+
+            # request updates for the main account
+            accounts = self.client.getAccounts()
+            await asyncio.wait_for(
+                asyncio.gather(
+                    self.reqAccountUpdatesAsync(account or accounts[0]),
+                    self.reqPositionsAsync(),
+                    self.reqExecutionsAsync()),
+                timeout or None)
+
+            # request updates for sub-accounts, if there are not too many
+            if len(accounts) <= self.MaxSyncedSubAccounts:
+                await asyncio.wait_for(
+                    asyncio.gather(
+                        *(self.reqAccountUpdatesMultiAsync(a)
+                        for a in accounts)),
+                    timeout or None)
+            else:
+                self._logger.warning('Not requesting sub-account updates')
+
+            # set minimum orderId
+            minReqId = 1 + max((
+                trade.order.orderId for trade in self.wrapper.trades.values()
+                if trade.order.clientId == clientId), default=-1)
+            self.client.updateReqId(minReqId)
+
             self._logger.info('Synchronization complete')
             self.connectedEvent.emit()
-
-        if not self.isConnected():
-            try:
-                await asyncio.wait_for(connect(), timeout or None)
-            except Exception:
-                self.disconnect()
-                raise
-        else:
-            self._logger.warn('Already connected')
+        except Exception:
+            self.disconnect()
+            raise
         return self
 
     async def qualifyContractsAsync(self, *contracts: Contract) -> \
