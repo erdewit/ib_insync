@@ -412,9 +412,11 @@ class Wrapper:
         if execution.orderId == UNSET_INTEGER:
             # bug in TWS: executions of manual orders have unset value
             execution.orderId = 0
-        key = self.orderKey(
-            execution.clientId, execution.orderId, execution.permId)
-        trade = self.trades.get(key) or self.permId2Trade.get(execution.permId)
+        trade = self.permId2Trade.get(execution.permId)
+        if not trade:
+            key = self.orderKey(
+                execution.clientId, execution.orderId, execution.permId)
+            trade = self.trades.get(key)
         if trade and contract == trade.contract:
             contract = trade.contract
         else:
