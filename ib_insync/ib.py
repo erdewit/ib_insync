@@ -5,7 +5,6 @@ import copy
 import datetime
 import logging
 import time
-from contextlib import suppress
 from typing import Awaitable, Iterator, List, Optional, Union
 
 from eventkit import Event
@@ -307,10 +306,15 @@ class IB:
             This happens when multiple updates occur almost simultaneously;
             The ticks from the first update are then cleared.
             Use events instead to prevent this.
+
+        Returns:
+            ``True`` if not timed-out, ``False`` otherwise.
         """
         if timeout:
-            with suppress(asyncio.TimeoutError):
+            try:
                 util.run(asyncio.wait_for(self.updateEvent, timeout))
+            except asyncio.TimeoutError:
+                return False
         else:
             util.run(self.updateEvent)
         return True
