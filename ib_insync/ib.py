@@ -528,6 +528,45 @@ class IB:
             self.reqTickersAsync(
                 *contracts, regulatorySnapshot=regulatorySnapshot))
 
+    def find_contract_details(self, *contracts: Contract) -> List[List[ContractDetails]]:
+        """
+            Looks up the contract details for each contract provided to this function.
+                        
+            returns a list of contractDetails lists.
+                for an exact match, the list of contract details for the requested contract will contain one contract details item.
+                for an inexact match, all matching contracts will be returned in the list entry.
+                
+                For example find_contract_details(Stock('AAPL')) will return a nested list of all contract details for Apple that are found.
+                
+            This method is blocking.
+
+            Args:
+                contracts: Contracts to use as query.
+        """
+        return self._run(self.find_contract_details_Async(*contracts))
+
+    async def find_contract_details_Async(self, *contracts: Contract) -> \
+            List[List[ContractDetails]]:
+        """
+            Looks up the contract details for each contract provided to this function.
+                        
+            returns a list of contractDetails lists.
+                for an exact match, the list of contract details for the requested contract will contain one contract details item.
+                for an inexact match, all matching contracts will be returned in the list entry.
+                
+                For example find_contract_details(Stock('AAPL')) will return a nested list of all contract details for Apple that are found.
+                
+            This method is runs asynchronous.
+
+            Args:
+                contracts: Contracts to use as query.
+        """
+        detailsLists = await asyncio.gather(
+            *(self.ib.reqContractDetailsAsync(c) for c in contracts))
+        return detailsLists
+
+
+
     def qualifyContracts(self, *contracts: Contract) -> List[Contract]:
         """
         Fully qualify the given contracts in-place. This will fill in
