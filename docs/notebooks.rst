@@ -17,4 +17,6 @@ Here are some recipe notebooks:
    Tick data <https://nbviewer.jupyter.org/github/erdewit/ib_insync/tree/master/notebooks/tick_data.ipynb>
    Market depth <https://nbviewer.jupyter.org/github/erdewit/ib_insync/tree/master/notebooks/market_depth.ipynb>
    Ordering <https://nbviewer.jupyter.org/github/erdewit/ib_insync/tree/master/notebooks/ordering.ipynb>
+   Scanners <https://nbviewer.jupyter.org/github/erdewit/ib_insync/tree/master/notebooks/scanners.ipynb>
+
 
