@@ -922,7 +922,9 @@ class Client:
             useRTH, whatToShow, formatDate)
 
     def reqHistogramData(self, tickerId, contract, useRTH, timePeriod):
-        self.send(88, tickerId, contract, useRTH, timePeriod)
+        self.send(
+            88, tickerId, contract, contract.includeExpired,
+            useRTH, timePeriod)
 
     def cancelHistogramData(self, tickerId):
         self.send(89, tickerId)
