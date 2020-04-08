@@ -377,7 +377,9 @@ def timeRange(
     assert step > 0
     delta = timedelta(seconds=step)
     t = _fillDate(start)
-    while t < datetime.now():
+    tz = timezone.utc if t.tzinfo else None
+    now = datetime.now(tz)
+    while t < now:
         t += delta
     while t <= _fillDate(end):
         waitUntil(t)
@@ -407,7 +409,9 @@ async def timeRangeAsync(
     assert step > 0
     delta = timedelta(seconds=step)
     t = _fillDate(start)
-    while t < datetime.now():
+    tz = timezone.utc if t.tzinfo else None
+    now = datetime.now(tz)
+    while t < now:
         t += delta
     while t <= _fillDate(end):
         await waitUntilAsync(t)
