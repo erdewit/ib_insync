@@ -64,7 +64,7 @@ class Order:
     origin: int = 0
     shortSaleSlot: int = 0
     exemptCode: int = -1
-    discretionaryAmt: int = 0
+    discretionaryAmt: float = 0.0
     eTradeOnly: bool = True
     firmQuoteOnly: bool = True
     nbboPriceCap: float = UNSET_DOUBLE
