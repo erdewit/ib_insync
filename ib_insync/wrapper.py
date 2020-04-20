@@ -609,7 +609,7 @@ class Wrapper:
         if price or size:
             tick = TickData(self.lastTime, tickType, price, size)
             ticker.ticks.append(tick)
-            self.pendingTickers.add(ticker)
+        self.pendingTickers.add(ticker)
 
     def tickSize(self, reqId: int, tickType: int, size: int):
         ticker = self.reqId2Ticker.get(reqId)
@@ -662,7 +662,7 @@ class Wrapper:
         if price or size:
             tick = TickData(self.lastTime, tickType, price, size)
             ticker.ticks.append(tick)
-            self.pendingTickers.add(ticker)
+        self.pendingTickers.add(ticker)
 
     def tickSnapshotEnd(self, reqId: int):
         self._endReq(reqId)
@@ -763,7 +763,6 @@ class Wrapper:
                         ticker.lastSize = size
                     tick = TickData(self.lastTime, tickType, price, size)
                     ticker.ticks.append(tick)
-                    self.pendingTickers.add(ticker)
             elif tickType == 59:
                 # Dividend tick:
                 # https://interactivebrokers.github.io/tws-api/tick_types.html#ib_dividends
@@ -796,7 +795,7 @@ class Wrapper:
                         ticker.lastSize = size
                     tick = TickData(self.lastTime, tickType, price, size)
                     ticker.ticks.append(tick)
-                    self.pendingTickers.add(ticker)
+            self.pendingTickers.add(ticker)
         except ValueError:
             self._logger.error(
                 f'tickString with tickType {tickType}: '
@@ -888,6 +887,7 @@ class Wrapper:
                 ticker.lastGreeks = comp
             elif tickType in (13, 83):
                 ticker.modelGreeks = comp
+            self.pendingTickers.add(ticker)
         elif reqId in self._futures:
             # reply from calculateImpliedVolatility or calculateOptionPrice
             self._endReq(reqId, comp)
