@@ -13,7 +13,7 @@ import ib_insync.util as util
 from ib_insync.client import Client
 from ib_insync.contract import Contract, ContractDescription, ContractDetails
 from ib_insync.objects import (
-    AccountValue, BarDataList, BarList, DepthMktDataDescription, Execution,
+    AccountValue, BarDataList, DepthMktDataDescription, Execution,
     ExecutionFilter, Fill, HistogramData, HistoricalNews, NewsArticle,
     NewsBulletin, NewsProvider, NewsTick, OptionChain, OptionComputation,
     PnL, PnLSingle, PortfolioItem, Position, PriceIncrement,
