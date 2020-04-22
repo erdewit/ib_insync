@@ -493,12 +493,12 @@ class IB:
         """Get a list of all tickers that have pending ticks or domTicks."""
         return list(self.wrapper.pendingTickers)
 
-    def realtimeBars(self) -> BarList:
+    def realtimeBars(self) -> List[Union[BarDataList, RealTimeBarList]]:
         """
         Get a list of all live updated bars. These can be 5 second realtime
         bars or live updated historical bars.
         """
-        return BarList(self.wrapper.reqId2Subscriber.values())
+        return list(self.wrapper.reqId2Subscriber.values())
 
     def newsTicks(self) -> List[NewsTick]:
         """
