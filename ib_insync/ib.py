@@ -193,6 +193,7 @@ class IB:
         self._createEvents()
         self.wrapper = Wrapper(self)
         self.client = Client(self.wrapper)
+        self.errorEvent += self._onError
         self.client.apiEnd += self.disconnectedEvent
         self._logger = logging.getLogger('ib_insync.ib')
 
@@ -281,6 +282,12 @@ class IB:
     def isConnected(self) -> bool:
         """Is there is an API connection to TWS or IB gateway?"""
         return self.client.isConnected()
+
+    def _onError(self, reqId, errorCode, errorString, contract):
+        if errorCode == 1102:
+            # "Connectivity between IB and Trader Workstation has been
+            # restored": Resubscribe to account summary.
+            asyncio.ensure_future(self.reqAccountSummaryAsync())
 
     run = staticmethod(util.run)
     schedule = staticmethod(util.schedule)
