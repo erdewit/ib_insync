@@ -6,7 +6,7 @@ from collections import defaultdict
 from contextlib import suppress
 from datetime import datetime, timezone
 from typing import (
-    Any, Awaitable, Dict, List, Optional, Set, Tuple, Union, cast)
+    Any, Dict, List, Optional, Set, Tuple, Union, cast)
 
 from ib_insync.contract import (
     Contract, ContractDescription, ContractDetails, ScanData)
@@ -78,7 +78,7 @@ class Wrapper:
         #    (account, modelCode, conId) -> reqId
 
         # futures and results are linked by key:
-        self._futures: Dict[Any, Awaitable] = {}
+        self._futures: Dict[Any, asyncio.Future] = {}
         self._results: Dict[Any, Any] = {}
 
         # UTC time of last network packet arrival:
@@ -1019,6 +1019,7 @@ class Wrapper:
                     trade.log.append(logEntry)
                     self._logger.warning(f'Canceled order: {trade}')
                     self.ib.orderStatusEvent.emit(trade)
+                    trade.statusEvent.emit(trade)
                     trade.cancelledEvent.emit(trade)
             elif errorCode == 317:
                 # Market depth data has been RESET
