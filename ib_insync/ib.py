@@ -1041,6 +1041,9 @@ class IB:
                 to keep the bars updated; ``endDateTime`` must be set
                 empty ('') then.
             chartOptions: Unknown.
+            timeout: Timeout in seconds after which to cancel the request
+                and return an empty bar series. Set to ``0`` to wait
+                indefinitely.
         """
         return self._run(
             self.reqHistoricalDataAsync(
@@ -1838,11 +1841,13 @@ class IB:
         self.client.reqHistoricalData(
             reqId, contract, end, durationStr, barSizeSetting,
             whatToShow, useRTH, formatDate, keepUpToDate, chartOptions)
+        task = asyncio.wait_for(future, timeout) if timeout else future
         try:
-            await asyncio.wait_for(future, timeout)
+            await task
         except asyncio.TimeoutError:
             self.client.cancelHistoricalData(reqId)
             self._logger.warning(f'reqHistoricalData: Timeout for {contract}')
+            bars.clear()
         return bars
 
     def reqHistoricalTicksAsync(
