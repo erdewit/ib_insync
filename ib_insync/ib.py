@@ -1002,7 +1002,8 @@ class IB:
             endDateTime: Union[datetime.datetime, datetime.date, str, None],
             durationStr: str, barSizeSetting: str, whatToShow: str,
             useRTH: bool, formatDate: int = 1, keepUpToDate: bool = False,
-            chartOptions: List[TagValue] = []) -> BarDataList:
+            chartOptions: List[TagValue] = [],
+            timeout: float = 60) -> BarDataList:
         """
         Request historical bar data.
 
@@ -1044,7 +1045,7 @@ class IB:
         return self._run(
             self.reqHistoricalDataAsync(
                 contract, endDateTime, durationStr, barSizeSetting, whatToShow,
-                useRTH, formatDate, keepUpToDate, chartOptions))
+                useRTH, formatDate, keepUpToDate, chartOptions, timeout))
 
     def cancelHistoricalData(self, bars: BarDataList):
         """
@@ -1810,14 +1811,14 @@ class IB:
             self._logger.error('reqMarketRuleAsync: Timeout')
             return None
 
-    def reqHistoricalDataAsync(
+    async def reqHistoricalDataAsync(
             self, contract: Contract,
             endDateTime: Union[datetime.datetime, datetime.date, str, None],
             durationStr: str, barSizeSetting: str,
             whatToShow: str, useRTH: bool,
             formatDate: int = 1, keepUpToDate: bool = False,
-            chartOptions: List[TagValue] = []) -> \
-            Awaitable[BarDataList]:
+            chartOptions: List[TagValue] = [], timeout: float = 60) -> \
+            BarDataList:
         reqId = self.client.getReqId()
         bars = BarDataList()
         bars.reqId = reqId
@@ -1837,7 +1838,12 @@ class IB:
         self.client.reqHistoricalData(
             reqId, contract, end, durationStr, barSizeSetting,
             whatToShow, useRTH, formatDate, keepUpToDate, chartOptions)
-        return future
+        try:
+            await asyncio.wait_for(future, timeout)
+        except asyncio.TimeoutError:
+            self.client.cancelHistoricalData(reqId)
+            self._logger.warning(f'reqHistoricalData: Timeout for {contract}')
+        return bars
 
     def reqHistoricalTicksAsync(
             self, contract: Contract,
