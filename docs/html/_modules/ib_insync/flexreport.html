@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.flexreport &mdash; ib_insync 0.9.59 documentation</title>
+  <title>ib_insync.flexreport &mdash; ib_insync 0.9.60 documentation</title>
   
 
   
@@ -23,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -160,11 +160,11 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">et</span>
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">suppress</span>
-<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">suppress</span>
+<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 
-<span class="kn">from</span> <span class="nn">ib_insync</span> <span class="k">import</span> <span class="n">util</span>
-<span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="k">import</span> <span class="n">DynamicObject</span>
+<span class="kn">from</span> <span class="nn">ib_insync</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="kn">import</span> <span class="n">DynamicObject</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;FlexReport&#39;</span><span class="p">,</span> <span class="s1">&#39;FlexError&#39;</span><span class="p">)</span>
 
@@ -193,7 +193,7 @@
 <span class="sd">    can be down.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queryId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queryId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Download a report by giving a valid ``token`` and ``queryId``,</span>
 <span class="sd">        or load from file by giving a valid ``path``.</span>
@@ -235,8 +235,8 @@
         <span class="sd">&quot;&quot;&quot;Download report for the given ``token`` and ``queryId``.&quot;&quot;&quot;</span>
         <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
             <span class="s1">&#39;https://gdcdyn.interactivebrokers.com&#39;</span>
-            <span class="n">f</span><span class="s1">&#39;/Universal/servlet/FlexStatementService.SendRequest?&#39;</span>
-            <span class="n">f</span><span class="s1">&#39;t=</span><span class="si">{token}</span><span class="s1">&amp;q=</span><span class="si">{queryId}</span><span class="s1">&amp;v=3&#39;</span><span class="p">)</span>
+            <span class="sa">f</span><span class="s1">&#39;/Universal/servlet/FlexStatementService.SendRequest?&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;t=</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">&amp;q=</span><span class="si">{</span><span class="n">queryId</span><span class="si">}</span><span class="s1">&amp;v=3&#39;</span><span class="p">)</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
@@ -248,11 +248,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">errorCode</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ErrorCode&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
             <span class="n">errorMsg</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ErrorMessage&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
-            <span class="k">raise</span> <span class="n">FlexError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{errorCode}</span><span class="s1">: </span><span class="si">{errorMsg}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">FlexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">errorCode</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">errorMsg</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{baseUrl}</span><span class="s1">?q=</span><span class="si">{code}</span><span class="s1">&amp;t=</span><span class="si">{token}</span><span class="s1">&#39;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">baseUrl</span><span class="si">}</span><span class="s1">?q=</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">&amp;t=</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="n">resp</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">et</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>

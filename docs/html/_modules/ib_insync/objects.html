@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.objects &mdash; ib_insync 0.9.59 documentation</title>
+  <title>ib_insync.objects &mdash; ib_insync 0.9.60 documentation</title>
   
 
   
@@ -23,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -157,13 +157,14 @@
   <h1>Source code for ib_insync.objects</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Object hierarchy.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="k">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span> <span class="k">as</span> <span class="n">date_</span><span class="p">,</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">eventkit</span> <span class="k">import</span> <span class="n">Event</span>
+<span class="kn">from</span> <span class="nn">eventkit</span> <span class="kn">import</span> <span class="n">Event</span>
 
-<span class="kn">from</span> <span class="nn">.util</span> <span class="k">import</span> <span class="n">UNSET_DOUBLE</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span>
+<span class="kn">from</span> <span class="nn">.contract</span> <span class="kn">import</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">TagValue</span>
+<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">EPOCH</span><span class="p">,</span> <span class="n">UNSET_DOUBLE</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s1">&#39;SoftDollarTier PriceIncrement Execution CommissionReport &#39;</span>
@@ -174,7 +175,7 @@
     <span class="s1">&#39;TickByTickAllLast TickByTickBidAsk TickByTickMidPoint &#39;</span>
     <span class="s1">&#39;HistoricalTick HistoricalTickBidAsk HistoricalTickLast &#39;</span>
     <span class="s1">&#39;TickAttrib TickAttribBidAsk TickAttribLast &#39;</span>
-    <span class="s1">&#39;MktDepthData DOMLevel TradeLogEntry TagValue &#39;</span>
+    <span class="s1">&#39;MktDepthData DOMLevel TradeLogEntry &#39;</span>
     <span class="s1">&#39;FamilyCode SmartComponent &#39;</span>
     <span class="s1">&#39;PortfolioItem Position Fill OptionComputation OptionChain Dividends &#39;</span>
     <span class="s1">&#39;NewsArticle HistoricalNews NewsTick NewsBulletin ConnectionStats&#39;</span>
@@ -214,14 +215,14 @@
     <span class="n">val</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">displayName</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">displayName</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Execution"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Execution">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">Execution</span><span class="p">:</span>
     <span class="n">execId</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">time</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">EPOCH</span><span class="p">)</span>
     <span class="n">acctNumber</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">side</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -263,7 +264,7 @@
 
 <div class="viewcode-block" id="BarData"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarData">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">BarData</span><span class="p">:</span>
-    <span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">date</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">date_</span><span class="p">,</span> <span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPOCH</span>
     <span class="nb">open</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">high</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">low</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -275,7 +276,7 @@
 
 <div class="viewcode-block" id="RealTimeBar"><a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBar">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">RealTimeBar</span><span class="p">:</span>
-    <span class="n">time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">EPOCH</span>
     <span class="n">endTime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
     <span class="n">open_</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">high</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -345,11 +346,6 @@
     <span class="n">realizedPnL</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">nan</span>
     <span class="n">position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">nan</span></div>
-
-
-<div class="viewcode-block" id="TagValue"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TagValue">[docs]</a><span class="k">class</span> <span class="nc">TagValue</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
 <div class="viewcode-block" id="AccountValue"><a class="viewcode-back" href="../../api.html#ib_insync.objects.AccountValue">[docs]</a><span class="k">class</span> <span class="nc">AccountValue</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
@@ -443,7 +439,7 @@
 
 
 <div class="viewcode-block" id="PortfolioItem"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PortfolioItem">[docs]</a><span class="k">class</span> <span class="nc">PortfolioItem</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="n">contract</span><span class="p">:</span> <span class="s1">&#39;Contract&#39;</span>
+    <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span>
     <span class="n">position</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">marketPrice</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">marketValue</span><span class="p">:</span> <span class="nb">float</span>
@@ -455,13 +451,13 @@
 
 <div class="viewcode-block" id="Position"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Position">[docs]</a><span class="k">class</span> <span class="nc">Position</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">account</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">contract</span><span class="p">:</span> <span class="s1">&#39;Contract&#39;</span>
+    <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span>
     <span class="n">position</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">avgCost</span><span class="p">:</span> <span class="nb">float</span></div>
 
 
 <div class="viewcode-block" id="Fill"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Fill">[docs]</a><span class="k">class</span> <span class="nc">Fill</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="n">contract</span><span class="p">:</span> <span class="s1">&#39;Contract&#39;</span>
+    <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span>
     <span class="n">execution</span><span class="p">:</span> <span class="n">Execution</span>
     <span class="n">commissionReport</span><span class="p">:</span> <span class="n">CommissionReport</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span></div>
@@ -490,7 +486,7 @@
 <div class="viewcode-block" id="Dividends"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Dividends">[docs]</a><span class="k">class</span> <span class="nc">Dividends</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">past12Months</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
     <span class="n">next12Months</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-    <span class="n">nextDate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">date</span><span class="p">]</span>
+    <span class="n">nextDate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">date_</span><span class="p">]</span>
     <span class="n">nextAmount</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span></div>
 
 
@@ -546,14 +542,14 @@
 
     <span class="n">events</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">,)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="nb">list</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
@@ -568,8 +564,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">contract</span><span class="p">:</span> <span class="s1">&#39;Contract&#39;</span>
-    <span class="n">endDateTime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span>
+    <span class="n">endDateTime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="n">date_</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
     <span class="n">durationStr</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">barSizeSetting</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">whatToShow</span><span class="p">:</span> <span class="nb">str</span>
@@ -590,7 +586,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">contract</span><span class="p">:</span> <span class="s1">&#39;Contract&#39;</span>
+    <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span>
     <span class="n">barSize</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">whatToShow</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">useRTH</span><span class="p">:</span> <span class="nb">bool</span>
@@ -612,26 +608,26 @@
     <span class="n">scannerSubscriptionOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span>
     <span class="n">scannerSubscriptionFilterOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="nb">list</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
 <span class="k">class</span> <span class="nc">DynamicObject</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">clsName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="n">kwargs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{k}</span><span class="s1">=</span><span class="si">{v!r}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{clsName}</span><span class="s1">(</span><span class="si">{kwargs}</span><span class="s1">)&#39;</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">v</span><span class="si">!r}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">clsName</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s1">)&#39;</span>
 
 
 <div class="viewcode-block" id="FundamentalRatios"><a class="viewcode-back" href="../../api.html#ib_insync.objects.FundamentalRatios">[docs]</a><span class="k">class</span> <span class="nc">FundamentalRatios</span><span class="p">(</span><span class="n">DynamicObject</span><span class="p">):</span>
@@ -641,9 +637,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">pass</span></div>
-
-
-<span class="kn">from</span> <span class="nn">.contract</span> <span class="k">import</span> <span class="n">Contract</span>  <span class="c1"># noqa</span>
 </pre></div>
 
            </div>

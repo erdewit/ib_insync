@@ -4,6 +4,25 @@ Changelog
 0.9
 ---
 
+Version 0.9.60
+^^^^^^^^^^^^^^
+
+* ``IB.reqHistoricalData()`` has a new ``timeout`` parameter that automatically
+  cancels the request after timing out.
+* ``BracketOrder`` is iterable again.
+* ``IB.waitOnUpdate()`` returns ``False`` on timeout now.
+* :pull:`210`: Fix decoding of execDetails time.
+* :pull:`215`: New scanner notebook added, courtesy of C. Valcarcel.
+* :pull:`220`: Added ``readonly`` option for Watchdog.
+* Fixed :issue:`221`: Delayed close ticks handling by ``Ticker``.
+* Fixed :issue:`224`: Added timeout for ``completedOrders`` request during connect.
+* Fixed :issue:`227`: ``IB.MaxSyncedSubAccounts`` added.
+* Fixed :issue:`230`: Fixed ``IB.reqHistogramData`` method.
+* Fixed :issue:`235`: ``Order.discretionaryAmt`` is now of type ``float`` (was ``int``).
+* Fixed :issue:`236`: ``ticker.updateEvent`` is now fired for any change made to the ticker.
+* Fixed :issue:`245`: Emit ``trade.statusEvent`` when order is implicitly canceled by a problem.
+* You can now `sponsor the development of IB-insync! <https://github.com/sponsors/erdewit>`_
+
 Version 0.9.59
 ^^^^^^^^^^^^^^
 

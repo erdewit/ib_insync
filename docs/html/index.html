@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Contents &mdash; ib_insync 0.9.59 documentation</title>
+  <title>Contents &mdash; ib_insync 0.9.60 documentation</title>
   
 
   
@@ -23,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -192,6 +192,7 @@
 <li class="toctree-l2"><a class="reference external" href="https://nbviewer.jupyter.org/github/erdewit/ib_insync/tree/master/notebooks/tick_data.ipynb">Tick data</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://nbviewer.jupyter.org/github/erdewit/ib_insync/tree/master/notebooks/market_depth.ipynb">Market depth</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://nbviewer.jupyter.org/github/erdewit/ib_insync/tree/master/notebooks/ordering.ipynb">Ordering</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://nbviewer.jupyter.org/github/erdewit/ib_insync/tree/master/notebooks/scanners.ipynb">Scanners</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Code recipes</a><ul>
@@ -252,11 +253,11 @@ and the <a class="reference external" href="https://ib-insync.readthedocs.io/api
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">ib_insync</span>
 </pre></div>
 </div>
-<p>For Python 3.6 install the <code class="docutils literal notranslate"><span class="pre">dataclasses</span></code> package (newer Python versions
-already have it):</p>
-<blockquote>
-<div><p>pip install dataclasses</p>
-</div></blockquote>
+<p>For Python 3.6 install the <code class="docutils literal notranslate"><span class="pre">dataclasses</span></code> package as well
+(newer Python versions already have it):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">dataclasses</span>
+</pre></div>
+</div>
 <p>Requirements:</p>
 <ul class="simple">
 <li><p>Python 3.6 or higher;</p></li>
@@ -279,11 +280,11 @@ and ‘Download open orders on connection’ is checked.</p></li>
 <span class="n">contract</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;EURUSD&#39;</span><span class="p">)</span>
 <span class="n">bars</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalData</span><span class="p">(</span>
     <span class="n">contract</span><span class="p">,</span> <span class="n">endDateTime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">durationStr</span><span class="o">=</span><span class="s1">&#39;30 D&#39;</span><span class="p">,</span>
-    <span class="n">barSizeSetting</span><span class="o">=</span><span class="s1">&#39;1 hour&#39;</span><span class="p">,</span> <span class="n">whatToShow</span><span class="o">=</span><span class="s1">&#39;MIDPOINT&#39;</span><span class="p">,</span> <span class="n">useRTH</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">barSizeSetting</span><span class="o">=</span><span class="s1">&#39;1 hour&#39;</span><span class="p">,</span> <span class="n">whatToShow</span><span class="o">=</span><span class="s1">&#39;MIDPOINT&#39;</span><span class="p">,</span> <span class="n">useRTH</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># convert to pandas dataframe:</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">df</span><span class="p">(</span><span class="n">bars</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Output:</p>

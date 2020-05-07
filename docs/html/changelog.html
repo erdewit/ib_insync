@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Changelog &mdash; ib_insync 0.9.59 documentation</title>
+  <title>Changelog &mdash; ib_insync 0.9.60 documentation</title>
   
 
   
@@ -23,10 +23,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -94,6 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="code.html">Source code</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id1">0.9</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#version-0-9-60">Version 0.9.60</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-0-9-59">Version 0.9.59</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-0-9-58">Version 0.9.58</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-0-9-57">Version 0.9.57</a></li>
@@ -260,6 +261,26 @@
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
 <h2>0.9<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="version-0-9-60">
+<h3>Version 0.9.60<a class="headerlink" href="#version-0-9-60" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">IB.reqHistoricalData()</span></code> has a new <code class="docutils literal notranslate"><span class="pre">timeout</span></code> parameter that automatically
+cancels the request after timing out.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BracketOrder</span></code> is iterable again.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IB.waitOnUpdate()</span></code> returns <code class="docutils literal notranslate"><span class="pre">False</span></code> on timeout now.</p></li>
+<li><p><a class="reference external" href="https://github.com/erdewit/ib_insync/pull/210">pull 210</a>: Fix decoding of execDetails time.</p></li>
+<li><p><a class="reference external" href="https://github.com/erdewit/ib_insync/pull/215">pull 215</a>: New scanner notebook added, courtesy of C. Valcarcel.</p></li>
+<li><p><a class="reference external" href="https://github.com/erdewit/ib_insync/pull/220">pull 220</a>: Added <code class="docutils literal notranslate"><span class="pre">readonly</span></code> option for Watchdog.</p></li>
+<li><p>Fixed <a class="reference external" href="https://github.com/erdewit/ib_insync/issues/221">issue 221</a>: Delayed close ticks handling by <code class="docutils literal notranslate"><span class="pre">Ticker</span></code>.</p></li>
+<li><p>Fixed <a class="reference external" href="https://github.com/erdewit/ib_insync/issues/224">issue 224</a>: Added timeout for <code class="docutils literal notranslate"><span class="pre">completedOrders</span></code> request during connect.</p></li>
+<li><p>Fixed <a class="reference external" href="https://github.com/erdewit/ib_insync/issues/227">issue 227</a>: <code class="docutils literal notranslate"><span class="pre">IB.MaxSyncedSubAccounts</span></code> added.</p></li>
+<li><p>Fixed <a class="reference external" href="https://github.com/erdewit/ib_insync/issues/230">issue 230</a>: Fixed <code class="docutils literal notranslate"><span class="pre">IB.reqHistogramData</span></code> method.</p></li>
+<li><p>Fixed <a class="reference external" href="https://github.com/erdewit/ib_insync/issues/235">issue 235</a>: <code class="docutils literal notranslate"><span class="pre">Order.discretionaryAmt</span></code> is now of type <code class="docutils literal notranslate"><span class="pre">float</span></code> (was <code class="docutils literal notranslate"><span class="pre">int</span></code>).</p></li>
+<li><p>Fixed <a class="reference external" href="https://github.com/erdewit/ib_insync/issues/236">issue 236</a>: <code class="docutils literal notranslate"><span class="pre">ticker.updateEvent</span></code> is now fired for any change made to the ticker.</p></li>
+<li><p>Fixed <a class="reference external" href="https://github.com/erdewit/ib_insync/issues/245">issue 245</a>: Emit <code class="docutils literal notranslate"><span class="pre">trade.statusEvent</span></code> when order is implicitly canceled by a problem.</p></li>
+<li><p>You can now <a class="reference external" href="https://github.com/sponsors/erdewit">sponsor the development of IB-insync!</a></p></li>
+</ul>
+</div>
 <div class="section" id="version-0-9-59">
 <h3>Version 0.9.59<a class="headerlink" href="#version-0-9-59" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">

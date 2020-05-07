@@ -3,7 +3,9 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
     'sphinx_autodoc_typehints',
-    ]
+    'sphinx.ext.extlinks',
+    'sphinx.ext.intersphinx',
+]
 
 templates_path = ['_templates']
 source_suffix = '.rst'
@@ -35,14 +37,25 @@ html_theme_options = {
     'includehidden': True,
     'titles_only': False
 }
+
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'eventkit': ('https://eventkit.readthedocs.io/en/latest', None),
+}
+
 github_url = 'https://github.com/erdewit/ib_insync'
+
+extlinks = {
+    'issue': ('https://github.com/erdewit/ib_insync/issues/%s', 'issue '),
+    'pull': ('https://github.com/erdewit/ib_insync/pull/%s', 'pull '),
+}
 
 autoclass_content = 'both'
 autodoc_member_order = "bysource"
 autodoc_default_options = {
     'members': True,
     'undoc-members': True
-    }
+}
 
 
 def onDocstring(app, what, name, obj, options, lines):
