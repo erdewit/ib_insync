@@ -1066,7 +1066,7 @@ class IB:
             self, contract: Contract,
             startDateTime: Union[str, datetime.date],
             endDateTime: Union[str, datetime.date],
-            numberOfTicks: int, whatToShow: str, useRth: bool,
+            numberOfTicks: int, whatToShow: str, useRTH: bool,
             ignoreSize: bool = False,
             miscOptions: List[TagValue] = []) -> List:
         """
@@ -1097,7 +1097,7 @@ class IB:
         return self._run(
             self.reqHistoricalTicksAsync(
                 contract, startDateTime, endDateTime, numberOfTicks,
-                whatToShow, useRth, ignoreSize, miscOptions))
+                whatToShow, useRTH, ignoreSize, miscOptions))
 
     def reqMarketDataType(self, marketDataType: int):
         """
@@ -1854,7 +1854,7 @@ class IB:
             self, contract: Contract,
             startDateTime: Union[str, datetime.date],
             endDateTime: Union[str, datetime.date],
-            numberOfTicks: int, whatToShow: str, useRth: bool,
+            numberOfTicks: int, whatToShow: str, useRTH: bool,
             ignoreSize: bool = False,
             miscOptions: List[TagValue] = []) -> Awaitable[List]:
         reqId = self.client.getReqId()
@@ -1862,7 +1862,7 @@ class IB:
         start = util.formatIBDatetime(startDateTime)
         end = util.formatIBDatetime(endDateTime)
         self.client.reqHistoricalTicks(
-            reqId, contract, start, end, numberOfTicks, whatToShow, useRth,
+            reqId, contract, start, end, numberOfTicks, whatToShow, useRTH,
             ignoreSize, miscOptions)
         return future
 
