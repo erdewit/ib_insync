@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.ib &mdash; ib_insync 0.9.60 documentation</title>
+  <title>ib_insync.ib &mdash; ib_insync 0.9.61 documentation</title>
   
 
   
@@ -1258,7 +1258,7 @@
 
 <div class="viewcode-block" id="IB.reqMarketDataType"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqMarketDataType">[docs]</a>    <span class="k">def</span> <span class="nf">reqMarketDataType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marketDataType</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the market data type used throughout.</span>
+<span class="sd">        Set the market data type used for :meth:`.reqMktData`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            marketDataType: One of:</span>
@@ -1360,6 +1360,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ticker</span><span class="p">(</span><span class="n">contract</span><span class="p">)</span>
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">endTicker</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="s1">&#39;mktData&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">reqId2MarketDataType</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">reqId</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelMktData</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1858,8 +1859,10 @@
             <span class="n">List</span><span class="p">[</span><span class="n">Ticker</span><span class="p">]:</span>
         <span class="n">futures</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">tickers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">reqIds</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">contract</span> <span class="ow">in</span> <span class="n">contracts</span><span class="p">:</span>
             <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
+            <span class="n">reqIds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
             <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">)</span>
             <span class="n">futures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
             <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startTicker</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="s1">&#39;snapshot&#39;</span><span class="p">)</span>
@@ -1869,6 +1872,8 @@
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">futures</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">endTicker</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="s1">&#39;snapshot&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">reqId</span> <span class="ow">in</span> <span class="n">reqIds</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">reqId2MarketDataType</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tickers</span></div>
 
 <div class="viewcode-block" id="IB.whatIfOrderAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.whatIfOrderAsync">[docs]</a>    <span class="k">def</span> <span class="nf">whatIfOrderAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">)</span> <span class="o">-&gt;</span> \

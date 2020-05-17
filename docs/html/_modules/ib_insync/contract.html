@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.contract &mdash; ib_insync 0.9.60 documentation</title>
+  <title>ib_insync.contract &mdash; ib_insync 0.9.61 documentation</title>
   
 
   
@@ -302,12 +302,10 @@
             <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">secType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;BAG&#39;</span><span class="p">,</span> <span class="s1">&#39;CONTFUT&#39;</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Contract</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">isHashable</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Contract</span><span class="p">)</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Contract</span><span class="p">)</span>
             <span class="ow">and</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">conId</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">conId</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">conId</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">conId</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">conId</span>
                 <span class="ow">or</span> <span class="n">util</span><span class="o">.</span><span class="n">dataclassAsDict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="n">util</span><span class="o">.</span><span class="n">dataclassAsDict</span><span class="p">(</span><span class="n">other</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

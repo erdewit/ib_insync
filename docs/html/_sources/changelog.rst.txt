@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+
+Version 0.9.61
+^^^^^^^^^^^^^^
+* ``Ticker.marketDataType`` added to indicate the delayed/frozen status of
+  the ``reqMktData`` ticks.
+
 Version 0.9.60
 ^^^^^^^^^^^^^^
 
