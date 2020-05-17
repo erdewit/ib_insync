@@ -700,7 +700,7 @@ class IB:
         clients or TWS/IB gateway.
         """
         self.client.reqGlobalCancel()
-        self._logger.info(f'reqGlobalCancel')
+        self._logger.info('reqGlobalCancel')
 
     def reqCurrentTime(self) -> datetime.datetime:
         """

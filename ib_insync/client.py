@@ -365,7 +365,7 @@ class Client:
     def _onSocketDisconnected(self):
         wasReady = self.isReady()
         if self.isConnected():
-            msg = f'Peer closed connection'
+            msg = 'Peer closed connection'
             self._logger.error(msg)
             if not wasReady:
                 msg = f'clientId {self.clientId} already in use?'
