@@ -1101,7 +1101,7 @@ class IB:
 
     def reqMarketDataType(self, marketDataType: int):
         """
-        Set the market data type used throughout.
+        Set the market data type used for :meth:`.reqMktData`.
 
         Args:
             marketDataType: One of:
@@ -1203,6 +1203,7 @@ class IB:
         """
         ticker = self.ticker(contract)
         reqId = self.wrapper.endTicker(ticker, 'mktData')
+        self.wrapper.reqId2MarketDataType.pop(reqId, None)
         if reqId:
             self.client.cancelMktData(reqId)
         else:
@@ -1701,8 +1702,10 @@ class IB:
             List[Ticker]:
         futures = []
         tickers = []
+        reqIds = []
         for contract in contracts:
             reqId = self.client.getReqId()
+            reqIds.append(reqId)
             future = self.wrapper.startReq(reqId, contract)
             futures.append(future)
             ticker = self.wrapper.startTicker(reqId, contract, 'snapshot')
@@ -1712,6 +1715,8 @@ class IB:
         await asyncio.gather(*futures)
         for ticker in tickers:
             self.wrapper.endTicker(ticker, 'snapshot')
+        for reqId in reqIds:
+            self.wrapper.reqId2MarketDataType.pop(reqId, None)
         return tickers
 
     def whatIfOrderAsync(self, contract: Contract, order: Order) -> \

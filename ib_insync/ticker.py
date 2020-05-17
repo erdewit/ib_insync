@@ -45,6 +45,7 @@ class Ticker:
 
     contract: Optional[Contract] = None
     time: Optional[datetime] = None
+    marketDataType: int = 1
     bid: float = nan
     bidSize: float = nan
     ask: float = nan
