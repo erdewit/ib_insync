@@ -145,12 +145,10 @@ class Contract:
             and self.secType not in ('BAG', 'CONTFUT'))
 
     def __eq__(self, other):
-        if not isinstance(other, Contract):
-            return False
         return (
-            self.isHashable() and isinstance(other, Contract)
+            isinstance(other, Contract)
             and (
-                self.conId == other.conId
+                self.conId and self.conId == other.conId
                 or util.dataclassAsDict(self) == util.dataclassAsDict(other)))
 
     def __hash__(self):
