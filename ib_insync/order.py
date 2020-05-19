@@ -24,7 +24,7 @@ class Order:
     https://interactivebrokers.github.io/tws-api/available_orders.html
     """
 
-    orderId: int = 0
+    orderId: int = None
     clientId: int = 0
     permId: int = 0
     action: str = ''
