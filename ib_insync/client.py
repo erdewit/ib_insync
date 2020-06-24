@@ -98,8 +98,6 @@ class Client:
         self.apiError = Event('apiError')
         self.throttleStart = Event('throttleStart')
         self.throttleEnd = Event('throttleEnd')
-        self._readyEvent = asyncio.Event()
-        self._loop = asyncio.get_event_loop()
         self._logger = logging.getLogger('ib_insync.client')
         self.reset()
 
@@ -116,7 +114,7 @@ class Client:
         self.connState = Client.DISCONNECTED
         self.optCapab = ''
         self._serverVersion = None
-        self._readyEvent.clear()
+        self._readyEvent = None
         self._data = b''
         self._connectOptions = b''
         self._reqIdSeq = 0
@@ -132,14 +130,15 @@ class Client:
         return self._serverVersion
 
     def run(self):
-        self._loop.run_forever()
+        loop = asyncio.get_event_loop()
+        loop.run_forever()
 
     def isConnected(self):
         return self.connState == Client.CONNECTED
 
     def isReady(self) -> bool:
         """Is the API connection up and running?"""
-        return self._readyEvent.is_set()
+        return self._readyEvent and self._readyEvent.is_set()
 
     def connectionStats(self) -> ConnectionStats:
         """Get statistics about the connection."""
@@ -219,6 +218,7 @@ class Client:
             self._logger.info('API connection ready')
             self.apiStart.emit()
 
+        self._readyEvent = asyncio.Event()
         try:
             await asyncio.wait_for(connect(), timeout or None)
         except Exception as e:
@@ -270,7 +270,8 @@ class Client:
         self.sendMsg(msg.getvalue())
 
     def sendMsg(self, msg):
-        t = self._loop.time()
+        loop = asyncio.get_event_loop()
+        t = loop.time()
         times = self._timeQ
         msgs = self._msgQ
         while times and t - times[0] > self.RequestsInterval:
@@ -288,7 +289,7 @@ class Client:
                 self._isThrottling = True
                 self.throttleStart.emit()
                 self._logger.debug('Started to throttle requests')
-            self._loop.call_at(
+            loop.call_at(
                 times[0] + self.RequestsInterval,
                 self.sendMsg, None)
         else:
@@ -341,7 +342,7 @@ class Client:
                 self._logger.info(
                     f'Logged on to server version {self._serverVersion}')
             else:
-                if not self._readyEvent.is_set():
+                if self._readyEvent and not self._readyEvent.is_set():
                     # snoop for nextValidId and managedAccounts response,
                     # when both are in then the client is ready
                     msgId = int(fields[0])
