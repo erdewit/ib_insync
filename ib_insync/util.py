@@ -526,5 +526,9 @@ def parseIBDatetime(s: str) -> Union[date, datetime]:
     elif s.isdigit():
         dt = datetime.fromtimestamp(int(s), timezone.utc)
     else:
-        dt = datetime.strptime(s, '%Y%m%d  %H:%M:%S')
+        # YYYYmmdd  HH:MM:SS
+        # or
+        # YYYY-mm-dd HH:MM:SS.0
+        ss = s.replace(' ', '').replace('-', '')[:16]
+        dt = datetime.strptime(ss, '%Y%m%d%H:%M:%S')
     return dt
