@@ -1,8 +1,9 @@
 """
 Basic symbol search and ticker streaming example.
 """
-import traceback
 import asyncio
+import time
+import traceback
 
 import ib_insync as ibi
 
@@ -26,17 +27,27 @@ async def main():
     ib = ibi.IB()
     with await ib.connectAsync(clientId=2):
 
+        start = time.time()
+
         # search for all contracts matching `SPY`
         contracts = await searchForContracts(ib, 'SPY')
 
-        tickers = {}
-        # request streaming market data for all matches
-        for contract in contracts:
-            tickers[contract.symbol] = ib.reqMktData(contract)
+        print(f"Found contracts in {time.time() - start}:\n{contracts}")
 
+        # request streaming market data for first contract
+        for contract in contracts:
+            if contract.primaryExchange == 'ARCA':
+                break
+
+        ib.reqMktData(contract)
+
+        count = 0
         # print quotes to console
         async for tickers in ib.pendingTickersEvent:
             print(tickers)
+            count += 1
+            if count > 2:
+                break
 
 
 if __name__ == '__main__':
