@@ -46,7 +46,8 @@ class Ticker:
     contract: Optional[Contract] = None
     time: Optional[datetime] = None
     marketDataType: int = 1
-    last_fill_time: Optional[float] = None
+    # last clearing price time at exchange in seconds
+    lastFillTime: Optional[float] = None
     bid: float = nan
     bidSize: float = nan
     ask: float = nan
