@@ -729,6 +729,9 @@ class Wrapper:
         self.pendingTickers.add(ticker)
 
     def tickString(self, reqId: int, tickType: int, value: str):
+        """Parse a tick string ``value`` and populate local ``Ticker`` attributes
+        from the parsed data.
+        """
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
             return
@@ -744,12 +747,20 @@ class Wrapper:
                         d[k] = float(v)
                         d[k] = int(v)
                 ticker.fundamentalRatios = FundamentalRatios(**d)
+
             elif tickType in (48, 77):
                 # RT Volume or RT Trade Volume string format:
+                # https://interactivebrokers.github.io/tws-api/tick_types.html#rt_volume
                 # price;size;ms since epoch;total volume;VWAP;single trade
                 # example:
                 # 701.28;1;1348075471534;67854;701.46918464;true
-                priceStr, sizeStr, _, volume, vwap, _ = value.split(';')
+
+                # TODO: should we be also tracking the "single trade" field?
+                price_str, size, time_ms, volume, vwap, _ = value.split(';')
+
+                # always track the exchange time in seconds
+                ticker.last_fill_time = float(int(time_ms) / 1000.)
+
                 if volume:
                     if tickType == 48:
                         ticker.rtVolume = int(volume)
@@ -757,19 +768,29 @@ class Wrapper:
                         ticker.rtTradeVolume = int(volume)
                 if vwap:
                     ticker.vwap = float(vwap)
-                if priceStr == '':
+                if price_str == '':
                     return
-                price = float(priceStr)
-                size = int(sizeStr)
+
+                price = float(price_str)
+                size = int(size)
+
                 if price and size:
+                    # handle price updates
+
                     if ticker.prevLast != ticker.last:
                         ticker.prevLast = ticker.last
                         ticker.last = price
+
                     if ticker.prevLastSize != ticker.lastSize:
                         ticker.prevLastSize = ticker.lastSize
                         ticker.lastSize = size
+
                     tick = TickData(self.lastTime, tickType, price, size)
                     ticker.ticks.append(tick)
+
+                # always record ticks
+                self.pendingTickers.add(ticker)
+
             elif tickType == 59:
                 # Dividend tick:
                 # https://interactivebrokers.github.io/tws-api/tick_types.html#ib_dividends
@@ -780,29 +801,6 @@ class Wrapper:
                     float(next12) if next12 else None,
                     parseIBDatetime(nextDate) if nextDate else None,
                     float(nextAmount) if nextAmount else None)
-            elif tickType == 77:
-                # RT Trade Volume
-                # price;size;ms since epoch;total volume;VWAP;single trade
-                # example value: '90.31;1;1568407233444;19015;90.07778509;true'
-                priceStr, sizeStr, _, rtTradeVolume, vwap, _ = value.split(';')
-                if rtTradeVolume:
-                    ticker.rtTradeVolume = int(rtTradeVolume)
-                if vwap:
-                    ticker.vwap = float(vwap)
-                if priceStr == '':
-                    return
-                price = float(priceStr)
-                size = int(sizeStr)
-                if price and size:
-                    if ticker.prevLast != ticker.last:
-                        ticker.prevLast = ticker.last
-                        ticker.last = price
-                    if ticker.prevLastSize != ticker.lastSize:
-                        ticker.prevLastSize = ticker.lastSize
-                        ticker.lastSize = size
-                    tick = TickData(self.lastTime, tickType, price, size)
-                    ticker.ticks.append(tick)
-            self.pendingTickers.add(ticker)
         except ValueError:
             self._logger.error(
                 f'tickString with tickType {tickType}: '
@@ -1048,6 +1046,7 @@ class Wrapper:
     def tcpDataArrived(self):
         self.lastTime = datetime.now(timezone.utc)
         for ticker in self.pendingTickers:
+            ticker.last_fill_time = None
             ticker.ticks = []
             ticker.tickByTicks = []
             ticker.domTicks = []
