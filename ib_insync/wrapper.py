@@ -759,7 +759,7 @@ class Wrapper:
                 price_str, size, time_ms, volume, vwap, _ = value.split(';')
 
                 # always track the exchange time in seconds
-                ticker.lastFillTime = float(int(time_ms) / 1000.)
+                ticker.rtTime = int(time_ms)
 
                 if volume:
                     if tickType == 48:
@@ -1046,7 +1046,7 @@ class Wrapper:
     def tcpDataArrived(self):
         self.lastTime = datetime.now(timezone.utc)
         for ticker in self.pendingTickers:
-            ticker.lastFillTime = None
+            ticker.rtTime = None
             ticker.ticks = []
             ticker.tickByTicks = []
             ticker.domTicks = []

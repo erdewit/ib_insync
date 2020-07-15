@@ -46,8 +46,6 @@ class Ticker:
     contract: Optional[Contract] = None
     time: Optional[datetime] = None
     marketDataType: int = 1
-    # last clearing price time at exchange in seconds
-    lastFillTime: Optional[float] = None
     bid: float = nan
     bidSize: float = nan
     ask: float = nan
@@ -77,9 +75,14 @@ class Ticker:
     lastYield: float = nan
     markPrice: float = nan
     halted: float = nan
+
+    # fields from IB "RT Volume" feed:
+    # https://interactivebrokers.github.io/tws-api/tick_types.html#rt_volume
+    rtTime: Optional[int] = None
     rtHistVolatility: float = nan
     rtVolume: float = nan
     rtTradeVolume: float = nan
+
     avVolume: float = nan
     tradeCount: float = nan
     tradeRate: float = nan
