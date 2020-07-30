@@ -1028,20 +1028,27 @@ class Wrapper:
                     self.ib.orderStatusEvent.emit(trade)
                     trade.statusEvent.emit(trade)
                     trade.cancelledEvent.emit(trade)
-            elif errorCode == 317:
-                # Market depth data has been RESET
-                ticker = self.reqId2Ticker.get(reqId)
-                if ticker:
-                    # clear all DOM levels
-                    ticker.domTicks += [MktDepthData(
-                        self.lastTime, 0, '', 2, 0, level.price, 0)
-                        for level in ticker.domAsks]
-                    ticker.domTicks += [MktDepthData(
-                        self.lastTime, 0, '', 2, 1, level.price, 0)
-                        for level in ticker.domBids]
-                    ticker.domAsks.clear()
-                    ticker.domBids.clear()
-                    self.pendingTickers.add(ticker)
+
+        if errorCode == 165:
+            # for scan data subscription there are no longer matching results
+            dataList = self.reqId2Subscriber.get(reqId)
+            if dataList:
+                dataList.clear()
+                dataList.updateEvent.emit(dataList)
+        elif errorCode == 317:
+            # Market depth data has been RESET
+            ticker = self.reqId2Ticker.get(reqId)
+            if ticker:
+                # clear all DOM levels
+                ticker.domTicks += [MktDepthData(
+                    self.lastTime, 0, '', 2, 0, level.price, 0)
+                    for level in ticker.domAsks]
+                ticker.domTicks += [MktDepthData(
+                    self.lastTime, 0, '', 2, 1, level.price, 0)
+                    for level in ticker.domBids]
+                ticker.domAsks.clear()
+                ticker.domBids.clear()
+                self.pendingTickers.add(ticker)
 
         self.ib.errorEvent.emit(reqId, errorCode, errorString, contract)
 
