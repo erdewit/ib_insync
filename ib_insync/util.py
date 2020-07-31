@@ -41,9 +41,11 @@ def df(objs, labels: List[str] = None):
             df = pd.DataFrame.from_records(o.__dict__ for o in objs)
         else:
             df = pd.DataFrame.from_records(objs)
-        if isinstance(obj, tuple) and hasattr(obj, '_fields'):
-            # assume it's a namedtuple
-            df.columns = obj.__class__._fields
+        if isinstance(obj, tuple):
+            _fields = getattr(obj, '_fields', None)
+            if _fields:
+                # assume it's a namedtuple
+                df.columns = _fields
     else:
         df = None
     if labels:
