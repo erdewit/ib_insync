@@ -8,7 +8,7 @@ import sys
 import time
 from dataclasses import fields, is_dataclass
 from datetime import date, datetime, time as time_, timedelta, timezone
-from typing import AsyncIterator, Awaitable, Callable, Iterator, Union
+from typing import AsyncIterator, Awaitable, Callable, Iterator, Union, List
 
 import eventkit as ev
 
@@ -22,11 +22,12 @@ UNSET_INTEGER = 2 ** 31 - 1
 UNSET_DOUBLE = sys.float_info.max
 
 
-def df(objs, labels=None):
+def df(objs, labels: List[str] = None):
     """
     Create pandas DataFrame from the sequence of same-type objects.
-    When a list of labels is given then only retain those labels and
-    drop the rest.
+
+    Args:
+      labels: If supplied, retain only the given labels and drop the rest.
     """
     import pandas as pd
     from .objects import DynamicObject
