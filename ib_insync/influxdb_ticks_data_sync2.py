@@ -335,7 +335,7 @@ def onPendingTickers(tickers):
 
 # %%
 
-
+ 
 cont_id = "1812"
 cont_symbol = 'ZB'
 if (ib.isConnected() == False):

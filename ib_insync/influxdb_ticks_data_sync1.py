@@ -20,7 +20,7 @@ import os
 import sys
 try:
     #os.chdir(sys.path[0])
-    os.chdir( r'C:\Users\bgeorgi\Google Drive\code\ib_insync\ib_insync')
+    os.chdir( r'E:\GDrive\code\ib_insync\ib_insync')
     print(os.getcwd())
 except BaseException:
     pass
@@ -333,15 +333,15 @@ def onPendingTickers(tickers):
         # df_ticks.truncate()
         # df_ticks.reset_index(drop=True,inplace=True)
 
-
+ 
 # %%
 
 
-cont_id = "1909"
-cont_symbol = 'ZB'
+cont_id = "2009"
+cont_symbol = ZB#'RS1'#,'YM' # SI, ZT, ZF, ZN, 
 if (ib.isConnected() == False):
     ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
-#ib.connect('127.0.0.1', 7498, clientId=1903)#
+#ib.connect('127.0.0.1', 74GC98, clientId=1903)#
 # table='ContUSM190604'
 table = cont_symbol + '20' + cont_id #+ 'HistLive062819'
 # table='USM1903'
@@ -349,7 +349,7 @@ table = cont_symbol + '20' + cont_id #+ 'HistLive062819'
 # USH19=322458851, USU19=346233386, USZ19=358060606
 contracts = [
     Future(
-        symbol=cont_symbol,exchange='ECBOT',
+        symbol=cont_symbol,exchange= 'GLOBEX',#'ECBOT',#
         lastTradeDateOrContractMonth="20" +
         cont_id)]  # ,exchange = "GLOBEX")]
 contracts[0].includeExpired = True
@@ -443,18 +443,19 @@ if download_all_history:
                 break
 
 # %% download hist ticks from now till last hist tick in db
-
+last_hist_tick_time_in_db = 0
 dt_now = datetime.datetime.now()
-# dt_now=datetime.datetime.fromtimestamp(1557150177)
-dt_now = dt_now.astimezone(tz=datetime.timezone.utc)
+#dt_now=datetime.datetime.fromtimestamp(1524770207)
+#dt_now = dt_now.astimezone(tz=datetime.timezone.utc)
 
 while True:
     print('Second Loop: Getting tick data for ', dt_now)
     ticks = ib.reqHistoricalTicks(
         contracts[0], None, dt_now, 1000, "TRADES", False)
 
-    if dt_now <= last_hist_tick_time_in_db:
-        break
+    if last_hist_tick_time_in_db != 0:
+        if dt_now <= last_hist_tick_time_in_db:
+            break
 
     if len(ticks) < 2:
         dt_now = dt_now - datetime.timedelta(days=1)
