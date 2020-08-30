@@ -37,7 +37,8 @@ sys.maxint = 9223372036854775807
 
 DELETE from "USM190529" where time>=
 influxd backup -portable c:\influx_bkp
-
+cd 'C:\Program Files\influxdb-1.8.2-1\'
+influxd restore -portable c:\influx_bkp
 
 before market open; data reconcile algo should be 
 1- delete all live ticks in table

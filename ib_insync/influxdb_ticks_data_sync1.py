@@ -338,9 +338,9 @@ def onPendingTickers(tickers):
 
 
 cont_id = "2009"
-cont_symbol = ZB#'RS1'#,'YM' # SI, ZT, ZF, ZN, 
+cont_symbol = 'ZB' #'RS1'#,'YM' # SI, ZT, ZF, ZN, 
 if (ib.isConnected() == False):
-    ib.connect('127.0.0.1', 7498, clientId=int(cont_id))
+    ib.connect('127.0.0.1', 7497, clientId=int(cont_id))
 #ib.connect('127.0.0.1', 74GC98, clientId=1903)#
 # table='ContUSM190604'
 table = cont_symbol + '20' + cont_id #+ 'HistLive062819'
@@ -349,7 +349,7 @@ table = cont_symbol + '20' + cont_id #+ 'HistLive062819'
 # USH19=322458851, USU19=346233386, USZ19=358060606
 contracts = [
     Future(
-        symbol=cont_symbol,exchange= 'GLOBEX',#'ECBOT',#
+        symbol=cont_symbol,exchange= 'ECBOT',#'GLOBEX',#
         lastTradeDateOrContractMonth="20" +
         cont_id)]  # ,exchange = "GLOBEX")]
 contracts[0].includeExpired = True
