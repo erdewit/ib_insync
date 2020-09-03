@@ -163,7 +163,7 @@ class Order:
             attrs.pop('softDollarTier')
         clsName = self.__class__.__qualname__
         kwargs = ', '.join(
-            f'{k}={v!r}' for k, v in attrs.items() if v != [])
+            f'{k}={v!r}' for k, v in attrs.items())
         return f'{clsName}({kwargs})'
 
     __str__ = __repr__
