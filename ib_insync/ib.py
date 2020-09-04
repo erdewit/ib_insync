@@ -1659,12 +1659,6 @@ class IB:
             else:
                 self._logger.warning('Not requesting sub-account updates')
 
-            # set minimum orderId
-            minReqId = 1 + max((
-                trade.order.orderId for trade in self.wrapper.trades.values()
-                if trade.order.clientId == clientId), default=-1)
-            self.client.updateReqId(minReqId)
-
             self._logger.info('Synchronization complete')
             self.connectedEvent.emit()
         except Exception:

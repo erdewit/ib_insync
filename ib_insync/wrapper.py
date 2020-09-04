@@ -343,6 +343,11 @@ class Wrapper:
                 # response to reqOpenOrders or reqAllOpenOrders
                 results.append(order)
 
+        # make sure that the client issues order ids larger then any
+        # order id encountered (even from other clients) to avoid
+        # "Duplicate order id" error
+        self.ib.client.updateReqId(orderId + 1)
+
     def openOrderEnd(self):
         self._endReq('openOrders')
 
