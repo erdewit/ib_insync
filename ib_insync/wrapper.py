@@ -31,13 +31,33 @@ __all__ = ['Wrapper']
 OrderKeyType = Union[int, Tuple[int, int]]
 
 
+class RequestError(Exception):
+    """Produced for any future where the API reports an error."""
+
+    #: Original request ID
+    request_id = None
+
+    #: Original error code
+    code = None
+
+    #: Original error message
+    message = None
+
+    def __init__(self, request_id, code, message):
+        self.request_id = request_id
+        self.code = code
+        self.message = message
+        super().__init__(f'API error: {code}: {message}')
+
+
 class Wrapper:
     """Wrapper implementation for use with the IB class."""
 
-    def __init__(self, ib):
+    def __init__(self, ib, quash_errors):
         self.ib = ib
         self._logger = logging.getLogger('ib_insync.wrapper')
         self._timeoutHandle = None
+        self._quash_errors = quash_errors
         self.reset()
 
     def reset(self):
@@ -1021,7 +1041,12 @@ class Wrapper:
             self._logger.error(msg)
             if reqId in self._futures:
                 # the request failed
-                self._endReq(reqId)
+                if self._quash_errors:
+                    self._endReq(reqId)
+                else:
+                    self._endReq(reqId, RequestError(reqId, errorCode,
+                        errorString), success=False)
+
             elif (self.clientId, reqId) in self.trades:
                 # something is wrong with the order, cancel it
                 trade = self.trades[(self.clientId, reqId)]

@@ -189,9 +189,17 @@ class IB:
     RequestTimeout: float = 0
     MaxSyncedSubAccounts: int = 50
 
-    def __init__(self):
+    def __init__(self, quash_errors=True):
+        """
+        :param bool quash_errors:
+            If :data:`True`, when an API request fails, its future will be set
+            to some default value, usually an empty list.
+
+            If :data:`False`, the future is caused to fail with
+            :class:`~ib_insync.wrapper.RequestError` when an API request fails.
+        """
         self._createEvents()
-        self.wrapper = Wrapper(self)
+        self.wrapper = Wrapper(self, quash_errors)
         self.client = Client(self.wrapper)
         self.errorEvent += self._onError
         self.client.apiEnd += self.disconnectedEvent
