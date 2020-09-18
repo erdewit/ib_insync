@@ -78,6 +78,7 @@ class Ticker:
     rtHistVolatility: float = nan
     rtVolume: float = nan
     rtTradeVolume: float = nan
+    rtTime: Optional[datetime] = None
     avVolume: float = nan
     tradeCount: float = nan
     tradeRate: float = nan

@@ -1166,8 +1166,8 @@ class IB:
                 221    ``markPrice``
                 225    ``auctionVolume``, ``auctionPrice``,
                        ``auctionImbalance``
-                233    ``last``, ``lastSize``, ``rtVolume``, ``vwap``
-                       (Time & Sales)
+                233    ``last``, ``lastSize``, ``rtVolume``, ``rtTime``,
+                       ``vwap`` (Time & Sales)
                 236    ``shortableShares``
                 258    ``fundamentalRatios`` (of type
                        :class:`ib_insync.objects.FundamentalRatios`)
