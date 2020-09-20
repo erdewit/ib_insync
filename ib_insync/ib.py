@@ -88,6 +88,11 @@ class IB:
           blocking request to finish before raising ``asyncio.TimeoutError``.
           The default value of 0 will wait indefinitely.
           Note: This timeout is not used for the ``*Async`` methods.
+        RaiseRequestErrors (bool):
+          Specifies the behaviour when certain API requests fail:
+
+          * :data:`False`: Silently return an empty result;
+          * :data:`True`: Raise a :class:`.RequestError`.
         MaxSyncedSubAccounts (int): Do not use sub-account updates
           if the number of sub-accounts exceeds this number (50 by default).
 
@@ -187,19 +192,12 @@ class IB:
         'errorEvent', 'timeoutEvent')
 
     RequestTimeout: float = 0
+    RaiseRequestErrors: bool = False
     MaxSyncedSubAccounts: int = 50
 
-    def __init__(self, quash_errors=True):
-        """
-        :param bool quash_errors:
-            If :data:`True`, when an API request fails, its future will be set
-            to some default value, usually an empty list.
-
-            If :data:`False`, the future is caused to fail with
-            :class:`~ib_insync.wrapper.RequestError` when an API request fails.
-        """
+    def __init__(self):
         self._createEvents()
-        self.wrapper = Wrapper(self, quash_errors)
+        self.wrapper = Wrapper(self)
         self.client = Client(self.wrapper)
         self.errorEvent += self._onError
         self.client.apiEnd += self.disconnectedEvent

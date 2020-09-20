@@ -25,39 +25,38 @@ from ib_insync.util import (
     UNSET_DOUBLE, UNSET_INTEGER, dataclassAsDict, dataclassUpdate,
     globalErrorEvent, isNan, parseIBDatetime)
 
-__all__ = ['Wrapper']
+__all__ = ['RequestError', 'Wrapper']
 
 
 OrderKeyType = Union[int, Tuple[int, int]]
 
 
 class RequestError(Exception):
-    """Produced for any future where the API reports an error."""
+    """
+    Exception to raise when the API reports an error that can be tied to
+    a single request.
+    """
 
-    #: Original request ID
-    request_id = None
-
-    #: Original error code
-    code = None
-
-    #: Original error message
-    message = None
-
-    def __init__(self, request_id, code, message):
-        self.request_id = request_id
+    def __init__(self, reqId: int, code: int, message: str):
+        """
+        Args:
+          reqId: Original request ID.
+          code: Original error code.
+          message: Original error message.
+        """
+        super().__init__(f'API error: {code}: {message}')
+        self.reqId = reqId
         self.code = code
         self.message = message
-        super().__init__(f'API error: {code}: {message}')
 
 
 class Wrapper:
     """Wrapper implementation for use with the IB class."""
 
-    def __init__(self, ib, quash_errors):
+    def __init__(self, ib):
         self.ib = ib
         self._logger = logging.getLogger('ib_insync.wrapper')
         self._timeoutHandle = None
-        self._quash_errors = quash_errors
         self.reset()
 
     def reset(self):
@@ -1022,11 +1021,11 @@ class Wrapper:
             self._logger.error(msg)
             if reqId in self._futures:
                 # the request failed
-                if self._quash_errors:
-                    self._endReq(reqId)
+                if self.ib.RaiseRequestErrors:
+                    error = RequestError(reqId, errorCode, errorString)
+                    self._endReq(reqId, error, success=False)
                 else:
-                    self._endReq(reqId, RequestError(reqId, errorCode,
-                        errorString), success=False)
+                    self._endReq(reqId)
 
             elif (self.clientId, reqId) in self.trades:
                 # something is wrong with the order, cancel it

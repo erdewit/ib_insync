@@ -32,7 +32,7 @@ from .order import (
 from .ticker import Ticker
 from .ib import IB
 from .client import Client
-from .wrapper import Wrapper
+from .wrapper import RequestError, Wrapper
 from .flexreport import FlexReport, FlexError
 from .ibcontroller import IBC, IBController, Watchdog
 import ib_insync.util as util
