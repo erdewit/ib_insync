@@ -383,7 +383,7 @@ class Decoder:
             c.localSymbol,
             c.tradingClass,
             ex.execId,
-            time,
+            timeStr,
             ex.acctNumber,
             ex.exchange,
             ex.side,
@@ -402,7 +402,11 @@ class Decoder:
 
         self.parse(c)
         self.parse(ex)
-        ex.time = parseIBDatetime(time).astimezone(timezone.utc)
+        time = parseIBDatetime(timeStr)
+        tz = self.wrapper.ib.TimezoneTWS
+        if tz:
+            time = tz.localize(time)
+        ex.time = time.astimezone(timezone.utc)
         self.wrapper.execDetails(int(reqId), c, ex)
 
     def historicalData(self, fields):

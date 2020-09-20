@@ -95,6 +95,8 @@ class IB:
           * :data:`True`: Raise a :class:`.RequestError`.
         MaxSyncedSubAccounts (int): Do not use sub-account updates
           if the number of sub-accounts exceeds this number (50 by default).
+        TimezoneTWS (pytz.timezone): Specifies what timezone TWS (or gateway)
+          is using. The default is to assume local system timezone.
 
     Events:
         * ``connectedEvent`` ():
@@ -194,6 +196,7 @@ class IB:
     RequestTimeout: float = 0
     RaiseRequestErrors: bool = False
     MaxSyncedSubAccounts: int = 50
+    TimezoneTWS = None
 
     def __init__(self):
         self._createEvents()
