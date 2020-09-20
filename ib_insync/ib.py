@@ -399,14 +399,7 @@ class IB:
         Args:
             account: If specified, filter for this account name.
         """
-        if not self.wrapper.acctSummary:
-            # loaded on demand since it takes ca. 250 ms
-            self.reqAccountSummary()
-        if account:
-            return [v for v in self.wrapper.acctSummary.values()
-                    if v.account == account]
-        else:
-            return list(self.wrapper.acctSummary.values())
+        return self._run(self.accountSummaryAsync(account))
 
     def portfolio(self) -> List[PortfolioItem]:
         """List of portfolio items of the default account."""
@@ -1746,6 +1739,17 @@ class IB:
         future = self.wrapper.startReq(reqId)
         self.client.reqAccountUpdatesMulti(reqId, account, modelCode, False)
         return future
+
+    async def accountSummaryAsync(self, account: str = '') -> \
+            List[AccountValue]:
+        if not self.wrapper.acctSummary:
+            # loaded on demand since it takes ca. 250 ms
+            await self.reqAccountSummaryAsync()
+        if account:
+            return [v for v in self.wrapper.acctSummary.values()
+                    if v.account == account]
+        else:
+            return list(self.wrapper.acctSummary.values())
 
     def reqAccountSummaryAsync(self) -> Awaitable[None]:
         reqId = self.client.getReqId()
