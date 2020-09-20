@@ -11,7 +11,7 @@ from typing import ClassVar, Union
 from eventkit import Event
 
 import ib_insync.util as util
-from ib_insync.contract import Forex
+from ib_insync.contract import Contract, Forex
 from ib_insync.ib import IB
 
 __all__ = ['IBC', 'IBController', 'Watchdog']
@@ -325,6 +325,8 @@ class Watchdog:
         appTimeout (float): Timeout (in seconds) for network traffic idle time.
         retryDelay (float): Time (in seconds) to restart app after a
             previous failure.
+        probeContract (Contract): Contract to use for historical data
+            probe requests (default is EURUSD).
 
     The idea is to wait until there is no traffic coming from the app for
     a certain amount of time (the ``appTimeout`` parameter). This triggers
@@ -369,6 +371,7 @@ class Watchdog:
     appTimeout: float = 20
     retryDelay: float = 2
     readonly: bool = False
+    probeContract: Contract = Forex('EURUSD')
 
     def __post_init__(self):
         self.startingEvent = Event('startingEvent')
@@ -433,7 +436,7 @@ class Watchdog:
                     self._logger.debug('Soft timeout')
                     self.softTimeoutEvent.emit(self)
                     probe = self.ib.reqHistoricalDataAsync(
-                        Forex('EURUSD'), '', '30 S', '5 secs',
+                        self.probeContract, '', '30 S', '5 secs',
                         'MIDPOINT', False)
                     bars = None
                     with suppress(asyncio.TimeoutError):
