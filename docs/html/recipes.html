@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Code recipes &mdash; ib_insync 0.9.61 documentation</title>
+  <title>Code recipes &mdash; ib_insync 0.9.62 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -19,7 +22,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -31,10 +36,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Source code" href="code.html" />
@@ -52,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ib_insync
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ib_insync
           
 
           
@@ -79,6 +80,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -101,6 +103,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#news-bulletins">News bulletins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dividends">Dividends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fundemental-ratios">Fundemental ratios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#async-streaming-ticks">Async streaming ticks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#integration-with-pyqt5-or-pyside2">Integration with PyQt5 or PySide2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#integration-with-tkinter">Integration with Tkinter</a></li>
 </ul>
@@ -113,6 +116,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -151,7 +155,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Code recipes</li>
     
@@ -327,6 +331,40 @@ and further back in time until there is no more data returned.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="async-streaming-ticks">
+<h2>Async streaming ticks<a class="headerlink" href="#async-streaming-ticks" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">import</span> <span class="nn">ib_insync</span> <span class="k">as</span> <span class="nn">ibi</span>
+
+
+<span class="k">class</span> <span class="nc">App</span><span class="p">:</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ib</span> <span class="o">=</span> <span class="n">ibi</span><span class="o">.</span><span class="n">IB</span><span class="p">()</span>
+        <span class="k">with</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">():</span>
+            <span class="n">contracts</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">ibi</span><span class="o">.</span><span class="n">Stock</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;AAPL&#39;</span><span class="p">,</span> <span class="s1">&#39;TSLA&#39;</span><span class="p">,</span> <span class="s1">&#39;AMD&#39;</span><span class="p">,</span> <span class="s1">&#39;INTC&#39;</span><span class="p">]]</span>
+            <span class="k">for</span> <span class="n">contract</span> <span class="ow">in</span> <span class="n">contracts</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">reqMktData</span><span class="p">(</span><span class="n">contract</span><span class="p">)</span>
+
+            <span class="k">async</span> <span class="k">for</span> <span class="n">tickers</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">pendingTickersEvent</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">())</span>
+<span class="k">except</span> <span class="p">(</span><span class="ne">KeyboardInterrupt</span><span class="p">,</span> <span class="ne">SystemExit</span><span class="p">):</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="integration-with-pyqt5-or-pyside2">
 <h2>Integration with PyQt5 or PySide2<a class="headerlink" href="#integration-with-pyqt5-or-pyside2" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/qt-tickertable.png" src="_images/qt-tickertable.png" />
@@ -372,11 +410,19 @@ counterparts.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Ewald de Wit
+        
+        &copy; Copyright 2020, Ewald de Wit
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -387,7 +433,6 @@ counterparts.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

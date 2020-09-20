@@ -4,6 +4,22 @@ Changelog
 0.9
 ---
 
+Version 0.9.62
+^^^^^^^^^^^^^^
+
+* ``IB.TimezoneTWS`` field added, for when the TWS timezone differs from the
+  local system timezone (:issue:`287`).
+* ``IB.RaiseRequestErrors`` field added, can be set to ``True`` to raise
+  ``RequestError`` when certain requests fail, instead of returning
+  empty data (:pull:`296`).
+* ``IB.accountSummaryAsync()`` method added (:issue:`267`).
+* ``Watchdog.probeContract`` field added, to use a contract other then EURUSD
+  for probing the data connection (:issue:`298`).
+* ``Ticker.rtTime`` added (:issue:`274`, :pull:`275`). Please note that this
+  timestamp appears to be mostly bogus.
+* Fixed :issue:`270`: Clear ticker depth data when canceling market
+  depth subscription.
+* Fixed issue with duplicate order IDs.
 
 Version 0.9.61
 ^^^^^^^^^^^^^^

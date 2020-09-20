@@ -44,6 +44,8 @@ Objects
 
 .. automodule:: ib_insync.objects
 
+.. autoclass:: ib_insync.wrapper.RequestError
+
 Utilities
 ---------
 

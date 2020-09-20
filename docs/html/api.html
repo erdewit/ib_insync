@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API docs &mdash; ib_insync 0.9.61 documentation</title>
+  <title>API docs &mdash; ib_insync 0.9.62 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -19,7 +22,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -31,10 +36,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Notebooks" href="notebooks.html" />
@@ -52,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ib_insync
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ib_insync
           
 
           
@@ -79,6 +80,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -112,6 +114,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -150,7 +153,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>API docs</li>
     
@@ -173,7 +176,7 @@
             
   <div class="section" id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.9.61.</p>
+<p>Release 0.9.62.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -243,6 +246,21 @@ Note: This timeout is not used for the <code class="docutils literal notranslate
 </dd></dl>
 
 <dl class="attribute">
+<dt id="ib_insync.ib.IB.RaiseRequestErrors">
+<code class="sig-name descname">RaiseRequestErrors</code><a class="headerlink" href="#ib_insync.ib.IB.RaiseRequestErrors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies the behaviour when certain API requests fail:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>: Silently return an empty result;</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>: Raise a <a class="reference internal" href="#ib_insync.wrapper.RequestError" title="ib_insync.wrapper.RequestError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RequestError</span></code></a>.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="ib_insync.ib.IB.MaxSyncedSubAccounts">
 <code class="sig-name descname">MaxSyncedSubAccounts</code><a class="headerlink" href="#ib_insync.ib.IB.MaxSyncedSubAccounts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do not use sub-account updates
@@ -250,6 +268,18 @@ if the number of sub-accounts exceeds this number (50 by default).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ib.IB.TimezoneTWS">
+<code class="sig-name descname">TimezoneTWS</code><a class="headerlink" href="#ib_insync.ib.IB.TimezoneTWS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies what timezone TWS (or gateway)
+is using. The default is to assume local system timezone.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>pytz.timezone</p>
 </dd>
 </dl>
 </dd></dl>
@@ -329,7 +359,17 @@ handler as it may lead to too much recursion.</p>
 
 <dl class="attribute">
 <dt>
+<code class="sig-name descname">RaiseRequestErrors</code><em class="property">: bool</em><em class="property"> = False</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
 <code class="sig-name descname">MaxSyncedSubAccounts</code><em class="property">: int</em><em class="property"> = 50</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">TimezoneTWS</code><em class="property"> = None</em></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1405,8 +1445,8 @@ to be filled:</p>
 <code class="docutils literal notranslate"><span class="pre">auctionImbalance</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>233</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">last</span></code>, <code class="docutils literal notranslate"><span class="pre">lastSize</span></code>, <code class="docutils literal notranslate"><span class="pre">rtVolume</span></code>, <code class="docutils literal notranslate"><span class="pre">vwap</span></code>
-(Time &amp; Sales)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">last</span></code>, <code class="docutils literal notranslate"><span class="pre">lastSize</span></code>, <code class="docutils literal notranslate"><span class="pre">rtVolume</span></code>, <code class="docutils literal notranslate"><span class="pre">rtTime</span></code>,
+<code class="docutils literal notranslate"><span class="pre">vwap</span></code> (Time &amp; Sales)</p></td>
 </tr>
 <tr class="row-even"><td><p>236</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">shortableShares</span></code></p></td>
@@ -1930,6 +1970,16 @@ by meaningful names rather than account numbers.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Awaitable" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Awaitable</span></code></a>[<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ib_insync.ib.IB.accountSummaryAsync">
+<em class="property">async </em><code class="sig-name descname">accountSummaryAsync</code><span class="sig-paren">(</span><em class="sig-param">account=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.accountSummaryAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ib.IB.accountSummaryAsync" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#ib_insync.objects.AccountValue" title="ib_insync.objects.AccountValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">AccountValue</span></code></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -6622,7 +6672,7 @@ This is a non-recursive variant of <code class="docutils literal notranslate"><s
 <p>Access to realtime market information.</p>
 <dl class="class">
 <dt id="ib_insync.ticker.Ticker">
-<em class="property">class </em><code class="sig-prename descclassname">ib_insync.ticker.</code><code class="sig-name descname">Ticker</code><span class="sig-paren">(</span><em class="sig-param">contract: Optional[ib_insync.contract.Contract] = None</em>, <em class="sig-param">time: Optional[datetime.datetime] = None</em>, <em class="sig-param">marketDataType: int = 1</em>, <em class="sig-param">bid: float = nan</em>, <em class="sig-param">bidSize: float = nan</em>, <em class="sig-param">ask: float = nan</em>, <em class="sig-param">askSize: float = nan</em>, <em class="sig-param">last: float = nan</em>, <em class="sig-param">lastSize: float = nan</em>, <em class="sig-param">prevBid: float = nan</em>, <em class="sig-param">prevBidSize: float = nan</em>, <em class="sig-param">prevAsk: float = nan</em>, <em class="sig-param">prevAskSize: float = nan</em>, <em class="sig-param">prevLast: float = nan</em>, <em class="sig-param">prevLastSize: float = nan</em>, <em class="sig-param">volume: float = nan</em>, <em class="sig-param">open: float = nan</em>, <em class="sig-param">high: float = nan</em>, <em class="sig-param">low: float = nan</em>, <em class="sig-param">close: float = nan</em>, <em class="sig-param">vwap: float = nan</em>, <em class="sig-param">low13week: float = nan</em>, <em class="sig-param">high13week: float = nan</em>, <em class="sig-param">low26week: float = nan</em>, <em class="sig-param">high26week: float = nan</em>, <em class="sig-param">low52week: float = nan</em>, <em class="sig-param">high52week: float = nan</em>, <em class="sig-param">bidYield: float = nan</em>, <em class="sig-param">askYield: float = nan</em>, <em class="sig-param">lastYield: float = nan</em>, <em class="sig-param">markPrice: float = nan</em>, <em class="sig-param">halted: float = nan</em>, <em class="sig-param">rtHistVolatility: float = nan</em>, <em class="sig-param">rtVolume: float = nan</em>, <em class="sig-param">rtTradeVolume: float = nan</em>, <em class="sig-param">avVolume: float = nan</em>, <em class="sig-param">tradeCount: float = nan</em>, <em class="sig-param">tradeRate: float = nan</em>, <em class="sig-param">volumeRate: float = nan</em>, <em class="sig-param">shortableShares: float = nan</em>, <em class="sig-param">indexFuturePremium: float = nan</em>, <em class="sig-param">futuresOpenInterest: float = nan</em>, <em class="sig-param">putOpenInterest: float = nan</em>, <em class="sig-param">callOpenInterest: float = nan</em>, <em class="sig-param">putVolume: float = nan</em>, <em class="sig-param">callVolume: float = nan</em>, <em class="sig-param">avOptionVolume: float = nan</em>, <em class="sig-param">histVolatility: float = nan</em>, <em class="sig-param">impliedVolatility: float = nan</em>, <em class="sig-param">dividends: Optional[ib_insync.objects.Dividends] = None</em>, <em class="sig-param">fundamentalRatios: Optional[ib_insync.objects.FundamentalRatios] = None</em>, <em class="sig-param">ticks: List[ib_insync.objects.TickData] = &lt;factory&gt;</em>, <em class="sig-param">tickByTicks: List[Union[ib_insync.objects.TickByTickAllLast</em>, <em class="sig-param">ib_insync.objects.TickByTickBidAsk</em>, <em class="sig-param">ib_insync.objects.TickByTickMidPoint]] = &lt;factory&gt;</em>, <em class="sig-param">domBids: List[ib_insync.objects.DOMLevel] = &lt;factory&gt;</em>, <em class="sig-param">domAsks: List[ib_insync.objects.DOMLevel] = &lt;factory&gt;</em>, <em class="sig-param">domTicks: List[ib_insync.objects.MktDepthData] = &lt;factory&gt;</em>, <em class="sig-param">bidGreeks: Optional[ib_insync.objects.OptionComputation] = None</em>, <em class="sig-param">askGreeks: Optional[ib_insync.objects.OptionComputation] = None</em>, <em class="sig-param">lastGreeks: Optional[ib_insync.objects.OptionComputation] = None</em>, <em class="sig-param">modelGreeks: Optional[ib_insync.objects.OptionComputation] = None</em>, <em class="sig-param">auctionVolume: float = nan</em>, <em class="sig-param">auctionPrice: float = nan</em>, <em class="sig-param">auctionImbalance: float = nan</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ticker.html#Ticker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ticker.Ticker" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ib_insync.ticker.</code><code class="sig-name descname">Ticker</code><span class="sig-paren">(</span><em class="sig-param">contract: Optional[ib_insync.contract.Contract] = None</em>, <em class="sig-param">time: Optional[datetime.datetime] = None</em>, <em class="sig-param">marketDataType: int = 1</em>, <em class="sig-param">bid: float = nan</em>, <em class="sig-param">bidSize: float = nan</em>, <em class="sig-param">ask: float = nan</em>, <em class="sig-param">askSize: float = nan</em>, <em class="sig-param">last: float = nan</em>, <em class="sig-param">lastSize: float = nan</em>, <em class="sig-param">prevBid: float = nan</em>, <em class="sig-param">prevBidSize: float = nan</em>, <em class="sig-param">prevAsk: float = nan</em>, <em class="sig-param">prevAskSize: float = nan</em>, <em class="sig-param">prevLast: float = nan</em>, <em class="sig-param">prevLastSize: float = nan</em>, <em class="sig-param">volume: float = nan</em>, <em class="sig-param">open: float = nan</em>, <em class="sig-param">high: float = nan</em>, <em class="sig-param">low: float = nan</em>, <em class="sig-param">close: float = nan</em>, <em class="sig-param">vwap: float = nan</em>, <em class="sig-param">low13week: float = nan</em>, <em class="sig-param">high13week: float = nan</em>, <em class="sig-param">low26week: float = nan</em>, <em class="sig-param">high26week: float = nan</em>, <em class="sig-param">low52week: float = nan</em>, <em class="sig-param">high52week: float = nan</em>, <em class="sig-param">bidYield: float = nan</em>, <em class="sig-param">askYield: float = nan</em>, <em class="sig-param">lastYield: float = nan</em>, <em class="sig-param">markPrice: float = nan</em>, <em class="sig-param">halted: float = nan</em>, <em class="sig-param">rtHistVolatility: float = nan</em>, <em class="sig-param">rtVolume: float = nan</em>, <em class="sig-param">rtTradeVolume: float = nan</em>, <em class="sig-param">rtTime: Optional[datetime.datetime] = None</em>, <em class="sig-param">avVolume: float = nan</em>, <em class="sig-param">tradeCount: float = nan</em>, <em class="sig-param">tradeRate: float = nan</em>, <em class="sig-param">volumeRate: float = nan</em>, <em class="sig-param">shortableShares: float = nan</em>, <em class="sig-param">indexFuturePremium: float = nan</em>, <em class="sig-param">futuresOpenInterest: float = nan</em>, <em class="sig-param">putOpenInterest: float = nan</em>, <em class="sig-param">callOpenInterest: float = nan</em>, <em class="sig-param">putVolume: float = nan</em>, <em class="sig-param">callVolume: float = nan</em>, <em class="sig-param">avOptionVolume: float = nan</em>, <em class="sig-param">histVolatility: float = nan</em>, <em class="sig-param">impliedVolatility: float = nan</em>, <em class="sig-param">dividends: Optional[ib_insync.objects.Dividends] = None</em>, <em class="sig-param">fundamentalRatios: Optional[ib_insync.objects.FundamentalRatios] = None</em>, <em class="sig-param">ticks: List[ib_insync.objects.TickData] = &lt;factory&gt;</em>, <em class="sig-param">tickByTicks: List[Union[ib_insync.objects.TickByTickAllLast</em>, <em class="sig-param">ib_insync.objects.TickByTickBidAsk</em>, <em class="sig-param">ib_insync.objects.TickByTickMidPoint]] = &lt;factory&gt;</em>, <em class="sig-param">domBids: List[ib_insync.objects.DOMLevel] = &lt;factory&gt;</em>, <em class="sig-param">domAsks: List[ib_insync.objects.DOMLevel] = &lt;factory&gt;</em>, <em class="sig-param">domTicks: List[ib_insync.objects.MktDepthData] = &lt;factory&gt;</em>, <em class="sig-param">bidGreeks: Optional[ib_insync.objects.OptionComputation] = None</em>, <em class="sig-param">askGreeks: Optional[ib_insync.objects.OptionComputation] = None</em>, <em class="sig-param">lastGreeks: Optional[ib_insync.objects.OptionComputation] = None</em>, <em class="sig-param">modelGreeks: Optional[ib_insync.objects.OptionComputation] = None</em>, <em class="sig-param">auctionVolume: float = nan</em>, <em class="sig-param">auctionPrice: float = nan</em>, <em class="sig-param">auctionImbalance: float = nan</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ticker.html#Ticker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ticker.Ticker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current market data such as bid, ask, last price, etc. for a contract.</p>
 <p>Streaming level-1 ticks of type <a class="reference internal" href="#ib_insync.objects.TickData" title="ib_insync.objects.TickData"><code class="xref py py-class docutils literal notranslate"><span class="pre">TickData</span></code></a> are stored in
 the <code class="docutils literal notranslate"><span class="pre">ticks</span></code> list.</p>
@@ -6818,6 +6868,11 @@ the greeks as calculated by Interactive Brokers’ option model.</p>
 <dl class="attribute">
 <dt id="ib_insync.ticker.Ticker.rtTradeVolume">
 <code class="sig-name descname">rtTradeVolume</code><em class="property">: float</em><em class="property"> = nan</em><a class="headerlink" href="#ib_insync.ticker.Ticker.rtTradeVolume" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ticker.Ticker.rtTime">
+<code class="sig-name descname">rtTime</code><em class="property">: Optional[datetime.datetime]</em><em class="property"> = None</em><a class="headerlink" href="#ib_insync.ticker.Ticker.rtTime" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -9234,6 +9289,22 @@ This is a non-recursive variant of <code class="docutils literal notranslate"><s
 <a class="reference external" href="https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html">https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html</a></p>
 </dd></dl>
 
+<dl class="class">
+<dt id="ib_insync.wrapper.RequestError">
+<em class="property">class </em><code class="sig-prename descclassname">ib_insync.wrapper.</code><code class="sig-name descname">RequestError</code><span class="sig-paren">(</span><em class="sig-param">reqId</em>, <em class="sig-param">code</em>, <em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/wrapper.html#RequestError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.wrapper.RequestError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception to raise when the API reports an error that can be tied to
+a single request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reqId</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Original request ID.</p></li>
+<li><p><strong>code</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Original error code.</p></li>
+<li><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Original error message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-ib_insync.util">
 <span id="utilities"></span><h2>Utilities<a class="headerlink" href="#module-ib_insync.util" title="Permalink to this headline">¶</a></h2>
@@ -9247,9 +9318,12 @@ This is a non-recursive variant of <code class="docutils literal notranslate"><s
 <dl class="function">
 <dt id="ib_insync.util.df">
 <code class="sig-prename descclassname">ib_insync.util.</code><code class="sig-name descname">df</code><span class="sig-paren">(</span><em class="sig-param">objs</em>, <em class="sig-param">labels=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/util.html#df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.util.df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create pandas DataFrame from the sequence of same-type objects.
-When a list of labels is given then only retain those labels and
-drop the rest.</p>
+<dd><p>Create pandas DataFrame from the sequence of same-type objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]) – If supplied, retain only the given labels and drop the rest.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -9979,7 +10053,7 @@ This is a non-recursive variant of <code class="docutils literal notranslate"><s
 <h2>Watchdog<a class="headerlink" href="#watchdog" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="ib_insync.ibcontroller.Watchdog">
-<em class="property">class </em><code class="sig-prename descclassname">ib_insync.ibcontroller.</code><code class="sig-name descname">Watchdog</code><span class="sig-paren">(</span><em class="sig-param">controller: Union[ib_insync.ibcontroller.IBC, ib_insync.ibcontroller.IBController], ib: ib_insync.ib.IB, host: str = '127.0.0.1', port: int = 7497, clientId: int = 1, connectTimeout: float = 2, appStartupTime: float = 30, appTimeout: float = 20, retryDelay: float = 2, readonly: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#Watchdog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ib_insync.ibcontroller.</code><code class="sig-name descname">Watchdog</code><span class="sig-paren">(</span><em class="sig-param">controller: Union[ib_insync.ibcontroller.IBC, ib_insync.ibcontroller.IBController], ib: ib_insync.ib.IB, host: str = '127.0.0.1', port: int = 7497, clientId: int = 1, connectTimeout: float = 2, appStartupTime: float = 30, appTimeout: float = 20, retryDelay: float = 2, readonly: bool = False, probeContract: ib_insync.contract.Contract = Forex('EURUSD', exchange='IDEALPRO')</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ibcontroller.html#Watchdog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start, connect and watch over the TWS or gateway app and try to keep it
 up and running. It is intended to be used in an event-driven
 application that properly initializes itself upon (re-)connect.</p>
@@ -10003,6 +10077,8 @@ to start up. Make sure that it is given ample time.</p></li>
 <li><p><strong>appTimeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Timeout (in seconds) for network traffic idle time.</p></li>
 <li><p><strong>retryDelay</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Time (in seconds) to restart app after a
 previous failure.</p></li>
+<li><p><strong>probeContract</strong> (<a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><em>Contract</em></a>) – Contract to use for historical data
+probe requests (default is EURUSD).</p></li>
 </ul>
 </dd>
 </dl>
@@ -10087,6 +10163,11 @@ and reconnect. Restarting will also occur directly on errors 1100 and 100.</p>
 <dl class="attribute">
 <dt id="ib_insync.ibcontroller.Watchdog.readonly">
 <code class="sig-name descname">readonly</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.readonly" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ib_insync.ibcontroller.Watchdog.probeContract">
+<code class="sig-name descname">probeContract</code><em class="property">: ib_insync.contract.Contract</em><em class="property"> = Forex('EURUSD', exchange='IDEALPRO')</em><a class="headerlink" href="#ib_insync.ibcontroller.Watchdog.probeContract" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -10177,11 +10258,19 @@ This is a non-recursive variant of <code class="docutils literal notranslate"><s
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Ewald de Wit
+        
+        &copy; Copyright 2020, Ewald de Wit
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -10192,7 +10281,6 @@ This is a non-recursive variant of <code class="docutils literal notranslate"><s
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
