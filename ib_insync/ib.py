@@ -291,7 +291,7 @@ class IB:
 
     def isConnected(self) -> bool:
         """Is there is an API connection to TWS or IB gateway?"""
-        return self.client.isConnected()
+        return self.client.isReady()
 
     def _onError(self, reqId, errorCode, errorString, contract):
         if errorCode == 1102:
