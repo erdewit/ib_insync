@@ -290,7 +290,7 @@ class IB:
         self.disconnectedEvent.emit()
 
     def isConnected(self) -> bool:
-        """Is there is an API connection to TWS or IB gateway?"""
+        """Is there an API connection to TWS or IB gateway?"""
         return self.client.isReady()
 
     def _onError(self, reqId, errorCode, errorString, contract):
