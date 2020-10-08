@@ -294,8 +294,8 @@ def run(*awaitables: Awaitable, timeout: float = None):
             return
         loop.run_forever()
         result = None
-        all_tasks = asyncio.all_tasks(loop) \
-            if sys.version_info >= (3, 7) else asyncio.Task.all_tasks()
+        all_tasks = (asyncio.all_tasks(loop)  # type: ignore
+            if sys.version_info >= (3, 7) else asyncio.Task.all_tasks())
         if all_tasks:
             # cancel pending tasks
             f = asyncio.gather(*all_tasks)
