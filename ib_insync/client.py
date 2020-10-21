@@ -138,7 +138,7 @@ class Client:
 
     def isReady(self) -> bool:
         """Is the API connection up and running?"""
-        return self._readyEvent and self._readyEvent.is_set()
+        return bool(self._readyEvent) and self._readyEvent.is_set()
 
     def connectionStats(self) -> ConnectionStats:
         """Get statistics about the connection."""
@@ -179,7 +179,7 @@ class Client:
         self._connectOptions = connectOptions.encode()
 
     def connect(
-            self, host: str, port: int, clientId: int, timeout: float = 2):
+            self, host: str, port: int, clientId: int, timeout: float = 2.0):
         """
         Connect to a running TWS or IB gateway application.
 
@@ -194,7 +194,7 @@ class Client:
         """
         run(self.connectAsync(host, port, clientId, timeout))
 
-    async def connectAsync(self, host, port, clientId, timeout=2):
+    async def connectAsync(self, host, port, clientId, timeout=2.0):
 
         async def connect():
             self._logger.info(
