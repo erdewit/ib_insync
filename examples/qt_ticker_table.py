@@ -87,6 +87,7 @@ class Window(qt.QWidget):
             self.connectButton.setText('Connect')
         else:
             self.ib.connect(*self.connectInfo)
+            self.ib.reqMarketDataType(2)
             self.connectButton.setText('Disonnect')
             for symbol in (
                     'EURUSD', 'USDJPY', 'EURGBP', 'USDCAD',
