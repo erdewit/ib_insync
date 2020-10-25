@@ -494,6 +494,7 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
         qloop.exec_()
         timer.stop()
         stack.append((qloop, timer))
+        qApp.processEvents()
 
     if qtLib not in ('PyQt5', 'PySide2'):
         raise RuntimeError(f'Unknown Qt library: {qtLib}')
