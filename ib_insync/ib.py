@@ -1621,7 +1621,7 @@ class IB:
             account: str = ''):
 
         if self.isConnected():
-            self._logger.warn('Already connected')
+            self._logger.warning('Already connected')
             return self
         self.wrapper.clientId = clientId
 
@@ -1634,32 +1634,31 @@ class IB:
             if clientId == 0:
                 self.reqAutoOpenOrders(True)
 
-            # request completed orders
-            if not readonly and self.client.serverVersion() >= 150:
-                try:
-                    await asyncio.wait_for(
-                        self.reqCompletedOrdersAsync(False), timeout or None)
-                except asyncio.TimeoutError:
-                    self._logger.error('reqCompletedOrders timed out')
-
-            # request updates for the main account
             accounts = self.client.getAccounts()
-            await asyncio.wait_for(
-                asyncio.gather(
-                    self.reqAccountUpdatesAsync(account or accounts[0]),
-                    self.reqPositionsAsync(),
-                    self.reqExecutionsAsync()),
-                timeout or None)
+            if not account and len(accounts) == 1:
+                account = accounts[0]
 
-            # request updates for sub-accounts, if there are not too many
+            # prepare initializing  requests
+            reqs = {}  # name -> request
+            reqs['positions'] = self.reqPositionsAsync()
+            reqs['executions'] = self.reqExecutionsAsync()
+            if not readonly and self.client.serverVersion() >= 150:
+                reqs['completed orders'] = self.reqCompletedOrdersAsync(False)
+            if account:
+                reqs['account updates'] =self.reqAccountUpdatesAsync(account)
             if len(accounts) <= self.MaxSyncedSubAccounts:
-                await asyncio.wait_for(
-                    asyncio.gather(
-                        *(self.reqAccountUpdatesMultiAsync(a)
-                            for a in accounts)),
-                    timeout or None)
-            else:
-                self._logger.warning('Not requesting sub-account updates')
+                for acc in accounts:
+                    reqs[f'account updates for {acc}'] = \
+                        self.reqAccountUpdatesMultiAsync(acc)
+
+            # run initializing requests concurrently and log if any times out
+            tasks = [
+                asyncio.wait_for(req, timeout or None)
+                for req in reqs.values()]
+            resps = await asyncio.gather(*tasks, return_exceptions=True)
+            for name, resp in zip(reqs, resps):
+                if isinstance(resp, asyncio.TimeoutError):
+                    self._logger.error(f'{name} request timed out')
 
             self._logger.info('Synchronization complete')
             self.connectedEvent.emit()
