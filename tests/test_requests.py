@@ -6,7 +6,7 @@ pytestmark = pytest.mark.asyncio
 
 
 async def test_request_error_raised(ib):
-    contract = ibi.Stock('MMM', 'SMART', 'USD')
+    contract = ibi.Forex('EURUSD')
     order = ibi.MarketOrder('BUY', 100)
     orderState = await ib.whatIfOrderAsync(contract, order)
     assert orderState.commission > 0
