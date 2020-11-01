@@ -327,7 +327,7 @@ class Watchdog:
             previous failure.
         probeContract (Contract): Contract to use for historical data
             probe requests (default is EURUSD).
-        probeTimneout (float); Timeout (in seconds) for the probe request.
+        probeTimeout (float); Timeout (in seconds) for the probe request.
 
     The idea is to wait until there is no traffic coming from the app for
     a certain amount of time (the ``appTimeout`` parameter). This triggers
