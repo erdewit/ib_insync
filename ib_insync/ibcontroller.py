@@ -327,6 +327,7 @@ class Watchdog:
             previous failure.
         probeContract (Contract): Contract to use for historical data
             probe requests (default is EURUSD).
+        probeTimneout (float); Timeout (in seconds) for the probe request.
 
     The idea is to wait until there is no traffic coming from the app for
     a certain amount of time (the ``appTimeout`` parameter). This triggers
@@ -372,6 +373,7 @@ class Watchdog:
     retryDelay: float = 2
     readonly: bool = False
     probeContract: Contract = Forex('EURUSD')
+    probeTimeout: float = 4
 
     def __post_init__(self):
         self.startingEvent = Event('startingEvent')
@@ -440,7 +442,7 @@ class Watchdog:
                         'MIDPOINT', False)
                     bars = None
                     with suppress(asyncio.TimeoutError):
-                        bars = await asyncio.wait_for(probe, 4)
+                        bars = await asyncio.wait_for(probe, self.probeTimeout)
                     if not bars:
                         self.hardTimeoutEvent.emit(self)
                         raise Warning('Hard timeout')
