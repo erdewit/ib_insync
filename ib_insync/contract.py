@@ -136,13 +136,11 @@ class Contract:
         """
         See if this contract can be hashed by conId.
 
-        Note: Bag contracts always get conId=28812380 and ContFutures get the
-        same conId as the front contract, so these contract types are
-        not hashable.
+        Note: Bag contracts always get conId=28812380, so they're not hashable.
         """
         return bool(
             self.conId and self.conId != 28812380
-            and self.secType not in ('BAG', 'CONTFUT'))
+            and self.secType != 'BAG')
 
     def __eq__(self, other):
         return (
@@ -154,7 +152,12 @@ class Contract:
     def __hash__(self):
         if not self.isHashable():
             raise ValueError(f'Contract {self} can\'t be hashed')
-        return self.conId
+        if self.secType == 'CONTFUT':
+            # CONTFUT gets the same conId as the front contract, invert it here
+            h = -self.conId
+        else:
+            h = self.conId
+        return h
 
     def __repr__(self):
         attrs = util.dataclassNonDefaults(self)
