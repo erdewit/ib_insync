@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.ib &mdash; ib_insync 0.9.63 documentation</title>
+  <title>ib_insync.ib &mdash; ib_insync 0.9.64 documentation</title>
   
 
   
@@ -1801,7 +1801,6 @@
             <span class="c1"># prepare initializing  requests</span>
             <span class="n">reqs</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># name -&gt; request</span>
             <span class="n">reqs</span><span class="p">[</span><span class="s1">&#39;positions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqPositionsAsync</span><span class="p">()</span>
-            <span class="n">reqs</span><span class="p">[</span><span class="s1">&#39;executions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqExecutionsAsync</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">readonly</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">150</span><span class="p">:</span>
                 <span class="n">reqs</span><span class="p">[</span><span class="s1">&#39;completed orders&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqCompletedOrdersAsync</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">account</span><span class="p">:</span>
@@ -1819,6 +1818,9 @@
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">resp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">reqs</span><span class="p">,</span> <span class="n">resps</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> request timed out&#39;</span><span class="p">)</span>
+
+            <span class="c1"># the request for executions must come after all orders are in</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqExecutionsAsync</span><span class="p">(),</span> <span class="n">timeout</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Synchronization complete&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connectedEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>

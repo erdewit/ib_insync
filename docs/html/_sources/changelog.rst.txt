@@ -4,6 +4,13 @@ Changelog
 0.9
 ---
 
+Version 0.9.64
+^^^^^^^^^^^^^^
+
+* Fixed: :issue:`309`: Aggregate past fills into the ``Trade`` they belong to upon connect.
+* ``ContFut`` objects are now hashable (:issue:`310`).
+* Added ``Watchdog.probeTimeout`` parameter (:issue:`307`).
+
 Version 0.9.63
 ^^^^^^^^^^^^^^
 

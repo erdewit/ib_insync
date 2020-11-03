@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.order &mdash; ib_insync 0.9.63 documentation</title>
+  <title>ib_insync.order &mdash; ib_insync 0.9.64 documentation</title>
   
 
   
@@ -161,7 +161,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Order types used by Interactive Brokers.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Set</span>
 
 <span class="kn">from</span> <span class="nn">eventkit</span> <span class="kn">import</span> <span class="n">Event</span>
 
@@ -382,18 +382,18 @@
     <span class="n">whyHeld</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">mktCapPrice</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
 
-    <span class="n">PendingSubmit</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="s1">&#39;PendingSubmit&#39;</span>
-    <span class="n">PendingCancel</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="s1">&#39;PendingCancel&#39;</span>
-    <span class="n">PreSubmitted</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="s1">&#39;PreSubmitted&#39;</span>
-    <span class="n">Submitted</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="s1">&#39;Submitted&#39;</span>
-    <span class="n">ApiPending</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="s1">&#39;ApiPending&#39;</span>
-    <span class="n">ApiCancelled</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="s1">&#39;ApiCancelled&#39;</span>
-    <span class="n">Cancelled</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="s1">&#39;Cancelled&#39;</span>
-    <span class="n">Filled</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="s1">&#39;Filled&#39;</span>
-    <span class="n">Inactive</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="s1">&#39;Inactive&#39;</span>
+    <span class="n">PendingSubmit</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;PendingSubmit&#39;</span>
+    <span class="n">PendingCancel</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;PendingCancel&#39;</span>
+    <span class="n">PreSubmitted</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;PreSubmitted&#39;</span>
+    <span class="n">Submitted</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Submitted&#39;</span>
+    <span class="n">ApiPending</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ApiPending&#39;</span>
+    <span class="n">ApiCancelled</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ApiCancelled&#39;</span>
+    <span class="n">Cancelled</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Cancelled&#39;</span>
+    <span class="n">Filled</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Filled&#39;</span>
+    <span class="n">Inactive</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Inactive&#39;</span>
 
-    <span class="n">DoneStates</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Filled&#39;</span><span class="p">,</span> <span class="s1">&#39;Cancelled&#39;</span><span class="p">,</span> <span class="s1">&#39;ApiCancelled&#39;</span><span class="p">}</span>
-    <span class="n">ActiveStates</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">DoneStates</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Filled&#39;</span><span class="p">,</span> <span class="s1">&#39;Cancelled&#39;</span><span class="p">,</span> <span class="s1">&#39;ApiCancelled&#39;</span><span class="p">}</span>
+    <span class="n">ActiveStates</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;PendingSubmit&#39;</span><span class="p">,</span> <span class="s1">&#39;ApiPending&#39;</span><span class="p">,</span> <span class="s1">&#39;PreSubmitted&#39;</span><span class="p">,</span> <span class="s1">&#39;Submitted&#39;</span><span class="p">}</span></div>
 
 

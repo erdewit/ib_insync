@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.contract &mdash; ib_insync 0.9.63 documentation</title>
+  <title>ib_insync.contract &mdash; ib_insync 0.9.64 documentation</title>
   
 
   
@@ -296,13 +296,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See if this contract can be hashed by conId.</span>
 
-<span class="sd">        Note: Bag contracts always get conId=28812380 and ContFutures get the</span>
-<span class="sd">        same conId as the front contract, so these contract types are</span>
-<span class="sd">        not hashable.</span>
+<span class="sd">        Note: Bag contracts always get conId=28812380, so they&#39;re not hashable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">conId</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">conId</span> <span class="o">!=</span> <span class="mi">28812380</span>
-            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">secType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;BAG&#39;</span><span class="p">,</span> <span class="s1">&#39;CONTFUT&#39;</span><span class="p">))</span></div>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">secType</span> <span class="o">!=</span> <span class="s1">&#39;BAG&#39;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -314,7 +312,12 @@
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isHashable</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Contract </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1"> can</span><span class="se">\&#39;</span><span class="s1">t be hashed&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conId</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">secType</span> <span class="o">==</span> <span class="s1">&#39;CONTFUT&#39;</span><span class="p">:</span>
+            <span class="c1"># CONTFUT gets the same conId as the front contract, invert it here</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">conId</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conId</span>
+        <span class="k">return</span> <span class="n">h</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">dataclassNonDefaults</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
