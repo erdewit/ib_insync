@@ -1641,7 +1641,6 @@ class IB:
             # prepare initializing  requests
             reqs = {}  # name -> request
             reqs['positions'] = self.reqPositionsAsync()
-            reqs['executions'] = self.reqExecutionsAsync()
             if not readonly and self.client.serverVersion() >= 150:
                 reqs['completed orders'] = self.reqCompletedOrdersAsync(False)
             if account:
@@ -1659,6 +1658,9 @@ class IB:
             for name, resp in zip(reqs, resps):
                 if isinstance(resp, asyncio.TimeoutError):
                     self._logger.error(f'{name} request timed out')
+
+            # the request for executions must come after all orders are in
+            await asyncio.wait_for(self.reqExecutionsAsync(), timeout or None)
 
             self._logger.info('Synchronization complete')
             self.connectedEvent.emit()
