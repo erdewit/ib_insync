@@ -6,6 +6,8 @@ Code recipes
 
 Collection of useful patterns, snippets and recipes.
 
+When using the recipes in a notebook, don't forget to use ``util.startLoop()``.
+
 Fetching consecutive historical data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
