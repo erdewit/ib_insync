@@ -411,7 +411,7 @@ class Watchdog:
                 waiter.set_result(None)
 
         def onError(reqId, errorCode, errorString, contract):
-            if errorCode in [1100, 100] and not waiter.done():
+            if errorCode in {100, 1100} and not waiter.done():
                 waiter.set_exception(Warning(f'Error {errorCode}'))
 
         def onDisconnected():
