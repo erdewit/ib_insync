@@ -343,6 +343,9 @@ class Wrapper:
             trade = self.trades.get(key)
             if trade:
                 trade.order.permId = order.permId
+                trade.order.totalQuantity = order.totalQuantity
+                trade.order.lmtPrice = order.lmtPrice
+                trade.order.auxPrice = order.auxPrice
             else:
                 # ignore '?' values in the order
                 order = Order(**{
