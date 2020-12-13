@@ -346,6 +346,7 @@ class Wrapper:
                 trade.order.totalQuantity = order.totalQuantity
                 trade.order.lmtPrice = order.lmtPrice
                 trade.order.auxPrice = order.auxPrice
+                trade.order.orderType = order.orderType
             else:
                 # ignore '?' values in the order
                 order = Order(**{
