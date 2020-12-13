@@ -1662,6 +1662,10 @@ class IB:
             # the request for executions must come after all orders are in
             await asyncio.wait_for(self.reqExecutionsAsync(), timeout or None)
 
+            # final check if socket is still up
+            if not self.client.isConnected():
+                raise ConnectionError('Socket connection broken while connecting')
+
             self._logger.info('Synchronization complete')
             self.connectedEvent.emit()
         except Exception:
