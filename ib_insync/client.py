@@ -215,7 +215,6 @@ class Client:
                 b' ' + self.connectOptions if self.connectOptions else b''))
             self.conn.sendMsg(msg)
             await asyncio.wait_for(self.apiStart, timeout)
-            self._apiReady = True
             self._logger.info('API connection ready')
         except Exception as e:
             self.disconnect()
@@ -344,13 +343,12 @@ class Client:
                     if msgId == 9:
                         _, _, validId = fields
                         self._reqIdSeq = int(validId)
-                        if self._accounts:
-                            self.apiStart.emit()
                     elif msgId == 15:
                         _, _, accts = fields
                         self._accounts = [a for a in accts.split(',') if a]
-                        if self._reqIdSeq:
-                            self.apiStart.emit()
+                    if self._reqIdSeq and self._accounts:
+                        self._apiReady = True
+                        self.apiStart.emit()
 
                 # decode and handle the message
                 self.decoder.interpret(fields)
