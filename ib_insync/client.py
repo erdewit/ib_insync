@@ -6,7 +6,7 @@ import logging
 import struct
 import time
 from collections import deque
-from typing import List
+from typing import List, Optional
 
 from eventkit import Event
 
@@ -92,33 +92,37 @@ class Client:
 
     def __init__(self, wrapper):
         self.wrapper = wrapper
-        self.decoder = Decoder(wrapper, None)
+        self.decoder = Decoder(wrapper, 0)
         self.apiStart = Event('apiStart')
         self.apiEnd = Event('apiEnd')
         self.apiError = Event('apiError')
         self.throttleStart = Event('throttleStart')
         self.throttleEnd = Event('throttleEnd')
         self._logger = logging.getLogger('ib_insync.client')
-        self.reset()
+
+        self.conn = Connection()
+        self.conn.hasData += self._onSocketHasData
+        self.conn.disconnected += self._onSocketDisconnected
 
         # extra optional wrapper methods
         self._priceSizeTick = getattr(wrapper, 'priceSizeTick', None)
         self._tcpDataArrived = getattr(wrapper, 'tcpDataArrived', None)
         self._tcpDataProcessed = getattr(wrapper, 'tcpDataProcessed', None)
 
-    def reset(self):
-        self.host = None
-        self.port = None
-        self.clientId = None
-        self.conn = None
-        self.connState = Client.DISCONNECTED
+        self.host = ''
+        self.port = -1
+        self.clientId = -1
         self.optCapab = ''
+        self.connectOptions = b''
+        self.reset()
+
+    def reset(self):
+        self.connState = Client.DISCONNECTED
+        self._apiReady = False
         self._serverVersion = None
-        self._readyEvent = None
         self._data = b''
-        self._connectOptions = b''
         self._reqIdSeq = 0
-        self._accounts = None
+        self._accounts = []
         self._startTime = time.time()
         self._numBytesRecv = 0
         self._numMsgRecv = 0
@@ -138,7 +142,7 @@ class Client:
 
     def isReady(self) -> bool:
         """Is the API connection up and running?"""
-        return bool(self._readyEvent) and self._readyEvent.is_set()
+        return self._apiReady
 
     def connectionStats(self) -> ConnectionStats:
         """Get statistics about the connection."""
@@ -176,10 +180,11 @@ class Client:
             connectOptions: Use "+PACEAPI" to use request-pacing built
                 into TWS/gateway 974+.
         """
-        self._connectOptions = connectOptions.encode()
+        self.connectOptions = connectOptions.encode()
 
     def connect(
-            self, host: str, port: int, clientId: int, timeout: float = 2.0):
+            self, host: str, port: int, clientId: int,
+            timeout: Optional[float] = 2.0):
         """
         Connect to a running TWS or IB gateway application.
 
@@ -195,32 +200,23 @@ class Client:
         run(self.connectAsync(host, port, clientId, timeout))
 
     async def connectAsync(self, host, port, clientId, timeout=2.0):
-
-        async def connect():
+        try:
             self._logger.info(
                 f'Connecting to {host}:{port} with clientId {clientId}...')
             self.host = host
             self.port = port
             self.clientId = clientId
             self.connState = Client.CONNECTING
-            self.conn = Connection(host, port)
-            self.conn.hasData = self._onSocketHasData
-            self.conn.disconnected = self._onSocketDisconnected
-            self.conn.hasError = self._onSocketHasError
-            await asyncio.sleep(0)  # in case of a not yet finished disconnect
-            await self.conn.connectAsync()
+            timeout = timeout or None
+            await asyncio.wait_for(self.conn.connectAsync(host, port), timeout)
             self._logger.info('Connected')
             msg = b'API\0' + self._prefix(b'v%d..%d%s' % (
                 self.MinClientVersion, self.MaxClientVersion,
-                b' ' + self._connectOptions if self._connectOptions else b''))
+                b' ' + self.connectOptions if self.connectOptions else b''))
             self.conn.sendMsg(msg)
-            await self._readyEvent.wait()
+            await asyncio.wait_for(self.apiStart, timeout)
+            self._apiReady = True
             self._logger.info('API connection ready')
-            self.apiStart.emit()
-
-        self._readyEvent = asyncio.Event()
-        try:
-            await asyncio.wait_for(connect(), timeout or None)
         except Exception as e:
             self.disconnect()
             msg = f'API connection failed: {e!r}'
@@ -232,11 +228,10 @@ class Client:
 
     def disconnect(self):
         """Disconnect from IB connection."""
+        self._logger.info('Disconnecting')
         self.connState = Client.DISCONNECTED
-        if self.conn is not None:
-            self._logger.info('Disconnecting')
-            self.conn.disconnect()
-            self.reset()
+        self.conn.disconnect()
+        self.reset()
 
     def send(self, *fields):
         """Serialize and send the given fields using the IB socket protocol."""
@@ -332,7 +327,7 @@ class Client:
                 version, _connTime = fields
                 self._serverVersion = int(version)
                 if self._serverVersion < self.MinClientVersion:
-                    self._onSocketHasError(
+                    self._onSocketDisconnected(
                         'TWS/gateway version must be >= 972')
                     return
                 self.decoder.serverVersion = self._serverVersion
@@ -342,7 +337,7 @@ class Client:
                 self._logger.info(
                     f'Logged on to server version {self._serverVersion}')
             else:
-                if self._readyEvent and not self._readyEvent.is_set():
+                if not self._apiReady:
                     # snoop for nextValidId and managedAccounts response,
                     # when both are in then the client is ready
                     msgId = int(fields[0])
@@ -350,12 +345,12 @@ class Client:
                         _, _, validId = fields
                         self._reqIdSeq = int(validId)
                         if self._accounts:
-                            self._readyEvent.set()
+                            self.apiStart.emit()
                     elif msgId == 15:
                         _, _, accts = fields
                         self._accounts = [a for a in accts.split(',') if a]
                         if self._reqIdSeq:
-                            self._readyEvent.set()
+                            self.apiStart.emit()
 
                 # decode and handle the message
                 self.decoder.interpret(fields)
@@ -363,30 +358,20 @@ class Client:
         if self._tcpDataProcessed:
             self._tcpDataProcessed()
 
-    def _onSocketDisconnected(self):
+    def _onSocketDisconnected(self, msg):
         wasReady = self.isReady()
-        if self.isConnected():
-            msg = 'Peer closed connection'
-            self._logger.error(msg)
+        if not self.isConnected():
+            self._logger.info('Disconnected.')
+        elif not msg:
+            msg = 'Peer closed connection.'
             if not wasReady:
-                msg = f'clientId {self.clientId} already in use?'
-                self._logger.error(msg)
+                msg += f' clientId {self.clientId} already in use?'
+        if msg:
+            self._logger.error(msg)
             self.apiError.emit(msg)
-        else:
-            self._logger.info('Disconnected')
         if wasReady:
             self.wrapper.connectionClosed()
         self.reset()
-        if wasReady:
-            self.apiEnd.emit()
-
-    def _onSocketHasError(self, msg):
-        wasReady = self.isReady()
-        self._logger.error(msg)
-        if wasReady:
-            self.wrapper.connectionClosed()
-        self.reset()
-        self.apiError.emit(msg)
         if wasReady:
             self.apiEnd.emit()
 

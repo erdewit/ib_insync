@@ -2,31 +2,44 @@
 
 import asyncio
 
+from eventkit import Event
+
 
 class Connection(asyncio.Protocol):
-    """Socket connection."""
+    """
+    Event-driven socket connection.
 
-    def __init__(self, host, port):
-        self.host = host
-        self.port = port
+    Events:
+        * ``hasData`` (data: bytes):
+          Emits the received socket data.
+        * ``disconnected`` (msg: str):
+          Is emitted on socket disconnect, with an error message in case
+          of error, or an empty string in case of a normal disconnect.
+    """
+
+    def __init__(self):
+        self.hasData = Event('hasData')
+        self.disconnected = Event('disconnected')
+        self.reset()
+
+    def reset(self):
         self.transport = None
         self.numBytesSent = 0
         self.numMsgSent = 0
 
-        # the following are callbacks for socket events:
-        self.disconnected = None
-        self.hasError = None
-        self.hasData = None
-
-    async def connectAsync(self):
+    async def connectAsync(self, host, port):
+        if self.transport:
+            # wait until a previous connection is finished closing
+            self.disconnect()
+            await self.disconnected
+        self.reset()
         loop = asyncio.get_event_loop()
         self.transport, _ = await loop.create_connection(
-            lambda: self, self.host, self.port)
+            lambda: self, host, port)
 
     def disconnect(self):
         if self.transport:
             self.transport.close()
-            self.transport = None
 
     def isConnected(self):
         return self.transport is not None
@@ -37,10 +50,9 @@ class Connection(asyncio.Protocol):
         self.numMsgSent += 1
 
     def connection_lost(self, exc):
-        if exc:
-            self.hasError(str(exc))
-        else:
-            self.disconnected()
+        self.transport = None
+        msg = str(exc) if exc else ''
+        self.disconnected.emit(msg)
 
     def data_received(self, data):
-        self.hasData(data)
+        self.hasData.emit(data)

@@ -1617,18 +1617,13 @@ class IB:
 
     async def connectAsync(
             self, host: str = '127.0.0.1', port: int = 7497,
-            clientId: int = 1, timeout: float = 4, readonly: bool = False,
-            account: str = ''):
-
-        if self.isConnected():
-            self._logger.warning('Already connected')
-            return self
+            clientId: int = 1, timeout: Optional[float] = 4,
+            readonly: bool = False, account: str = ''):
         self.wrapper.clientId = clientId
-
+        timeout = timeout or None
         try:
             # establish API connection
-            await self.client.connectAsync(
-                host, port, clientId, timeout or None)
+            await self.client.connectAsync(host, port, clientId, timeout)
 
             # autobind manual orders
             if clientId == 0:
@@ -1652,7 +1647,7 @@ class IB:
 
             # run initializing requests concurrently and log if any times out
             tasks = [
-                asyncio.wait_for(req, timeout or None)
+                asyncio.wait_for(req, timeout)
                 for req in reqs.values()]
             resps = await asyncio.gather(*tasks, return_exceptions=True)
             for name, resp in zip(reqs, resps):
@@ -1660,11 +1655,12 @@ class IB:
                     self._logger.error(f'{name} request timed out')
 
             # the request for executions must come after all orders are in
-            await asyncio.wait_for(self.reqExecutionsAsync(), timeout or None)
+            await asyncio.wait_for(self.reqExecutionsAsync(), timeout)
 
-            # final check if socket is still up
-            if not self.client.isConnected():
-                raise ConnectionError('Socket connection broken while connecting')
+            # final check if socket is still ready
+            if not self.client.isReady():
+                raise ConnectionError(
+                    'Socket connection broken while connecting')
 
             self._logger.info('Synchronization complete')
             self.connectedEvent.emit()
