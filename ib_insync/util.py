@@ -444,34 +444,8 @@ def patchAsyncio():
 
 
 def startLoop():
-    """
-    Use nested asyncio event loop for Jupyter notebooks.
-
-    This is not needed anymore in Jupyter versions 5 or higher.
-    """
-    def _ipython_loop_asyncio(kernel):
-        """Use asyncio event loop for the given IPython kernel."""
-        loop = asyncio.get_event_loop()
-
-        def kernel_handler():
-            kernel.do_one_iteration()
-            loop.call_later(kernel._poll_interval, kernel_handler)
-
-        loop.call_soon(kernel_handler)
-        try:
-            if not loop.is_running():
-                loop.run_forever()
-        finally:
-            if not loop.is_running():
-                loop.run_until_complete(loop.shutdown_asyncgens())
-                loop.close()
-
+    """Use nested asyncio event loop for Jupyter notebooks."""
     patchAsyncio()
-    loop = asyncio.get_event_loop()
-    if not loop.is_running():
-        from ipykernel.eventloops import register_integration, enable_gui
-        register_integration('asyncio')(_ipython_loop_asyncio)
-        enable_gui('asyncio')
 
 
 def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
