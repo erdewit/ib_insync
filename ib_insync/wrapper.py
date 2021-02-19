@@ -560,19 +560,25 @@ class Wrapper:
 
     def historicalTicks(
             self, reqId: int, ticks: List[HistoricalTick], done: bool):
-        self._results[reqId] += ticks
+        result = self._results.get(reqId)
+        if result is not None:
+            result += ticks
         if done:
             self._endReq(reqId)
 
     def historicalTicksBidAsk(
             self, reqId: int, ticks: List[HistoricalTickBidAsk], done: bool):
-        self._results[reqId] += ticks
+        result = self._results.get(reqId)
+        if result is not None:
+            result += ticks
         if done:
             self._endReq(reqId)
 
     def historicalTicksLast(
             self, reqId: int, ticks: List[HistoricalTickLast], done: bool):
-        self._results[reqId] += ticks
+        result = self._results.get(reqId)
+        if result is not None:
+            result += ticks
         if done:
             self._endReq(reqId)
 
