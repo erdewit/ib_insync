@@ -1069,6 +1069,15 @@ class Wrapper:
                 ticker.domAsks.clear()
                 ticker.domBids.clear()
                 self.pendingTickers.add(ticker)
+        elif errorCode == 10225:
+            # Bust event occurred, current subscription is deactivated.
+            # Please resubscribe real-time bars immediately
+            bars = self.reqId2Subscriber.get(reqId)
+            if bars is not None:
+                self.ib.client.cancelRealTimeBars(bars.reqId)
+                self.ib.client.reqRealTimeBars(
+                    bars.reqId, bars.contract, bars.barSize, bars.whatToShow,
+                    bars.useRTH, bars.realTimeBarsOptions)
 
         self.ib.errorEvent.emit(reqId, errorCode, errorString, contract)
 
