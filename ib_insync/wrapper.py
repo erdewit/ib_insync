@@ -11,14 +11,15 @@ from typing import (
 from ib_insync.contract import (
     Contract, ContractDescription, ContractDetails, ScanData)
 from ib_insync.objects import (
-    AccountValue, BarData, CommissionReport, DOMLevel, DepthMktDataDescription,
+    AccountValue, BarData, BarDataList, CommissionReport,
+    DOMLevel, DepthMktDataDescription,
     Dividends, Execution, Fill, FundamentalRatios, HistogramData,
     HistoricalNews, HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
     MktDepthData, NewsArticle, NewsBulletin, NewsProvider, NewsTick,
     OptionChain, OptionComputation, PnL, PnLSingle, PortfolioItem, Position,
-    PriceIncrement, RealTimeBar, TickAttribBidAsk, TickAttribLast,
-    TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint, TickData,
-    TradeLogEntry)
+    PriceIncrement, RealTimeBar, RealTimeBarList, TickAttribBidAsk,
+    TickAttribLast, TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
+    TickData, TradeLogEntry)
 from ib_insync.order import Order, OrderState, OrderStatus, Trade
 from ib_insync.ticker import Ticker
 from ib_insync.util import (
@@ -530,8 +531,10 @@ class Wrapper:
             bars.updateEvent.emit(bars, True)
 
     def historicalData(self, reqId: int, bar: BarData):
-        bar.date = parseIBDatetime(bar.date)  # type: ignore
-        self._results[reqId].append(bar)
+        results = self._results.get(reqId)
+        if results is not None:
+            bar.date = parseIBDatetime(bar.date)  # type: ignore
+            results.append(bar)
 
     def historicalDataEnd(self, reqId, _start: str, _end: str):
         self._endReq(reqId)
@@ -541,7 +544,10 @@ class Wrapper:
         if not bars:
             return
         bar.date = parseIBDatetime(bar.date)  # type: ignore
-        hasNewBar = len(bars) == 0 or bar.date > bars[-1].date
+        lastDate = bars[-1].date
+        if bar.date < lastDate:
+            return
+        hasNewBar = len(bars) == 0 or bar.date > lastDate
         if hasNewBar:
             bars.append(bar)
         elif bars[-1] != bar:
@@ -1073,11 +1079,18 @@ class Wrapper:
             # Bust event occurred, current subscription is deactivated.
             # Please resubscribe real-time bars immediately
             bars = self.reqId2Subscriber.get(reqId)
-            if bars is not None:
-                self.ib.client.cancelRealTimeBars(bars.reqId)
+            if isinstance(bars, RealTimeBarList):
+                self.ib.client.cancelRealTimeBars(reqId)
                 self.ib.client.reqRealTimeBars(
-                    bars.reqId, bars.contract, bars.barSize, bars.whatToShow,
+                    reqId, bars.contract, bars.barSize, bars.whatToShow,
                     bars.useRTH, bars.realTimeBarsOptions)
+            elif isinstance(bars, BarDataList):
+                self.ib.client.cancelHistoricalData(reqId)
+                self.ib.client.reqHistoricalData(
+                    reqId, bars.contract, bars.endDateTime,
+                    bars.durationStr, bars.barSizeSetting, bars.whatToShow,
+                    bars.useRTH, bars.formatDate, bars.keepUpToDate,
+                    bars.chartOptions)
 
         self.ib.errorEvent.emit(reqId, errorCode, errorString, contract)
 
