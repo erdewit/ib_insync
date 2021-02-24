@@ -4,6 +4,15 @@ Changelog
 0.9
 ---
 
+Version 0.9.65
+^^^^^^^^^^^^^^
+
+* Fixed: :issue:`337`.
+* :pull:`317`: Update and order's ``totalQuantity``, ``lmtPrice``, ``auxPrice`` and ``orderType``
+  when the order is modified externally.
+* :pull:`332`: Typo.
+
+
 Version 0.9.64
 ^^^^^^^^^^^^^^
 

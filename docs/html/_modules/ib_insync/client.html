@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.client &mdash; ib_insync 0.9.64 documentation</title>
+  <title>ib_insync.client &mdash; ib_insync 0.9.65 documentation</title>
   
 
   
@@ -166,7 +166,7 @@
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">eventkit</span> <span class="kn">import</span> <span class="n">Event</span>
 
@@ -252,33 +252,37 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span> <span class="o">=</span> <span class="n">wrapper</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">Decoder</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">Decoder</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;apiStart&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">apiEnd</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;apiEnd&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;apiError&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">throttleStart</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;throttleStart&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">throttleEnd</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;throttleEnd&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.client&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">hasData</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketHasData</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">disconnected</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketDisconnected</span>
 
         <span class="c1"># extra optional wrapper methods</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_priceSizeTick</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="s1">&#39;priceSizeTick&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcpDataArrived</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="s1">&#39;tcpDataArrived&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcpDataProcessed</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="s1">&#39;tcpDataProcessed&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Client.reset"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">=</span> <span class="n">Client</span><span class="o">.</span><span class="n">DISCONNECTED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optCapab</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connectOptions</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Client.reset"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">=</span> <span class="n">Client</span><span class="o">.</span><span class="n">DISCONNECTED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apiReady</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_connectOptions</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_accounts</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_accounts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_startTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_numBytesRecv</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_numMsgRecv</span> <span class="o">=</span> <span class="mi">0</span>
@@ -298,7 +302,7 @@
 
 <div class="viewcode-block" id="Client.isReady"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.isReady">[docs]</a>    <span class="k">def</span> <span class="nf">isReady</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Is the API connection up and running?&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span><span class="o">.</span><span class="n">is_set</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apiReady</span></div>
 
 <div class="viewcode-block" id="Client.connectionStats"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connectionStats">[docs]</a>    <span class="k">def</span> <span class="nf">connectionStats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConnectionStats</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get statistics about the connection.&quot;&quot;&quot;</span>
@@ -336,10 +340,11 @@
 <span class="sd">            connectOptions: Use &quot;+PACEAPI&quot; to use request-pacing built</span>
 <span class="sd">                into TWS/gateway 974+.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_connectOptions</span> <span class="o">=</span> <span class="n">connectOptions</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connectOptions</span> <span class="o">=</span> <span class="n">connectOptions</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Client.connect"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">clientId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">clientId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Connect to a running TWS or IB gateway application.</span>
 
@@ -355,32 +360,22 @@
         <span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Client.connectAsync"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connectAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">connectAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">):</span>
-
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">connect</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;Connecting to </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1"> with clientId </span><span class="si">{</span><span class="n">clientId</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span> <span class="o">=</span> <span class="n">clientId</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">=</span> <span class="n">Client</span><span class="o">.</span><span class="n">CONNECTING</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">hasData</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketHasData</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">disconnected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketDisconnected</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">hasError</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketHasError</span>
-            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># in case of a not yet finished disconnect</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">()</span>
+            <span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span> <span class="ow">or</span> <span class="kc">None</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">),</span> <span class="n">timeout</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Connected&#39;</span><span class="p">)</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;API</span><span class="se">\0</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;v</span><span class="si">%d</span><span class="s1">..</span><span class="si">%d%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">MinClientVersion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaxClientVersion</span><span class="p">,</span>
-                <span class="sa">b</span><span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connectOptions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connectOptions</span> <span class="k">else</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+                <span class="sa">b</span><span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectOptions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectOptions</span> <span class="k">else</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;API connection ready&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">connect</span><span class="p">(),</span> <span class="n">timeout</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;API connection failed: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s1">&#39;</span>
@@ -392,11 +387,10 @@
 
 <div class="viewcode-block" id="Client.disconnect"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Disconnect from IB connection.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Disconnecting&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">=</span> <span class="n">Client</span><span class="o">.</span><span class="n">DISCONNECTED</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Disconnecting&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Client.send"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Serialize and send the given fields using the IB socket protocol.&quot;&quot;&quot;</span>
@@ -492,7 +486,7 @@
                 <span class="n">version</span><span class="p">,</span> <span class="n">_connTime</span> <span class="o">=</span> <span class="n">fields</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">MinClientVersion</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketHasError</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_onSocketDisconnected</span><span class="p">(</span>
                         <span class="s1">&#39;TWS/gateway version must be &gt;= 972&#39;</span><span class="p">)</span>
                     <span class="k">return</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">serverVersion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span>
@@ -502,20 +496,19 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s1">&#39;Logged on to server version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apiReady</span><span class="p">:</span>
                     <span class="c1"># snoop for nextValidId and managedAccounts response,</span>
                     <span class="c1"># when both are in then the client is ready</span>
                     <span class="n">msgId</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                     <span class="k">if</span> <span class="n">msgId</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
                         <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">validId</span> <span class="o">=</span> <span class="n">fields</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">validId</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accounts</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
                     <span class="k">elif</span> <span class="n">msgId</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
                         <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">accts</span> <span class="o">=</span> <span class="n">fields</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_accounts</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">accts</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">a</span><span class="p">]</span>
-                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_readyEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accounts</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_apiReady</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">apiStart</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
 
                 <span class="c1"># decode and handle the message</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">interpret</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
@@ -523,30 +516,20 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcpDataProcessed</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcpDataProcessed</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_onSocketDisconnected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_onSocketDisconnected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">wasReady</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isConnected</span><span class="p">():</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Peer closed connection&#39;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isConnected</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Disconnected.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">msg</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Peer closed connection.&#39;</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">wasReady</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;clientId </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="si">}</span><span class="s1"> already in use?&#39;</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; clientId </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="si">}</span><span class="s1"> already in use?&#39;</span>
+        <span class="k">if</span> <span class="n">msg</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Disconnected&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">wasReady</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">connectionClosed</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">wasReady</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">apiEnd</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_onSocketHasError</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-        <span class="n">wasReady</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">wasReady</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">connectionClosed</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">apiError</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">wasReady</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">apiEnd</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
 
@@ -1138,7 +1121,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Ewald de Wit
+        &copy; Copyright 2021, Ewald de Wit
 
     </p>
   </div>
