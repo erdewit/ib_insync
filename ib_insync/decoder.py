@@ -168,19 +168,20 @@ class Decoder:
         """
 
         def handler(fields):
-            try:
-                args = [
-                    field if typ is str else
-                    int(field or 0) if typ is int else
-                    float(field or 0) if typ is float else
-                    bool(int(field or 0))
-                    for (typ, field) in zip(types, fields[skip:])]
-                method(*args)
-            except Exception:
-                self.logger.exception(f'Error for {methodName}:')
+            method = getattr(self.wrapper, methodName, None)
+            if method:
+                try:
+                    args = [
+                        field if typ is str else
+                        int(field or 0) if typ is int else
+                        float(field or 0) if typ is float else
+                        bool(int(field or 0))
+                        for (typ, field) in zip(types, fields[skip:])]
+                    method(*args)
+                except Exception:
+                    self.logger.exception(f'Error for {methodName}:')
 
-        method = getattr(self.wrapper, methodName, None)
-        return handler if method else lambda *args: None
+        return handler
 
     def interpret(self, fields):
         """Decode fields and invoke corresponding wrapper method."""
