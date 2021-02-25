@@ -372,6 +372,7 @@ class Watchdog:
     appTimeout: float = 20
     retryDelay: float = 2
     readonly: bool = False
+    account: str = ''
     probeContract: Contract = Forex('EURUSD')
     probeTimeout: float = 4
 
@@ -388,8 +389,6 @@ class Watchdog:
             raise ValueError('No IB instance supplied')
         if self.ib.isConnected():
             raise ValueError('IB instance must not be connected')
-        assert 0 < self.appTimeout < 60
-        assert self.retryDelay > 0
         self._runner = None
         self._logger = logging.getLogger('ib_insync.Watchdog')
 
@@ -424,7 +423,7 @@ class Watchdog:
                 await asyncio.sleep(self.appStartupTime)
                 await self.ib.connectAsync(
                     self.host, self.port, self.clientId, self.connectTimeout,
-                    self.readonly)
+                    self.readonly, self.account)
                 self.startedEvent.emit(self)
                 self.ib.setTimeout(self.appTimeout)
                 self.ib.timeoutEvent += onTimeout
