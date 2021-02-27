@@ -8,7 +8,7 @@ from eventkit import Event, Op
 
 from ib_insync.contract import Contract
 from ib_insync.objects import (
-    BarList, DOMLevel, Dividends, FundamentalRatios, MktDepthData,
+    DOMLevel, Dividends, FundamentalRatios, MktDepthData,
     OptionComputation, TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
     TickData)
 from ib_insync.util import dataclassRepr, isNan
@@ -236,15 +236,30 @@ class Bar:
     count: int = 0
 
 
+class BarList(List[Bar]):
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.updateEvent = Event('updateEvent')
+
+    def __eq__(self, other):
+        return self is other
+
+    def __hash__(self):
+        return id(self)
+
+
 class TimeBars(Op):
     __slots__ = ('_timer', 'bars',)
     __doc__ = Tickfilter.timebars.__doc__
+
+    bars: BarList
 
     def __init__(self, timer, source=None):
         Op.__init__(self, source)
         self._timer = timer
         self._timer.connect(self._on_timer, None, self._on_timer_done)
-        self.bars: BarList = BarList()
+        self.bars = BarList()
 
     def on_source(self, time, price, size):
         if not self.bars:
@@ -278,10 +293,12 @@ class TickBars(Op):
     __slots__ = ('_count', 'bars')
     __doc__ = Tickfilter.tickbars.__doc__
 
+    bars: BarList
+
     def __init__(self, count, source=None):
         Op.__init__(self, source)
         self._count = count
-        self.bars: BarList = BarList()
+        self.bars = BarList()
 
     def on_source(self, time, price, size):
         if not self.bars or self.bars[-1].count == self._count:

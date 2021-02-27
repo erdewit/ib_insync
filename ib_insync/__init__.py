@@ -9,7 +9,7 @@ from eventkit import Event
 from .version import __version__, __version_info__
 from .objects import (
     SoftDollarTier, PriceIncrement, Execution, CommissionReport,
-    BarList, BarDataList, RealTimeBarList, BarData, RealTimeBar,
+    BarDataList, RealTimeBarList, BarData, RealTimeBar,
     HistogramData, NewsProvider, DepthMktDataDescription,
     ScannerSubscription, ScanDataList,
     ExecutionFilter, PnL, PnLSingle, AccountValue, TickData,

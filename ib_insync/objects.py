@@ -6,12 +6,12 @@ from typing import ClassVar, List, NamedTuple, Optional, Union
 
 from eventkit import Event
 
-from .contract import Contract, TagValue
+from .contract import Contract, ScanData, TagValue
 from .util import EPOCH, UNSET_DOUBLE, UNSET_INTEGER
 
 __all__ = (
     'SoftDollarTier PriceIncrement Execution CommissionReport '
-    'BarList BarDataList RealTimeBarList BarData RealTimeBar '
+    'BarDataList RealTimeBarList BarData RealTimeBar '
     'HistogramData NewsProvider DepthMktDataDescription '
     'ScannerSubscription ScanDataList FundamentalRatios '
     'ExecutionFilter PnL PnLSingle AccountValue TickData '
@@ -380,23 +380,7 @@ class ConnectionStats(NamedTuple):
     numMsgSent: int
 
 
-class BarList(list):
-    """Base class for bar lists."""
-
-    events: ClassVar = ('updateEvent',)
-
-    def __init__(self, *args):
-        list.__init__(self, *args)
-        self.updateEvent = Event('updateEvent')
-
-    def __eq__(self, other):
-        return self is other
-
-    def __hash__(self):
-        return id(self)
-
-
-class BarDataList(BarList):
+class BarDataList(List[BarData]):
     """
     List of :class:`.BarData` that also stores all request parameters.
 
@@ -405,7 +389,6 @@ class BarDataList(BarList):
         * ``updateEvent``
           (bars: :class:`.BarDataList`, hasNewBar: bool)
     """
-
     reqId: int
     contract: Contract
     endDateTime: Union[datetime, date_, str, None]
@@ -417,8 +400,18 @@ class BarDataList(BarList):
     keepUpToDate: bool
     chartOptions: List[TagValue]
 
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.updateEvent = Event('updateEvent')
 
-class RealTimeBarList(BarList):
+    def __eq__(self, other):
+        return self is other
+
+    def __hash__(self):
+        return id(self)
+
+
+class RealTimeBarList(List[RealTimeBar]):
     """
     List of :class:`.RealTimeBar` that also stores all request parameters.
 
@@ -427,7 +420,6 @@ class RealTimeBarList(BarList):
         * ``updateEvent``
           (bars: :class:`.RealTimeBarList`, hasNewBar: bool)
     """
-
     reqId: int
     contract: Contract
     barSize: int
@@ -435,24 +427,31 @@ class RealTimeBarList(BarList):
     useRTH: bool
     realTimeBarsOptions: List[TagValue]
 
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.updateEvent = Event('updateEvent')
 
-class ScanDataList(list):
+    def __eq__(self, other):
+        return self is other
+
+    def __hash__(self):
+        return id(self)
+
+
+class ScanDataList(List[ScanData]):
     """
     List of :class:`.ScanData` that also stores all request parameters.
 
     Events:
         * ``updateEvent`` (:class:`.ScanDataList`)
     """
-
-    events: ClassVar = ('updateEvent',)
-
     reqId: int
     subscription: ScannerSubscription
     scannerSubscriptionOptions: List[TagValue]
     scannerSubscriptionFilterOptions: List[TagValue]
 
     def __init__(self, *args):
-        list.__init__(self, *args)
+        super().__init__(*args)
         self.updateEvent = Event('updateEvent')
 
     def __eq__(self, other):
