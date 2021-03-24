@@ -470,10 +470,13 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
         stack.append((qloop, timer))
         qApp.processEvents()
 
-    if qtLib not in ('PyQt5', 'PySide2'):
+    if qtLib not in ('PyQt5', 'PySide2', 'PySide6'):
         raise RuntimeError(f'Unknown Qt library: {qtLib}')
     if qtLib == 'PyQt5':
         from PyQt5.Qt import QApplication, QTimer, QEventLoop
+    elif qtLib == 'PySide6':
+        from PySide6.QtWidgets import QApplication
+        from PySide6.QtCore import QTimer, QEventLoop
     else:
         from PySide2.QtWidgets import QApplication
         from PySide2.QtCore import QTimer, QEventLoop
