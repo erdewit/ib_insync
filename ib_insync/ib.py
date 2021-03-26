@@ -1442,7 +1442,7 @@ class IB:
     def calculateOptionPrice(
             self, contract: Contract,
             volatility: float, underPrice: float,
-            optPrcOptions=None) -> OptionComputation:
+            optPrcOptions: List[TagValue] = []) -> OptionComputation:
         """
         Calculate the option price given the volatility.
 
@@ -1639,7 +1639,7 @@ class IB:
             if not readonly and self.client.serverVersion() >= 150:
                 reqs['completed orders'] = self.reqCompletedOrdersAsync(False)
             if account:
-                reqs['account updates'] =self.reqAccountUpdatesAsync(account)
+                reqs['account updates'] = self.reqAccountUpdatesAsync(account)
             if len(accounts) <= self.MaxSyncedSubAccounts:
                 for acc in accounts:
                     reqs[f'account updates for {acc}'] = \
