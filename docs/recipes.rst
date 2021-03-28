@@ -45,6 +45,7 @@ and further back in time until there is no more data returned.
     # save to CSV file
     allBars = [b for bars in reversed(barsList) for b in bars]
     df = util.df(allBars)
+    df.reset_index(drop=True, inplace=True)
     df.to_csv(contract.symbol + '.csv')
 
 Scanner data (blocking)
