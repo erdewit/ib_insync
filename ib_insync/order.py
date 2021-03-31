@@ -212,8 +212,8 @@ class StopLimitOrder(Order):
 class OrderStatus:
     orderId: int = 0
     status: str = ''
-    filled: int = 0
-    remaining: int = 0
+    filled: float = 0.0
+    remaining: float = 0.0
     avgFillPrice: float = 0.0
     permId: int = 0
     parentId: int = 0
