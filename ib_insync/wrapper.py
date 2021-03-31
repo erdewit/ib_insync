@@ -385,6 +385,7 @@ class Wrapper:
         if order.permId not in self.permId2Trade:
             self.trades[order.permId] = trade
             self.permId2Trade[order.permId] = trade
+        self.ib.completedOrderEvent.emit(trade)
 
     def completedOrdersEnd(self):
         self._endReq('completedOrders')

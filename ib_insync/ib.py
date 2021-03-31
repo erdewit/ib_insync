@@ -117,6 +117,9 @@ class IB:
           real time. If a new bar has been added then hasNewBar is True,
           when the last bar has changed it is False.
 
+        * ``completedOrderEvent`` (trade: :class:`.Trade`):
+          Emits the trade with completed order.
+
         * ``newOrderEvent`` (trade: :class:`.Trade`):
           Emits a newly placed trade.
 
@@ -184,8 +187,9 @@ class IB:
 
     events = (
         'connectedEvent', 'disconnectedEvent', 'updateEvent',
-        'pendingTickersEvent', 'barUpdateEvent',
-        'newOrderEvent', 'orderModifyEvent', 'cancelOrderEvent',
+        'pendingTickersEvent', 'barUpdateEvent', 
+        'completedOrderEvent', 'newOrderEvent', 
+        'orderModifyEvent', 'cancelOrderEvent',
         'openOrderEvent', 'orderStatusEvent',
         'execDetailsEvent', 'commissionReportEvent',
         'updatePortfolioEvent', 'positionEvent', 'accountValueEvent',
@@ -212,6 +216,7 @@ class IB:
         self.updateEvent = Event('updateEvent')
         self.pendingTickersEvent = Event('pendingTickersEvent')
         self.barUpdateEvent = Event('barUpdateEvent')
+        self.completedOrderEvent = Event('completedOrderEvent')
         self.newOrderEvent = Event('newOrderEvent')
         self.orderModifyEvent = Event('orderModifyEvent')
         self.cancelOrderEvent = Event('cancelOrderEvent')
