@@ -65,8 +65,8 @@ class Order:
     shortSaleSlot: int = 0
     exemptCode: int = -1
     discretionaryAmt: float = 0.0
-    eTradeOnly: bool = True
-    firmQuoteOnly: bool = True
+    eTradeOnly: bool = False
+    firmQuoteOnly: bool = False
     nbboPriceCap: float = UNSET_DOUBLE
     optOutSmartRouting: bool = False
     auctionStrategy: int = 0
