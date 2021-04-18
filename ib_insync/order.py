@@ -207,6 +207,13 @@ class StopLimitOrder(Order):
             totalQuantity=totalQuantity, lmtPrice=lmtPrice,
             auxPrice=stopPrice, **kwargs)
 
+class MarketIfTouchedOrder(Order):
+    
+    def __init__(self, action, totalQuantity, stopPrice, **kwargs):
+        Order.__init__(
+            self, orderType='MIT', action=action,
+            totalQuantity=totalQuantity, auxPrice=stopPrice, **kwargs)
+
 
 @dataclass
 class OrderStatus:
