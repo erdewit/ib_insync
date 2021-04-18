@@ -11,7 +11,7 @@ from .util import UNSET_DOUBLE, UNSET_INTEGER, dataclassNonDefaults
 
 __all__ = (
     'Trade Order OrderStatus OrderState OrderComboLeg '
-    'LimitOrder MarketOrder StopOrder StopLimitOrder BracketOrder '
+    'LimitOrder MarketOrder StopOrder StopLimitOrder MarketIfTouchedOrder BracketOrder '
     'OrderCondition ExecutionCondition MarginCondition TimeCondition '
     'PriceCondition PercentChangeCondition VolumeCondition').split()
 
