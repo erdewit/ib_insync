@@ -121,6 +121,7 @@ class Client:
         self._apiReady = False
         self._serverVersion = None
         self._data = b''
+        self._hasReqId = False
         self._reqIdSeq = 0
         self._accounts = []
         self._startTime = time.time()
@@ -342,11 +343,12 @@ class Client:
                     msgId = int(fields[0])
                     if msgId == 9:
                         _, _, validId = fields
-                        self._reqIdSeq = int(validId)
+                        self.updateReqId(int(validId))
+                        self._hasReqId = True
                     elif msgId == 15:
                         _, _, accts = fields
                         self._accounts = [a for a in accts.split(',') if a]
-                    if self._reqIdSeq and self._accounts:
+                    if self._hasReqId and self._accounts:
                         self._apiReady = True
                         self.apiStart.emit()
 
