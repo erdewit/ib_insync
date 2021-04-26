@@ -177,7 +177,8 @@ class Order:
 
 class LimitOrder(Order):
 
-    def __init__(self, action, totalQuantity, lmtPrice, **kwargs):
+    def __init__(self, action: str, totalQuantity: float, lmtPrice: float,
+                 **kwargs):
         Order.__init__(
             self, orderType='LMT', action=action,
             totalQuantity=totalQuantity, lmtPrice=lmtPrice, **kwargs)
@@ -185,7 +186,7 @@ class LimitOrder(Order):
 
 class MarketOrder(Order):
 
-    def __init__(self, action, totalQuantity, **kwargs):
+    def __init__(self, action: str, totalQuantity: float, **kwargs):
         Order.__init__(
             self, orderType='MKT', action=action,
             totalQuantity=totalQuantity, **kwargs)
@@ -193,7 +194,8 @@ class MarketOrder(Order):
 
 class StopOrder(Order):
 
-    def __init__(self, action, totalQuantity, stopPrice, **kwargs):
+    def __init__(self, action: str, totalQuantity: float, stopPrice: float,
+                 **kwargs):
         Order.__init__(
             self, orderType='STP', action=action,
             totalQuantity=totalQuantity, auxPrice=stopPrice, **kwargs)
@@ -201,7 +203,8 @@ class StopOrder(Order):
 
 class StopLimitOrder(Order):
 
-    def __init__(self, action, totalQuantity, lmtPrice, stopPrice, **kwargs):
+    def __init__(self, action: str, totalQuantity: float, lmtPrice: float,
+                 stopPrice: float, **kwargs):
         Order.__init__(
             self, orderType='STP LMT', action=action,
             totalQuantity=totalQuantity, lmtPrice=lmtPrice,
