@@ -39,6 +39,7 @@ class Connection(asyncio.Protocol):
 
     def disconnect(self):
         if self.transport:
+            self.transport.write_eof()
             self.transport.close()
 
     def isConnected(self):
