@@ -14,7 +14,7 @@ project = 'ib_insync'
 copyright = '2021, Ewald de Wit'
 author = 'Ewald de Wit'
 
-__version__ = None
+__version__ = ''
 exec(open('../ib_insync/version.py').read())
 version = '.'.join(__version__.split('.')[:2])
 release = __version__

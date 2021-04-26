@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.ibcontroller &mdash; ib_insync 0.9.65 documentation</title>
+  <title>ib_insync.ibcontroller &mdash; ib_insync 0.9.66 documentation</title>
   
 
   
@@ -31,7 +31,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -532,6 +531,7 @@
     <span class="n">appTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span>
     <span class="n">retryDelay</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">readonly</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">account</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">probeContract</span><span class="p">:</span> <span class="n">Contract</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;EURUSD&#39;</span><span class="p">)</span>
     <span class="n">probeTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">4</span>
 
@@ -548,8 +548,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No IB instance supplied&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">isConnected</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;IB instance must not be connected&#39;</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">appTimeout</span> <span class="o">&lt;</span> <span class="mi">60</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">retryDelay</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_runner</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.Watchdog&#39;</span><span class="p">)</span>
 
@@ -584,7 +582,7 @@
                 <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">appStartupTime</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectTimeout</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">startedEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">appTimeout</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">timeoutEvent</span> <span class="o">+=</span> <span class="n">onTimeout</span>

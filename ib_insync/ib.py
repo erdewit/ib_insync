@@ -260,11 +260,11 @@ class IB:
             host: Host name or IP address.
             port: Port number.
             clientId: ID number to use for this client; must be unique per
-                connection. Setting clientId=0 will automatically merge manual
-                TWS trading with this client.
+              connection. Setting clientId=0 will automatically merge manual
+              TWS trading with this client.
             timeout: If establishing the connection takes longer than
-                ``timeout`` seconds then the ``asyncio.TimeoutError`` exception
-                is raised. Set to 0 to disable timeout.
+              ``timeout`` seconds then the ``asyncio.TimeoutError`` exception
+              is raised. Set to 0 to disable timeout.
             readonly: Set to ``True`` when API is in read-only mode.
             account: Main account to receive updates for.
         """

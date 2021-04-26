@@ -4,6 +4,14 @@ Changelog
 0.9
 ---
 
+Version 0.9.66
+^^^^^^^^^^^^^^
+
+* Fixed: :issue:`360`: Improved disconnect.
+* Fixed issue with duplicate orderId.
+* Update ``Order`` default values to work with the latest beta TWS/gateway.
+* :pull:`348`: Added PySide6 support.
+
 Version 0.9.65
 ^^^^^^^^^^^^^^
 

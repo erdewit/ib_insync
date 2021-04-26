@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.objects &mdash; ib_insync 0.9.65 documentation</title>
+  <title>ib_insync.objects &mdash; ib_insync 0.9.66 documentation</title>
   
 
   
@@ -31,7 +31,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -166,12 +165,12 @@
 
 <span class="kn">from</span> <span class="nn">eventkit</span> <span class="kn">import</span> <span class="n">Event</span>
 
-<span class="kn">from</span> <span class="nn">.contract</span> <span class="kn">import</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">TagValue</span>
+<span class="kn">from</span> <span class="nn">.contract</span> <span class="kn">import</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">ScanData</span><span class="p">,</span> <span class="n">TagValue</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">EPOCH</span><span class="p">,</span> <span class="n">UNSET_DOUBLE</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s1">&#39;SoftDollarTier PriceIncrement Execution CommissionReport &#39;</span>
-    <span class="s1">&#39;BarList BarDataList RealTimeBarList BarData RealTimeBar &#39;</span>
+    <span class="s1">&#39;BarDataList RealTimeBarList BarData RealTimeBar &#39;</span>
     <span class="s1">&#39;HistogramData NewsProvider DepthMktDataDescription &#39;</span>
     <span class="s1">&#39;ScannerSubscription ScanDataList FundamentalRatios &#39;</span>
     <span class="s1">&#39;ExecutionFilter PnL PnLSingle AccountValue TickData &#39;</span>
@@ -540,23 +539,7 @@
     <span class="n">numMsgSent</span><span class="p">:</span> <span class="nb">int</span></div>
 
 
-<div class="viewcode-block" id="BarList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarList">[docs]</a><span class="k">class</span> <span class="nc">BarList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for bar lists.&quot;&quot;&quot;</span>
-
-    <span class="n">events</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">,)</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="nb">list</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>
-
-    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="BarDataList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarDataList">[docs]</a><span class="k">class</span> <span class="nc">BarDataList</span><span class="p">(</span><span class="n">BarList</span><span class="p">):</span>
+<div class="viewcode-block" id="BarDataList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarDataList">[docs]</a><span class="k">class</span> <span class="nc">BarDataList</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">BarData</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List of :class:`.BarData` that also stores all request parameters.</span>
 
@@ -565,7 +548,6 @@
 <span class="sd">        * ``updateEvent``</span>
 <span class="sd">          (bars: :class:`.BarDataList`, hasNewBar: bool)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span>
     <span class="n">endDateTime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="n">date_</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
@@ -575,10 +557,20 @@
     <span class="n">useRTH</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">formatDate</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">keepUpToDate</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="n">chartOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span></div>
+    <span class="n">chartOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="RealTimeBarList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBarList">[docs]</a><span class="k">class</span> <span class="nc">RealTimeBarList</span><span class="p">(</span><span class="n">BarList</span><span class="p">):</span>
+<div class="viewcode-block" id="RealTimeBarList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBarList">[docs]</a><span class="k">class</span> <span class="nc">RealTimeBarList</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">RealTimeBar</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List of :class:`.RealTimeBar` that also stores all request parameters.</span>
 
@@ -587,32 +579,38 @@
 <span class="sd">        * ``updateEvent``</span>
 <span class="sd">          (bars: :class:`.RealTimeBarList`, hasNewBar: bool)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span>
     <span class="n">barSize</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">whatToShow</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">useRTH</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="n">realTimeBarsOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span></div>
+    <span class="n">realTimeBarsOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ScanDataList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ScanDataList">[docs]</a><span class="k">class</span> <span class="nc">ScanDataList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+<div class="viewcode-block" id="ScanDataList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ScanDataList">[docs]</a><span class="k">class</span> <span class="nc">ScanDataList</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">ScanData</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List of :class:`.ScanData` that also stores all request parameters.</span>
 
 <span class="sd">    Events:</span>
 <span class="sd">        * ``updateEvent`` (:class:`.ScanDataList`)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">events</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">,)</span>
-
     <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">subscription</span><span class="p">:</span> <span class="n">ScannerSubscription</span>
     <span class="n">scannerSubscriptionOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span>
     <span class="n">scannerSubscriptionFilterOptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TagValue</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="nb">list</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>

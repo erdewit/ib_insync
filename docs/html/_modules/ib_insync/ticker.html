@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.ticker &mdash; ib_insync 0.9.65 documentation</title>
+  <title>ib_insync.ticker &mdash; ib_insync 0.9.66 documentation</title>
   
 
   
@@ -31,7 +31,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -168,7 +167,7 @@
 
 <span class="kn">from</span> <span class="nn">ib_insync.contract</span> <span class="kn">import</span> <span class="n">Contract</span>
 <span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BarList</span><span class="p">,</span> <span class="n">DOMLevel</span><span class="p">,</span> <span class="n">Dividends</span><span class="p">,</span> <span class="n">FundamentalRatios</span><span class="p">,</span> <span class="n">MktDepthData</span><span class="p">,</span>
+    <span class="n">DOMLevel</span><span class="p">,</span> <span class="n">Dividends</span><span class="p">,</span> <span class="n">FundamentalRatios</span><span class="p">,</span> <span class="n">MktDepthData</span><span class="p">,</span>
     <span class="n">OptionComputation</span><span class="p">,</span> <span class="n">TickByTickAllLast</span><span class="p">,</span> <span class="n">TickByTickBidAsk</span><span class="p">,</span> <span class="n">TickByTickMidPoint</span><span class="p">,</span>
     <span class="n">TickData</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ib_insync.util</span> <span class="kn">import</span> <span class="n">dataclassRepr</span><span class="p">,</span> <span class="n">isNan</span>
@@ -396,15 +395,30 @@
     <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
 
+<span class="k">class</span> <span class="nc">BarList</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">Bar</span><span class="p">]):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
 <span class="k">class</span> <span class="nc">TimeBars</span><span class="p">(</span><span class="n">Op</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_timer&#39;</span><span class="p">,</span> <span class="s1">&#39;bars&#39;</span><span class="p">,)</span>
     <span class="vm">__doc__</span> <span class="o">=</span> <span class="n">Tickfilter</span><span class="o">.</span><span class="n">timebars</span><span class="o">.</span><span class="vm">__doc__</span>
+
+    <span class="n">bars</span><span class="p">:</span> <span class="n">BarList</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timer</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">Op</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="n">timer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_timer</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_timer_done</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">:</span> <span class="n">BarList</span> <span class="o">=</span> <span class="n">BarList</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bars</span> <span class="o">=</span> <span class="n">BarList</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">on_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">:</span>
@@ -438,10 +452,12 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_count&#39;</span><span class="p">,</span> <span class="s1">&#39;bars&#39;</span><span class="p">)</span>
     <span class="vm">__doc__</span> <span class="o">=</span> <span class="n">Tickfilter</span><span class="o">.</span><span class="n">tickbars</span><span class="o">.</span><span class="vm">__doc__</span>
 
+    <span class="n">bars</span><span class="p">:</span> <span class="n">BarList</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">Op</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="n">count</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">:</span> <span class="n">BarList</span> <span class="o">=</span> <span class="n">BarList</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bars</span> <span class="o">=</span> <span class="n">BarList</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">on_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bars</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">:</span>
