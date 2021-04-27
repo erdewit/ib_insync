@@ -476,7 +476,8 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
     qc = import_module(qtLib + '.QtCore')
     qw = import_module(qtLib + '.QtWidgets')
     global qApp
-    qApp = qw.QApplication.instance() or qw.QApplication(sys.argv)  # type: ignore
+    qApp = (qw.QApplication.instance() or  # type: ignore
+        qw.QApplication(sys.argv))         # type: ignore
     loop = asyncio.get_event_loop()
     stack: list = []
     qt_step()
