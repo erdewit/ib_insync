@@ -21,9 +21,12 @@ jobs:
         run: |
           pip install flake8 mypy .
 
-      - name: Static code analysis
-        run: |
+      - name: Flake8 static code analysis
+        run:
           flake8 ib_insync
+
+      - name: MyPy static code analysis
+        run: |
           mypy -p ib_insync
 
 

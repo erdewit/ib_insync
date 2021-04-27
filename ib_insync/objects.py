@@ -389,6 +389,7 @@ class BarDataList(List[BarData]):
         * ``updateEvent``
           (bars: :class:`.BarDataList`, hasNewBar: bool)
     """
+
     reqId: int
     contract: Contract
     endDateTime: Union[datetime, date_, str, None]
@@ -420,6 +421,7 @@ class RealTimeBarList(List[RealTimeBar]):
         * ``updateEvent``
           (bars: :class:`.RealTimeBarList`, hasNewBar: bool)
     """
+
     reqId: int
     contract: Contract
     barSize: int
@@ -445,6 +447,7 @@ class ScanDataList(List[ScanData]):
     Events:
         * ``updateEvent`` (:class:`.ScanDataList`)
     """
+
     reqId: int
     subscription: ScannerSubscription
     scannerSubscriptionOptions: List[TagValue]
