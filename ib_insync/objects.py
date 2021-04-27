@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 from datetime import date as date_, datetime
-from typing import ClassVar, List, NamedTuple, Optional, Union
+from typing import List, NamedTuple, Optional, Union
 
 from eventkit import Event
 
