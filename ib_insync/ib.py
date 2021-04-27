@@ -5,7 +5,7 @@ import copy
 import datetime
 import logging
 import time
-from typing import Awaitable, Iterator, List, Optional, Union
+from typing import Awaitable, Dict, Iterator, List, Optional, Union
 
 from eventkit import Event
 
@@ -1634,7 +1634,7 @@ class IB:
                 account = accounts[0]
 
             # prepare initializing  requests
-            reqs = {}  # name -> request
+            reqs: Dict = {}  # name -> request
             reqs['positions'] = self.reqPositionsAsync()
             if not readonly and self.client.serverVersion() >= 150:
                 reqs['completed orders'] = self.reqCompletedOrdersAsync(False)
