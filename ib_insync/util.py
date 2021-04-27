@@ -459,29 +459,24 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
     def qt_step():
         loop.call_later(period, qt_step)
         if not stack:
-            qloop = QEventLoop()
-            timer = QTimer()
+            qloop = qc.QEventLoop()
+            timer = qc.QTimer()
             timer.timeout.connect(qloop.quit)
             stack.append((qloop, timer))
         qloop, timer = stack.pop()
         timer.start(0)
-        qloop.exec_()
+        qloop.exec() if qtLib == 'PyQt6' else qloop.exec_()
         timer.stop()
         stack.append((qloop, timer))
         qApp.processEvents()
 
-    if qtLib not in ('PyQt5', 'PySide2', 'PySide6'):
+    if qtLib not in ('PyQt5', 'PyQt6', 'PySide2', 'PySide6'):
         raise RuntimeError(f'Unknown Qt library: {qtLib}')
-    if qtLib == 'PyQt5':
-        from PyQt5.Qt import QApplication, QTimer, QEventLoop
-    elif qtLib == 'PySide6':
-        from PySide6.QtWidgets import QApplication
-        from PySide6.QtCore import QTimer, QEventLoop
-    else:
-        from PySide2.QtWidgets import QApplication
-        from PySide2.QtCore import QTimer, QEventLoop
+    from importlib import import_module
+    qc = import_module(qtLib + '.QtCore')
+    qw = import_module(qtLib + '.QtWidgets')
     global qApp
-    qApp = QApplication.instance() or QApplication(sys.argv)  # type: ignore
+    qApp = qw.QApplication.instance() or qw.QApplication(sys.argv)
     loop = asyncio.get_event_loop()
     stack: list = []
     qt_step()
