@@ -164,7 +164,7 @@
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">eventkit</span> <span class="kn">import</span> <span class="n">Event</span>
 
@@ -1793,7 +1793,7 @@
                 <span class="n">account</span> <span class="o">=</span> <span class="n">accounts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="c1"># prepare initializing  requests</span>
-            <span class="n">reqs</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># name -&gt; request</span>
+            <span class="n">reqs</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># name -&gt; request</span>
             <span class="n">reqs</span><span class="p">[</span><span class="s1">&#39;positions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqPositionsAsync</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">readonly</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">150</span><span class="p">:</span>
                 <span class="n">reqs</span><span class="p">[</span><span class="s1">&#39;completed orders&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqCompletedOrdersAsync</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>

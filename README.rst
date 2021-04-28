@@ -152,5 +152,5 @@ Good luck and enjoy,
    :alt: Number of downloads
    :target: https://pepy.tech/project/ib-insync
 
-.. |Build| image:: https://travis-ci.org/erdewit/ib_insync.svg?branch=master
-   :target: https://travis-ci.org/erdewit/ib_insync
+.. |Build| image:: https://github.com/erdewit/ib_insync/actions/workflows/test.yml/badge.svg?branch=master
+   :target: https://github.com/erdewit/ib_insync/actions
