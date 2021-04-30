@@ -207,9 +207,19 @@ def allowCtrlC():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
-def logToFile(path, level=logging.INFO):
-    """Create a log handler that logs to the given file."""
-    logger = logging.getLogger()
+def logToFile(path, level=logging.INFO, only_for_package=False):
+    """
+    Create a log handler that logs to the given file.
+
+    Passing only_for_package=True will change the formatting and output only for ib_insync
+    package-level loggers and any others that derive from it
+    """
+
+    if only_for_package:
+        logger = logging.getLogger(__package__)
+    else:
+        logger = logging.getLogger()
+
     logger.setLevel(level)
     formatter = logging.Formatter(
         '%(asctime)s %(name)s %(levelname)s %(message)s')
@@ -218,9 +228,18 @@ def logToFile(path, level=logging.INFO):
     logger.addHandler(handler)
 
 
-def logToConsole(level=logging.INFO):
-    """Create a log handler that logs to the console."""
-    logger = logging.getLogger()
+def logToConsole(level=logging.INFO, only_for_package=False):
+    """
+    Create a log handler that logs to the console.
+
+    Passing only_for_package=True will change the formatting and output only for ib_insync
+    package level loggers and any others that derive from it
+    """
+    if only_for_package:
+        logger = logging.getLogger(__package__)
+    else:
+        logger = logging.getLogger()
+
     logger.setLevel(level)
     formatter = logging.Formatter(
         '%(asctime)s %(name)s %(levelname)s %(message)s')
