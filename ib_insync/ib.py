@@ -1819,7 +1819,7 @@ class IB:
             return None
 
     async def reqMarketRuleAsync(
-            self, marketRuleId: int) -> Optional[PriceIncrement]:
+            self, marketRuleId: int) -> Optional[List[PriceIncrement]]:
         future = self.wrapper.startReq(f'marketRule-{marketRuleId}')
         try:
             self.client.reqMarketRule(marketRuleId)
