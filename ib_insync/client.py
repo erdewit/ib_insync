@@ -217,7 +217,7 @@ class Client:
             self.conn.sendMsg(msg)
             await asyncio.wait_for(self.apiStart, timeout)
             self._logger.info('API connection ready')
-        except Exception as e:
+        except (Exception, asyncio.CancelledError) as e:
             self.disconnect()
             msg = f'API connection failed: {e!r}'
             self._logger.error(msg)

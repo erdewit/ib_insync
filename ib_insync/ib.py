@@ -1664,7 +1664,7 @@ class IB:
 
             self._logger.info('Synchronization complete')
             self.connectedEvent.emit()
-        except Exception:
+        except (Exception, asyncio.CancelledError):
             self.disconnect()
             raise
         return self
