@@ -338,7 +338,8 @@ class Wrapper:
         """
         if order.whatIf:
             # response to whatIfOrder
-            self._endReq(order.orderId, orderState)
+            if orderState.commissionCurrency:
+                self._endReq(order.orderId, orderState)
         else:
             key = self.orderKey(order.clientId, order.orderId, order.permId)
             trade = self.trades.get(key)
