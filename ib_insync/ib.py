@@ -1619,6 +1619,7 @@ class IB:
             self, host: str = '127.0.0.1', port: int = 7497,
             clientId: int = 1, timeout: Optional[float] = 4,
             readonly: bool = False, account: str = ''):
+        clientId = int(clientId)
         self.wrapper.clientId = clientId
         timeout = timeout or None
         try:

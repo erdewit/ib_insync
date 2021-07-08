@@ -205,8 +205,8 @@ class Client:
             self._logger.info(
                 f'Connecting to {host}:{port} with clientId {clientId}...')
             self.host = host
-            self.port = port
-            self.clientId = clientId
+            self.port = int(port)
+            self.clientId = int(clientId)
             self.connState = Client.CONNECTING
             timeout = timeout or None
             await asyncio.wait_for(self.conn.connectAsync(host, port), timeout)
