@@ -203,7 +203,7 @@ class TickData(NamedTuple):
     time: datetime
     tickType: int
     price: float
-    float: int
+    size: float
 
 
 class HistoricalTick(NamedTuple):
