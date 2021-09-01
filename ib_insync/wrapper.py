@@ -793,9 +793,9 @@ class Wrapper:
                 priceStr, sizeStr, rtTime, volume, vwap, _ = value.split(';')
                 if volume:
                     if tickType == 48:
-                        ticker.rtVolume = int(volume)
+                        ticker.rtVolume = float(volume)
                     elif tickType == 77:
-                        ticker.rtTradeVolume = int(volume)
+                        ticker.rtTradeVolume = float(volume)
                 if vwap:
                     ticker.vwap = float(vwap)
                 if rtTime:
@@ -804,7 +804,7 @@ class Wrapper:
                 if priceStr == '':
                     return
                 price = float(priceStr)
-                size = int(sizeStr)
+                size = float(sizeStr)
                 if price and size:
                     if ticker.prevLast != ticker.last:
                         ticker.prevLast = ticker.last
