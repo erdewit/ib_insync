@@ -211,14 +211,14 @@ class StopLimitOrder(Order):
             auxPrice=stopPrice, **kwargs)
         
         
- class TrailOrder(Order):
+class TrailOrder(Order):
 
-    def __init__(self, action: str, totalQuantity: float, lmtPrice: float,
-                trailingPercent: float, outsideRth: bool, **kwargs):
-        Order.__init__(
-            self, orderType='TRAIL', action=action,
-            totalQuantity=totalQuantity, lmtPrice=lmtPrice,
-            trailingPercent=trailingPercent, outsideRth=outsideRth, **kwargs)
+   def __init__(self, action: str, totalQuantity: float, lmtPrice: float,
+               trailingPercent: float, outsideRth: bool, **kwargs):
+       Order.__init__(
+           self, orderType='TRAIL', action=action,
+           totalQuantity=totalQuantity, lmtPrice=lmtPrice,
+           trailingPercent=trailingPercent, outsideRth=outsideRth, **kwargs)
 
 
 @dataclass
