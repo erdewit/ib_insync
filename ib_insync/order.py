@@ -209,6 +209,16 @@ class StopLimitOrder(Order):
             self, orderType='STP LMT', action=action,
             totalQuantity=totalQuantity, lmtPrice=lmtPrice,
             auxPrice=stopPrice, **kwargs)
+        
+        
+ class TrailOrder(Order):
+
+    def __init__(self, action: str, totalQuantity: float, lmtPrice: float,
+                trailingPercent: float, outsideRth: bool, **kwargs):
+        Order.__init__(
+            self, orderType='TRAIL', action=action,
+            totalQuantity=totalQuantity, lmtPrice=lmtPrice,
+            trailingPercent=trailingPercent, outsideRth=outsideRth, **kwargs)
 
 
 @dataclass
