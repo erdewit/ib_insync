@@ -26,9 +26,10 @@ from .contract import (
     ContractDescription, ScanData)
 from .order import (
     Order, Trade, LimitOrder, MarketOrder, StopOrder, StopLimitOrder,
-    BracketOrder, OrderCondition, ExecutionCondition, MarginCondition,
-    TimeCondition, PriceCondition, PercentChangeCondition, VolumeCondition,
-    OrderStatus, OrderState, OrderComboLeg)
+    TrailOrder, BracketOrder, OrderCondition, ExecutionCondition,
+    MarginCondition,    TimeCondition, PriceCondition,
+    PercentChangeCondition, VolumeCondition, OrderStatus, OrderState,
+    OrderComboLeg)
 from .ticker import Ticker
 from .ib import IB
 from .client import Client
