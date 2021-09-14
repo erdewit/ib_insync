@@ -20,7 +20,7 @@ from ib_insync.objects import (
     RealTimeBarList, ScanDataList, ScannerSubscription, TagValue,
     TradeLogEntry)
 from ib_insync.order import (
-    BracketOrder, LimitOrder, Order, OrderState, OrderStatus, StopOrder, Trade)
+    BracketOrder, LimitOrder, Order, OrderState, OrderStatus, StopOrder, Trade, TrailOrder)
 from ib_insync.ticker import Ticker
 from ib_insync.wrapper import Wrapper
 
