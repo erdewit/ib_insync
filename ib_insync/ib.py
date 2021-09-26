@@ -1769,8 +1769,8 @@ class IB:
             'LookAheadInitMarginReq,LookAheadMaintMarginReq,'
             'LookAheadAvailableFunds,LookAheadExcessLiquidity,'
             'HighestSeverity,DayTradesRemaining,DayTradesRemainingT+1,'
-            'DayTradesRemainingT+2,DayTradesRemainingT+3,DayTradesRemainingT+4,'
-            'Leverage,$LEDGER:ALL')
+            'DayTradesRemainingT+2,DayTradesRemainingT+3,'
+            'DayTradesRemainingT+4,Leverage,$LEDGER:ALL')
         self.client.reqAccountSummary(reqId, 'All', tags)
         return future
 
