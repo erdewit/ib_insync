@@ -180,6 +180,14 @@ class PnL:
 
 
 @dataclass
+class TradeLogEntry:
+    time: datetime
+    status: str = ''
+    message: str = ''
+    errorCode: int = 0
+
+
+@dataclass
 class PnLSingle:
     account: str = ''
     modelCode: str = ''
@@ -268,12 +276,6 @@ class DOMLevel(NamedTuple):
     price: float
     size: int
     marketMaker: str
-
-
-class TradeLogEntry(NamedTuple):
-    time: datetime
-    status: str
-    message: str
 
 
 class PriceIncrement(NamedTuple):

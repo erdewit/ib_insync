@@ -654,7 +654,7 @@ class IB:
             order.orderId = orderId
             orderStatus = OrderStatus(
                 orderId=orderId, status=OrderStatus.PendingSubmit)
-            logEntry = TradeLogEntry(now, orderStatus.status, '')
+            logEntry = TradeLogEntry(now, orderStatus.status)
             trade = Trade(
                 contract, order, orderStatus, [], [logEntry])
             self.wrapper.trades[key] = trade
@@ -682,7 +682,7 @@ class IB:
                     newStatus = OrderStatus.Cancelled
                 else:
                     newStatus = OrderStatus.PendingCancel
-                logEntry = TradeLogEntry(now, newStatus, '')
+                logEntry = TradeLogEntry(now, newStatus)
                 trade.log.append(logEntry)
                 trade.orderStatus.status = newStatus
                 self._logger.info(f'cancelOrder: {trade}')
