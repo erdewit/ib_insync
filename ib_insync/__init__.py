@@ -21,7 +21,7 @@ from .objects import (
     NewsArticle, HistoricalNews, NewsTick, NewsBulletin, ConnectionStats)
 from .contract import (
     Contract, Stock, Option, Future, ContFuture, Forex, Index, CFD,
-    Commodity, Bond, FuturesOption, MutualFund, Warrant, Bag,
+    Commodity, Bond, FuturesOption, MutualFund, Warrant, Bag, Crypto,
     TagValue, ComboLeg, DeltaNeutralContract, ContractDetails,
     ContractDescription, ScanData)
 from .order import (

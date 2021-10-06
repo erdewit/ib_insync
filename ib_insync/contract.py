@@ -7,7 +7,7 @@ import ib_insync.util as util
 
 __all__ = (
     'Contract Stock Option Future ContFuture Forex Index CFD '
-    'Commodity Bond FuturesOption MutualFund Warrant Bag '
+    'Commodity Bond FuturesOption MutualFund Warrant Bag Crypto '
     'TagValue ComboLeg DeltaNeutralContract ContractDetails '
     'ContractDescription ScanData').split()
 
@@ -418,6 +418,24 @@ class Bag(Contract):
     def __init__(self, **kwargs):
         """Bag contract."""
         Contract.__init__(self, 'BAG', **kwargs)
+
+
+class Crypto(Contract):
+
+    def __init__(
+            self, symbol: str = '', exchange: str = 'SMART',
+            currency: str = 'USD', **kwargs):
+        """
+        Crypto currency contract.
+
+        Args:
+            symbol: Symbol name.
+            exchange: Destination exchange.
+            currency: Underlying currency.
+        """
+        Contract.__init__(
+            self, secType='CRYPTO', symbol=symbol,
+            exchange=exchange, currency=currency, **kwargs)
 
 
 class TagValue(NamedTuple):
