@@ -44,10 +44,11 @@ class Contract:
             * 'CFD' = CFD
             * 'BAG' = Combo
             * 'WAR' = Warrant
-            * 'BOND'= Bond
-            * 'CMDTY'= Commodity
+            * 'BOND' = Bond
+            * 'CMDTY' = Commodity
             * 'NEWS' = News
-            * 'FUND'= Mutual fund
+            * 'FUND' = Mutual fund
+            * 'CRYPTO' = Crypto currency
         lastTradeDateOrContractMonth (str): The contract's last trading
             day or contract month (for Options and Futures).
             Strings with format YYYYMM will be interpreted as the
