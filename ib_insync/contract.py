@@ -28,6 +28,7 @@ class Contract:
         Future('ES', '20180921', 'GLOBEX')
         Option('SPY', '20170721', 240, 'C', 'SMART')
         Bond(secIdType='ISIN', secId='US03076KAA60')
+        Crypto('BTC')
 
     Args:
         conId (int): The unique IB contract identifier.
