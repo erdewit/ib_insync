@@ -154,6 +154,8 @@ class Order:
     routeMarketableToBbo: bool = False
     parentPermId: int = 0
     usePriceMgmtAlgo: bool = False
+    duration: int = UNSET_INTEGER
+    postToAts: int = UNSET_INTEGER
 
     def __repr__(self):
         attrs = dataclassNonDefaults(self)

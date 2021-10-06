@@ -86,7 +86,7 @@ class Client:
     RequestsInterval = 1
 
     MinClientVersion = 142
-    MaxClientVersion = 152
+    MaxClientVersion = 163
 
     (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
 
@@ -597,7 +597,12 @@ class Client:
             fields += [order.discretionaryUpToLimitPrice]
         if version >= 151:
             fields += [order.usePriceMgmtAlgo]
-
+        if version >= 158:
+            fields += [order.duration]
+        if version >= 160:
+            fields += [order.postToAts]
+        if version >= 162:
+            fields += [order.autoCancelParent]
         self.send(*fields)
 
     def cancelOrder(self, orderId):
@@ -677,8 +682,11 @@ class Client:
     def requestFA(self, faData):
         self.send(18, 1, faData)
 
-    def replaceFA(self, faData, cxml):
-        self.send(19, 1, faData, cxml)
+    def replaceFA(self, reqId, faData, cxml):
+        fields = [19, 1, faData, cxml]
+        if self.serverVersion() >= 157:
+            fields += [reqId]
+        self.send(*fields)
 
     def reqHistoricalData(
             self, reqId, contract, endDateTime, durationStr, barSizeSetting,

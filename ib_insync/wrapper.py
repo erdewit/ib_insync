@@ -9,7 +9,8 @@ from typing import (
     Any, Dict, List, Optional, Set, Tuple, Union, cast)
 
 from ib_insync.contract import (
-    Contract, ContractDescription, ContractDetails, ScanData)
+    Contract, ContractDescription, ContractDetails, DeltaNeutralContract,
+    ScanData)
 from ib_insync.objects import (
     AccountValue, BarData, BarDataList, CommissionReport,
     DOMLevel, DepthMktDataDescription,
@@ -522,7 +523,7 @@ class Wrapper:
 
     def realtimeBar(
             self, reqId: int, time: int, open_: float, high: float, low: float,
-            close: float, volume: int, wap: float, count: int):
+            close: float, volume: float, wap: float, count: int):
         dt = datetime.fromtimestamp(time, timezone.utc)
         bar = RealTimeBar(dt, -1, open_, high, low, close, volume, wap, count)
         bars = self.reqId2Subscriber.get(reqId)
@@ -591,7 +592,7 @@ class Wrapper:
 
     # additional wrapper method provided by Client
     def priceSizeTick(
-            self, reqId: int, tickType: int, price: float, size: int):
+            self, reqId: int, tickType: int, price: float, size: float):
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
             self._logger.error(f'priceSizeTick: Unknown reqId: {reqId}')
@@ -658,7 +659,7 @@ class Wrapper:
         ticker.marketDataType = self.reqId2MarketDataType.get(reqId, 0)
         self.pendingTickers.add(ticker)
 
-    def tickSize(self, reqId: int, tickType: int, size: int):
+    def tickSize(self, reqId: int, tickType: int, size: float):
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
             self._logger.error(f'tickSize: Unknown reqId: {reqId}')
@@ -717,7 +718,7 @@ class Wrapper:
 
     def tickByTickAllLast(
             self, reqId: int, tickType: int, time: int, price: float,
-            size: int, tickAttribLast: TickAttribLast,
+            size: float, tickAttribLast: TickAttribLast,
             exchange, specialConditions):
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
@@ -737,7 +738,8 @@ class Wrapper:
 
     def tickByTickBidAsk(
             self, reqId: int, time: int, bidPrice: float, askPrice: float,
-            bidSize: int, askSize: int, tickAttribBidAsk: TickAttribBidAsk):
+            bidSize: float, askSize: float,
+            tickAttribBidAsk: TickAttribBidAsk):
         ticker = self.reqId2Ticker.get(reqId)
         if not ticker:
             self._logger.error(f'tickByTickBidAsk: Unknown reqId: {reqId}')
@@ -870,13 +872,13 @@ class Wrapper:
 
     def updateMktDepth(
             self, reqId: int, position: int, operation: int, side: int,
-            price: float, size: int):
+            price: float, size: float):
         self.updateMktDepthL2(
             reqId, position, '', operation, side, price, size)
 
     def updateMktDepthL2(
             self, reqId: int, position: int, marketMaker: str, operation: int,
-            side: int, price: float, size: int, isSmartDepth: bool = False):
+            side: int, price: float, size: float, isSmartDepth: bool = False):
         # operation: 0 = insert, 1 = update, 2 = delete
         # side: 0 = ask, 1 = bid
         ticker = self.reqId2Ticker[reqId]
@@ -898,11 +900,11 @@ class Wrapper:
         self.pendingTickers.add(ticker)
 
     def tickOptionComputation(
-            self, reqId: int, tickType: int, impliedVol: float, delta: float,
-            optPrice: float, pvDividend: float, gamma: float, vega: float,
-            theta: float, undPrice: float):
+            self, reqId: int, tickType: int, tickAttrib: int,
+            impliedVol: float, delta: float, optPrice: float, pvDividend:
+            float, gamma: float, vega: float, theta: float, undPrice: float):
         comp = OptionComputation(
-            impliedVol, delta, optPrice, pvDividend,
+            tickAttrib, impliedVol, delta, optPrice, pvDividend,
             gamma, vega, theta, undPrice)
         ticker = self.reqId2Ticker.get(reqId)
         if ticker:
@@ -923,6 +925,9 @@ class Wrapper:
         else:
             self._logger.error(
                 f'tickOptionComputation: Unknown reqId: {reqId}')
+
+    def deltaNeutralValidation(self, reqId: int, dnc: DeltaNeutralContract):
+        pass
 
     def fundamentalData(self, reqId: int, data: str):
         self._endReq(reqId, data)

@@ -29,7 +29,7 @@ class Decoder:
         self.handlers = {
             1: self.priceSizeTick,
             2: self.wrap(
-                'tickSize', [int, int, int]),
+                'tickSize', [int, int, float]),
             3: self.wrap(
                 'orderStatus', [
                     int, str, float, float, float, int, int,
@@ -47,10 +47,10 @@ class Decoder:
             10: self.contractDetails,
             11: self.execDetails,
             12: self.wrap(
-                'updateMktDepth', [int, int, int, int, float, int]),
+                'updateMktDepth', [int, int, int, int, float, float]),
             13: self.wrap(
                 'updateMktDepthL2',
-                [int, int, str, int, int, float, int, bool]),
+                [int, int, str, int, int, float, float, bool]),
             14: self.wrap(
                 'updateNewsBulletin', [int, int, str, str]),
             15: self.wrap(
@@ -74,7 +74,7 @@ class Decoder:
                 'currentTime', [int]),
             50: self.wrap(
                 'realtimeBar',
-                [int, int, float, float, float, float, int, float, int]),
+                [int, int, float, float, float, float, float, float, int]),
             51: self.wrap(
                 'fundamentalData', [int, str]),
             52: self.wrap(
@@ -158,6 +158,8 @@ class Decoder:
             101: self.completedOrder,
             102: self.wrap(
                 'completedOrdersEnd', [], skip=1),
+            103: self.wrap(
+                'replaceFAEnd', [int, str], skip=1),
         }
 
     def wrap(self, methodName, types, skip=2):
@@ -211,7 +213,7 @@ class Decoder:
 
         if price:
             self.wrapper.priceSizeTick(
-                int(reqId), int(tickType), float(price), int(size))
+                int(reqId), int(tickType), float(price), float(size))
 
     def updatePortfolio(self, fields):
         c = Contract()
@@ -294,13 +296,18 @@ class Decoder:
             cd.realExpirationDate,
             *fields) = fields
         if self.serverVersion >= 152:
-            (cd.stockType, ) = fields
+            cd.stockType, *fields = fields
+        if self.serverVersion >= 163:
+            cd.sizeMinTick, *fields = fields
 
         times = lastTimes.split()
         if len(times) > 0:
             c.lastTradeDateOrContractMonth = times[0]
         if len(times) > 1:
             cd.lastTradeTime = times[1]
+
+        if self.serverVersion >= 153:
+            cd.longName = cd.longName.encode().decode('unicode-escape')
 
         self.parse(cd)
         self.parse(c)
@@ -421,7 +428,7 @@ class Decoder:
                 high=float(get()),
                 low=float(get()),
                 close=float(get()),
-                volume=int(get()),
+                volume=float(get()),
                 average=float(get()),
                 barCount=int(get()))
             self.wrapper.historicalData(int(reqId), bar)
@@ -440,7 +447,7 @@ class Decoder:
             high=float(get() or 0),
             low=float(get() or 0),
             average=float(get() or 0),
-            volume=int(get() or 0))
+            volume=float(get() or 0))
 
         self.wrapper.historicalDataUpdate(int(reqId), bar)
 
@@ -478,11 +485,16 @@ class Decoder:
         self.wrapper.scannerDataEnd(int(reqId))
 
     def tickOptionComputation(self, fields):
-        _, _, reqId, tickTypeInt, impliedVol, delta, optPrice, \
-            pvDividend, gamma, vega, theta, undPrice = fields
+        if self.serverVersion >= 156:
+            _, reqId, tickTypeInt, tickAttrib, *fields = fields
+        else:
+            _, _, reqId, tickTypeInt, *fields = fields
+            tickAttrib = 0
+        impliedVol, delta, optPrice, pvDividend, \
+            gamma, vega, theta, undPrice = fields
 
         self.wrapper.tickOptionComputation(
-            int(reqId), int(tickTypeInt),
+            int(reqId), int(tickTypeInt), int(tickAttrib),
             float(impliedVol) if impliedVol != '-1' else None,
             float(delta) if delta != '-2' else None,
             float(optPrice) if optPrice != '-1' else None,
@@ -753,7 +765,7 @@ class Decoder:
                 unreported=bool(mask & 2))
 
             self.wrapper.tickByTickAllLast(
-                reqId, tickType, time, float(price), int(size),
+                reqId, tickType, time, float(price), float(size),
                 attrib, exchange, specialConditions)
 
         elif tickType == 3:
@@ -765,7 +777,7 @@ class Decoder:
 
             self.wrapper.tickByTickBidAsk(
                 reqId, time, float(bidPrice), float(askPrice),
-                int(bidSize), int(askSize), attrib)
+                float(bidSize), float(askSize), attrib)
 
         elif tickType == 4:
             midPoint, = fields
@@ -1021,6 +1033,12 @@ class Decoder:
             o.discretionaryUpToLimitPrice = fields.pop(0)
         if self.serverVersion >= 151:
             o.usePriceMgmtAlgo = fields.pop(0)
+        if self.serverVersion >= 159:
+            o.duration = fields.pop(0)
+        if self.serverVersion >= 160:
+            o.postToAts = fields.pop(0)
+        if self.serverVersion >= 162:
+            o.autoCancelParent = fields.pop(0)
 
         self.parse(c)
         self.parse(o)

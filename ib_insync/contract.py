@@ -449,6 +449,7 @@ class ContractDetails:
     contract: Optional[Contract] = None
     marketName: str = ''
     minTick: float = 0.0
+    sizeMinTick: float = 0.0
     orderTypes: str = ''
     validExchanges: str = ''
     priceMagnifier: int = 0

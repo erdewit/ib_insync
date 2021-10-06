@@ -1611,7 +1611,8 @@ class IB:
             faDataType: See :meth:`.requestFA`.
             xml: The XML-formatted configuration string.
         """
-        self.client.replaceFA(faDataType, xml)
+        reqId = self.client.getReqId()
+        self.client.replaceFA(reqId, faDataType, xml)
 
     # now entering the parallel async universe
 

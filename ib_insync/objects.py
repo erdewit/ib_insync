@@ -112,7 +112,7 @@ class BarData:
     high: float = 0.0
     low: float = 0.0
     close: float = 0.0
-    volume: int = 0
+    volume: float = 0
     average: float = 0.0
     barCount: int = 0
 
@@ -217,7 +217,7 @@ class TickData(NamedTuple):
 class HistoricalTick(NamedTuple):
     time: datetime
     price: float
-    size: int
+    size: float
 
 
 class HistoricalTickBidAsk(NamedTuple):
@@ -233,7 +233,7 @@ class HistoricalTickLast(NamedTuple):
     time: datetime
     tickAttribLast: TickAttribLast
     price: float
-    size: int
+    size: float
     exchange: str
     specialConditions: str
 
@@ -242,7 +242,7 @@ class TickByTickAllLast(NamedTuple):
     tickType: int
     time: datetime
     price: float
-    size: int
+    size: float
     tickAttribLast: TickAttribLast
     exchange: str
     specialConditions: str
@@ -252,8 +252,8 @@ class TickByTickBidAsk(NamedTuple):
     time: datetime
     bidPrice: float
     askPrice: float
-    bidSize: int
-    askSize: int
+    bidSize: float
+    askSize: float
     tickAttribBidAsk: TickAttribBidAsk
 
 
@@ -269,12 +269,12 @@ class MktDepthData(NamedTuple):
     operation: int
     side: int
     price: float
-    size: int
+    size: float
 
 
 class DOMLevel(NamedTuple):
     price: float
-    size: int
+    size: float
     marketMaker: str
 
 
@@ -309,6 +309,7 @@ class Fill(NamedTuple):
 
 
 class OptionComputation(NamedTuple):
+    tickAttrib: int
     impliedVol: float
     delta: float
     optPrice: float
