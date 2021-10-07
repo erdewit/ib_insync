@@ -28,7 +28,7 @@ class Contract:
         Future('ES', '20180921', 'GLOBEX')
         Option('SPY', '20170721', 240, 'C', 'SMART')
         Bond(secIdType='ISIN', secId='US03076KAA60')
-        Crypto('BTC')
+        Crypto('BTC', 'PAXOS', 'USD')
 
     Args:
         conId (int): The unique IB contract identifier.
@@ -128,6 +128,7 @@ class Contract:
             'WAR': Warrant,
             'IOPT': Warrant,
             'BAG': Bag,
+            'CRYPTO': Crypto,
             'NEWS': Contract
         }.get(secType, Contract)
         if cls is not Contract:
@@ -425,8 +426,8 @@ class Bag(Contract):
 class Crypto(Contract):
 
     def __init__(
-            self, symbol: str = '', exchange: str = 'SMART',
-            currency: str = 'USD', **kwargs):
+            self, symbol: str = '', exchange: str = '', currency: str = '',
+            **kwargs):
         """
         Crypto currency contract.
 
