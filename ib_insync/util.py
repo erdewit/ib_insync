@@ -210,7 +210,10 @@ def allowCtrlC():
 def logToFile(path, level=logging.INFO):
     """Create a log handler that logs to the given file."""
     logger = logging.getLogger()
-    logger.setLevel(level)
+    if logger.handlers:
+        logging.getLogger('ib_insync').setLevel(level)
+    else:
+        logger.setLevel(level)
     formatter = logging.Formatter(
         '%(asctime)s %(name)s %(levelname)s %(message)s')
     handler = logging.FileHandler(path)
@@ -221,15 +224,21 @@ def logToFile(path, level=logging.INFO):
 def logToConsole(level=logging.INFO):
     """Create a log handler that logs to the console."""
     logger = logging.getLogger()
-    logger.setLevel(level)
-    formatter = logging.Formatter(
-        '%(asctime)s %(name)s %(levelname)s %(message)s')
-    handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-    logger.handlers = [
+    stdHandlers = [
         h for h in logger.handlers
-        if type(h) is not logging.StreamHandler]
-    logger.addHandler(handler)
+        if type(h) is logging.StreamHandler and h.stream is sys.stderr]
+    if stdHandlers:
+        # if a standard stream handler already exists, use it and
+        # set the log level for the ib_insync namespace only
+        logging.getLogger('ib_insync').setLevel(level)
+    else:
+        # else create a new handler
+        logger.setLevel(level)
+        formatter = logging.Formatter(
+            '%(asctime)s %(name)s %(levelname)s %(message)s')
+        handler = logging.StreamHandler()
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
 
 
 def isNan(x: float) -> bool:
