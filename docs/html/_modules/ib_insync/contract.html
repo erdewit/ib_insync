@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ib_insync.contract &mdash; ib_insync 0.9.66 documentation</title>
+  <title>ib_insync.contract &mdash; ib_insync 0.9.67 documentation</title>
   
 
   
@@ -166,7 +166,7 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s1">&#39;Contract Stock Option Future ContFuture Forex Index CFD &#39;</span>
-    <span class="s1">&#39;Commodity Bond FuturesOption MutualFund Warrant Bag &#39;</span>
+    <span class="s1">&#39;Commodity Bond FuturesOption MutualFund Warrant Bag Crypto &#39;</span>
     <span class="s1">&#39;TagValue ComboLeg DeltaNeutralContract ContractDetails &#39;</span>
     <span class="s1">&#39;ContractDescription ScanData&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
@@ -187,6 +187,7 @@
 <span class="sd">        Future(&#39;ES&#39;, &#39;20180921&#39;, &#39;GLOBEX&#39;)</span>
 <span class="sd">        Option(&#39;SPY&#39;, &#39;20170721&#39;, 240, &#39;C&#39;, &#39;SMART&#39;)</span>
 <span class="sd">        Bond(secIdType=&#39;ISIN&#39;, secId=&#39;US03076KAA60&#39;)</span>
+<span class="sd">        Crypto(&#39;BTC&#39;, &#39;PAXOS&#39;, &#39;USD&#39;)</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        conId (int): The unique IB contract identifier.</span>
@@ -202,10 +203,11 @@
 <span class="sd">            * &#39;CFD&#39; = CFD</span>
 <span class="sd">            * &#39;BAG&#39; = Combo</span>
 <span class="sd">            * &#39;WAR&#39; = Warrant</span>
-<span class="sd">            * &#39;BOND&#39;= Bond</span>
-<span class="sd">            * &#39;CMDTY&#39;= Commodity</span>
+<span class="sd">            * &#39;BOND&#39; = Bond</span>
+<span class="sd">            * &#39;CMDTY&#39; = Commodity</span>
 <span class="sd">            * &#39;NEWS&#39; = News</span>
-<span class="sd">            * &#39;FUND&#39;= Mutual fund</span>
+<span class="sd">            * &#39;FUND&#39; = Mutual fund</span>
+<span class="sd">            * &#39;CRYPTO&#39; = Crypto currency</span>
 <span class="sd">        lastTradeDateOrContractMonth (str): The contract&#39;s last trading</span>
 <span class="sd">            day or contract month (for Options and Futures).</span>
 <span class="sd">            Strings with format YYYYMM will be interpreted as the</span>
@@ -285,6 +287,7 @@
             <span class="s1">&#39;WAR&#39;</span><span class="p">:</span> <span class="n">Warrant</span><span class="p">,</span>
             <span class="s1">&#39;IOPT&#39;</span><span class="p">:</span> <span class="n">Warrant</span><span class="p">,</span>
             <span class="s1">&#39;BAG&#39;</span><span class="p">:</span> <span class="n">Bag</span><span class="p">,</span>
+            <span class="s1">&#39;CRYPTO&#39;</span><span class="p">:</span> <span class="n">Crypto</span><span class="p">,</span>
             <span class="s1">&#39;NEWS&#39;</span><span class="p">:</span> <span class="n">Contract</span>
         <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">secType</span><span class="p">,</span> <span class="n">Contract</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Contract</span><span class="p">:</span>
@@ -579,6 +582,24 @@
         <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;BAG&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Crypto"><a class="viewcode-back" href="../../api.html#ib_insync.contract.Crypto">[docs]</a><span class="k">class</span> <span class="nc">Crypto</span><span class="p">(</span><span class="n">Contract</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">currency</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Crypto currency contract.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            symbol: Symbol name.</span>
+<span class="sd">            exchange: Destination exchange.</span>
+<span class="sd">            currency: Underlying currency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Contract</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">secType</span><span class="o">=</span><span class="s1">&#39;CRYPTO&#39;</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span>
+            <span class="n">exchange</span><span class="o">=</span><span class="n">exchange</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="n">currency</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="TagValue"><a class="viewcode-back" href="../../api.html#ib_insync.contract.TagValue">[docs]</a><span class="k">class</span> <span class="nc">TagValue</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">str</span></div>
@@ -608,6 +629,7 @@
     <span class="n">contract</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Contract</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">marketName</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">minTick</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">sizeMinTick</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">orderTypes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">validExchanges</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">priceMagnifier</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>

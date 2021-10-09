@@ -4,6 +4,18 @@ Changelog
 0.9
 ---
 
+Version 0.9.67
+^^^^^^^^^^^^^^
+
+* ``Crypto`` security class added. To accommodate fractional crypto currency sizes,
+  all the various ``size`` and ``volume`` fields that were of type ``int`` are now of type ``float``.
+* :pull:`385`: Get day trades remaining for next four days in ``IB.accountSummary``.
+* Fixed: :issue:`361`: Prevent ``util.logToConsole`` and ``util.logToFile`` from messing with the root logger.
+* Fixed: :issue:`370`: Catch ``asyncio.CancelledError`` during connect.
+* Fixed: :issue:`371`: Fix type annotation for ``reqMarketRuleAsync``.
+* Fixed: :issue:`380`: Reject bogus ``whatIf`` order response.
+* Fixed: :issue:`389`: Add ``TradeLogEntry.errorCode`` field.
+
 Version 0.9.66
 ^^^^^^^^^^^^^^
 
@@ -19,7 +31,6 @@ Version 0.9.65
 * :pull:`317`: Update and order's ``totalQuantity``, ``lmtPrice``, ``auxPrice`` and ``orderType``
   when the order is modified externally.
 * :pull:`332`: Typo.
-
 
 Version 0.9.64
 ^^^^^^^^^^^^^^
