@@ -225,8 +225,8 @@ class HistoricalTickBidAsk(NamedTuple):
     tickAttribBidAsk: TickAttribBidAsk
     priceBid: float
     priceAsk: float
-    sizeBid: int
-    sizeAsk: int
+    sizeBid: float
+    sizeAsk: float
 
 
 class HistoricalTickLast(NamedTuple):

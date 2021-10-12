@@ -697,7 +697,7 @@ class Decoder:
             time = int(get())
             get()
             price = float(get())
-            size = int(get())
+            size = float(get())
             dt = datetime.fromtimestamp(time, timezone.utc)
             ticks.append(
                 HistoricalTick(dt, price, size))
@@ -718,8 +718,8 @@ class Decoder:
                 bidPastLow=bool(mask & 2))
             priceBid = float(get())
             priceAsk = float(get())
-            sizeBid = int(get())
-            sizeAsk = int(get())
+            sizeBid = float(get())
+            sizeAsk = float(get())
             dt = datetime.fromtimestamp(time, timezone.utc)
             ticks.append(
                 HistoricalTickBidAsk(
@@ -740,7 +740,7 @@ class Decoder:
                 pastLimit=bool(mask & 1),
                 unreported=bool(mask & 2))
             price = float(get())
-            size = int(get())
+            size = float(get())
             exchange = get()
             specialConditions = get()
             dt = datetime.fromtimestamp(time, timezone.utc)
