@@ -4,6 +4,16 @@ Changelog
 0.9
 ---
 
+Version 0.9.69
+^^^^^^^^^^^^^^
+
+* Fixed: :issue:`403`: Change validity test for whatIfOrder response.
+
+Version 0.9.68
+^^^^^^^^^^^^^^
+
+* Fixed: :issue:`402`: Downloading historical ticks for crypto currencies.
+
 Version 0.9.67
 ^^^^^^^^^^^^^^
 
