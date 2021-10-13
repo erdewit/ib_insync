@@ -339,7 +339,7 @@ class Wrapper:
         """
         if order.whatIf:
             # response to whatIfOrder
-            if orderState.commissionCurrency:
+            if orderState.initMarginChange != str(UNSET_DOUBLE):
                 self._endReq(order.orderId, orderState)
         else:
             key = self.orderKey(order.clientId, order.orderId, order.permId)
