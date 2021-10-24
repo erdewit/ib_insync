@@ -701,6 +701,8 @@ class Wrapper:
             ticker.auctionVolume = size
         elif tickType == 36:
             ticker.auctionImbalance = size
+        elif tickType == 61:
+            ticker.regulatoryImbalance = size
         elif tickType == 86:
             ticker.futuresOpenInterest = size
         elif tickType == 87:

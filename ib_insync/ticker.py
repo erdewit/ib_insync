@@ -109,6 +109,7 @@ class Ticker:
     auctionVolume: float = nan
     auctionPrice: float = nan
     auctionImbalance: float = nan
+    regulatoryImbalance: float = nan
 
     def __post_init__(self):
         self.updateEvent = TickerUpdateEvent('updateEvent')
