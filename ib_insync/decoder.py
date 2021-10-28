@@ -213,7 +213,7 @@ class Decoder:
 
         if price:
             self.wrapper.priceSizeTick(
-                int(reqId), int(tickType), float(price), float(size))
+                int(reqId), int(tickType), float(price), float(size or 0))
 
     def updatePortfolio(self, fields):
         c = Contract()
