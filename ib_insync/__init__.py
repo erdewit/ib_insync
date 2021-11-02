@@ -1,50 +1,68 @@
-# flake8: noqa
+"""Python sync/async framework for Interactive Brokers API"""
 
+import dataclasses
 import sys
-if sys.version_info < (3, 6, 0):
-    raise RuntimeError('ib_insync requires Python 3.6 or higher')
 
 from eventkit import Event
 
-from .version import __version__, __version_info__
-from .objects import (
-    SoftDollarTier, PriceIncrement, Execution, CommissionReport,
-    BarDataList, RealTimeBarList, BarData, RealTimeBar,
-    HistogramData, NewsProvider, DepthMktDataDescription,
-    ScannerSubscription, ScanDataList,
-    ExecutionFilter, PnL, PnLSingle, AccountValue, TickData,
-    TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
-    HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
-    TickAttrib, TickAttribBidAsk, TickAttribLast, FundamentalRatios,
-    MktDepthData, DOMLevel, TradeLogEntry, FamilyCode, SmartComponent,
-    PortfolioItem, Position, Fill, OptionComputation, OptionChain, Dividends,
-    NewsArticle, HistoricalNews, NewsTick, NewsBulletin, ConnectionStats)
-from .contract import (
-    Contract, Stock, Option, Future, ContFuture, Forex, Index, CFD,
-    Commodity, Bond, FuturesOption, MutualFund, Warrant, Bag, Crypto,
-    TagValue, ComboLeg, DeltaNeutralContract, ContractDetails,
-    ContractDescription, ScanData)
-from .order import (
-    Order, Trade, LimitOrder, MarketOrder, StopOrder, StopLimitOrder,
-    BracketOrder, OrderCondition, ExecutionCondition, MarginCondition,
-    TimeCondition, PriceCondition, PercentChangeCondition, VolumeCondition,
-    OrderStatus, OrderState, OrderComboLeg)
-from .ticker import Ticker
-from .ib import IB
+from . import util
 from .client import Client
-from .wrapper import RequestError, Wrapper
-from .flexreport import FlexReport, FlexError
+from .contract import (
+    Bag, Bond, CFD, ComboLeg, Commodity, ContFuture, Contract,
+    ContractDescription, ContractDetails, Crypto, DeltaNeutralContract,
+    Forex, Future, FuturesOption, Index, MutualFund, Option, ScanData, Stock,
+    TagValue, Warrant)
+from .flexreport import FlexError, FlexReport
+from .ib import IB
 from .ibcontroller import IBC, IBController, Watchdog
-import ib_insync.util as util
+from .objects import (
+    AccountValue, BarData, BarDataList, CommissionReport, ConnectionStats,
+    DOMLevel, DepthMktDataDescription, Dividends, Execution, ExecutionFilter,
+    FamilyCode, Fill, FundamentalRatios, HistogramData, HistoricalNews,
+    HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast, MktDepthData,
+    NewsArticle, NewsBulletin, NewsProvider, NewsTick, OptionChain,
+    OptionComputation, PnL, PnLSingle, PortfolioItem, Position,
+    PriceIncrement, RealTimeBar, RealTimeBarList, ScanDataList,
+    ScannerSubscription, SmartComponent, SoftDollarTier, TickAttrib,
+    TickAttribBidAsk, TickAttribLast, TickByTickAllLast, TickByTickBidAsk,
+    TickByTickMidPoint, TickData, TradeLogEntry)
+from .order import (
+    BracketOrder, ExecutionCondition, LimitOrder, MarginCondition, MarketOrder,
+    Order, OrderComboLeg, OrderCondition, OrderState, OrderStatus,
+    PercentChangeCondition, PriceCondition, StopLimitOrder, StopOrder,
+    TimeCondition, Trade, VolumeCondition)
+from .ticker import Ticker
+from .version import __version__, __version_info__
+from .wrapper import RequestError, Wrapper
 
-__all__ = ['util', 'Event']
-for _m in (
-        objects, contract, order, ticker, ib,  # type: ignore
-        client, wrapper, flexreport, ibcontroller):  # type: ignore
-    __all__ += _m.__all__
+
+__all__ = [
+    'Event', 'util', 'Client',
+    'Bag', 'Bond', 'CFD', 'ComboLeg', 'Commodity', 'ContFuture', 'Contract',
+    'ContractDescription', 'ContractDetails', 'Crypto', 'DeltaNeutralContract',
+    'Forex', 'Future', 'FuturesOption', 'Index', 'MutualFund', 'Option',
+    'ScanData', 'Stock', 'TagValue', 'Warrant', 'FlexError', 'FlexReport',
+    'IB', 'IBC', 'IBController', 'Watchdog',
+    'AccountValue', 'BarData', 'BarDataList', 'CommissionReport',
+    'ConnectionStats', 'DOMLevel', 'DepthMktDataDescription', 'Dividends',
+    'Execution', 'ExecutionFilter', 'FamilyCode', 'Fill', 'FundamentalRatios',
+    'HistogramData', 'HistoricalNews', 'HistoricalTick',
+    'HistoricalTickBidAsk', 'HistoricalTickLast', 'MktDepthData',
+    'NewsArticle', 'NewsBulletin', 'NewsProvider', 'NewsTick', 'OptionChain',
+    'OptionComputation', 'PnL', 'PnLSingle', 'PortfolioItem', 'Position',
+    'PriceIncrement', 'RealTimeBar', 'RealTimeBarList', 'ScanDataList',
+    'ScannerSubscription', 'SmartComponent', 'SoftDollarTier', 'TickAttrib',
+    'TickAttribBidAsk', 'TickAttribLast', 'TickByTickAllLast',
+    'TickByTickBidAsk', 'TickByTickMidPoint', 'TickData', 'TradeLogEntry',
+    'BracketOrder', 'ExecutionCondition', 'LimitOrder', 'MarginCondition',
+    'MarketOrder', 'Order', 'OrderComboLeg', 'OrderCondition', 'OrderState',
+    'OrderStatus', 'PercentChangeCondition', 'PriceCondition',
+    'StopLimitOrder', 'StopOrder', 'TimeCondition', 'Trade', 'VolumeCondition',
+    'Ticker', '__version__', '__version_info__', 'RequestError', 'Wrapper'
+]
+
 
 # compatibility with old Object
-import dataclasses
 for obj in locals().copy().values():
     if dataclasses.is_dataclass(obj):
         obj.dict = util.dataclassAsDict

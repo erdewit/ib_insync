@@ -16,8 +16,6 @@ from .order import Order, OrderComboLeg, OrderCondition, OrderState
 from .util import UNSET_DOUBLE, parseIBDatetime
 from .wrapper import Wrapper
 
-__all__ = ['Decoder']
-
 
 class Decoder:
     """Decode IB messages and invoke corresponding wrapper methods."""

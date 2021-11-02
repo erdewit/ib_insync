@@ -27,8 +27,6 @@ from ib_insync.util import (
     UNSET_DOUBLE, UNSET_INTEGER, dataclassAsDict, dataclassUpdate,
     globalErrorEvent, isNan, parseIBDatetime)
 
-__all__ = ['RequestError', 'Wrapper']
-
 
 OrderKeyType = Union[int, Tuple[int, int]]
 

@@ -13,8 +13,6 @@ from ib_insync.objects import (
     TickData)
 from ib_insync.util import dataclassRepr, isNan
 
-__all__ = ['Ticker']
-
 nan = float('nan')
 
 

@@ -5,12 +5,6 @@ from typing import List, NamedTuple, Optional
 
 import ib_insync.util as util
 
-__all__ = (
-    'Contract Stock Option Future ContFuture Forex Index CFD '
-    'Commodity Bond FuturesOption MutualFund Warrant Bag Crypto '
-    'TagValue ComboLeg DeltaNeutralContract ContractDetails '
-    'ContractDescription ScanData').split()
-
 
 @dataclass
 class Contract:

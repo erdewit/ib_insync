@@ -16,8 +16,6 @@ from .decoder import Decoder
 from .objects import ConnectionStats
 from .util import UNSET_DOUBLE, UNSET_INTEGER, dataclassAsTuple, run
 
-__all__ = ['Client']
-
 
 class Client:
     """

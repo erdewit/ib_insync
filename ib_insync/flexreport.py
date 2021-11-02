@@ -9,8 +9,6 @@ from urllib.request import urlopen
 from ib_insync import util
 from ib_insync.objects import DynamicObject
 
-__all__ = ('FlexReport', 'FlexError')
-
 _logger = logging.getLogger('ib_insync.flexreport')
 
 

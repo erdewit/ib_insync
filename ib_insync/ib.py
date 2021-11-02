@@ -24,8 +24,6 @@ from ib_insync.order import (
 from ib_insync.ticker import Ticker
 from ib_insync.wrapper import Wrapper
 
-__all__ = ['IB']
-
 
 class IB:
     """
