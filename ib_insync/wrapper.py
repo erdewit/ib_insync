@@ -111,11 +111,19 @@ class Wrapper:
         self._timeout: float = 0
         self.setTimeout(0)
 
+    def setEventsDone(self):
+        """Set all subscribtion-type events as done."""
+        events = [ticker.updateEvent for ticker in self.tickers.values()]
+        events += [sub.updateEvent for sub in self.reqId2Subscriber.values()]
+        for trade in self.trades.values():
+            events += [
+                trade.statusEvent, trade.modifyEvent, trade.fillEvent,
+                trade.filledEvent, trade.commissionReportEvent,
+                trade.cancelEvent, trade.cancelledEvent]
+        for event in events:
+            event.set_done()
+
     def connectionClosed(self):
-        for ticker in self.tickers.values():
-            ticker.updateEvent.set_done()
-        for sub in self.reqId2Subscriber.values():
-            sub.updateEvent.set_done()
         error = ConnectionError('Socket disconnect')
         for future in self._futures.values():
             if not future.done():

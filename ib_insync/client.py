@@ -367,6 +367,7 @@ class Client:
         if msg:
             self._logger.error(msg)
             self.apiError.emit(msg)
+        self.wrapper.setEventsDone()
         if wasReady:
             self.wrapper.connectionClosed()
         self.reset()
