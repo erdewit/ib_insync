@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.70
+^^^^^^^^^^^^^^
+
+* Fixed: :issue:`413`: Set the appropriate events as done on disconnect.
+* Exported symbols are now static so that the VSCode/PyLance code analyzer can understand it.
+
 Version 0.9.69
 ^^^^^^^^^^^^^^
 
@@ -333,15 +339,18 @@ Version 0.9.28
 
 Version 0.9.27
 ^^^^^^^^^^^^^^
+
 * Fixed bug #77.
 
 Version 0.9.26
 ^^^^^^^^^^^^^^
+
 * PR #74 merged (``ib.reqCurrentTime()`` method added).
 * Fixed bug with order error handling.
 
 Version 0.9.25
 ^^^^^^^^^^^^^^
+
 * Default throttling rate now compatible with reqTickers.
 * Fixed issue with ``ib.waitOnUpdate()`` in combination.
   with ``ib.pendingTickersEvent``.
@@ -349,16 +358,19 @@ Version 0.9.25
 
 Version 0.9.24
 ^^^^^^^^^^^^^^
+
 * ``ticker.futuresOpenInterest`` added.
 * ``execution.time`` was string, is now parsed to UTC datetime.
 * ``ib.reqMarketRule()`` request added.
 
 Version 0.9.23
 ^^^^^^^^^^^^^^
+
 * Compatability with Tornado 5 as used in new Jupyter notebook server.
 
 Version 0.9.22
 ^^^^^^^^^^^^^^
+
 * updated ``ib.reqNewsArticle`` and ``ib.reqHistoricalNews`` to ibapi v9.73.07.
 
 Version 0.9.21
@@ -374,15 +386,18 @@ Version 0.9.20
 
 Version 0.9.19
 ^^^^^^^^^^^^^^
+
 * Don't overwrite ``exchange='SMART'`` in qualifyContracts.
 
 Version 0.9.18
 ^^^^^^^^^^^^^^
+
 * Merged PR #65 (Fix misnamed event).
 
 
 Version 0.9.17
 ^^^^^^^^^^^^^^
+
 * New IB events ``disconnectedEvent``, ``newOrderEvent``, ``orderModifyEvent``
   and ``cancelOrderEvent``.
 * ``Watchdog`` improvements.
@@ -390,6 +405,7 @@ Version 0.9.17
 
 Version 0.9.16
 ^^^^^^^^^^^^^^
+
 * New event system that will supersede ``IB.setCallback()``.
 * Notebooks updated to use events.
 * ``Watchdog`` must now be given an ``IB`` instance.
@@ -545,12 +561,14 @@ Version 0.8.10
 
 Version 0.8.9
 ^^^^^^^^^^^^^
+
 * ``Ticker.vwap`` field added (for use with generic tick 233).
 * Client with master clientId can now monitor orders and trades of
   other clients.
 
 Version 0.8.8
 ^^^^^^^^^^^^^
+
 * ``barUpdate`` event now used also for ``reqRealTimeBars`` responses
 * ``reqRealTimeBars`` will return ``RealTimeBarList`` instead of list.
 * realtime bars example added to bar data notebook.
@@ -558,6 +576,7 @@ Version 0.8.8
 
 Version 0.8.7
 ^^^^^^^^^^^^^
+
 * ``BarDataList`` now used with ``reqHistoricalData``; it also stores
   the request parameters.
 * updated the typing annotations.
@@ -566,16 +585,19 @@ Version 0.8.7
 
 Version 0.8.6
 ^^^^^^^^^^^^^
+
 * ``ticker.marketPrice`` adjusted to ignore price of -1.
 * ``ticker.avVolume`` handling fixed.
 
 Version 0.8.5
 ^^^^^^^^^^^^^
+
 * ``realtimeBar`` wrapper fix.
 * context manager for ``IB`` and ``IB.connect()``.
 
 Version 0.8.4
 ^^^^^^^^^^^^^
+
 * compatibility with upcoming ibapi changes.
 * added ``error`` event to ``IB``.
 * notebooks updated to use ``loopUntil``.
@@ -583,12 +605,14 @@ Version 0.8.4
 
 Version 0.8.3
 ^^^^^^^^^^^^^
+
 * new ``IB.reqHistoricalTicks()`` API method.
 * new ``IB.loopUntil()`` method.
 * fixed issues #4, #6, #7.
 
 Version 0.8.2
 ^^^^^^^^^^^^^
+
 * fixed swapped ``ticker.putOpenInterest`` vs ``ticker.callOpenInterest``.
 
 Version 0.8.1

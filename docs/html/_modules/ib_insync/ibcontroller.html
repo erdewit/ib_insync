@@ -1,71 +1,32 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>ib_insync.ibcontroller &mdash; ib_insync 0.9.66 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ib_insync.ibcontroller &mdash; ib_insync 0.9.70 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/ibcontroller.html"/>
   
-
-  
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ib_insync
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> ib_insync
           </a>
-
-          
-            
-            
               <div class="version">
                 0.9
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,18 +34,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API docs</a></li>
@@ -95,67 +45,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../../links.html">Links</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">ib_insync</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">Module code</a> &raquo;</li>
-        
       <li>ib_insync.ibcontroller</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for ib_insync.ibcontroller</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Programmatic control over the TWS/gateway client software.&quot;&quot;&quot;</span>
 
@@ -172,8 +85,6 @@
 <span class="kn">import</span> <span class="nn">ib_insync.util</span> <span class="k">as</span> <span class="nn">util</span>
 <span class="kn">from</span> <span class="nn">ib_insync.contract</span> <span class="kn">import</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">Forex</span>
 <span class="kn">from</span> <span class="nn">ib_insync.ib</span> <span class="kn">import</span> <span class="n">IB</span>
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IBC&#39;</span><span class="p">,</span> <span class="s1">&#39;IBController&#39;</span><span class="p">,</span> <span class="s1">&#39;Watchdog&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="IBC"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC">[docs]</a><span class="nd">@dataclass</span>
@@ -560,66 +471,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Stopping&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stoppingEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_runner</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_runner</span> <span class="o">=</span> <span class="kc">None</span></div></div>
 
-<div class="viewcode-block" id="Watchdog.runAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog.runAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">runAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
-        <span class="k">def</span> <span class="nf">onTimeout</span><span class="p">(</span><span class="n">idlePeriod</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">waiter</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-                <span class="n">waiter</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-
-        <span class="k">def</span> <span class="nf">onError</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">errorCode</span><span class="p">,</span> <span class="n">errorString</span><span class="p">,</span> <span class="n">contract</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">errorCode</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1100</span><span class="p">}</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">waiter</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-                <span class="n">waiter</span><span class="o">.</span><span class="n">set_exception</span><span class="p">(</span><span class="ne">Warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error </span><span class="si">{</span><span class="n">errorCode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">))</span>
-
-        <span class="k">def</span> <span class="nf">onDisconnected</span><span class="p">():</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">waiter</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-                <span class="n">waiter</span><span class="o">.</span><span class="n">set_exception</span><span class="p">(</span><span class="ne">Warning</span><span class="p">(</span><span class="s1">&#39;Disconnected&#39;</span><span class="p">))</span>
-
-        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runner</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">startAsync</span><span class="p">()</span>
-                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">appStartupTime</span><span class="p">)</span>
-                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectTimeout</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">startedEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">appTimeout</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">timeoutEvent</span> <span class="o">+=</span> <span class="n">onTimeout</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">errorEvent</span> <span class="o">+=</span> <span class="n">onError</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">disconnectedEvent</span> <span class="o">+=</span> <span class="n">onDisconnected</span>
-
-                <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runner</span><span class="p">:</span>
-                    <span class="n">waiter</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">()</span>
-                    <span class="k">await</span> <span class="n">waiter</span>
-                    <span class="c1"># soft timeout, probe the app with a historical request</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Soft timeout&#39;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">softTimeoutEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-                    <span class="n">probe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">reqHistoricalDataAsync</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">probeContract</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;30 S&#39;</span><span class="p">,</span> <span class="s1">&#39;5 secs&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;MIDPOINT&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-                    <span class="n">bars</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">):</span>
-                        <span class="n">bars</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">probe</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">probeTimeout</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">bars</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">hardTimeoutEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-                        <span class="k">raise</span> <span class="ne">Warning</span><span class="p">(</span><span class="s1">&#39;Hard timeout&#39;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">appTimeout</span><span class="p">)</span>
-
-            <span class="k">except</span> <span class="ne">ConnectionRefusedError</span><span class="p">:</span>
-                <span class="k">pass</span>
-            <span class="k">except</span> <span class="ne">Warning</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-            <span class="k">finally</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">timeoutEvent</span> <span class="o">-=</span> <span class="n">onTimeout</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">errorEvent</span> <span class="o">-=</span> <span class="n">onError</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">disconnectedEvent</span> <span class="o">-=</span> <span class="n">onDisconnected</span>
-                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">terminateAsync</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">stoppedEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runner</span><span class="p">:</span>
-                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">retryDelay</span><span class="p">)</span></div></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
@@ -634,49 +487,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2021, Ewald de Wit
-
-    </p>
+    <p>&#169; Copyright 2021, Ewald de Wit.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

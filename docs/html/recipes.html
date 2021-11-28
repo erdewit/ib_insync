@@ -1,73 +1,34 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Code recipes &mdash; ib_insync 0.9.69 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code recipes &mdash; ib_insync 0.9.70 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.iorecipes.html"/>
   
-
-  
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Source code" href="code.html" />
     <link rel="prev" title="Notebooks" href="notebooks.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ib_insync
-          
-
-          
+            <a href="index.html" class="icon icon-home"> ib_insync
           </a>
-
-          
-            
-            
               <div class="version">
                 0.9
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,18 +36,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API docs</a></li>
@@ -112,75 +62,36 @@
 <li class="toctree-l1"><a class="reference internal" href="links.html">Links</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">ib_insync</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Code recipes</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/recipes.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="code-recipes">
-<span id="recipes"></span><h1>Code recipes<a class="headerlink" href="#code-recipes" title="Permalink to this headline">¶</a></h1>
+<span id="recipes"></span><h1>Code recipes<a class="headerlink" href="#code-recipes" title="Permalink to this headline"></a></h1>
 <p>Collection of useful patterns, snippets and recipes.</p>
 <p>When using the recipes in a notebook, don’t forget to use <code class="docutils literal notranslate"><span class="pre">util.startLoop()</span></code>.</p>
 <div class="section" id="fetching-consecutive-historical-data">
-<h2>Fetching consecutive historical data<a class="headerlink" href="#fetching-consecutive-historical-data" title="Permalink to this headline">¶</a></h2>
+<h2>Fetching consecutive historical data<a class="headerlink" href="#fetching-consecutive-historical-data" title="Permalink to this headline"></a></h2>
 <p>Suppose we want to get the 1 min bar data of Tesla since the very beginning
 up until now. The best way is to start with now and keep requesting further
 and further back in time until there is no more data returned.</p>
@@ -217,7 +128,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </div>
 <div class="section" id="scanner-data-blocking">
-<h2>Scanner data (blocking)<a class="headerlink" href="#scanner-data-blocking" title="Permalink to this headline">¶</a></h2>
+<h2>Scanner data (blocking)<a class="headerlink" href="#scanner-data-blocking" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">allParams</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqScannerParameters</span><span class="p">())</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">allParams</span><span class="p">)</span>
 
@@ -231,7 +142,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </div>
 <div class="section" id="scanner-data-streaming">
-<h2>Scanner data (streaming)<a class="headerlink" href="#scanner-data-streaming" title="Permalink to this headline">¶</a></h2>
+<h2>Scanner data (streaming)<a class="headerlink" href="#scanner-data-streaming" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">onScanData</span><span class="p">(</span><span class="n">scanData</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">scanData</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scanData</span><span class="p">))</span>
@@ -248,7 +159,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </div>
 <div class="section" id="option-calculations">
-<h2>Option calculations<a class="headerlink" href="#option-calculations" title="Permalink to this headline">¶</a></h2>
+<h2>Option calculations<a class="headerlink" href="#option-calculations" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">option</span> <span class="o">=</span> <span class="n">Option</span><span class="p">(</span><span class="s1">&#39;EOE&#39;</span><span class="p">,</span> <span class="s1">&#39;20171215&#39;</span><span class="p">,</span> <span class="mi">490</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;FTA&#39;</span><span class="p">,</span> <span class="n">multiplier</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
 <span class="n">calc</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">calculateImpliedVolatility</span><span class="p">(</span>
@@ -262,7 +173,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </div>
 <div class="section" id="order-book">
-<h2>Order book<a class="headerlink" href="#order-book" title="Permalink to this headline">¶</a></h2>
+<h2>Order book<a class="headerlink" href="#order-book" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eurusd</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;EURUSD&#39;</span><span class="p">)</span>
 <span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktDepth</span><span class="p">(</span><span class="n">eurusd</span><span class="p">)</span>
 <span class="k">while</span> <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
@@ -273,7 +184,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </div>
 <div class="section" id="minimum-price-increments">
-<h2>Minimum price increments<a class="headerlink" href="#minimum-price-increments" title="Permalink to this headline">¶</a></h2>
+<h2>Minimum price increments<a class="headerlink" href="#minimum-price-increments" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">usdjpy</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;USDJPY&#39;</span><span class="p">)</span>
 <span class="n">cd</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqContractDetails</span><span class="p">(</span><span class="n">usdjpy</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cd</span><span class="o">.</span><span class="n">marketRuleIds</span><span class="p">)</span>
@@ -286,7 +197,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </div>
 <div class="section" id="news-articles">
-<h2>News articles<a class="headerlink" href="#news-articles" title="Permalink to this headline">¶</a></h2>
+<h2>News articles<a class="headerlink" href="#news-articles" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">newsProviders</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqNewsProviders</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">newsProviders</span><span class="p">)</span>
 <span class="n">codes</span> <span class="o">=</span> <span class="s1">&#39;+&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">code</span> <span class="k">for</span> <span class="n">np</span> <span class="ow">in</span> <span class="n">newsProviders</span><span class="p">)</span>
@@ -302,7 +213,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </div>
 <div class="section" id="news-bulletins">
-<h2>News bulletins<a class="headerlink" href="#news-bulletins" title="Permalink to this headline">¶</a></h2>
+<h2>News bulletins<a class="headerlink" href="#news-bulletins" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ib</span><span class="o">.</span><span class="n">reqNewsBulletins</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">newsBulletins</span><span class="p">())</span>
@@ -310,7 +221,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </div>
 <div class="section" id="dividends">
-<h2>Dividends<a class="headerlink" href="#dividends" title="Permalink to this headline">¶</a></h2>
+<h2>Dividends<a class="headerlink" href="#dividends" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contract</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;INTC&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
 <span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktData</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="s1">&#39;456&#39;</span><span class="p">)</span>
 <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -323,7 +234,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </div>
 <div class="section" id="fundemental-ratios">
-<h2>Fundemental ratios<a class="headerlink" href="#fundemental-ratios" title="Permalink to this headline">¶</a></h2>
+<h2>Fundemental ratios<a class="headerlink" href="#fundemental-ratios" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contract</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;IBM&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
 <span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktData</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="s1">&#39;258&#39;</span><span class="p">)</span>
 <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -332,7 +243,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </div>
 <div class="section" id="async-streaming-ticks">
-<h2>Async streaming ticks<a class="headerlink" href="#async-streaming-ticks" title="Permalink to this headline">¶</a></h2>
+<h2>Async streaming ticks<a class="headerlink" href="#async-streaming-ticks" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 
 <span class="kn">import</span> <span class="nn">ib_insync</span> <span class="k">as</span> <span class="nn">ibi</span>
@@ -366,7 +277,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </div>
 <div class="section" id="integration-with-pyqt5-or-pyside2">
-<h2>Integration with PyQt5 or PySide2<a class="headerlink" href="#integration-with-pyqt5-or-pyside2" title="Permalink to this headline">¶</a></h2>
+<h2>Integration with PyQt5 or PySide2<a class="headerlink" href="#integration-with-pyqt5-or-pyside2" title="Permalink to this headline"></a></h2>
 <img alt="_images/qt-tickertable.png" src="_images/qt-tickertable.png" />
 <p><a class="reference external" href="https://github.com/erdewit/ib_insync/blob/master/examples/qt_ticker_table.py">This example</a>
 of a ticker table shows how to integrate both
@@ -384,7 +295,7 @@ import and <code class="docutils literal notranslate"><span class="pre">util.use
 counterparts.</p>
 </div>
 <div class="section" id="integration-with-tkinter">
-<h2>Integration with Tkinter<a class="headerlink" href="#integration-with-tkinter" title="Permalink to this headline">¶</a></h2>
+<h2>Integration with Tkinter<a class="headerlink" href="#integration-with-tkinter" title="Permalink to this headline"></a></h2>
 <p>To integrate with the Tkinter event loop, take a look at
 <a class="reference external" href="https://github.com/erdewit/ib_insync/blob/master/examples/tk.py">this example app</a>.</p>
 </div>
@@ -392,58 +303,33 @@ counterparts.</p>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="code.html" class="btn btn-neutral float-right" title="Source code" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="notebooks.html" class="btn btn-neutral float-left" title="Notebooks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="notebooks.html" class="btn btn-neutral float-left" title="Notebooks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="code.html" class="btn btn-neutral float-right" title="Source code" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2021, Ewald de Wit
-
-    </p>
+    <p>&#169; Copyright 2021, Ewald de Wit.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

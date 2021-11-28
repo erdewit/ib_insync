@@ -1,71 +1,32 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>ib_insync.ticker &mdash; ib_insync 0.9.66 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ib_insync.ticker &mdash; ib_insync 0.9.70 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/ticker.html"/>
   
-
-  
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ib_insync
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> ib_insync
           </a>
-
-          
-            
-            
               <div class="version">
                 0.9
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,18 +34,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API docs</a></li>
@@ -95,67 +45,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../../links.html">Links</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">ib_insync</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">Module code</a> &raquo;</li>
-        
       <li>ib_insync.ticker</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for ib_insync.ticker</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Access to realtime market information.&quot;&quot;&quot;</span>
 
@@ -171,8 +84,6 @@
     <span class="n">OptionComputation</span><span class="p">,</span> <span class="n">TickByTickAllLast</span><span class="p">,</span> <span class="n">TickByTickBidAsk</span><span class="p">,</span> <span class="n">TickByTickMidPoint</span><span class="p">,</span>
     <span class="n">TickData</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ib_insync.util</span> <span class="kn">import</span> <span class="n">dataclassRepr</span><span class="p">,</span> <span class="n">isNan</span>
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Ticker&#39;</span><span class="p">]</span>
 
 <span class="n">nan</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
 
@@ -268,6 +179,7 @@
     <span class="n">auctionVolume</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">nan</span>
     <span class="n">auctionPrice</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">nan</span>
     <span class="n">auctionImbalance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">nan</span>
+    <span class="n">regulatoryImbalance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">nan</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateEvent</span> <span class="o">=</span> <span class="n">TickerUpdateEvent</span><span class="p">(</span><span class="s1">&#39;updateEvent&#39;</span><span class="p">)</span>
@@ -310,31 +222,31 @@
         <span class="k">return</span> <span class="n">price</span></div></div>
 
 
-<span class="k">class</span> <span class="nc">TickerUpdateEvent</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
+<div class="viewcode-block" id="TickerUpdateEvent"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.TickerUpdateEvent">[docs]</a><span class="k">class</span> <span class="nc">TickerUpdateEvent</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">trades</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Tickfilter&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="TickerUpdateEvent.trades"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.TickerUpdateEvent.trades">[docs]</a>    <span class="k">def</span> <span class="nf">trades</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Tickfilter&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Emit trade ticks.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Tickfilter</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">71</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Tickfilter</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">71</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">bids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Tickfilter&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="TickerUpdateEvent.bids"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.TickerUpdateEvent.bids">[docs]</a>    <span class="k">def</span> <span class="nf">bids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Tickfilter&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Emit bid ticks.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Tickfilter</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">66</span><span class="p">,</span> <span class="mi">69</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Tickfilter</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">66</span><span class="p">,</span> <span class="mi">69</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">asks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Tickfilter&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="TickerUpdateEvent.asks"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.TickerUpdateEvent.asks">[docs]</a>    <span class="k">def</span> <span class="nf">asks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Tickfilter&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Emit ask ticks.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Tickfilter</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Tickfilter</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">bidasks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Tickfilter&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="TickerUpdateEvent.bidasks"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.TickerUpdateEvent.bidasks">[docs]</a>    <span class="k">def</span> <span class="nf">bidasks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Tickfilter&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Emit bid and ask ticks.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Tickfilter</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">66</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Tickfilter</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">66</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">midpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Tickfilter&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="TickerUpdateEvent.midpoints"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.TickerUpdateEvent.midpoints">[docs]</a>    <span class="k">def</span> <span class="nf">midpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Tickfilter&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Emit midpoint ticks.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Midpoints</span><span class="p">((),</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Midpoints</span><span class="p">((),</span> <span class="bp">self</span><span class="p">)</span></div></div>
 
 
-<span class="k">class</span> <span class="nc">Tickfilter</span><span class="p">(</span><span class="n">Op</span><span class="p">):</span>
+<div class="viewcode-block" id="Tickfilter"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Tickfilter">[docs]</a><span class="k">class</span> <span class="nc">Tickfilter</span><span class="p">(</span><span class="n">Op</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Tick filtering event operators that ``emit(time, price, size)``.&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_tickTypes&#39;</span><span class="p">,)</span>
@@ -343,12 +255,12 @@
         <span class="n">Op</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tickTypes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">tickTypes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">on_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ticker</span><span class="p">):</span>
+<div class="viewcode-block" id="Tickfilter.on_source"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Tickfilter.on_source">[docs]</a>    <span class="k">def</span> <span class="nf">on_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ticker</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">tickType</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tickTypes</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">price</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">price</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">size</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">timebars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timer</span><span class="p">:</span> <span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TimeBars&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="Tickfilter.timebars"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Tickfilter.timebars">[docs]</a>    <span class="k">def</span> <span class="nf">timebars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timer</span><span class="p">:</span> <span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TimeBars&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Aggregate ticks into time bars, where the timing of new bars</span>
 <span class="sd">        is derived from a timer event.</span>
@@ -360,9 +272,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">            timer: Event for timing when a new bar starts.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">TimeBars</span><span class="p">(</span><span class="n">timer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TimeBars</span><span class="p">(</span><span class="n">timer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">tickbars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TickBars&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="Tickfilter.tickbars"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Tickfilter.tickbars">[docs]</a>    <span class="k">def</span> <span class="nf">tickbars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TickBars&quot;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Aggregate ticks into bars that have the same number of ticks.</span>
 <span class="sd">        Emits a completed :class:`Bar`.</span>
@@ -373,18 +285,18 @@
 <span class="sd">        Args:</span>
 <span class="sd">            count: Number of ticks to use to form one bar.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">TickBars</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TickBars</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div></div>
 
 
-<span class="k">class</span> <span class="nc">Midpoints</span><span class="p">(</span><span class="n">Tickfilter</span><span class="p">):</span>
+<div class="viewcode-block" id="Midpoints"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Midpoints">[docs]</a><span class="k">class</span> <span class="nc">Midpoints</span><span class="p">(</span><span class="n">Tickfilter</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">on_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ticker</span><span class="p">):</span>
+<div class="viewcode-block" id="Midpoints.on_source"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Midpoints.on_source">[docs]</a>    <span class="k">def</span> <span class="nf">on_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ticker</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">ticker</span><span class="o">.</span><span class="n">midpoint</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">ticker</span><span class="o">.</span><span class="n">midpoint</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span></div></div>
 
 
-<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="Bar"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Bar">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">Bar</span><span class="p">:</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span>
     <span class="nb">open</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">nan</span>
@@ -392,10 +304,10 @@
     <span class="n">low</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">nan</span>
     <span class="n">close</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">nan</span>
     <span class="n">volume</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
-<span class="k">class</span> <span class="nc">BarList</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">Bar</span><span class="p">]):</span>
+<div class="viewcode-block" id="BarList"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.BarList">[docs]</a><span class="k">class</span> <span class="nc">BarList</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">Bar</span><span class="p">]):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
@@ -405,10 +317,10 @@
         <span class="k">return</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span>
 
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
-<span class="k">class</span> <span class="nc">TimeBars</span><span class="p">(</span><span class="n">Op</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeBars"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.TimeBars">[docs]</a><span class="k">class</span> <span class="nc">TimeBars</span><span class="p">(</span><span class="n">Op</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_timer&#39;</span><span class="p">,</span> <span class="s1">&#39;bars&#39;</span><span class="p">,)</span>
     <span class="vm">__doc__</span> <span class="o">=</span> <span class="n">Tickfilter</span><span class="o">.</span><span class="n">timebars</span><span class="o">.</span><span class="vm">__doc__</span>
 
@@ -420,7 +332,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_timer</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_timer_done</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bars</span> <span class="o">=</span> <span class="n">BarList</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">on_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeBars.on_source"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.TimeBars.on_source">[docs]</a>    <span class="k">def</span> <span class="nf">on_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">bar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -431,7 +343,7 @@
         <span class="n">bar</span><span class="o">.</span><span class="n">close</span> <span class="o">=</span> <span class="n">price</span>
         <span class="n">bar</span><span class="o">.</span><span class="n">volume</span> <span class="o">+=</span> <span class="n">size</span>
         <span class="n">bar</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_on_timer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">:</span>
@@ -445,10 +357,10 @@
 
     <span class="k">def</span> <span class="nf">_on_timer_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timer</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_done</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_done</span><span class="p">()</span></div>
 
 
-<span class="k">class</span> <span class="nc">TickBars</span><span class="p">(</span><span class="n">Op</span><span class="p">):</span>
+<div class="viewcode-block" id="TickBars"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.TickBars">[docs]</a><span class="k">class</span> <span class="nc">TickBars</span><span class="p">(</span><span class="n">Op</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_count&#39;</span><span class="p">,</span> <span class="s1">&#39;bars&#39;</span><span class="p">)</span>
     <span class="vm">__doc__</span> <span class="o">=</span> <span class="n">Tickfilter</span><span class="o">.</span><span class="n">tickbars</span><span class="o">.</span><span class="vm">__doc__</span>
 
@@ -459,7 +371,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="n">count</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bars</span> <span class="o">=</span> <span class="n">BarList</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">on_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+<div class="viewcode-block" id="TickBars.on_source"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.TickBars.on_source">[docs]</a>    <span class="k">def</span> <span class="nf">on_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bars</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">:</span>
             <span class="n">bar</span> <span class="o">=</span> <span class="n">Bar</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
@@ -472,53 +384,34 @@
             <span class="n">bar</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">bar</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2021, Ewald de Wit
-
-    </p>
+    <p>&#169; Copyright 2021, Ewald de Wit.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
