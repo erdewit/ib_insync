@@ -641,6 +641,13 @@ class IB:
         if trade:
             # this is a modification of an existing order
             assert trade.orderStatus.status not in OrderStatus.DoneStates
+            
+            # instant update of modified order, instead of waiting for openOrder-callback
+            trade.order.totalQuantity = order.totalQuantity
+            trade.order.lmtPrice = order.lmtPrice
+            trade.order.auxPrice = order.auxPrice
+            trade.order.orderType = order.orderType
+
             logEntry = TradeLogEntry(now, trade.orderStatus.status, 'Modify')
             trade.log.append(logEntry)
             self._logger.info(f'placeOrder: Modify order {trade}')
