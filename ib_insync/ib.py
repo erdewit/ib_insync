@@ -641,7 +641,7 @@ class IB:
         if trade:
             # this is a modification of an existing order
             assert trade.orderStatus.status not in OrderStatus.DoneStates
-            
+
             # update modified order, instead of wait for openOrder-callback
             trade.order.totalQuantity = order.totalQuantity
             trade.order.lmtPrice = order.lmtPrice
