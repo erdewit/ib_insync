@@ -642,7 +642,7 @@ class IB:
             # this is a modification of an existing order
             assert trade.orderStatus.status not in OrderStatus.DoneStates
             
-            # instant update of modified order, instead of waiting for openOrder-callback
+            # update modified order, instead of wait for openOrder-callback
             trade.order.totalQuantity = order.totalQuantity
             trade.order.lmtPrice = order.lmtPrice
             trade.order.auxPrice = order.auxPrice
