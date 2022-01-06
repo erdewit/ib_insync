@@ -792,8 +792,8 @@ class Wrapper:
                     with suppress(ValueError):
                         if v == '-99999.99':
                             v = 'nan'
-                        d[k] = float(v)
-                        d[k] = int(v)
+                        d[k] = float(v)                   # type: ignore
+                        d[k] = int(v)                     # type: ignore
                 ticker.fundamentalRatios = FundamentalRatios(**d)
             elif tickType in (48, 77):
                 # RT Volume or RT Trade Volume string format:
