@@ -462,11 +462,8 @@ class Watchdog:
 
 
 if __name__ == '__main__':
-    asyncio.get_event_loop().set_debug(True)
-    util.logToConsole(logging.DEBUG)
-    ibc = IBC(976, gateway=True, tradingMode='paper')
-#             userid='edemo', password='demouser')
+    ibc = IBC(1012, gateway=True, tradingMode='paper')
     ib = IB()
-    app = Watchdog(ibc, ib, port=4002, appStartupTime=15, appTimeout=10)
+    app = Watchdog(ibc, ib, appStartupTime=15)
     app.start()
     IB.run()
