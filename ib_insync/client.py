@@ -83,7 +83,7 @@ class Client:
     MaxRequests = 45
     RequestsInterval = 1
 
-    MinClientVersion = 142
+    MinClientVersion = 157
     MaxClientVersion = 163
 
     (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
@@ -403,11 +403,8 @@ class Client:
 
     def placeOrder(self, orderId, contract, order):
         version = self.serverVersion()
-        fields = [3]
-        if version < 145:
-            fields += [45]
-        fields += [
-            orderId,
+        fields = [
+            3, orderId,
             contract,
             contract.secIdType,
             contract.secId,
@@ -582,20 +579,16 @@ class Client:
             order.extOperator,
             order.softDollarTier.name,
             order.softDollarTier.val,
-            order.cashQty]
+            order.cashQty,
+            order.mifid2DecisionMaker,
+            order.mifid2DecisionAlgo,
+            order.mifid2ExecutionTrader,
+            order.mifid2ExecutionAlgo,
+            order.dontUseAutoPriceForHedge,
+            order.isOmsContainer,
+            order.discretionaryUpToLimitPrice,
+            order.usePriceMgmtAlgo]
 
-        if version >= 138:
-            fields += [order.mifid2DecisionMaker, order.mifid2DecisionAlgo]
-        if version >= 139:
-            fields += [order.mifid2ExecutionTrader, order.mifid2ExecutionAlgo]
-        if version >= 141:
-            fields += [order.dontUseAutoPriceForHedge]
-        if version >= 145:
-            fields += [order.isOmsContainer]
-        if version >= 148:
-            fields += [order.discretionaryUpToLimitPrice]
-        if version >= 151:
-            fields += [order.usePriceMgmtAlgo]
         if version >= 158:
             fields += [order.duration]
         if version >= 160:
@@ -634,8 +627,7 @@ class Client:
 
     def reqMktDepth(
             self, reqId, contract, numRows, isSmartDepth, mktDepthOptions):
-        version = self.serverVersion()
-        fields = [
+        self.send(
             10, 5, reqId,
             contract.conId,
             contract.symbol,
@@ -644,18 +636,14 @@ class Client:
             contract.strike,
             contract.right,
             contract.multiplier,
-            contract.exchange]
-        if version >= 149:
-            fields += [contract.primaryExchange]
-        fields += [
+            contract.exchange,
+            contract.primaryExchange,
             contract.currency,
             contract.localSymbol,
             contract.tradingClass,
-            numRows]
-        if version >= 146:
-            fields += [isSmartDepth]
-        fields += [mktDepthOptions]
-        self.send(*fields)
+            numRows,
+            isSmartDepth,
+            mktDepthOptions)
 
     def cancelMktDepth(self, reqId, isSmartDepth):
         self.send(11, 1, reqId, isSmartDepth)
@@ -682,10 +670,7 @@ class Client:
         self.send(18, 1, faData)
 
     def replaceFA(self, reqId, faData, cxml):
-        fields = [19, 1, faData, cxml]
-        if self.serverVersion() >= 157:
-            fields += [reqId]
-        self.send(*fields)
+        self.send(19, 1, faData, cxml, reqId)
 
     def reqHistoricalData(
             self, reqId, contract, endDateTime, durationStr, barSizeSetting,
@@ -725,13 +710,9 @@ class Client:
     def reqScannerSubscription(
             self, reqId, subscription, scannerSubscriptionOptions,
             scannerSubscriptionFilterOptions):
-        version = self.serverVersion()
         sub = subscription
-        fields = [22]
-        if version < 143:
-            fields += [4]
-        fields += [
-            reqId,
+        self.send(
+            22, reqId,
             sub.numberOfRows,
             sub.instrument,
             sub.locationCode,
@@ -752,11 +733,9 @@ class Client:
             sub.excludeConvertible,
             sub.averageOptionVolumeAbove,
             sub.scannerSettingPairs,
-            sub.stockTypeFilter]
-        if version >= 143:
-            fields += [scannerSubscriptionFilterOptions]
-        fields += [scannerSubscriptionOptions]
-        self.send(*fields)
+            sub.stockTypeFilter,
+            scannerSubscriptionFilterOptions,
+            scannerSubscriptionOptions)
 
     def cancelScannerSubscription(self, reqId):
         self.send(23, 1, reqId)
