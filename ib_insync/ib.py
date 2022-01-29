@@ -1065,9 +1065,9 @@ class IB:
 
     def reqHistoricalSchedule(
             self, contract: Contract, numDays: int,
-            endDateTime:
-                Union[datetime.datetime, datetime.date, str, None] = '') \
-            ->  HistoricalSchedule:
+            endDateTime: Union[
+                datetime.datetime, datetime.date, str, None] = '') \
+            -> HistoricalSchedule:
         """
         Request historical schedule.
 
@@ -1891,8 +1891,8 @@ class IB:
 
     def reqHistoricalScheduleAsync(
             self, contract: Contract, numDays: int,
-            endDateTime:
-                Union[datetime.datetime, datetime.date, str, None] = '') \
+            endDateTime: Union[
+                datetime.datetime, datetime.date, str, None] = '') \
             -> Awaitable[HistoricalSchedule]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)

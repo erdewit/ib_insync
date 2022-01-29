@@ -1285,16 +1285,16 @@ class Decoder:
         self.wrapper.completedOrder(c, o, st)
 
     def historicalSchedule(self, fields):
-        ( _,
-          reqId,
-          startDateTime,
-          endDateTime,
-          timeZone,
-          count, *fields) = fields
+        (
+            _,
+            reqId,
+            startDateTime,
+            endDateTime,
+            timeZone,
+            count, *fields) = fields
         get = iter(fields).__next__
         sessions = [HistoricalSession(
             startDateTime=get(), endDateTime=get(), refDate=get())
             for _ in range(int(count))]
         self.wrapper.historicalSchedule(
             int(reqId), startDateTime, endDateTime, timeZone, sessions)
-
