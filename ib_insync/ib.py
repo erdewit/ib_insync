@@ -14,9 +14,9 @@ from ib_insync.client import Client
 from ib_insync.contract import Contract, ContractDescription, ContractDetails
 from ib_insync.objects import (
     AccountValue, BarDataList, DepthMktDataDescription, Execution,
-    ExecutionFilter, Fill, HistogramData, HistoricalNews, NewsArticle,
-    NewsBulletin, NewsProvider, NewsTick, OptionChain, OptionComputation,
-    PnL, PnLSingle, PortfolioItem, Position, PriceIncrement,
+    ExecutionFilter, Fill, HistogramData, HistoricalNews, HistoricalSchedule,
+    NewsArticle, NewsBulletin, NewsProvider, NewsTick, OptionChain,
+    OptionComputation, PnL, PnLSingle, PortfolioItem, Position, PriceIncrement,
     RealTimeBarList, ScanDataList, ScannerSubscription, TagValue,
     TradeLogEntry)
 from ib_insync.order import (
@@ -1030,8 +1030,8 @@ class IB:
                 'TRADES', 'MIDPOINT', 'BID', 'ASK', 'BID_ASK',
                 'ADJUSTED_LAST', 'HISTORICAL_VOLATILITY',
                 'OPTION_IMPLIED_VOLATILITY', 'REBATE_RATE', 'FEE_RATE',
-                'YIELD_BID', 'YIELD_ASK', 'YIELD_BID_ASK', 'YIELD_LAST',
-                'SCHEDULE'.
+                'YIELD_BID', 'YIELD_ASK', 'YIELD_BID_ASK', 'YIELD_LAST'.
+                For 'SCHEDULE' use:meth:`.reqHistoricalSchedule`.
             useRTH: If True then only show data from within Regular
                 Trading Hours, if False then show all data.
             formatDate: For an intraday request setting to 2 will cause
@@ -1062,6 +1062,27 @@ class IB:
         """
         self.client.cancelHistoricalData(bars.reqId)
         self.wrapper.endSubscription(bars)
+
+    def reqHistoricalSchedule(
+            self, contract: Contract, numDays: int,
+            endDateTime:
+                Union[datetime.datetime, datetime.date, str, None] = '') \
+            ->  HistoricalSchedule:
+        """
+        Request historical schedule.
+
+        This method is blocking.
+
+        Args:
+            contract: Contract of interest.
+            numDays: Number of days.
+            endDateTime: Can be set to '' to indicate the current time,
+                or it can be given as a datetime.date or datetime.datetime,
+                or it can be given as a string in 'yyyyMMdd HH:mm:ss' format.
+                If no timezone is given then the TWS login timezone is used.
+        """
+        return self._run(self.reqHistoricalScheduleAsync(
+            contract, numDays, endDateTime))
 
     def reqHistoricalTicks(
             self, contract: Contract,
@@ -1867,6 +1888,19 @@ class IB:
             self._logger.warning(f'reqHistoricalData: Timeout for {contract}')
             bars.clear()
         return bars
+
+    def reqHistoricalScheduleAsync(
+            self, contract: Contract, numDays: int,
+            endDateTime:
+                Union[datetime.datetime, datetime.date, str, None] = '') \
+            -> Awaitable[HistoricalSchedule]:
+        reqId = self.client.getReqId()
+        future = self.wrapper.startReq(reqId, contract)
+        end = util.formatIBDatetime(endDateTime)
+        self.client.reqHistoricalData(
+            reqId, contract, end, f'{numDays} D', '1 day', 'SCHEDULE',
+            False, 2, False, None)
+        return future
 
     def reqHistoricalTicksAsync(
             self, contract: Contract,

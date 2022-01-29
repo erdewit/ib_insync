@@ -184,6 +184,21 @@ class PnLSingle:
     value: float = nan
 
 
+@dataclass
+class HistoricalSession:
+    startDateTime: str = ''
+    endDateTime: str = ''
+    refDate: str = ''
+
+
+@dataclass
+class HistoricalSchedule:
+    startDateTime: str = ''
+    endDateTime: str = ''
+    timeZone: str = ''
+    sessions: List[HistoricalSession] = field(default_factory=list)
+
+
 class AccountValue(NamedTuple):
     account: str
     tag: str

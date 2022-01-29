@@ -12,21 +12,20 @@ from ib_insync.contract import (
     Contract, ContractDescription, ContractDetails, DeltaNeutralContract,
     ScanData)
 from ib_insync.objects import (
-    AccountValue, BarData, BarDataList, CommissionReport,
-    DOMLevel, DepthMktDataDescription,
-    Dividends, Execution, Fill, FundamentalRatios, HistogramData,
-    HistoricalNews, HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
-    MktDepthData, NewsArticle, NewsBulletin, NewsProvider, NewsTick,
-    OptionChain, OptionComputation, PnL, PnLSingle, PortfolioItem, Position,
-    PriceIncrement, RealTimeBar, RealTimeBarList, TickAttribBidAsk,
-    TickAttribLast, TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint,
-    TickData, TradeLogEntry)
+    AccountValue, BarData, BarDataList, CommissionReport, DOMLevel,
+    DepthMktDataDescription, Dividends, Execution, Fill, FundamentalRatios,
+    HistogramData, HistoricalNews, HistoricalSchedule, HistoricalSession,
+    HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast, MktDepthData,
+    NewsArticle, NewsBulletin, NewsProvider, NewsTick, OptionChain,
+    OptionComputation, PnL, PnLSingle, PortfolioItem, Position, PriceIncrement,
+    RealTimeBar, RealTimeBarList, TickAttribBidAsk, TickAttribLast,
+    TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint, TickData,
+    TradeLogEntry)
 from ib_insync.order import Order, OrderState, OrderStatus, Trade
 from ib_insync.ticker import Ticker
 from ib_insync.util import (
     UNSET_DOUBLE, UNSET_INTEGER, dataclassAsDict, dataclassUpdate,
     globalErrorEvent, isNan, parseIBDatetime)
-
 
 OrderKeyType = Union[int, Tuple[int, int]]
 
@@ -1033,6 +1032,13 @@ class Wrapper:
             holdDays: int, futureLastTradeDate: str, dividendImpact: float,
             dividendsToLastTradeDate: float):
         pass
+
+    def historicalSchedule(
+            self, reqId: int, startDateTime: str, endDateTime: str,
+            timeZone: str, sessions: List[HistoricalSession]):
+        schedule = HistoricalSchedule(
+            startDateTime, endDateTime, timeZone, sessions)
+        self._endReq(reqId, schedule)
 
     def error(self, reqId: int, errorCode: int, errorString: str):
         # https://interactivebrokers.github.io/tws-api/message_codes.html

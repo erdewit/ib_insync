@@ -9,9 +9,9 @@ from .contract import (
     DeltaNeutralContract)
 from .objects import (
     BarData, CommissionReport, DepthMktDataDescription, Execution, FamilyCode,
-    HistogramData, HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast,
-    NewsProvider, PriceIncrement, SmartComponent, SoftDollarTier, TagValue,
-    TickAttribBidAsk, TickAttribLast)
+    HistogramData, HistoricalSession, HistoricalTick, HistoricalTickBidAsk,
+    HistoricalTickLast, NewsProvider, PriceIncrement, SmartComponent,
+    SoftDollarTier, TagValue, TickAttribBidAsk, TickAttribLast)
 from .order import Order, OrderComboLeg, OrderCondition, OrderState
 from .util import UNSET_DOUBLE, parseIBDatetime
 from .wrapper import Wrapper
@@ -158,6 +158,11 @@ class Decoder:
                 'completedOrdersEnd', [], skip=1),
             103: self.wrap(
                 'replaceFAEnd', [int, str], skip=1),
+            104: self.wrap(
+                'wshMetaData', [int, str], skip=1),
+            105: self.wrap(
+                'wshEventData', [int, str], skip=1),
+            106: self.historicalSchedule
         }
 
     def wrap(self, methodName, types, skip=2):
@@ -1278,3 +1283,18 @@ class Decoder:
         self.parse(o)
         self.parse(st)
         self.wrapper.completedOrder(c, o, st)
+
+    def historicalSchedule(self, fields):
+        ( _,
+          reqId,
+          startDateTime,
+          endDateTime,
+          timeZone,
+          count, *fields) = fields
+        get = iter(fields).__next__
+        sessions = [HistoricalSession(
+            startDateTime=get(), endDateTime=get(), refDate=get())
+            for _ in range(int(count))]
+        self.wrapper.historicalSchedule(
+            int(reqId), startDateTime, endDateTime, timeZone, sessions)
+

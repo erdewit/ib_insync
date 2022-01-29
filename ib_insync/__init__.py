@@ -19,10 +19,10 @@ from .objects import (
     AccountValue, BarData, BarDataList, CommissionReport, ConnectionStats,
     DOMLevel, DepthMktDataDescription, Dividends, Execution, ExecutionFilter,
     FamilyCode, Fill, FundamentalRatios, HistogramData, HistoricalNews,
-    HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast, MktDepthData,
-    NewsArticle, NewsBulletin, NewsProvider, NewsTick, OptionChain,
-    OptionComputation, PnL, PnLSingle, PortfolioItem, Position,
-    PriceIncrement, RealTimeBar, RealTimeBarList, ScanDataList,
+    HistoricalSchedule, HistoricalSession, HistoricalTick, HistoricalTickBidAsk,
+    HistoricalTickLast, MktDepthData, NewsArticle, NewsBulletin, NewsProvider,
+    NewsTick, OptionChain, OptionComputation, PnL, PnLSingle, PortfolioItem,
+    Position, PriceIncrement, RealTimeBar, RealTimeBarList, ScanDataList,
     ScannerSubscription, SmartComponent, SoftDollarTier, TickAttrib,
     TickAttribBidAsk, TickAttribLast, TickByTickAllLast, TickByTickBidAsk,
     TickByTickMidPoint, TickData, TradeLogEntry)
@@ -35,7 +35,6 @@ from .ticker import Ticker
 from .version import __version__, __version_info__
 from .wrapper import RequestError, Wrapper
 
-
 __all__ = [
     'Event', 'util', 'Client',
     'Bag', 'Bond', 'CFD', 'ComboLeg', 'Commodity', 'ContFuture', 'Contract',
@@ -45,9 +44,10 @@ __all__ = [
     'IB', 'IBC', 'IBController', 'Watchdog',
     'AccountValue', 'BarData', 'BarDataList', 'CommissionReport',
     'ConnectionStats', 'DOMLevel', 'DepthMktDataDescription', 'Dividends',
-    'Execution', 'ExecutionFilter', 'FamilyCode', 'Fill', 'FundamentalRatios',
+    'Execution', 'ExecutionFilter', 'FamilyCode', 'Fill','FundamentalRatios',
     'HistogramData', 'HistoricalNews', 'HistoricalTick',
-    'HistoricalTickBidAsk', 'HistoricalTickLast', 'MktDepthData',
+    'HistoricalTickBidAsk', 'HistoricalTickLast',
+    'HistoricalSchedule', 'HistoricalSession', 'MktDepthData',
     'NewsArticle', 'NewsBulletin', 'NewsProvider', 'NewsTick', 'OptionChain',
     'OptionComputation', 'PnL', 'PnLSingle', 'PortfolioItem', 'Position',
     'PriceIncrement', 'RealTimeBar', 'RealTimeBarList', 'ScanDataList',
