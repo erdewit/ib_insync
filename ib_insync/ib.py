@@ -1030,7 +1030,8 @@ class IB:
                 'TRADES', 'MIDPOINT', 'BID', 'ASK', 'BID_ASK',
                 'ADJUSTED_LAST', 'HISTORICAL_VOLATILITY',
                 'OPTION_IMPLIED_VOLATILITY', 'REBATE_RATE', 'FEE_RATE',
-                'YIELD_BID', 'YIELD_ASK', 'YIELD_BID_ASK', 'YIELD_LAST'.
+                'YIELD_BID', 'YIELD_ASK', 'YIELD_BID_ASK', 'YIELD_LAST',
+                'SCHEDULE'.
             useRTH: If True then only show data from within Regular
                 Trading Hours, if False then show all data.
             formatDate: For an intraday request setting to 2 will cause
