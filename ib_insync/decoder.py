@@ -245,8 +245,10 @@ class Decoder:
     def contractDetails(self, fields):
         cd = ContractDetails()
         cd.contract = c = Contract()
+        if self.serverVersion < 164:
+            fields.pop(0)
         (
-            _, _,
+            _,
             reqId,
             c.symbol,
             c.secType,
@@ -260,7 +262,10 @@ class Decoder:
             c.tradingClass,
             c.conId,
             cd.minTick,
-            cd.mdSizeMultiplier,
+            *fields) = fields
+        if self.serverVersion < 164:
+            fields.pop(0)  # obsolte mdSizeMultiplier
+        (
             c.multiplier,
             cd.orderTypes,
             cd.validExchanges,
@@ -295,8 +300,15 @@ class Decoder:
             *fields) = fields
         if self.serverVersion >= 152:
             cd.stockType, *fields = fields
-        if self.serverVersion >= 163:
-            cd.sizeMinTick, *fields = fields
+        if self.serverVersion == 163:
+            cd.suggestedSizeIncrement, *fields = fields
+        if self.serverVersion >= 164:
+            (
+                cd.minSize,
+                cd.sizeIncrement,
+                cd.suggestedSizeIncrement,
+                # cd.minCashQtySize,
+                *fields) = fields
 
         times = lastTimes.split()
         if len(times) > 0:
@@ -314,8 +326,10 @@ class Decoder:
     def bondContractDetails(self, fields):
         cd = ContractDetails()
         cd.contract = c = Contract()
+        if self.serverVersion < 164:
+            fields.pop(0)
         (
-            _, _,
+            _,
             reqId,
             c.symbol,
             c.secType,
@@ -336,7 +350,10 @@ class Decoder:
             c.tradingClass,
             c.conId,
             cd.minTick,
-            cd.mdSizeMultiplier,
+            *fields) = fields
+        if self.serverVersion < 164:
+            fields.pop(0)  # obsolte mdSizeMultiplier
+        (
             cd.orderTypes,
             cd.validExchanges,
             cd.nextOptionDate,
@@ -357,6 +374,13 @@ class Decoder:
                 cd.secIdList += [TagValue(tag, value)]
 
         cd.aggGroup, cd.marketRuleIds = fields
+        if self.serverVersion >= 164:
+            (
+                cd.minSize,
+                cd.sizeIncrement,
+                cd.suggestedSizeIncrement,
+                # cd.minCashQtySize,
+                *fields) = fields
 
         times = lastTimes.split()
         if len(times) > 0:

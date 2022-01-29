@@ -464,7 +464,6 @@ class ContractDetails:
     contract: Optional[Contract] = None
     marketName: str = ''
     minTick: float = 0.0
-    sizeMinTick: float = 0.0
     orderTypes: str = ''
     validExchanges: str = ''
     priceMagnifier: int = 0
@@ -479,7 +478,7 @@ class ContractDetails:
     liquidHours: str = ''
     evRule: str = ''
     evMultiplier: int = 0
-    mdSizeMultiplier: int = 0
+    mdSizeMultiplier: int = 1  # obsolete
     aggGroup: int = 0
     underSymbol: str = ''
     underSecType: str = ''
@@ -488,6 +487,10 @@ class ContractDetails:
     realExpirationDate: str = ''
     lastTradeTime: str = ''
     stockType: str = ''
+    minSize: float = 0.0
+    sizeIncrement: float = 0.0
+    suggestedSizeIncrement: float = 0.0
+    # minCashQtySize: float = 0.0
     cusip: str = ''
     ratings: str = ''
     descAppend: str = ''
