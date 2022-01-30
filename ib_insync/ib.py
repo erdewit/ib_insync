@@ -1066,8 +1066,8 @@ class IB:
     def reqHistoricalSchedule(
             self, contract: Contract, numDays: int,
             endDateTime: Union[
-                datetime.datetime, datetime.date, str, None] = '') \
-            -> HistoricalSchedule:
+                datetime.datetime, datetime.date, str, None] = '',
+            useRTH: bool = True) -> HistoricalSchedule:
         """
         Request historical schedule.
 
@@ -1080,9 +1080,11 @@ class IB:
                 or it can be given as a datetime.date or datetime.datetime,
                 or it can be given as a string in 'yyyyMMdd HH:mm:ss' format.
                 If no timezone is given then the TWS login timezone is used.
+            useRTH: If True then show schedule for Regular Trading Hours,
+                if False then for extended hours.
         """
         return self._run(self.reqHistoricalScheduleAsync(
-            contract, numDays, endDateTime))
+            contract, numDays, endDateTime, useRTH))
 
     def reqHistoricalTicks(
             self, contract: Contract,
@@ -1892,14 +1894,14 @@ class IB:
     def reqHistoricalScheduleAsync(
             self, contract: Contract, numDays: int,
             endDateTime: Union[
-                datetime.datetime, datetime.date, str, None] = '') \
-            -> Awaitable[HistoricalSchedule]:
+                datetime.datetime, datetime.date, str, None] = '',
+            useRTH: bool = True) -> Awaitable[HistoricalSchedule]:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         end = util.formatIBDatetime(endDateTime)
         self.client.reqHistoricalData(
             reqId, contract, end, f'{numDays} D', '1 day', 'SCHEDULE',
-            False, 2, False, None)
+            useRTH, 1, False, None)
         return future
 
     def reqHistoricalTicksAsync(
