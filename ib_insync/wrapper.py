@@ -1040,7 +1040,9 @@ class Wrapper:
             startDateTime, endDateTime, timeZone, sessions)
         self._endReq(reqId, schedule)
 
-    def error(self, reqId: int, errorCode: int, errorString: str):
+    def error(
+            self, reqId: int, errorCode: int, errorString: str,
+            advancedOrderRejectJson: str):
         # https://interactivebrokers.github.io/tws-api/message_codes.html
         warningCodes = {165, 202, 399, 404, 434, 492, 10167}
         isWarning = errorCode in warningCodes or 2100 <= errorCode < 2200
@@ -1066,6 +1068,8 @@ class Wrapper:
             elif (self.clientId, reqId) in self.trades:
                 # something is wrong with the order, cancel it
                 trade = self.trades[(self.clientId, reqId)]
+                if advancedOrderRejectJson:
+                    trade.advancedError = advancedOrderRejectJson
                 if not trade.isDone():
                     status = trade.orderStatus.status = OrderStatus.Cancelled
                     logEntry = TradeLogEntry(

@@ -84,7 +84,7 @@ class Client:
     RequestsInterval = 1
 
     MinClientVersion = 157
-    MaxClientVersion = 166
+    MaxClientVersion = 167
 
     (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
 
@@ -595,6 +595,9 @@ class Client:
             fields += [order.postToAts]
         if version >= 162:
             fields += [order.autoCancelParent]
+        if version >= 166:
+            fields += [order.advancedErrorOverride]
+
         self.send(*fields)
 
     def cancelOrder(self, orderId):

@@ -32,8 +32,7 @@ class Decoder:
                 'orderStatus', [
                     int, str, float, float, float, int, int,
                     float, int, str, float], skip=1),
-            4: self.wrap(
-                'error', [int, int, str]),
+            4: self.errorMsg,
             5: self.openOrder,
             6: self.wrap(
                 'updateAccountValue', [str, str, str, str]),
@@ -219,6 +218,14 @@ class Decoder:
         if price:
             self.wrapper.priceSizeTick(
                 int(reqId), int(tickType), float(price), float(size or 0))
+
+    def errorMsg(self, fields):
+        _, _, reqId, errorCode, errorString, *fields = fields
+        advancedOrderRejectJson = ''
+        if self.serverVersion >= 166:
+            advancedOrderRejectJson, *fields = fields
+        self.wrapper.error(
+            int(reqId), int(errorCode), errorString, advancedOrderRejectJson)
 
     def updatePortfolio(self, fields):
         c = Contract()

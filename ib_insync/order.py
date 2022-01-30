@@ -150,6 +150,7 @@ class Order:
     usePriceMgmtAlgo: bool = False
     duration: int = UNSET_INTEGER
     postToAts: int = UNSET_INTEGER
+    advancedErrorOverride: str = ''
 
     def __repr__(self):
         attrs = dataclassNonDefaults(self)
@@ -288,6 +289,7 @@ class Trade:
     orderStatus: 'OrderStatus' = field(default_factory=OrderStatus)
     fills: List[Fill] = field(default_factory=list)
     log: List[TradeLogEntry] = field(default_factory=list)
+    advancedError: str = ''
 
     def __post_init__(self):
         self.statusEvent = Event('statusEvent')
