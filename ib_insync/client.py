@@ -84,7 +84,7 @@ class Client:
     RequestsInterval = 1
 
     MinClientVersion = 157
-    MaxClientVersion = 165
+    MaxClientVersion = 167
 
     (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
 
@@ -936,3 +936,15 @@ class Client:
 
     def reqCompletedOrders(self, apiOnly):
         self.send(99, apiOnly)
+
+    def reqWshMetaData(self, reqId):
+        self.send(100, reqId)
+
+    def cancelWshMetaData(self, reqId):
+        self.send(101, reqId)
+
+    def reqWshEventData(self, reqId, conId):
+        self.send(102, reqId, conId)
+
+    def cancelWshEventData(self, reqId):
+        self.send(103, reqId)
