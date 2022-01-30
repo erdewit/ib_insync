@@ -162,7 +162,9 @@ class Decoder:
                 'wshMetaData', [int, str], skip=1),
             105: self.wrap(
                 'wshEventData', [int, str], skip=1),
-            106: self.historicalSchedule
+            106: self.historicalSchedule,
+            107: self.wrap(
+                'userInfo', [int, str], skip=1)
         }
 
     def wrap(self, methodName, types, skip=2):

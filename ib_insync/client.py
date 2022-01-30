@@ -84,7 +84,7 @@ class Client:
     RequestsInterval = 1
 
     MinClientVersion = 157
-    MaxClientVersion = 167
+    MaxClientVersion = 166
 
     (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
 
@@ -948,3 +948,6 @@ class Client:
 
     def cancelWshEventData(self, reqId):
         self.send(103, reqId)
+
+    def reqUserInfo(self, reqId):
+        self.send(104, reqId)
