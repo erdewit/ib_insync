@@ -278,7 +278,7 @@ class Decoder:
             cd.minTick,
             *fields) = fields
         if self.serverVersion < 164:
-            fields.pop(0)  # obsolte mdSizeMultiplier
+            fields.pop(0)  # obsolete mdSizeMultiplier
         (
             c.multiplier,
             cd.orderTypes,
@@ -311,9 +311,8 @@ class Decoder:
             cd.underSecType,
             cd.marketRuleIds,
             cd.realExpirationDate,
+            cd.stockType,
             *fields) = fields
-        if self.serverVersion >= 152:
-            cd.stockType, *fields = fields
         if self.serverVersion == 163:
             cd.suggestedSizeIncrement, *fields = fields
         if self.serverVersion >= 164:
@@ -330,9 +329,7 @@ class Decoder:
         if len(times) > 1:
             cd.lastTradeTime = times[1]
 
-        if self.serverVersion >= 153:
-            cd.longName = cd.longName.encode().decode('unicode-escape')
-
+        cd.longName = cd.longName.encode().decode('unicode-escape')
         self.parse(cd)
         self.parse(c)
         self.wrapper.contractDetails(int(reqId), cd)
@@ -366,7 +363,7 @@ class Decoder:
             cd.minTick,
             *fields) = fields
         if self.serverVersion < 164:
-            fields.pop(0)  # obsolte mdSizeMultiplier
+            fields.pop(0)  # obsolete mdSizeMultiplier
         (
             cd.orderTypes,
             cd.validExchanges,
@@ -521,11 +518,7 @@ class Decoder:
         self.wrapper.scannerDataEnd(int(reqId))
 
     def tickOptionComputation(self, fields):
-        if self.serverVersion >= 156:
-            _, reqId, tickTypeInt, tickAttrib, *fields = fields
-        else:
-            _, _, reqId, tickTypeInt, *fields = fields
-            tickAttrib = 0
+        _, reqId, tickTypeInt, tickAttrib, *fields = fields
         impliedVol, delta, optPrice, pvDividend, \
             gamma, vega, theta, undPrice = fields
 
@@ -824,10 +817,6 @@ class Decoder:
         o = Order()
         c = Contract()
         st = OrderState()
-
-        if self.serverVersion < 145:
-            fields.pop(0)
-
         (
             _,
             o.orderId,
@@ -998,18 +987,12 @@ class Decoder:
             o.solicited,
             o.whatIf,
             st.status,
-            *fields) = fields
-
-        if self.serverVersion >= 142:
-            (
-                st.initMarginBefore,
-                st.maintMarginBefore,
-                st.equityWithLoanBefore,
-                st.initMarginChange,
-                st.maintMarginChange,
-                st.equityWithLoanChange,
-                *fields) = fields
-        (
+            st.initMarginBefore,
+            st.maintMarginBefore,
+            st.equityWithLoanBefore,
+            st.initMarginChange,
+            st.maintMarginChange,
+            st.equityWithLoanChange,
             st.initMarginAfter,
             st.maintMarginAfter,
             st.equityWithLoanAfter,
@@ -1059,16 +1042,12 @@ class Decoder:
             o.softDollarTier.val,
             o.softDollarTier.displayName,
             o.cashQty,
+            o.dontUseAutoPriceForHedge,
+            o.isOmsContainer,
+            o.discretionaryUpToLimitPrice,
+            o.usePriceMgmtAlgo,
             *fields) = fields
 
-        if self.serverVersion >= 141:
-            o.dontUseAutoPriceForHedge = fields.pop(0)
-        if self.serverVersion >= 145:
-            o.isOmsContainer = fields.pop(0)
-        if self.serverVersion >= 148:
-            o.discretionaryUpToLimitPrice = fields.pop(0)
-        if self.serverVersion >= 151:
-            o.usePriceMgmtAlgo = fields.pop(0)
         if self.serverVersion >= 159:
             o.duration = fields.pop(0)
         if self.serverVersion >= 160:
@@ -1269,14 +1248,8 @@ class Decoder:
             o.trailStopPrice,
             o.lmtPriceOffset,
             o.cashQty,
-            *fields) = fields
-
-        if self.serverVersion >= 141:
-            o.dontUseAutoPriceForHedge = fields.pop(0)
-        if self.serverVersion >= 145:
-            o.isOmsContainer = fields.pop(0)
-
-        (
+            o.dontUseAutoPriceForHedge,
+            o.isOmsContainer,
             o.autoCancelDate,
             o.filledQuantity,
             o.refFuturesConId,
