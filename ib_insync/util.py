@@ -505,7 +505,7 @@ def formatIBDatetime(dt: Union[date, datetime, str, None]) -> str:
     elif isinstance(dt, datetime):
         if dt.tzinfo:
             # convert to local system timezone
-            dt = dt.astimezone()
+            dt = dt.astimezone(tz=None)
         s = dt.strftime('%Y%m%d %H:%M:%S')
     elif isinstance(dt, date):
         s = dt.strftime('%Y%m%d 23:59:59')
