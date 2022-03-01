@@ -213,7 +213,7 @@ class Wrapper:
         if not self.lastTime:
             return
         now = datetime.now(timezone.utc)
-        diff = (now - self.lastTime).total_seconds()
+        diff = (now - self.lastTime.astimezone(timezone.utc)).total_seconds()
         if not delay:
             delay = self._timeout - diff
         if delay > 0:
