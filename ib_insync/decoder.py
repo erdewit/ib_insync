@@ -60,6 +60,8 @@ class Decoder:
                 'scannerParameters', [str]),
             20: self.scannerData,
             21: self.tickOptionComputation,
+            32: self.wrap('tickString', [str]),
+            33: self.wrap('tickString', [str]),
             45: self.wrap(
                 'tickGeneric', [int, int, float]),
             46: self.wrap(
