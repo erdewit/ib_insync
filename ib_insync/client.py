@@ -117,7 +117,7 @@ class Client:
     def reset(self):
         self.connState = Client.DISCONNECTED
         self._apiReady = False
-        self._serverVersion = None
+        self._serverVersion = 0
         self._data = b''
         self._hasReqId = False
         self._reqIdSeq = 0
@@ -129,7 +129,7 @@ class Client:
         self._msgQ = deque()
         self._timeQ = deque()
 
-    def serverVersion(self):
+    def serverVersion(self) -> int:
         return self._serverVersion
 
     def run(self):
