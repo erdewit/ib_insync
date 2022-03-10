@@ -787,6 +787,8 @@ class Wrapper:
                 ticker.bidExchange = value
             elif tickType == 33:
                 ticker.askExchange = value
+            elif tickType == 84:
+                ticker.lastExchange = value
             elif tickType == 47:
                 # https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html
                 d = dict(t.split('=')                     # type: ignore

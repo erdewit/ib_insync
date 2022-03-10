@@ -52,6 +52,7 @@ class Ticker:
     askExchange: str = ''
     last: float = nan
     lastSize: float = nan
+    lastExchange: str = ''
     prevBid: float = nan
     prevBidSize: float = nan
     prevAsk: float = nan
@@ -161,11 +162,11 @@ class TickerUpdateEvent(Event):
 
     def bids(self) -> "Tickfilter":
         """Emit bid ticks."""
-        return Tickfilter((0, 1, 32, 66, 69), self)
+        return Tickfilter((0, 1, 66, 69), self)
 
     def asks(self) -> "Tickfilter":
         """Emit ask ticks."""
-        return Tickfilter((2, 3, 33, 67, 70), self)
+        return Tickfilter((2, 3, 67, 70), self)
 
     def bidasks(self) -> "Tickfilter":
         """Emit bid and ask ticks."""
