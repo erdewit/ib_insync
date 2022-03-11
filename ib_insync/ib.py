@@ -1938,7 +1938,7 @@ class IB:
             reqId, contract, whatToShow, useRTH, formatDate)
         return future
 
-   def reqSmartComponentsAsync(self, bboExchange):
+    def reqSmartComponentsAsync(self, bboExchange):
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId)
         self.client.reqSmartComponents(reqId, bboExchange)
