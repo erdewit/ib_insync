@@ -17,8 +17,8 @@ from ib_insync.objects import (
     ExecutionFilter, Fill, HistogramData, HistoricalNews, HistoricalSchedule,
     NewsArticle, NewsBulletin, NewsProvider, NewsTick, OptionChain,
     OptionComputation, PnL, PnLSingle, PortfolioItem, Position, PriceIncrement,
-    RealTimeBarList, ScanDataList, ScannerSubscription, TagValue,
-    TradeLogEntry)
+    RealTimeBarList, ScanDataList, ScannerSubscription, SmartComponent,
+    TagValue, TradeLogEntry)
 from ib_insync.order import (
     BracketOrder, LimitOrder, Order, OrderState, OrderStatus, StopOrder, Trade)
 from ib_insync.ticker import Ticker
@@ -1271,6 +1271,15 @@ class IB:
             self._logger.error(
                 f'cancelMktData: No reqId found for contract {contract}')
 
+    def reqSmartComponents(self, bboExchange: str) -> List[SmartComponent]:
+        """
+        Obtain mapping from single letter codes to exchange names.
+
+        Note: The exchanges must be open when using this request, otherwise an
+        empty list is returned.
+        """
+        return self._run(self.reqSmartComponentsAsync(bboExchange))
+
     def reqMktDepthExchanges(self) -> List[DepthMktDataDescription]:
         """
         Get those exchanges that have have multiple market makers
@@ -1927,6 +1936,12 @@ class IB:
         future = self.wrapper.startReq(reqId, contract)
         self.client.reqHeadTimeStamp(
             reqId, contract, whatToShow, useRTH, formatDate)
+        return future
+
+   def reqSmartComponentsAsync(self, bboExchange):
+        reqId = self.client.getReqId()
+        future = self.wrapper.startReq(reqId)
+        self.client.reqSmartComponents(reqId, bboExchange)
         return future
 
     def reqMktDepthExchangesAsync(self) -> \

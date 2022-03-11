@@ -879,6 +879,9 @@ class Wrapper:
             snapshotPermissions: int):
         pass
 
+    def smartComponents(self, reqId, components):
+        self._endReq(reqId, components)
+
     def mktDepthExchanges(
             self, depthMktDataDescriptions: List[DepthMktDataDescription]):
         self._endReq('mktDepthExchanges', depthMktDataDescriptions)
