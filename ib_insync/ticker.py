@@ -46,10 +46,13 @@ class Ticker:
     marketDataType: int = 1
     bid: float = nan
     bidSize: float = nan
+    bidExchange: str = ''
     ask: float = nan
     askSize: float = nan
+    askExchange: str = ''
     last: float = nan
     lastSize: float = nan
+    lastExchange: str = ''
     prevBid: float = nan
     prevBidSize: float = nan
     prevAsk: float = nan
