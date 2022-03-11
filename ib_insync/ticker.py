@@ -44,6 +44,7 @@ class Ticker:
     contract: Optional[Contract] = None
     time: Optional[datetime] = None
     marketDataType: int = 1
+    minTick: float = nan
     bid: float = nan
     bidSize: float = nan
     bidExchange: str = ''
@@ -111,6 +112,8 @@ class Ticker:
     auctionPrice: float = nan
     auctionImbalance: float = nan
     regulatoryImbalance: float = nan
+    bboExchange: str = ''
+    snapshotPermissions: int = 0
 
     def __post_init__(self):
         self.updateEvent = TickerUpdateEvent('updateEvent')

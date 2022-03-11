@@ -877,7 +877,12 @@ class Wrapper:
     def tickReqParams(
             self, reqId: int, minTick: float, bboExchange: str,
             snapshotPermissions: int):
-        pass
+        ticker = self.reqId2Ticker.get(reqId)
+        if not ticker:
+            return
+        ticker.minTick = minTick
+        ticker.bboExchange = bboExchange
+        ticker.snapshotPermissions = snapshotPermissions
 
     def smartComponents(self, reqId, components):
         self._endReq(reqId, components)
