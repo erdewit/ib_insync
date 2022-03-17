@@ -1709,10 +1709,10 @@ class IB:
         result = []
         for contract, detailsList in zip(contracts, detailsLists):
             if not detailsList:
-                self._logger.error(f'Unknown contract: {contract}')
+                self._logger.warning(f'Unknown contract: {contract}')
             elif len(detailsList) > 1:
                 possibles = [details.contract for details in detailsList]
-                self._logger.error(
+                self._logger.warning(
                     f'Ambiguous contract: {contract}, '
                     f'possibles are {possibles}')
             else:
