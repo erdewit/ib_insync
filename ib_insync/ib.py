@@ -1715,6 +1715,8 @@ class IB:
                 self._logger.error(
                     f'Ambiguous contract: {contract}, '
                     f'possibles are {possibles}')
+                # return all possible contracts that match
+                result.extend(possibles)
             else:
                 c = detailsList[0].contract
                 expiry = c.lastTradeDateOrContractMonth
