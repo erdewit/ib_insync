@@ -84,8 +84,6 @@ class Wrapper:
         self.ticker2ReqId: Dict[Union[int, str], Dict[Ticker, int]] = \
             defaultdict(dict)
         #    tickType -> Ticker -> reqId
-        self.reqId2MarketDataType: Dict[int, int] = {}
-        #   reqId -> marketDataType
         self.reqId2Subscriber: Dict[int, Any] = {}
         #    live bars or live scan data
         self.reqId2PnL: Dict[int, PnL] = {}
@@ -524,7 +522,9 @@ class Wrapper:
         self._endReq(f'marketRule-{marketRuleId}', priceIncrements)
 
     def marketDataType(self, reqId: int, marketDataId: int):
-        self.reqId2MarketDataType[reqId] = marketDataId
+        ticker = self.reqId2Ticker.get(reqId)
+        if ticker:
+            ticker.marketDataType = marketDataId
 
     def realtimeBar(
             self, reqId: int, time: int, open_: float, high: float, low: float,
@@ -661,7 +661,6 @@ class Wrapper:
         if price or size:
             tick = TickData(self.lastTime, tickType, price, size)
             ticker.ticks.append(tick)
-        ticker.marketDataType = self.reqId2MarketDataType.get(reqId, 0)
         self.pendingTickers.add(ticker)
 
     def tickSize(self, reqId: int, tickType: int, size: float):
@@ -717,7 +716,6 @@ class Wrapper:
         if price or size:
             tick = TickData(self.lastTime, tickType, price, size)
             ticker.ticks.append(tick)
-        ticker.marketDataType = self.reqId2MarketDataType.get(reqId, 0)
         self.pendingTickers.add(ticker)
 
     def tickSnapshotEnd(self, reqId: int):
