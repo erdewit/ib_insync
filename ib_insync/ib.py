@@ -1227,7 +1227,6 @@ class IB:
         """
         ticker = self.ticker(contract)
         reqId = self.wrapper.endTicker(ticker, 'mktData')
-        self.wrapper.reqId2MarketDataType.pop(reqId, None)
         if reqId:
             self.client.cancelMktData(reqId)
         else:
@@ -1666,9 +1665,11 @@ class IB:
             if not account and len(accounts) == 1:
                 account = accounts[0]
 
-            # prepare initializing  requests
+            # prepare initializing requests
             reqs: Dict = {}  # name -> request
             reqs['positions'] = self.reqPositionsAsync()
+            if not readonly:
+                reqs['open orders'] = self.reqOpenOrdersAsync()
             if not readonly and self.client.serverVersion() >= 150:
                 reqs['completed orders'] = self.reqCompletedOrdersAsync(False)
             if account:
@@ -1747,8 +1748,6 @@ class IB:
         await asyncio.gather(*futures)
         for ticker in tickers:
             self.wrapper.endTicker(ticker, 'snapshot')
-        for reqId in reqIds:
-            self.wrapper.reqId2MarketDataType.pop(reqId, None)
         return tickers
 
     def whatIfOrderAsync(self, contract: Contract, order: Order) -> \
