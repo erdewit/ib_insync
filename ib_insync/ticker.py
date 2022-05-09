@@ -144,15 +144,16 @@ class Ticker:
         """
         Return the first available one of
 
-        * last price if within current bid/ask;
-        * average of bid and ask (midpoint);
-        * close price.
+        * last price if within current bid/ask or no bid/ask available;
+        * average of bid and ask (midpoint).
         """
-        price = self.last if (
-            self.hasBidAsk() and self.bid <= self.last <= self.ask) else \
-            self.midpoint()
-        if isNan(price):
-            price = self.close
+        if self.hasBidAsk():
+            if self.bid <= self.last <= self.ask:
+                price = self.last
+            else:
+                price = self.midpoint()
+        else:
+            price = self.last
         return price
 
 
