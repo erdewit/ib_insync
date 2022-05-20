@@ -19,7 +19,7 @@ class FlexError(Exception):
 class FlexReport:
     """
     Download and parse IB account statements via the Flex Web Service.
-    https://www.interactivebrokers.com/en/software/am/am/reports/flex_web_service_version_3.htm
+    https://guides.interactivebrokers.com/cp/cp.htm#am/reporting/flexqueries.htm
 
     Make sure to use a XML query (not CSV). A large query can take a few
     minutes. In the weekends the query servers can be down.
