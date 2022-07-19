@@ -394,6 +394,7 @@ class Watchdog:
         self._logger.info('Starting')
         self.startingEvent.emit(self)
         self._runner = asyncio.ensure_future(self.runAsync())
+        return self._runner
 
     def stop(self):
         self._logger.info('Stopping')
