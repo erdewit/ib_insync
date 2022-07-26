@@ -96,7 +96,8 @@ class Window(qt.QWidget):
             self.add("Stock('TSLA', 'SMART', 'USD')")
 
     def closeEvent(self, ev):
-        asyncio.get_event_loop().stop()
+        loop = util.getLoop()
+        loop.stop()
 
 
 if __name__ == '__main__':

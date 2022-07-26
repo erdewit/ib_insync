@@ -7,7 +7,7 @@ import ib_insync as ibi
 
 @pytest.fixture(scope='session')
 def event_loop():
-    loop = asyncio.get_event_loop()
+    loop = ibi.util.getLoop()
     yield loop
     loop.close()
 

@@ -25,7 +25,7 @@ from ib_insync.order import Order, OrderState, OrderStatus, Trade
 from ib_insync.ticker import Ticker
 from ib_insync.util import (
     UNSET_DOUBLE, UNSET_INTEGER, dataclassAsDict, dataclassUpdate,
-    globalErrorEvent, isNan, parseIBDatetime)
+    getLoop, globalErrorEvent, isNan, parseIBDatetime)
 
 OrderKeyType = Union[int, Tuple[int, int]]
 
@@ -215,7 +215,7 @@ class Wrapper:
         if not delay:
             delay = self._timeout - diff
         if delay > 0:
-            loop = asyncio.get_event_loop()
+            loop = getLoop()
             self._timeoutHandle = loop.call_later(delay, self._setTimer)
         else:
             self._logger.debug('Timeout')

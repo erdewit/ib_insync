@@ -23,7 +23,7 @@ class TkApp:
         self.button.grid()
         self.text = tk.Text(self.root)
         self.text.grid()
-        self.loop = asyncio.get_event_loop()
+        self.loop = util.getLoop()
 
     def onButtonClick(self):
         contract = eval(self.entry.get())

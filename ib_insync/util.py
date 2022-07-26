@@ -297,7 +297,7 @@ def run(*awaitables: Awaitable, timeout: float = None):
     asyncio.TimeoutError if the awaitables are not ready within the
     timeout period.
     """
-    loop = asyncio.get_event_loop()
+    loop = getLoop()
     if not awaitables:
         if loop.is_running():
             return
@@ -363,7 +363,7 @@ def schedule(
     dt = _fillDate(time)
     now = datetime.now(dt.tzinfo)
     delay = (dt - now).total_seconds()
-    loop = asyncio.get_event_loop()
+    loop = getLoop()
     return loop.call_later(delay, callback, *args)
 
 
@@ -453,6 +453,11 @@ def patchAsyncio():
     nest_asyncio.apply()
 
 
+def getLoop():
+    """Get the asyncio event loop for the current thread."""
+    return asyncio.get_event_loop_policy().get_event_loop()
+
+
 def startLoop():
     """Use nested asyncio event loop for Jupyter notebooks."""
     patchAsyncio()
@@ -493,7 +498,7 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
     global qApp
     qApp = (qw.QApplication.instance()     # type: ignore
             or qw.QApplication(sys.argv))  # type: ignore
-    loop = asyncio.get_event_loop()
+    loop = getLoop()
     stack: list = []
     qt_step()
 

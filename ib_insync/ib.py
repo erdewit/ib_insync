@@ -2078,7 +2078,8 @@ class IB:
 
 
 if __name__ == '__main__':
-    asyncio.get_event_loop().set_debug(True)
+    loop = util.getLoop()
+    loop.set_debug(True)
     util.logToConsole(logging.DEBUG)
     ib = IB()
     ib.connect('127.0.0.1', 7497, clientId=1)

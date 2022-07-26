@@ -4,6 +4,8 @@ import asyncio
 
 from eventkit import Event
 
+from ib_insync.util import getLoop
+
 
 class Connection(asyncio.Protocol):
     """
@@ -33,7 +35,7 @@ class Connection(asyncio.Protocol):
             self.disconnect()
             await self.disconnected
         self.reset()
-        loop = asyncio.get_event_loop()
+        loop = getLoop()
         self.transport, _ = await loop.create_connection(
             lambda: self, host, port)
 
