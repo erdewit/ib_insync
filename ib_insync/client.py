@@ -59,7 +59,7 @@ class Client:
       A possible use is to write or evaluate the newly arrived data in
       one batch instead of item by item.
 
-    Attributes:
+    Parameters:
       MaxRequests (int):
         Throttle the number of requests to ``MaxRequests`` per
         ``RequestsInterval`` seconds. Set to 0 to disable throttling.

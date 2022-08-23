@@ -19,7 +19,7 @@ exec(open('../ib_insync/version.py').read())
 version = '.'.join(__version__.split('.')[:2])
 release = __version__
 
-language = None
+language = 'en'
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 pygments_style = 'sphinx'
 todo_include_todos = False

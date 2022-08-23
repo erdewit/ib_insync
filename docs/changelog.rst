@@ -4,6 +4,23 @@ Changelog
 0.9
 ---
 
+Version 0.9.71
+^^^^^^^^^^^^^^
+
+* :pull:`453`: Added support for ``bidExchange`` and ``askExchange`` fields to ``Ticker``.
+* :pull:`489`: ``Watchdog.start()`` now returns a ``Future``.
+* Fixed: :issue:`439`: Set ``marketDataType`` directly on ``Ticker``.
+* Fixed: :issue:`441`: Add explicit timezone of None to accomodate pandas Timestamp.
+* Fixed: :issue:`471`: Revised ``Ticker.marketPrice()`` calculation.
+* Added ``minTick``, ``bboExchange`` and ``snapshotPermissions`` fields to ``Ticker``.
+* Added ``minSize``, ``sizeIncrement`` and ``suggestedSizeIncrement`` fields to ``ContractDetails``.
+* Added ``IB.reqHistoricalSchedule`` request.
+* Added ``IB.reqSmartComponents`` request.
+* Added ``Order.advancedErrorOverride`` field. Any advanced error message is made availble from
+  ``Trade.advancedError``.
+* Added a `recipe for integration with PyGame <https://ib-insync.readthedocs.io/recipes.html#integration-with-pygame>`_.
+* Minimum required TWSAPI client protocol version is 157 now.
+
 Version 0.9.70
 ^^^^^^^^^^^^^^
 

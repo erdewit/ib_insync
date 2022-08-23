@@ -81,7 +81,7 @@ class IB:
     For introducing a delay, never use time.sleep() but use
     :meth:`.sleep` instead.
 
-    Attributes:
+    Parameters:
         RequestTimeout (float): Timeout (in seconds) to wait for a
           blocking request to finish before raising ``asyncio.TimeoutError``.
           The default value of 0 will wait indefinitely.

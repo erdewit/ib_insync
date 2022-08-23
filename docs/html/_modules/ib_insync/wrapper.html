@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.wrapper &mdash; ib_insync 0.9.70 documentation</title>
+  <title>ib_insync.wrapper &mdash; ib_insync 0.9.71 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/wrapper.html"/>
@@ -11,6 +11,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -84,21 +85,20 @@
     <span class="n">Contract</span><span class="p">,</span> <span class="n">ContractDescription</span><span class="p">,</span> <span class="n">ContractDetails</span><span class="p">,</span> <span class="n">DeltaNeutralContract</span><span class="p">,</span>
     <span class="n">ScanData</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ib_insync.objects</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AccountValue</span><span class="p">,</span> <span class="n">BarData</span><span class="p">,</span> <span class="n">BarDataList</span><span class="p">,</span> <span class="n">CommissionReport</span><span class="p">,</span>
-    <span class="n">DOMLevel</span><span class="p">,</span> <span class="n">DepthMktDataDescription</span><span class="p">,</span>
-    <span class="n">Dividends</span><span class="p">,</span> <span class="n">Execution</span><span class="p">,</span> <span class="n">Fill</span><span class="p">,</span> <span class="n">FundamentalRatios</span><span class="p">,</span> <span class="n">HistogramData</span><span class="p">,</span>
-    <span class="n">HistoricalNews</span><span class="p">,</span> <span class="n">HistoricalTick</span><span class="p">,</span> <span class="n">HistoricalTickBidAsk</span><span class="p">,</span> <span class="n">HistoricalTickLast</span><span class="p">,</span>
-    <span class="n">MktDepthData</span><span class="p">,</span> <span class="n">NewsArticle</span><span class="p">,</span> <span class="n">NewsBulletin</span><span class="p">,</span> <span class="n">NewsProvider</span><span class="p">,</span> <span class="n">NewsTick</span><span class="p">,</span>
-    <span class="n">OptionChain</span><span class="p">,</span> <span class="n">OptionComputation</span><span class="p">,</span> <span class="n">PnL</span><span class="p">,</span> <span class="n">PnLSingle</span><span class="p">,</span> <span class="n">PortfolioItem</span><span class="p">,</span> <span class="n">Position</span><span class="p">,</span>
-    <span class="n">PriceIncrement</span><span class="p">,</span> <span class="n">RealTimeBar</span><span class="p">,</span> <span class="n">RealTimeBarList</span><span class="p">,</span> <span class="n">TickAttribBidAsk</span><span class="p">,</span>
-    <span class="n">TickAttribLast</span><span class="p">,</span> <span class="n">TickByTickAllLast</span><span class="p">,</span> <span class="n">TickByTickBidAsk</span><span class="p">,</span> <span class="n">TickByTickMidPoint</span><span class="p">,</span>
-    <span class="n">TickData</span><span class="p">,</span> <span class="n">TradeLogEntry</span><span class="p">)</span>
+    <span class="n">AccountValue</span><span class="p">,</span> <span class="n">BarData</span><span class="p">,</span> <span class="n">BarDataList</span><span class="p">,</span> <span class="n">CommissionReport</span><span class="p">,</span> <span class="n">DOMLevel</span><span class="p">,</span>
+    <span class="n">DepthMktDataDescription</span><span class="p">,</span> <span class="n">Dividends</span><span class="p">,</span> <span class="n">Execution</span><span class="p">,</span> <span class="n">Fill</span><span class="p">,</span> <span class="n">FundamentalRatios</span><span class="p">,</span>
+    <span class="n">HistogramData</span><span class="p">,</span> <span class="n">HistoricalNews</span><span class="p">,</span> <span class="n">HistoricalSchedule</span><span class="p">,</span> <span class="n">HistoricalSession</span><span class="p">,</span>
+    <span class="n">HistoricalTick</span><span class="p">,</span> <span class="n">HistoricalTickBidAsk</span><span class="p">,</span> <span class="n">HistoricalTickLast</span><span class="p">,</span> <span class="n">MktDepthData</span><span class="p">,</span>
+    <span class="n">NewsArticle</span><span class="p">,</span> <span class="n">NewsBulletin</span><span class="p">,</span> <span class="n">NewsProvider</span><span class="p">,</span> <span class="n">NewsTick</span><span class="p">,</span> <span class="n">OptionChain</span><span class="p">,</span>
+    <span class="n">OptionComputation</span><span class="p">,</span> <span class="n">PnL</span><span class="p">,</span> <span class="n">PnLSingle</span><span class="p">,</span> <span class="n">PortfolioItem</span><span class="p">,</span> <span class="n">Position</span><span class="p">,</span> <span class="n">PriceIncrement</span><span class="p">,</span>
+    <span class="n">RealTimeBar</span><span class="p">,</span> <span class="n">RealTimeBarList</span><span class="p">,</span> <span class="n">TickAttribBidAsk</span><span class="p">,</span> <span class="n">TickAttribLast</span><span class="p">,</span>
+    <span class="n">TickByTickAllLast</span><span class="p">,</span> <span class="n">TickByTickBidAsk</span><span class="p">,</span> <span class="n">TickByTickMidPoint</span><span class="p">,</span> <span class="n">TickData</span><span class="p">,</span>
+    <span class="n">TradeLogEntry</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ib_insync.order</span> <span class="kn">import</span> <span class="n">Order</span><span class="p">,</span> <span class="n">OrderState</span><span class="p">,</span> <span class="n">OrderStatus</span><span class="p">,</span> <span class="n">Trade</span>
 <span class="kn">from</span> <span class="nn">ib_insync.ticker</span> <span class="kn">import</span> <span class="n">Ticker</span>
 <span class="kn">from</span> <span class="nn">ib_insync.util</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">UNSET_DOUBLE</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span><span class="p">,</span> <span class="n">dataclassAsDict</span><span class="p">,</span> <span class="n">dataclassUpdate</span><span class="p">,</span>
-    <span class="n">globalErrorEvent</span><span class="p">,</span> <span class="n">isNan</span><span class="p">,</span> <span class="n">parseIBDatetime</span><span class="p">)</span>
-
+    <span class="n">getLoop</span><span class="p">,</span> <span class="n">globalErrorEvent</span><span class="p">,</span> <span class="n">isNan</span><span class="p">,</span> <span class="n">parseIBDatetime</span><span class="p">)</span>
 
 <span class="n">OrderKeyType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
 
@@ -157,8 +157,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ticker2ReqId</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Ticker</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> \
             <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
         <span class="c1">#    tickType -&gt; Ticker -&gt; reqId</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reqId2MarketDataType</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#   reqId -&gt; marketDataType</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Subscriber</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1">#    live bars or live scan data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reqId2PnL</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PnL</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -290,7 +288,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">delay</span><span class="p">:</span>
             <span class="n">delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">-</span> <span class="n">diff</span>
         <span class="k">if</span> <span class="n">delay</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+            <span class="n">loop</span> <span class="o">=</span> <span class="n">getLoop</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_timeoutHandle</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">call_later</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setTimer</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Timeout&#39;</span><span class="p">)</span>
@@ -597,7 +595,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;marketRule-</span><span class="si">{</span><span class="n">marketRuleId</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">priceIncrements</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">marketDataType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">marketDataId</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reqId2MarketDataType</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">=</span> <span class="n">marketDataId</span>
+        <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Ticker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ticker</span><span class="p">:</span>
+            <span class="n">ticker</span><span class="o">.</span><span class="n">marketDataType</span> <span class="o">=</span> <span class="n">marketDataId</span>
 
     <span class="k">def</span> <span class="nf">realtimeBar</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">open_</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">high</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">low</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -734,7 +734,6 @@
         <span class="k">if</span> <span class="n">price</span> <span class="ow">or</span> <span class="n">size</span><span class="p">:</span>
             <span class="n">tick</span> <span class="o">=</span> <span class="n">TickData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
-        <span class="n">ticker</span><span class="o">.</span><span class="n">marketDataType</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqId2MarketDataType</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">tickSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tickType</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -790,7 +789,6 @@
         <span class="k">if</span> <span class="n">price</span> <span class="ow">or</span> <span class="n">size</span><span class="p">:</span>
             <span class="n">tick</span> <span class="o">=</span> <span class="n">TickData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
-        <span class="n">ticker</span><span class="o">.</span><span class="n">marketDataType</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqId2MarketDataType</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">tickSnapshotEnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
@@ -856,7 +854,13 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ticker</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">47</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">32</span><span class="p">:</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">bidExchange</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">33</span><span class="p">:</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">askExchange</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">84</span><span class="p">:</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">lastExchange</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">47</span><span class="p">:</span>
                 <span class="c1"># https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html</span>
                 <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>                     <span class="c1"># type: ignore</span>
                          <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">t</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
@@ -864,8 +868,8 @@
                     <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
                         <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="s1">&#39;-99999.99&#39;</span><span class="p">:</span>
                             <span class="n">v</span> <span class="o">=</span> <span class="s1">&#39;nan&#39;</span>
-                        <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-                        <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                        <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>                   <span class="c1"># type: ignore</span>
+                        <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>                     <span class="c1"># type: ignore</span>
                 <span class="n">ticker</span><span class="o">.</span><span class="n">fundamentalRatios</span> <span class="o">=</span> <span class="n">FundamentalRatios</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">77</span><span class="p">):</span>
                 <span class="c1"># RT Volume or RT Trade Volume string format:</span>
@@ -944,7 +948,15 @@
     <span class="k">def</span> <span class="nf">tickReqParams</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">minTick</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">bboExchange</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">snapshotPermissions</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">pass</span>
+        <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Ticker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ticker</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">ticker</span><span class="o">.</span><span class="n">minTick</span> <span class="o">=</span> <span class="n">minTick</span>
+        <span class="n">ticker</span><span class="o">.</span><span class="n">bboExchange</span> <span class="o">=</span> <span class="n">bboExchange</span>
+        <span class="n">ticker</span><span class="o">.</span><span class="n">snapshotPermissions</span> <span class="o">=</span> <span class="n">snapshotPermissions</span>
+
+    <span class="k">def</span> <span class="nf">smartComponents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">components</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">components</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">mktDepthExchanges</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">depthMktDataDescriptions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DepthMktDataDescription</span><span class="p">]):</span>
@@ -1106,7 +1118,16 @@
             <span class="n">dividendsToLastTradeDate</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">errorCode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">errorString</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">historicalSchedule</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">startDateTime</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">timeZone</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sessions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">HistoricalSession</span><span class="p">]):</span>
+        <span class="n">schedule</span> <span class="o">=</span> <span class="n">HistoricalSchedule</span><span class="p">(</span>
+            <span class="n">startDateTime</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">,</span> <span class="n">timeZone</span><span class="p">,</span> <span class="n">sessions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">schedule</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">error</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">errorCode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">errorString</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">advancedOrderRejectJson</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="c1"># https://interactivebrokers.github.io/tws-api/message_codes.html</span>
         <span class="n">warningCodes</span> <span class="o">=</span> <span class="p">{</span><span class="mi">165</span><span class="p">,</span> <span class="mi">202</span><span class="p">,</span> <span class="mi">399</span><span class="p">,</span> <span class="mi">404</span><span class="p">,</span> <span class="mi">434</span><span class="p">,</span> <span class="mi">492</span><span class="p">,</span> <span class="mi">10167</span><span class="p">}</span>
         <span class="n">isWarning</span> <span class="o">=</span> <span class="n">errorCode</span> <span class="ow">in</span> <span class="n">warningCodes</span> <span class="ow">or</span> <span class="mi">2100</span> <span class="o">&lt;=</span> <span class="n">errorCode</span> <span class="o">&lt;</span> <span class="mi">2200</span>
@@ -1132,6 +1153,8 @@
             <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">:</span>
                 <span class="c1"># something is wrong with the order, cancel it</span>
                 <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">advancedOrderRejectJson</span><span class="p">:</span>
+                    <span class="n">trade</span><span class="o">.</span><span class="n">advancedError</span> <span class="o">=</span> <span class="n">advancedOrderRejectJson</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">trade</span><span class="o">.</span><span class="n">isDone</span><span class="p">():</span>
                     <span class="n">status</span> <span class="o">=</span> <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">Cancelled</span>
                     <span class="n">logEntry</span> <span class="o">=</span> <span class="n">TradeLogEntry</span><span class="p">(</span>
@@ -1205,7 +1228,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Ewald de Wit.</p>
+    <p>&#169; Copyright 2022, Ewald de Wit.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

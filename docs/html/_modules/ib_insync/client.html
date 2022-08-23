@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.client &mdash; ib_insync 0.9.70 documentation</title>
+  <title>ib_insync.client &mdash; ib_insync 0.9.71 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/client.html"/>
@@ -11,6 +11,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -86,7 +87,7 @@
 <span class="kn">from</span> <span class="nn">.contract</span> <span class="kn">import</span> <span class="n">Contract</span>
 <span class="kn">from</span> <span class="nn">.decoder</span> <span class="kn">import</span> <span class="n">Decoder</span>
 <span class="kn">from</span> <span class="nn">.objects</span> <span class="kn">import</span> <span class="n">ConnectionStats</span>
-<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">UNSET_DOUBLE</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span><span class="p">,</span> <span class="n">dataclassAsTuple</span><span class="p">,</span> <span class="n">run</span>
+<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">UNSET_DOUBLE</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span><span class="p">,</span> <span class="n">dataclassAsTuple</span><span class="p">,</span> <span class="n">getLoop</span><span class="p">,</span> <span class="n">run</span>
 
 
 <div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">:</span>
@@ -131,7 +132,7 @@
 <span class="sd">      A possible use is to write or evaluate the newly arrived data in</span>
 <span class="sd">      one batch instead of item by item.</span>
 
-<span class="sd">    Attributes:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">      MaxRequests (int):</span>
 <span class="sd">        Throttle the number of requests to ``MaxRequests`` per</span>
 <span class="sd">        ``RequestsInterval`` seconds. Set to 0 to disable throttling.</span>
@@ -155,8 +156,8 @@
     <span class="n">MaxRequests</span> <span class="o">=</span> <span class="mi">45</span>
     <span class="n">RequestsInterval</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="n">MinClientVersion</span> <span class="o">=</span> <span class="mi">142</span>
-    <span class="n">MaxClientVersion</span> <span class="o">=</span> <span class="mi">163</span>
+    <span class="n">MinClientVersion</span> <span class="o">=</span> <span class="mi">157</span>
+    <span class="n">MaxClientVersion</span> <span class="o">=</span> <span class="mi">167</span>
 
     <span class="p">(</span><span class="n">DISCONNECTED</span><span class="p">,</span> <span class="n">CONNECTING</span><span class="p">,</span> <span class="n">CONNECTED</span><span class="p">)</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
@@ -189,7 +190,7 @@
 <div class="viewcode-block" id="Client.reset"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">=</span> <span class="n">Client</span><span class="o">.</span><span class="n">DISCONNECTED</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_apiReady</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hasReqId</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span> <span class="o">=</span> <span class="mi">0</span>
@@ -201,11 +202,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_msgQ</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timeQ</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Client.serverVersion"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.serverVersion">[docs]</a>    <span class="k">def</span> <span class="nf">serverVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Client.serverVersion"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.serverVersion">[docs]</a>    <span class="k">def</span> <span class="nf">serverVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span></div>
 
 <div class="viewcode-block" id="Client.run"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">getLoop</span><span class="p">()</span>
         <span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Client.isConnected"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.isConnected">[docs]</a>    <span class="k">def</span> <span class="nf">isConnected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -335,7 +336,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="Client.sendMsg"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.sendMsg">[docs]</a>    <span class="k">def</span> <span class="nf">sendMsg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">getLoop</span><span class="p">()</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeQ</span>
         <span class="n">msgs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_msgQ</span>
@@ -475,11 +476,8 @@
 
 <div class="viewcode-block" id="Client.placeOrder"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.placeOrder">[docs]</a>    <span class="k">def</span> <span class="nf">placeOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
         <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">version</span> <span class="o">&lt;</span> <span class="mi">145</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="mi">45</span><span class="p">]</span>
-        <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span>
-            <span class="n">orderId</span><span class="p">,</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">3</span><span class="p">,</span> <span class="n">orderId</span><span class="p">,</span>
             <span class="n">contract</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">secIdType</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">secId</span><span class="p">,</span>
@@ -654,26 +652,25 @@
             <span class="n">order</span><span class="o">.</span><span class="n">extOperator</span><span class="p">,</span>
             <span class="n">order</span><span class="o">.</span><span class="n">softDollarTier</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">order</span><span class="o">.</span><span class="n">softDollarTier</span><span class="o">.</span><span class="n">val</span><span class="p">,</span>
-            <span class="n">order</span><span class="o">.</span><span class="n">cashQty</span><span class="p">]</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">cashQty</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">mifid2DecisionMaker</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">mifid2DecisionAlgo</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">mifid2ExecutionTrader</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">mifid2ExecutionAlgo</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">dontUseAutoPriceForHedge</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">isOmsContainer</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">discretionaryUpToLimitPrice</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">usePriceMgmtAlgo</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">138</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">mifid2DecisionMaker</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">mifid2DecisionAlgo</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">139</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">mifid2ExecutionTrader</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">mifid2ExecutionAlgo</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">141</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">dontUseAutoPriceForHedge</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">145</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">isOmsContainer</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">148</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">discretionaryUpToLimitPrice</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">151</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">usePriceMgmtAlgo</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">158</span><span class="p">:</span>
             <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">duration</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">160</span><span class="p">:</span>
             <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">postToAts</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">162</span><span class="p">:</span>
             <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">autoCancelParent</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">166</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">advancedErrorOverride</span><span class="p">]</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.cancelOrder"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelOrder">[docs]</a>    <span class="k">def</span> <span class="nf">cancelOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderId</span><span class="p">):</span>
@@ -706,8 +703,7 @@
 
 <div class="viewcode-block" id="Client.reqMktDepth"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMktDepth">[docs]</a>    <span class="k">def</span> <span class="nf">reqMktDepth</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">numRows</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="p">,</span> <span class="n">mktDepthOptions</span><span class="p">):</span>
-        <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">conId</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span>
@@ -716,18 +712,14 @@
             <span class="n">contract</span><span class="o">.</span><span class="n">strike</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">right</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">multiplier</span><span class="p">,</span>
-            <span class="n">contract</span><span class="o">.</span><span class="n">exchange</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">149</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">contract</span><span class="o">.</span><span class="n">primaryExchange</span><span class="p">]</span>
-        <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">exchange</span><span class="p">,</span>
+            <span class="n">contract</span><span class="o">.</span><span class="n">primaryExchange</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">currency</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">localSymbol</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">tradingClass</span><span class="p">,</span>
-            <span class="n">numRows</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">146</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">isSmartDepth</span><span class="p">]</span>
-        <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mktDepthOptions</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)</span></div>
+            <span class="n">numRows</span><span class="p">,</span>
+            <span class="n">isSmartDepth</span><span class="p">,</span>
+            <span class="n">mktDepthOptions</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.cancelMktDepth"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelMktDepth">[docs]</a>    <span class="k">def</span> <span class="nf">cancelMktDepth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="p">)</span></div>
@@ -754,10 +746,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">faData</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.replaceFA"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.replaceFA">[docs]</a>    <span class="k">def</span> <span class="nf">replaceFA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">faData</span><span class="p">,</span> <span class="n">cxml</span><span class="p">):</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">faData</span><span class="p">,</span> <span class="n">cxml</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">157</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">reqId</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">faData</span><span class="p">,</span> <span class="n">cxml</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.reqHistoricalData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqHistoricalData">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistoricalData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">,</span> <span class="n">durationStr</span><span class="p">,</span> <span class="n">barSizeSetting</span><span class="p">,</span>
@@ -797,13 +786,9 @@
 <div class="viewcode-block" id="Client.reqScannerSubscription"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqScannerSubscription">[docs]</a>    <span class="k">def</span> <span class="nf">reqScannerSubscription</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">,</span>
             <span class="n">scannerSubscriptionFilterOptions</span><span class="p">):</span>
-        <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span>
         <span class="n">sub</span> <span class="o">=</span> <span class="n">subscription</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="mi">22</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">version</span> <span class="o">&lt;</span> <span class="mi">143</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="mi">4</span><span class="p">]</span>
-        <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span>
-            <span class="n">reqId</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
+            <span class="mi">22</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span>
             <span class="n">sub</span><span class="o">.</span><span class="n">numberOfRows</span><span class="p">,</span>
             <span class="n">sub</span><span class="o">.</span><span class="n">instrument</span><span class="p">,</span>
             <span class="n">sub</span><span class="o">.</span><span class="n">locationCode</span><span class="p">,</span>
@@ -824,11 +809,9 @@
             <span class="n">sub</span><span class="o">.</span><span class="n">excludeConvertible</span><span class="p">,</span>
             <span class="n">sub</span><span class="o">.</span><span class="n">averageOptionVolumeAbove</span><span class="p">,</span>
             <span class="n">sub</span><span class="o">.</span><span class="n">scannerSettingPairs</span><span class="p">,</span>
-            <span class="n">sub</span><span class="o">.</span><span class="n">stockTypeFilter</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">143</span><span class="p">:</span>
-            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">scannerSubscriptionFilterOptions</span><span class="p">]</span>
-        <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">scannerSubscriptionOptions</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)</span></div>
+            <span class="n">sub</span><span class="o">.</span><span class="n">stockTypeFilter</span><span class="p">,</span>
+            <span class="n">scannerSubscriptionFilterOptions</span><span class="p">,</span>
+            <span class="n">scannerSubscriptionOptions</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.cancelScannerSubscription"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelScannerSubscription">[docs]</a>    <span class="k">def</span> <span class="nf">cancelScannerSubscription</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
@@ -1028,7 +1011,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.reqCompletedOrders"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqCompletedOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqCompletedOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiOnly</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="n">apiOnly</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="n">apiOnly</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.reqWshMetaData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqWshMetaData">[docs]</a>    <span class="k">def</span> <span class="nf">reqWshMetaData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.cancelWshMetaData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelWshMetaData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelWshMetaData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.reqWshEventData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqWshEventData">[docs]</a>    <span class="k">def</span> <span class="nf">reqWshEventData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">conId</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">conId</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.cancelWshEventData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelWshEventData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelWshEventData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">103</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.reqUserInfo"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqUserInfo">[docs]</a>    <span class="k">def</span> <span class="nf">reqUserInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">104</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -1038,7 +1036,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Ewald de Wit.</p>
+    <p>&#169; Copyright 2022, Ewald de Wit.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

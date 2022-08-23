@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.util &mdash; ib_insync 0.9.70 documentation</title>
+  <title>ib_insync.util &mdash; ib_insync 0.9.71 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/util.html"/>
@@ -11,6 +11,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -369,7 +370,7 @@
 <span class="sd">    asyncio.TimeoutError if the awaitables are not ready within the</span>
 <span class="sd">    timeout period.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">getLoop</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">awaitables</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">loop</span><span class="o">.</span><span class="n">is_running</span><span class="p">():</span>
             <span class="k">return</span>
@@ -435,7 +436,7 @@
     <span class="n">dt</span> <span class="o">=</span> <span class="n">_fillDate</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
     <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span><span class="p">)</span>
     <span class="n">delay</span> <span class="o">=</span> <span class="p">(</span><span class="n">dt</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
-    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">getLoop</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">loop</span><span class="o">.</span><span class="n">call_later</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
 
 
@@ -525,6 +526,11 @@
     <span class="n">nest_asyncio</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="getLoop"><a class="viewcode-back" href="../../api.html#ib_insync.ib.getLoop">[docs]</a><span class="k">def</span> <span class="nf">getLoop</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Get the asyncio event loop for the current thread.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop_policy</span><span class="p">()</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="startLoop"><a class="viewcode-back" href="../../api.html#ib_insync.ib.startLoop">[docs]</a><span class="k">def</span> <span class="nf">startLoop</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Use nested asyncio event loop for Jupyter notebooks.&quot;&quot;&quot;</span>
     <span class="n">patchAsyncio</span><span class="p">()</span></div>
@@ -565,7 +571,7 @@
     <span class="k">global</span> <span class="n">qApp</span>
     <span class="n">qApp</span> <span class="o">=</span> <span class="p">(</span><span class="n">qw</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>     <span class="c1"># type: ignore</span>
             <span class="ow">or</span> <span class="n">qw</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
-    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">getLoop</span><span class="p">()</span>
     <span class="n">stack</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">qt_step</span><span class="p">()</span></div>
 
@@ -577,7 +583,7 @@
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span><span class="p">:</span>
             <span class="c1"># convert to local system timezone</span>
-            <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1"> 23:59:59&#39;</span><span class="p">)</span>
@@ -612,7 +618,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Ewald de Wit.</p>
+    <p>&#169; Copyright 2022, Ewald de Wit.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
