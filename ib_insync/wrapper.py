@@ -1056,7 +1056,7 @@ class Wrapper:
             self, reqId: int, errorCode: int, errorString: str,
             advancedOrderRejectJson: str):
         # https://interactivebrokers.github.io/tws-api/message_codes.html
-        warningCodes = {165, 202, 399, 404, 434, 492, 10167}
+        warningCodes = {110, 165, 202, 399, 404, 434, 492, 10167}
         isWarning = errorCode in warningCodes or 2100 <= errorCode < 2200
         msg = (
             f'{"Warning" if isWarning else "Error"} '
