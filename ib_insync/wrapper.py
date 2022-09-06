@@ -109,7 +109,7 @@ class Wrapper:
         self.setTimeout(0)
 
     def setEventsDone(self):
-        """Set all subscribtion-type events as done."""
+        """Set all subscription-type events as done."""
         events = [ticker.updateEvent for ticker in self.tickers.values()]
         events += [sub.updateEvent for sub in self.reqId2Subscriber.values()]
         for trade in self.trades.values():
@@ -131,7 +131,7 @@ class Wrapper:
     def startReq(self, key, contract=None, container=None):
         """
         Start a new request and return the future that is associated
-        with with the key and container. The container is a list by default.
+        with the key and container. The container is a list by default.
         """
         future = asyncio.Future()
         self._futures[key] = future
@@ -372,7 +372,7 @@ class Wrapper:
                 # response to reqOpenOrders or reqAllOpenOrders
                 results.append(order)
 
-        # make sure that the client issues order ids larger then any
+        # make sure that the client issues order ids larger than any
         # order id encountered (even from other clients) to avoid
         # "Duplicate order id" error
         self.ib.client.updateReqId(orderId + 1)
