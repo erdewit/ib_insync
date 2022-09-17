@@ -384,7 +384,7 @@ class Decoder:
                 tag, value, *fields = fields
                 cd.secIdList += [TagValue(tag, value)]
 
-        cd.aggGroup, cd.marketRuleIds = fields
+        cd.aggGroup, cd.marketRuleIds, *fields = fields
         if self.serverVersion >= 164:
             (
                 cd.minSize,
