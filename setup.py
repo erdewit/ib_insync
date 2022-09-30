@@ -10,7 +10,7 @@ if sys.version_info < (3, 6, 0):
 
 here = Path(__file__).parent.resolve()
 
-__version__ = None
+__version__ = ''
 with open(here / 'ib_insync/version.py') as f:
     exec(f.read())
 
@@ -37,6 +37,7 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3 :: Only',
     ],
     keywords='ibapi tws asyncio jupyter interactive brokers async',
