@@ -151,6 +151,7 @@ class Order:
     duration: int = UNSET_INTEGER
     postToAts: int = UNSET_INTEGER
     advancedErrorOverride: str = ''
+    manualOrderTime: str = ''
 
     def __repr__(self):
         attrs = dataclassNonDefaults(self)
