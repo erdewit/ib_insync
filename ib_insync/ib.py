@@ -660,14 +660,16 @@ class IB:
             self.newOrderEvent.emit(trade)
         return trade
 
-    def cancelOrder(self, order: Order) -> Trade:
+    def cancelOrder(
+            self, order: Order, manualCancelOrderTime: str = '') -> Trade:
         """
         Cancel the order and return the Trade it belongs to.
 
         Args:
             order: The order to be canceled.
+            manualCancelOrderTime: For audit trail.
         """
-        self.client.cancelOrder(order.orderId)
+        self.client.cancelOrder(order.orderId, manualCancelOrderTime)
         now = datetime.datetime.now(datetime.timezone.utc)
         key = self.wrapper.orderKey(
             order.clientId, order.orderId, order.permId)
