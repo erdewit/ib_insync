@@ -85,7 +85,7 @@ class Client:
     RequestsInterval = 1
 
     MinClientVersion = 157
-    MaxClientVersion = 174
+    MaxClientVersion = 176
 
     (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
 
@@ -645,9 +645,15 @@ class Client:
         self.send(8, 1, numIds)
 
     def reqContractDetails(self, reqId, contract):
-        self.send(
-            9, 8, reqId, contract, contract.includeExpired,
-            contract.secIdType, contract.secId)
+        fields = [
+            9, 8, reqId,
+            contract,
+            contract.includeExpired,
+            contract.secIdType,
+            contract.secId]
+        if self.serverVersion() > 176:
+            fields += [contract.issuerId]
+        self.send(*fields)
 
     def reqMktDepth(
             self, reqId, contract, numRows, isSmartDepth, mktDepthOptions):

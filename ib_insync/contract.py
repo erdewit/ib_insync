@@ -95,6 +95,8 @@ class Contract:
     includeExpired: bool = False
     secIdType: str = ''
     secId: str = ''
+    description: str = ''
+    issuerId: str = ''
     comboLegsDescrip: str = ''
     comboLegs: List['ComboLeg'] = field(default_factory=list)
     deltaNeutralContract: Optional['DeltaNeutralContract'] = None
@@ -498,7 +500,7 @@ class ContractDetails:
     couponType: str = ''
     callable: bool = False
     putable: bool = False
-    coupon: int = 0
+    coupon: float = 0
     convertible: bool = False
     maturity: str = ''
     issueDate: str = ''
