@@ -323,7 +323,7 @@ class Decoder:
                 # cd.minCashQtySize,
                 *fields) = fields
 
-        times = lastTimes.split()
+        times = lastTimes.split('-' if '-' in lastTimes else None)
         if len(times) > 0:
             c.lastTradeDateOrContractMonth = times[0]
         if len(times) > 1:
@@ -393,7 +393,7 @@ class Decoder:
                 # cd.minCashQtySize,
                 *fields) = fields
 
-        times = lastTimes.split()
+        times = lastTimes.split('-' if '-' in lastTimes else None)
         if len(times) > 0:
             cd.maturity = times[0]
         if len(times) > 1:
