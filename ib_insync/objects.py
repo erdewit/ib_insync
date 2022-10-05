@@ -199,6 +199,18 @@ class HistoricalSchedule:
     sessions: List[HistoricalSession] = field(default_factory=list)
 
 
+@dataclass
+class WshEventData:
+    conId: int = UNSET_INTEGER
+    filter: str = ''
+    fillWatchlist: bool = False
+    fillPortfolio: bool = False
+    fillCompetitors: bool = False
+    startDate: str = ''
+    endDate: str = ''
+    totalLimit: int = UNSET_INTEGER
+
+
 class AccountValue(NamedTuple):
     account: str
     tag: str

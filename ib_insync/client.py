@@ -14,7 +14,7 @@ from eventkit import Event
 from .connection import Connection
 from .contract import Contract
 from .decoder import Decoder
-from .objects import ConnectionStats
+from .objects import ConnectionStats, WshEventData
 from .util import UNSET_DOUBLE, UNSET_INTEGER, dataclassAsTuple, getLoop, run
 
 
@@ -973,8 +973,20 @@ class Client:
     def cancelWshMetaData(self, reqId):
         self.send(101, reqId)
 
-    def reqWshEventData(self, reqId, conId):
-        self.send(102, reqId, conId)
+    def reqWshEventData(self, reqId, data: WshEventData):
+        fields = [102, reqId, data.conId]
+        if self.serverVersion() > 171:
+            fields += [
+                data.filter,
+                data.fillWatchlist,
+                data.fillPortfolio,
+                data.fillCompetitors]
+        if self.serverVersion() > 173:
+            fields += [
+                data.startDate,
+                data.endDate,
+                data.totalLimit]
+        self.send(*fields)
 
     def cancelWshEventData(self, reqId):
         self.send(103, reqId)
