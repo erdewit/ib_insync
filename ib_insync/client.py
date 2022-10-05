@@ -3,6 +3,7 @@
 import asyncio
 import io
 import logging
+import math
 import struct
 import time
 from collections import deque
@@ -84,7 +85,7 @@ class Client:
     RequestsInterval = 1
 
     MinClientVersion = 157
-    MaxClientVersion = 169
+    MaxClientVersion = 170
 
     (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
 
@@ -241,8 +242,12 @@ class Client:
             typ = type(field)
             if field in (None, UNSET_INTEGER, UNSET_DOUBLE):
                 s = ''
-            elif typ in (str, int, float):
+            elif typ is str:
+                s = field
+            elif type is int:
                 s = str(field)
+            elif typ is float:
+                s = 'Infinite' if field == math.inf else str(field)
             elif typ is bool:
                 s = '1' if field else '0'
             elif typ is list:
@@ -599,6 +604,17 @@ class Client:
             fields += [order.advancedErrorOverride]
         if version >= 169:
             fields += [order.manualOrderTime]
+        if version >= 170:
+            if contract.exchange == 'IBKRATS':
+                fields += [order.minTradeQty]
+            if order.orderType == 'PEG BEST':
+                fields += [
+                    order.minCompeteSize,
+                    order.competeAgainstBestOffset]
+                if order.competeAgainstBestOffset == math.inf:
+                    fields += [order.midOffsetAtWhole, order.midOffsetAtHalf]
+            elif order.orderType == 'PEG MID':
+                fields += [order.midOffsetAtWhole, order.midOffsetAtHalf]
 
         self.send(*fields)
 

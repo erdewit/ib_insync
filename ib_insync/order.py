@@ -152,6 +152,11 @@ class Order:
     postToAts: int = UNSET_INTEGER
     advancedErrorOverride: str = ''
     manualOrderTime: str = ''
+    minTradeQty: int = UNSET_INTEGER
+    minCompeteSize: int = UNSET_INTEGER
+    competeAgainstBestOffset: float = UNSET_DOUBLE
+    midOffsetAtWhole: float = UNSET_DOUBLE
+    midOffsetAtHalf: float = UNSET_DOUBLE
 
     def __repr__(self):
         attrs = dataclassNonDefaults(self)

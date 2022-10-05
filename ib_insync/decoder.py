@@ -1054,6 +1054,14 @@ class Decoder:
             o.postToAts = fields.pop(0)
         if self.serverVersion >= 162:
             o.autoCancelParent = fields.pop(0)
+        if self.serverVersion >= 170:
+            (
+                o.minTradeQty,
+                o.minCompeteSize,
+                o.competeAgainstBestOffset,
+                o.midOffsetAtWhole,
+                o.midOffsetAtHalf,
+                *fields) = fields
 
         self.parse(c)
         self.parse(o)
@@ -1260,6 +1268,15 @@ class Decoder:
             o.parentPermId,
             st.completedTime,
             st.completedStatus) = fields
+
+        if self.serverVersion >= 170:
+            (
+                o.minTradeQty,
+                o.minCompeteSize,
+                o.competeAgainstBestOffset,
+                o.midOffsetAtWhole,
+                o.midOffsetAtHalf,
+                *fields) = fields
 
         self.parse(c)
         self.parse(o)
