@@ -13,14 +13,14 @@ from ib_insync.contract import (
     ScanData)
 from ib_insync.objects import (
     AccountValue, BarData, BarDataList, CommissionReport, DOMLevel,
-    DepthMktDataDescription, Dividends, Execution, Fill, FundamentalRatios,
-    HistogramData, HistoricalNews, HistoricalSchedule, HistoricalSession,
-    HistoricalTick, HistoricalTickBidAsk, HistoricalTickLast, MktDepthData,
-    NewsArticle, NewsBulletin, NewsProvider, NewsTick, OptionChain,
-    OptionComputation, PnL, PnLSingle, PortfolioItem, Position, PriceIncrement,
-    RealTimeBar, RealTimeBarList, TickAttribBidAsk, TickAttribLast,
-    TickByTickAllLast, TickByTickBidAsk, TickByTickMidPoint, TickData,
-    TradeLogEntry)
+    DepthMktDataDescription, Dividends, Execution, FamilyCode, Fill,
+    FundamentalRatios, HistogramData, HistoricalNews, HistoricalSchedule,
+    HistoricalSession, HistoricalTick, HistoricalTickBidAsk,
+    HistoricalTickLast, MktDepthData, NewsArticle, NewsBulletin, NewsProvider,
+    NewsTick, OptionChain, OptionComputation, PnL, PnLSingle, PortfolioItem,
+    Position, PriceIncrement, RealTimeBar, RealTimeBarList, SoftDollarTier,
+    TickAttribBidAsk, TickAttribLast, TickByTickAllLast, TickByTickBidAsk,
+    TickByTickMidPoint, TickData, TradeLogEntry)
 from ib_insync.order import Order, OrderState, OrderStatus, Trade
 from ib_insync.ticker import Ticker
 from ib_insync.util import (
@@ -303,6 +303,14 @@ class Wrapper:
 
     def positionEnd(self):
         self._endReq('positions')
+
+    def positionMulti(
+            self, reqId: int, account: str, modelCode: str,
+            contract: Contract, pos: float, avgCost: float):
+        pass
+
+    def positionMultiEnd(self, reqId: int):
+        pass
 
     def pnl(
             self, reqId: int, dailyPnL: float, unrealizedPnL: float,
@@ -1053,6 +1061,12 @@ class Wrapper:
         self._endReq(reqId, schedule)
 
     def userInfo(self, reqId: int, whiteBrandingId: str):
+        self._endReq(reqId)
+
+    def softDollarTiers(self, reqId: int, tiers: List[SoftDollarTier]):
+        pass
+
+    def familyCodes(self, familyCodes: List[FamilyCode]):
         pass
 
     def error(
