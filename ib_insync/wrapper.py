@@ -1052,6 +1052,9 @@ class Wrapper:
             startDateTime, endDateTime, timeZone, sessions)
         self._endReq(reqId, schedule)
 
+    def userInfo(self, reqId: int, whiteBrandingId: str):
+        pass
+
     def error(
             self, reqId: int, errorCode: int, errorString: str,
             advancedOrderRejectJson: str):

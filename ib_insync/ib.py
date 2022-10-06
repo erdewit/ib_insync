@@ -1646,6 +1646,10 @@ class IB:
         reqId = self.client.getReqId()
         self.client.replaceFA(reqId, faDataType, xml)
 
+    def reqUserInfo(self) -> str:
+        """Get the White Branding ID of the user."""
+        return self._run(self.reqUserInfoAsync())
+
     # now entering the parallel async universe
 
     async def connectAsync(
@@ -2077,6 +2081,12 @@ class IB:
             return future.result()
         except asyncio.TimeoutError:
             self._logger.error('requestFAAsync: Timeout')
+
+    def reqUserInfoAsync(self):
+        reqId = self.client.getReqId()
+        future = self.wrapper.startReq(reqId)
+        self.client.reqUserInfo(reqId)
+        return future
 
 
 if __name__ == '__main__':
