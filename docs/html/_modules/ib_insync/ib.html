@@ -13,6 +13,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -733,14 +734,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">newOrderEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">trade</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">trade</span></div>
 
-<div class="viewcode-block" id="IB.cancelOrder"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelOrder">[docs]</a>    <span class="k">def</span> <span class="nf">cancelOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Trade</span><span class="p">:</span>
+<div class="viewcode-block" id="IB.cancelOrder"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelOrder">[docs]</a>    <span class="k">def</span> <span class="nf">cancelOrder</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">,</span> <span class="n">manualCancelOrderTime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Trade</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel the order and return the Trade it belongs to.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            order: The order to be canceled.</span>
+<span class="sd">            manualCancelOrderTime: For audit trail.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelOrder</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">orderId</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelOrder</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">orderId</span><span class="p">,</span> <span class="n">manualCancelOrderTime</span><span class="p">)</span>
         <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
         <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">orderKey</span><span class="p">(</span>
             <span class="n">order</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">orderId</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">permId</span><span class="p">)</span>
@@ -1717,6 +1720,10 @@
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">replaceFA</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">faDataType</span><span class="p">,</span> <span class="n">xml</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="IB.reqUserInfo"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqUserInfo">[docs]</a>    <span class="k">def</span> <span class="nf">reqUserInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the White Branding ID of the user.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqUserInfoAsync</span><span class="p">())</span></div>
+
     <span class="c1"># now entering the parallel async universe</span>
 
 <div class="viewcode-block" id="IB.connectAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.connectAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">connectAsync</span><span class="p">(</span>
@@ -2147,7 +2154,13 @@
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
         <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;requestFAAsync: Timeout&#39;</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;requestFAAsync: Timeout&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IB.reqUserInfoAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqUserInfoAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqUserInfoAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqUserInfo</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">future</span></div></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

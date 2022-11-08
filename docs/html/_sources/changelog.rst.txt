@@ -4,6 +4,17 @@ Changelog
 0.9
 ---
 
+Version 0.9.72
+^^^^^^^^^^^^^^
+
+* :pull:`507`: Fixes ``bondContractDetails`` request.
+* Fixed: :issue:`502`: Treat error 110 as a warning.
+* Added ``manualOrderTime`` and ``manualCancelOrderTime`` for audit trails.
+* Added ``PEG MID`` and ``PEG BEST`` order types.
+* Added contract fields ``description`` and ``issuerId``.
+* Added ``IB.reqUserInfo()``.
+* Support socket protocol version 176.
+
 Version 0.9.71
 ^^^^^^^^^^^^^^
 
