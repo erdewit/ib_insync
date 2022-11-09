@@ -1267,7 +1267,8 @@ class Decoder:
             o.routeMarketableToBbo,
             o.parentPermId,
             st.completedTime,
-            st.completedStatus) = fields
+            st.completedStatus,
+            *fields) = fields
 
         if self.serverVersion >= 170:
             (
