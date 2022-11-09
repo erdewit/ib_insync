@@ -4,6 +4,11 @@ Changelog
 0.9
 ---
 
+Version 0.9.73
+^^^^^^^^^^^^^^
+
+* :pull:`523`: Fix ``completedOrder`` parsing for new socket protocol.
+
 Version 0.9.72
 ^^^^^^^^^^^^^^
 
