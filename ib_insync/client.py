@@ -651,7 +651,7 @@ class Client:
             contract.includeExpired,
             contract.secIdType,
             contract.secId]
-        if self.serverVersion() > 176:
+        if self.serverVersion() >= 176:
             fields += [contract.issuerId]
         self.send(*fields)
 
@@ -975,13 +975,13 @@ class Client:
 
     def reqWshEventData(self, reqId, data: WshEventData):
         fields = [102, reqId, data.conId]
-        if self.serverVersion() > 171:
+        if self.serverVersion() >= 171:
             fields += [
                 data.filter,
                 data.fillWatchlist,
                 data.fillPortfolio,
                 data.fillCompetitors]
-        if self.serverVersion() > 173:
+        if self.serverVersion() >= 173:
             fields += [
                 data.startDate,
                 data.endDate,
