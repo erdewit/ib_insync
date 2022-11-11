@@ -65,7 +65,7 @@ class Wrapper:
         #    (account, tag, currency) -> AccountValue
         self.portfolio: Dict[str, Dict[int, PortfolioItem]] = defaultdict(dict)
         #    account -> conId -> PortfolioItem
-        self.positions = defaultdict(dict)
+        self.positions: Dict[str, Dict[int, Position]] = defaultdict(dict)
         #    account -> conId -> Position
         self.trades: Dict[OrderKeyType, Trade] = {}
         #    (client, orderId) or permId -> Trade
@@ -100,7 +100,7 @@ class Wrapper:
         self._results: Dict[Any, Any] = {}
 
         # UTC time of last network packet arrival:
-        self.lastTime: datetime = None
+        self.lastTime: datetime = datetime.min
 
         self._reqId2Contract: Dict[int, Contract] = {}
         self.accounts: List[str] = []
@@ -133,7 +133,7 @@ class Wrapper:
         Start a new request and return the future that is associated
         with the key and container. The container is a list by default.
         """
-        future = asyncio.Future()
+        future: asyncio.Future = asyncio.Future()
         self._futures[key] = future
         self._results[key] = container if container is not None else []
         if contract:
@@ -208,7 +208,7 @@ class Wrapper:
             self._setTimer(timeout)
 
     def _setTimer(self, delay: float = 0):
-        if not self.lastTime:
+        if self.lastTime == datetime.min:
             return
         now = datetime.now(timezone.utc)
         diff = (now - self.lastTime).total_seconds()
@@ -932,8 +932,15 @@ class Wrapper:
             impliedVol: float, delta: float, optPrice: float, pvDividend:
             float, gamma: float, vega: float, theta: float, undPrice: float):
         comp = OptionComputation(
-            tickAttrib, impliedVol, delta, optPrice, pvDividend,
-            gamma, vega, theta, undPrice)
+            tickAttrib,
+            impliedVol if impliedVol != -1 else None,
+            delta if delta != -2 else None,
+            optPrice if optPrice != -1 else None,
+            pvDividend if pvDividend != -1 else None,
+            gamma if gamma != -2 else None,
+            vega if vega != -2 else vega,
+            theta if theta != -2 else theta,
+            undPrice if undPrice != -1 else None)
         ticker = self.reqId2Ticker.get(reqId)
         if ticker:
             # reply from reqMktData

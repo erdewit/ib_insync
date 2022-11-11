@@ -322,14 +322,14 @@ class Fill(NamedTuple):
 
 class OptionComputation(NamedTuple):
     tickAttrib: int
-    impliedVol: float
-    delta: float
-    optPrice: float
-    pvDividend: float
-    gamma: float
-    vega: float
-    theta: float
-    undPrice: float
+    impliedVol: Optional[float]
+    delta: Optional[float]
+    optPrice: Optional[float]
+    pvDividend: Optional[float]
+    gamma: Optional[float]
+    vega: Optional[float]
+    theta: Optional[float]
+    undPrice: Optional[float]
 
 
 class OptionChain(NamedTuple):

@@ -3,6 +3,7 @@
 import dataclasses
 import logging
 from datetime import datetime, timezone
+from typing import Any, cast
 
 from .contract import (
     ComboLeg, Contract, ContractDescription, ContractDetails,
@@ -443,7 +444,7 @@ class Decoder:
 
         self.parse(c)
         self.parse(ex)
-        time = parseIBDatetime(timeStr)
+        time = cast(datetime, parseIBDatetime(timeStr))
         tz = self.wrapper.ib.TimezoneTWS
         if tz:
             time = tz.localize(time)
@@ -524,14 +525,9 @@ class Decoder:
 
         self.wrapper.tickOptionComputation(
             int(reqId), int(tickTypeInt), int(tickAttrib),
-            float(impliedVol) if impliedVol != '-1' else None,
-            float(delta) if delta != '-2' else None,
-            float(optPrice) if optPrice != '-1' else None,
-            float(pvDividend) if pvDividend != '-1' else None,
-            float(gamma) if gamma != '-2' else None,
-            float(vega) if vega != '-2' else None,
-            float(theta) if theta != '-2' else None,
-            float(undPrice) if undPrice != '-1' else None)
+            float(impliedVol), float(delta), float(optPrice),
+            float(pvDividend), float(gamma), float(vega),
+            float(theta), float(undPrice))
 
     def deltaNeutralValidation(self, fields):
         _, _, reqId, conId, delta, price = fields
@@ -789,7 +785,7 @@ class Decoder:
         if tickType in (1, 2):
             price, size, mask, exchange, specialConditions = fields
             mask = int(mask)
-            attrib = TickAttribLast(
+            attrib: Any = TickAttribLast(
                 pastLimit=bool(mask & 1),
                 unreported=bool(mask & 2))
 
@@ -908,7 +904,7 @@ class Decoder:
         numLegs = int(fields.pop(0))
         c.comboLegs = []
         for _ in range(numLegs):
-            leg = ComboLeg()
+            leg: Any = ComboLeg()
             (
                 leg.conId,
                 leg.ratio,
@@ -1149,7 +1145,7 @@ class Decoder:
         numLegs = int(fields.pop(0))
         c.comboLegs = []
         for _ in range(numLegs):
-            leg = ComboLeg()
+            leg: Any = ComboLeg()
             (
                 leg.conId,
                 leg.ratio,

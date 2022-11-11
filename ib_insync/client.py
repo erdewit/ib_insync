@@ -7,7 +7,7 @@ import math
 import struct
 import time
 from collections import deque
-from typing import List, Optional
+from typing import Deque, List, Optional
 
 from eventkit import Event
 
@@ -127,8 +127,8 @@ class Client:
         self._numBytesRecv = 0
         self._numMsgRecv = 0
         self._isThrottling = False
-        self._msgQ = deque()
-        self._timeQ = deque()
+        self._msgQ: Deque[str] = deque()
+        self._timeQ: Deque[float] = deque()
 
     def serverVersion(self) -> int:
         return self._serverVersion
@@ -267,7 +267,7 @@ class Client:
             msg.write('\0')
         self.sendMsg(msg.getvalue())
 
-    def sendMsg(self, msg):
+    def sendMsg(self, msg: str):
         loop = getLoop()
         t = loop.time()
         times = self._timeQ

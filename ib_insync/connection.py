@@ -48,9 +48,10 @@ class Connection(asyncio.Protocol):
         return self.transport is not None
 
     def sendMsg(self, msg):
-        self.transport.write(msg)
-        self.numBytesSent += len(msg)
-        self.numMsgSent += 1
+        if self.transport:
+            self.transport.write(msg)
+            self.numBytesSent += len(msg)
+            self.numMsgSent += 1
 
     def connection_lost(self, exc):
         self.transport = None

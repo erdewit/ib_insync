@@ -26,13 +26,14 @@ class FlexReport:
     minutes. In the weekends the query servers can be down.
     """
 
+    data: bytes
+    root: et.Element
+
     def __init__(self, token=None, queryId=None, path=None):
         """
         Download a report by giving a valid ``token`` and ``queryId``,
         or load from file by giving a valid ``path``.
         """
-        self.data = None
-        self.root = None
         if token and queryId:
             self.download(token, queryId)
         elif path:
@@ -74,13 +75,20 @@ class FlexReport:
         data = resp.read()
 
         root = et.fromstring(data)
-        if root.find('Status').text == 'Success':
-            code = root.find('ReferenceCode').text
-            baseUrl = root.find('Url').text
+        elem = root.find('Status')
+        if elem and elem.text == 'Success':
+            elem = root.find('ReferenceCode')
+            assert elem
+            code = elem.text
+            elem = root.find('Url')
+            assert elem
+            baseUrl = elem.text
             _logger.info('Statement is being prepared...')
         else:
-            errorCode = root.find('ErrorCode').text
-            errorMsg = root.find('ErrorMessage').text
+            elem = root.find('ErrorCode')
+            errorCode = elem.text if elem else ''
+            elem = root.find('ErrorMessage')
+            errorMsg = elem.text if elem else ''
             raise FlexError(f'{errorCode}: {errorMsg}')
 
         while True:
@@ -91,7 +99,7 @@ class FlexReport:
             self.root = et.fromstring(self.data)
             if self.root[0].tag == 'code':
                 msg = self.root[0].text
-                if msg.startswith('Statement generation in progress'):
+                if msg and msg.startswith('Statement generation in progress'):
                     _logger.info('still working...')
                     continue
                 else:

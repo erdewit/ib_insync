@@ -4,6 +4,7 @@ import asyncio
 import configparser
 import logging
 import os
+import sys
 from contextlib import suppress
 from dataclasses import dataclass
 from typing import ClassVar, Union
@@ -96,7 +97,7 @@ class IBC:
     fixpassword: str = ''
 
     def __post_init__(self):
-        self._isWindows = os.sys.platform == 'win32'
+        self._isWindows = sys.platform == 'win32'
         if not self.ibcPath:
             self.ibcPath = '/opt/ibc' if not self._isWindows else 'C:\\IBC'
         self._proc = None
@@ -251,7 +252,7 @@ class IBController:
         self.__dict__.update(**d)
 
         # run shell command
-        ext = 'bat' if os.sys.platform == 'win32' else 'sh'
+        ext = 'bat' if sys.platform == 'win32' else 'sh'
         cmd = f'{d["IBC_PATH"]}/Scripts/DisplayBannerAndLaunch.{ext}'
         env = {**os.environ, **d}
         self._proc = await asyncio.create_subprocess_exec(
@@ -275,15 +276,17 @@ class IBController:
         writer.close()
         await self._proc.wait()
         self._proc = None
-        self._monitor.cancel()
-        self._monitor = None
+        if self._monitor:
+            self._monitor.cancel()
+            self._monitor = None
 
     async def terminateAsync(self):
         if not self._proc:
             return
         self._logger.info('Terminating')
-        self._monitor.cancel()
-        self._monitor = None
+        if self._monitor:
+            self._monitor.cancel()
+            self._monitor = None
         with suppress(ProcessLookupError):
             self._proc.terminate()
             await self._proc.wait()
@@ -430,7 +433,7 @@ class Watchdog:
                 self.ib.disconnectedEvent += onDisconnected
 
                 while self._runner:
-                    waiter = asyncio.Future()
+                    waiter: asyncio.Future = asyncio.Future()
                     await waiter
                     # soft timeout, probe the app with a historical request
                     self._logger.debug('Soft timeout')

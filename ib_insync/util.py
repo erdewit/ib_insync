@@ -8,7 +8,8 @@ import sys
 import time
 from dataclasses import fields, is_dataclass
 from datetime import date, datetime, time as time_, timedelta, timezone
-from typing import AsyncIterator, Awaitable, Callable, Iterator, List, Union
+from typing import (
+    AsyncIterator, Awaitable, Callable, Iterator, List, Optional, Union)
 
 import eventkit as ev
 
@@ -22,7 +23,7 @@ UNSET_INTEGER = 2 ** 31 - 1
 UNSET_DOUBLE = sys.float_info.max
 
 
-def df(objs, labels: List[str] = None):
+def df(objs, labels: Optional[List[str]] = None):
     """
     Create pandas DataFrame from the sequence of same-type objects.
 
@@ -286,7 +287,7 @@ class timeit:
         print(self.title + ' took ' + formatSI(time.time() - self.t0) + 's')
 
 
-def run(*awaitables: Awaitable, timeout: float = None):
+def run(*awaitables: Awaitable, timeout: Optional[float] = None):
     """
     By default run the event loop forever.
 
@@ -488,7 +489,7 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
         qloop.exec() if qtLib == 'PyQt6' else qloop.exec_()
         timer.stop()
         stack.append((qloop, timer))
-        qApp.processEvents()
+        qApp.processEvents()  # type: ignore
 
     if qtLib not in ('PyQt5', 'PyQt6', 'PySide2', 'PySide6'):
         raise RuntimeError(f'Unknown Qt library: {qtLib}')
