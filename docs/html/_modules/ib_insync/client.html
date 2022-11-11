@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.client &mdash; ib_insync 0.9.71 documentation</title>
+  <title>ib_insync.client &mdash; ib_insync 0.9.74 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/client.html"/>
@@ -81,7 +81,7 @@
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Deque</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">eventkit</span> <span class="kn">import</span> <span class="n">Event</span>
 
@@ -201,8 +201,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_numBytesRecv</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_numMsgRecv</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_msgQ</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_timeQ</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_msgQ</span><span class="p">:</span> <span class="n">Deque</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timeQ</span><span class="p">:</span> <span class="n">Deque</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Client.serverVersion"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.serverVersion">[docs]</a>    <span class="k">def</span> <span class="nf">serverVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span></div>
@@ -341,7 +341,7 @@
             <span class="n">msg</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="Client.sendMsg"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.sendMsg">[docs]</a>    <span class="k">def</span> <span class="nf">sendMsg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+<div class="viewcode-block" id="Client.sendMsg"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.sendMsg">[docs]</a>    <span class="k">def</span> <span class="nf">sendMsg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">loop</span> <span class="o">=</span> <span class="n">getLoop</span><span class="p">()</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeQ</span>
@@ -725,7 +725,7 @@
             <span class="n">contract</span><span class="o">.</span><span class="n">includeExpired</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">secIdType</span><span class="p">,</span>
             <span class="n">contract</span><span class="o">.</span><span class="n">secId</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">176</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">176</span><span class="p">:</span>
             <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">contract</span><span class="o">.</span><span class="n">issuerId</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)</span></div>
 
@@ -1049,13 +1049,13 @@
 
 <div class="viewcode-block" id="Client.reqWshEventData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqWshEventData">[docs]</a>    <span class="k">def</span> <span class="nf">reqWshEventData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">WshEventData</span><span class="p">):</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="mi">102</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">conId</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">171</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">171</span><span class="p">:</span>
             <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">filter</span><span class="p">,</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">fillWatchlist</span><span class="p">,</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">fillPortfolio</span><span class="p">,</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">fillCompetitors</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">173</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">173</span><span class="p">:</span>
             <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">startDate</span><span class="p">,</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">endDate</span><span class="p">,</span>

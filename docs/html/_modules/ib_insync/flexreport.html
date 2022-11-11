@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.flexreport &mdash; ib_insync 0.9.71 documentation</title>
+  <title>ib_insync.flexreport &mdash; ib_insync 0.9.74 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/flexreport.html"/>
@@ -100,13 +100,14 @@
 <span class="sd">    minutes. In the weekends the query servers can be down.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span>
+    <span class="n">root</span><span class="p">:</span> <span class="n">et</span><span class="o">.</span><span class="n">Element</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queryId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Download a report by giving a valid ``token`` and ``queryId``,</span>
 <span class="sd">        or load from file by giving a valid ``path``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">token</span> <span class="ow">and</span> <span class="n">queryId</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">queryId</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">path</span><span class="p">:</span>
@@ -148,13 +149,20 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
         <span class="n">root</span> <span class="o">=</span> <span class="n">et</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-            <span class="n">code</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ReferenceCode&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
-            <span class="n">baseUrl</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Url&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+        <span class="n">elem</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">elem</span> <span class="ow">and</span> <span class="n">elem</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+            <span class="n">elem</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ReferenceCode&#39;</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">elem</span>
+            <span class="n">code</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">elem</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Url&#39;</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">elem</span>
+            <span class="n">baseUrl</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">text</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Statement is being prepared...&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">errorCode</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ErrorCode&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
-            <span class="n">errorMsg</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ErrorMessage&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">elem</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ErrorCode&#39;</span><span class="p">)</span>
+            <span class="n">errorCode</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">text</span> <span class="k">if</span> <span class="n">elem</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">elem</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ErrorMessage&#39;</span><span class="p">)</span>
+            <span class="n">errorMsg</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">text</span> <span class="k">if</span> <span class="n">elem</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
             <span class="k">raise</span> <span class="n">FlexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">errorCode</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">errorMsg</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -165,7 +173,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">et</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;code&#39;</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
-                <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Statement generation in progress&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">msg</span> <span class="ow">and</span> <span class="n">msg</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Statement generation in progress&#39;</span><span class="p">):</span>
                     <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;still working...&#39;</span><span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="k">else</span><span class="p">:</span>

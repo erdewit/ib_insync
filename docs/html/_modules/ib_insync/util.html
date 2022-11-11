@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.util &mdash; ib_insync 0.9.71 documentation</title>
+  <title>ib_insync.util &mdash; ib_insync 0.9.74 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/util.html"/>
@@ -82,7 +82,8 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">fields</span><span class="p">,</span> <span class="n">is_dataclass</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">time</span> <span class="k">as</span> <span class="n">time_</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">AsyncIterator</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AsyncIterator</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">eventkit</span> <span class="k">as</span> <span class="nn">ev</span>
 
@@ -96,7 +97,7 @@
 <span class="n">UNSET_DOUBLE</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">float_info</span><span class="o">.</span><span class="n">max</span>
 
 
-<div class="viewcode-block" id="df"><a class="viewcode-back" href="../../api.html#ib_insync.ib.df">[docs]</a><span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="df"><a class="viewcode-back" href="../../api.html#ib_insync.ib.df">[docs]</a><span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create pandas DataFrame from the sequence of same-type objects.</span>
 
@@ -360,7 +361,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s1">&#39; took &#39;</span> <span class="o">+</span> <span class="n">formatSI</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../api.html#ib_insync.ib.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="o">*</span><span class="n">awaitables</span><span class="p">:</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../api.html#ib_insync.ib.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="o">*</span><span class="n">awaitables</span><span class="p">:</span> <span class="n">Awaitable</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    By default run the event loop forever.</span>
 
@@ -562,7 +563,7 @@
         <span class="n">qloop</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span> <span class="k">if</span> <span class="n">qtLib</span> <span class="o">==</span> <span class="s1">&#39;PyQt6&#39;</span> <span class="k">else</span> <span class="n">qloop</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
         <span class="n">timer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">qloop</span><span class="p">,</span> <span class="n">timer</span><span class="p">))</span>
-        <span class="n">qApp</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
+        <span class="n">qApp</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
 
     <span class="k">if</span> <span class="n">qtLib</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;PyQt5&#39;</span><span class="p">,</span> <span class="s1">&#39;PyQt6&#39;</span><span class="p">,</span> <span class="s1">&#39;PySide2&#39;</span><span class="p">,</span> <span class="s1">&#39;PySide6&#39;</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown Qt library: </span><span class="si">{</span><span class="n">qtLib</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
