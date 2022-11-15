@@ -76,19 +76,19 @@ class FlexReport:
 
         root = et.fromstring(data)
         elem = root.find('Status')
-        if elem and elem.text == 'Success':
+        if elem is not None and elem.text == 'Success':
             elem = root.find('ReferenceCode')
-            assert elem
+            assert elem is not None
             code = elem.text
             elem = root.find('Url')
-            assert elem
+            assert elem is not None
             baseUrl = elem.text
             _logger.info('Statement is being prepared...')
         else:
             elem = root.find('ErrorCode')
-            errorCode = elem.text if elem else ''
+            errorCode = elem.text if elem is not None else ''
             elem = root.find('ErrorMessage')
-            errorMsg = elem.text if elem else ''
+            errorMsg = elem.text if elem is not None else ''
             raise FlexError(f'{errorCode}: {errorMsg}')
 
         while True:
