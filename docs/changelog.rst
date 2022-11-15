@@ -4,6 +4,18 @@ Changelog
 0.9
 ---
 
+
+Version 0.9.75
+^^^^^^^^^^^^^^
+
+* Fixed: :issue:`524`: Use fix from Papakipos for issue with ``FlexReport`` downloading.
+
+Version 0.9.74
+^^^^^^^^^^^^^^
+
+* Fix ``reqContractDetails`` bug in combination with latest TWS.
+* Update the code to comply with stricter MyPy checks.
+
 Version 0.9.73
 ^^^^^^^^^^^^^^
 
