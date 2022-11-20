@@ -1081,8 +1081,14 @@ class Wrapper:
             self, reqId: int, errorCode: int, errorString: str,
             advancedOrderRejectJson: str):
         # https://interactivebrokers.github.io/tws-api/message_codes.html
+        isRequest = reqId in self._futures
+        trade = self.trades.get((self.clientId, reqId))
         warningCodes = {110, 165, 202, 399, 404, 434, 492, 10167}
         isWarning = errorCode in warningCodes or 2100 <= errorCode < 2200
+        if errorCode == 110 and isRequest:
+            # whatIf request failed
+            isWarning = False
+
         msg = (
             f'{"Warning" if isWarning else "Error"} '
             f'{errorCode}, reqId {reqId}: {errorString}')
@@ -1094,7 +1100,7 @@ class Wrapper:
             self._logger.info(msg)
         else:
             self._logger.error(msg)
-            if reqId in self._futures:
+            if isRequest:
                 # the request failed
                 if self.ib.RaiseRequestErrors:
                     error = RequestError(reqId, errorCode, errorString)
@@ -1102,9 +1108,8 @@ class Wrapper:
                 else:
                     self._endReq(reqId)
 
-            elif (self.clientId, reqId) in self.trades:
+            elif trade:
                 # something is wrong with the order, cancel it
-                trade = self.trades[(self.clientId, reqId)]
                 if advancedOrderRejectJson:
                     trade.advancedError = advancedOrderRejectJson
                 if not trade.isDone():
