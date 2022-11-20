@@ -5,6 +5,12 @@ Changelog
 ---
 
 
+
+Version 0.9.76
+^^^^^^^^^^^^^^
+
+* Fixed: :issue:`525`: For ``whatIf`` request treat error 110 as failure.
+
 Version 0.9.75
 ^^^^^^^^^^^^^^
 

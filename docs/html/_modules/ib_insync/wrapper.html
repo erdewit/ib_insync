@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.wrapper &mdash; ib_insync 0.9.74 documentation</title>
+  <title>ib_insync.wrapper &mdash; ib_insync 0.9.76 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/wrapper.html"/>
@@ -1155,8 +1155,14 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">errorCode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">errorString</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">advancedOrderRejectJson</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="c1"># https://interactivebrokers.github.io/tws-api/message_codes.html</span>
+        <span class="n">isRequest</span> <span class="o">=</span> <span class="n">reqId</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_futures</span>
+        <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">reqId</span><span class="p">))</span>
         <span class="n">warningCodes</span> <span class="o">=</span> <span class="p">{</span><span class="mi">110</span><span class="p">,</span> <span class="mi">165</span><span class="p">,</span> <span class="mi">202</span><span class="p">,</span> <span class="mi">399</span><span class="p">,</span> <span class="mi">404</span><span class="p">,</span> <span class="mi">434</span><span class="p">,</span> <span class="mi">492</span><span class="p">,</span> <span class="mi">10167</span><span class="p">}</span>
         <span class="n">isWarning</span> <span class="o">=</span> <span class="n">errorCode</span> <span class="ow">in</span> <span class="n">warningCodes</span> <span class="ow">or</span> <span class="mi">2100</span> <span class="o">&lt;=</span> <span class="n">errorCode</span> <span class="o">&lt;</span> <span class="mi">2200</span>
+        <span class="k">if</span> <span class="n">errorCode</span> <span class="o">==</span> <span class="mi">110</span> <span class="ow">and</span> <span class="n">isRequest</span><span class="p">:</span>
+            <span class="c1"># whatIf request failed</span>
+            <span class="n">isWarning</span> <span class="o">=</span> <span class="kc">False</span>
+
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot;Warning&quot;</span> <span class="k">if</span> <span class="n">isWarning</span> <span class="k">else</span> <span class="s2">&quot;Error&quot;</span><span class="si">}</span><span class="s1"> &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">errorCode</span><span class="si">}</span><span class="s1">, reqId </span><span class="si">{</span><span class="n">reqId</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">errorString</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -1168,7 +1174,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">reqId</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_futures</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">isRequest</span><span class="p">:</span>
                 <span class="c1"># the request failed</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">RaiseRequestErrors</span><span class="p">:</span>
                     <span class="n">error</span> <span class="o">=</span> <span class="n">RequestError</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">errorCode</span><span class="p">,</span> <span class="n">errorString</span><span class="p">)</span>
@@ -1176,9 +1182,8 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
 
-            <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">trade</span><span class="p">:</span>
                 <span class="c1"># something is wrong with the order, cancel it</span>
-                <span class="n">trade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)]</span>
                 <span class="k">if</span> <span class="n">advancedOrderRejectJson</span><span class="p">:</span>
                     <span class="n">trade</span><span class="o">.</span><span class="n">advancedError</span> <span class="o">=</span> <span class="n">advancedOrderRejectJson</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">trade</span><span class="o">.</span><span class="n">isDone</span><span class="p">():</span>
