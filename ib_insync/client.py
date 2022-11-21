@@ -238,7 +238,7 @@ class Client:
             raise ConnectionError('Not connected')
 
         msg = io.StringIO()
-        empty = {None, UNSET_INTEGER, UNSET_DOUBLE}
+        empty = (None, UNSET_INTEGER, UNSET_DOUBLE)
         for field in fields:
             typ = type(field)
             if field in empty:
