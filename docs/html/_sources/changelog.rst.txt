@@ -5,6 +5,10 @@ Changelog
 ---
 
 
+Version 0.9.77
+^^^^^^^^^^^^^^
+
+* :pull:`528`: Fixes regression in ``client.py``.
 
 Version 0.9.76
 ^^^^^^^^^^^^^^
