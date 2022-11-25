@@ -184,123 +184,6 @@ class IBC:
 
 
 @dataclass
-class IBController:
-    """
-    For new installations it is recommended to use IBC instead.
-
-    Programmatic control over starting and stopping TWS/Gateway
-    using IBController (https://github.com/ib-controller/ib-controller).
-
-    On Windows the the proactor (or quamash) event loop must have been set:
-
-    .. code-block:: python
-
-        import asyncio
-        asyncio.set_event_loop(asyncio.ProactorEventLoop())
-
-    This is not intended to be run in a notebook.
-    """
-
-    APP: str = 'TWS'  # 'TWS' or 'GATEWAY'
-    TWS_MAJOR_VRSN: str = '969'
-    TRADING_MODE: str = 'live'  # 'live' or 'paper'
-    IBC_INI: str = '~/IBController/IBController.ini'
-    IBC_PATH: str = '~/IBController'
-    TWS_PATH: str = '~/Jts'
-    LOG_PATH: str = '~/IBController/Logs'
-    TWSUSERID: str = ''
-    TWSPASSWORD: str = ''
-    JAVA_PATH: str = ''
-    TWS_CONFIG_PATH: str = ''
-
-    def __post_init__(self):
-        self._proc = None
-        self._monitor = None
-        self._logger = logging.getLogger('ib_insync.IBController')
-
-    def __enter__(self):
-        self.start()
-        return self
-
-    def __exit__(self, *_exc):
-        self.terminate()
-
-    def start(self):
-        """Launch TWS/IBG."""
-        util.run(self.startAsync())
-
-    def stop(self):
-        """Cleanly shutdown TWS/IBG."""
-        util.run(self.stopAsync())
-
-    def terminate(self):
-        """Terminate TWS/IBG."""
-        util.run(self.terminateAsync())
-
-    async def startAsync(self):
-        if self._proc:
-            return
-        self._logger.info('Starting')
-
-        # expand paths
-        d = util.dataclassAsDict(self)
-        for k, v in d.items():
-            if k.endswith('_PATH') or k.endswith('_INI'):
-                d[k] = os.path.expanduser(v)
-        if not d['TWS_CONFIG_PATH']:
-            d['TWS_CONFIG_PATH'] = d['TWS_PATH']
-        self.__dict__.update(**d)
-
-        # run shell command
-        ext = 'bat' if sys.platform == 'win32' else 'sh'
-        cmd = f'{d["IBC_PATH"]}/Scripts/DisplayBannerAndLaunch.{ext}'
-        env = {**os.environ, **d}
-        self._proc = await asyncio.create_subprocess_exec(
-            cmd, env=env, stdout=asyncio.subprocess.PIPE)
-        self._monitor = asyncio.ensure_future(self.monitorAsync())
-
-    async def stopAsync(self):
-        if not self._proc:
-            return
-        self._logger.info('Stopping')
-
-        # read ibcontroller ini file to get controller port
-        txt = '[section]' + open(self.IBC_INI).read()
-        config = configparser.ConfigParser()
-        config.read_string(txt)
-        contrPort = config.getint('section', 'IbControllerPort')
-
-        _reader, writer = await asyncio.open_connection('127.0.0.1', contrPort)
-        writer.write(b'STOP')
-        await writer.drain()
-        writer.close()
-        await self._proc.wait()
-        self._proc = None
-        if self._monitor:
-            self._monitor.cancel()
-            self._monitor = None
-
-    async def terminateAsync(self):
-        if not self._proc:
-            return
-        self._logger.info('Terminating')
-        if self._monitor:
-            self._monitor.cancel()
-            self._monitor = None
-        with suppress(ProcessLookupError):
-            self._proc.terminate()
-            await self._proc.wait()
-        self._proc = None
-
-    async def monitorAsync(self):
-        while self._proc:
-            line = await self._proc.stdout.readline()
-            if not line:
-                break
-            self._logger.info(line.strip().decode())
-
-
-@dataclass
 class Watchdog:
     """
     Start, connect and watch over the TWS or gateway app and try to keep it
@@ -363,7 +246,7 @@ class Watchdog:
         'startingEvent', 'startedEvent', 'stoppingEvent', 'stoppedEvent',
         'softTimeoutEvent', 'hardTimeoutEvent']
 
-    controller: Union[IBC, IBController]
+    controller: IBC
     ib: IB
     host: str = '127.0.0.1'
     port: int = 7497

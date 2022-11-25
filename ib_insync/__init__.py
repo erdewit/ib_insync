@@ -14,7 +14,7 @@ from .contract import (
     TagValue, Warrant)
 from .flexreport import FlexError, FlexReport
 from .ib import IB
-from .ibcontroller import IBC, IBController, Watchdog
+from .ibcontroller import IBC, Watchdog
 from .objects import (
     AccountValue, BarData, BarDataList, CommissionReport, ConnectionStats,
     DOMLevel, DepthMktDataDescription, Dividends, Execution, ExecutionFilter,
@@ -42,7 +42,7 @@ __all__ = [
     'ContractDescription', 'ContractDetails', 'Crypto', 'DeltaNeutralContract',
     'Forex', 'Future', 'FuturesOption', 'Index', 'MutualFund', 'Option',
     'ScanData', 'Stock', 'TagValue', 'Warrant', 'FlexError', 'FlexReport',
-    'IB', 'IBC', 'IBController', 'Watchdog',
+    'IB', 'IBC', 'Watchdog',
     'AccountValue', 'BarData', 'BarDataList', 'CommissionReport',
     'ConnectionStats', 'DOMLevel', 'DepthMktDataDescription', 'Dividends',
     'Execution', 'ExecutionFilter', 'FamilyCode', 'Fill', 'FundamentalRatios',
