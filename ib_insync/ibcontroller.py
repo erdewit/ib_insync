@@ -1,13 +1,11 @@
 """Programmatic control over the TWS/gateway client software."""
 
 import asyncio
-import configparser
 import logging
-import os
 import sys
 from contextlib import suppress
 from dataclasses import dataclass
-from typing import ClassVar, Union
+from typing import ClassVar
 
 from eventkit import Event
 
@@ -195,8 +193,7 @@ class Watchdog:
     Watchdog unless you understand what it does and doesn't do.
 
     Args:
-        controller (Union[IBC, IBController]): (required) IBC or IBController
-            instance.
+        controller (IBC): (required) IBC instance.
         ib (IB): (required) IB instance to be used. Do no connect this
             instance as Watchdog takes care of that.
         host (str): Used for connecting IB instance.
