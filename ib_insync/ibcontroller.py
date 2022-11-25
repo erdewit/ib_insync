@@ -58,6 +58,8 @@ class IBC:
             Default is to use the Java VM included with TWS/gateway.
         fixuserid (str): FIX account user id (gateway only).
         fixpassword (str): FIX account password (gateway only).
+        on2fatimeout (str): What to do if 2-factor authentication times
+            out; Can be 'restart' or 'exit'.
 
     This is not intended to be run in a notebook.
 
@@ -93,6 +95,7 @@ class IBC:
     password: str = ''
     fixuserid: str = ''
     fixpassword: str = ''
+    on2fatimeout: str = ''
 
     def __post_init__(self):
         self._isWindows = sys.platform == 'win32'
@@ -135,7 +138,9 @@ class IBC:
             userid=('--user=', '/User:'),
             password=('--pw=', '/PW:'),
             fixuserid=('--fix-user=', '/FIXUser:'),
-            fixpassword=('--fix-pw=', '/FIXPW:'))
+            fixpassword=('--fix-pw=', '/FIXPW:'),
+            on2fatimeout=('--2fatimeoutaction=', '/On2FATimeout:'),
+        )
 
         # create shell command
         cmd = [
