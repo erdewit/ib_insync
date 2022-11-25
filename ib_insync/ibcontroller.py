@@ -194,7 +194,7 @@ class Watchdog:
 
     Args:
         controller (IBC): (required) IBC instance.
-        ib (IB): (required) IB instance to be used. Do no connect this
+        ib (IB): (required) IB instance to be used. Do not connect this
             instance as Watchdog takes care of that.
         host (str): Used for connecting IB instance.
         port (int):  Used for connecting IB instance.
