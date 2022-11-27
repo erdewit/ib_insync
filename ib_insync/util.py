@@ -1,26 +1,34 @@
 """Utilities."""
 
 import asyncio
+import datetime as dt
 import logging
 import math
 import signal
 import sys
 import time
 from dataclasses import fields, is_dataclass
-from datetime import date, datetime, time as time_, timedelta, timezone
 from typing import (
     AsyncIterator, Awaitable, Callable, Iterator, List, Optional, Union)
 
 import eventkit as ev
+
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:
+    from backports.zoneinfo import ZoneInfo  # type: ignore
+
 
 globalErrorEvent = ev.Event()
 """
 Event to emit global exceptions.
 """
 
-EPOCH = datetime(1970, 1, 1, tzinfo=timezone.utc)
+EPOCH = dt.datetime(1970, 1, 1, tzinfo=dt.timezone.utc)
 UNSET_INTEGER = 2 ** 31 - 1
 UNSET_DOUBLE = sys.float_info.max
+
+Time_t = Union[dt.time, dt.datetime]
 
 
 def df(objs, labels: Optional[List[str]] = None):
@@ -133,7 +141,7 @@ def tree(obj):
     """
     if isinstance(obj, (bool, int, float, str, bytes)):
         return obj
-    elif isinstance(obj, (date, time_)):
+    elif isinstance(obj, (dt.date, dt.time)):
         return obj.isoformat()
     elif isinstance(obj, dict):
         return {k: tree(v) for k, v in obj.items()}
@@ -339,17 +347,16 @@ def run(*awaitables: Awaitable, timeout: Optional[float] = None):
     return result
 
 
-def _fillDate(time: Union[time_, datetime]) -> datetime:
+def _fillDate(time: Time_t) -> dt.datetime:
     # use today if date is absent
-    if isinstance(time, time_):
-        dt = datetime.combine(date.today(), time)
+    if isinstance(time, dt.time):
+        t = dt.datetime.combine(dt.date.today(), time)
     else:
-        dt = time
-    return dt
+        t = time
+    return t
 
 
-def schedule(
-        time: Union[time_, datetime], callback: Callable, *args):
+def schedule(time: Time_t, callback: Callable, *args):
     """
     Schedule the callback to be run at the given time with
     the given arguments.
@@ -361,9 +368,9 @@ def schedule(
         callback: Callable scheduled to run.
         args: Arguments for to call callback with.
     """
-    dt = _fillDate(time)
-    now = datetime.now(dt.tzinfo)
-    delay = (dt - now).total_seconds()
+    t = _fillDate(time)
+    now = dt.datetime.now(t.tzinfo)
+    delay = (t - now).total_seconds()
     loop = getLoop()
     return loop.call_later(delay, callback, *args)
 
@@ -380,10 +387,8 @@ def sleep(secs: float = 0.02) -> bool:
     return True
 
 
-def timeRange(
-        start: Union[time_, datetime],
-        end: Union[time_, datetime],
-        step: float) -> Iterator[datetime]:
+def timeRange(start: Time_t, end: Time_t, step: float) \
+        -> Iterator[dt.datetime]:
     """
     Iterator that waits periodically until certain time points are
     reached while yielding those time points.
@@ -396,10 +401,10 @@ def timeRange(
         step (float): The number of seconds of each period
     """
     assert step > 0
-    delta = timedelta(seconds=step)
+    delta = dt.timedelta(seconds=step)
     t = _fillDate(start)
-    tz = timezone.utc if t.tzinfo else None
-    now = datetime.now(tz)
+    tz = dt.timezone.utc if t.tzinfo else None
+    now = dt.datetime.now(tz)
     while t < now:
         t += delta
     while t <= _fillDate(end):
@@ -408,7 +413,7 @@ def timeRange(
         t += delta
 
 
-def waitUntil(t: Union[time_, datetime]) -> bool:
+def waitUntil(t: Time_t) -> bool:
     """
     Wait until the given time t is reached.
 
@@ -416,22 +421,22 @@ def waitUntil(t: Union[time_, datetime]) -> bool:
         t: The time t can be specified as datetime.datetime,
             or as datetime.time in which case today is used as the date.
     """
-    now = datetime.now(t.tzinfo)
+    now = dt.datetime.now(t.tzinfo)
     secs = (_fillDate(t) - now).total_seconds()
     run(asyncio.sleep(secs))
     return True
 
 
 async def timeRangeAsync(
-        start: Union[time_, datetime],
-        end: Union[time_, datetime],
-        step: float) -> AsyncIterator[datetime]:
+        start: Time_t,
+        end: Time_t,
+        step: float) -> AsyncIterator[dt.datetime]:
     """Async version of :meth:`timeRange`."""
     assert step > 0
-    delta = timedelta(seconds=step)
+    delta = dt.timedelta(seconds=step)
     t = _fillDate(start)
-    tz = timezone.utc if t.tzinfo else None
-    now = datetime.now(tz)
+    tz = dt.timezone.utc if t.tzinfo else None
+    now = dt.datetime.now(tz)
     while t < now:
         t += delta
     while t <= _fillDate(end):
@@ -440,9 +445,9 @@ async def timeRangeAsync(
         t += delta
 
 
-async def waitUntilAsync(t: Union[time_, datetime]) -> bool:
+async def waitUntilAsync(t: Time_t) -> bool:
     """Async version of :meth:`waitUntil`."""
-    now = datetime.now(t.tzinfo)
+    now = dt.datetime.now(t.tzinfo)
     secs = (_fillDate(t) - now).total_seconds()
     await asyncio.sleep(secs)
     return True
@@ -504,36 +509,42 @@ def useQt(qtLib: str = 'PyQt5', period: float = 0.01):
     qt_step()
 
 
-def formatIBDatetime(dt: Union[date, datetime, str, None]) -> str:
+def formatIBDatetime(t: Union[dt.date, dt.datetime, str, None]) -> str:
     """Format date or datetime to string that IB uses."""
-    if not dt:
+    if not t:
         s = ''
-    elif isinstance(dt, datetime):
-        if dt.tzinfo:
-            # convert to local system timezone
-            dt = dt.astimezone(tz=None)
-        s = dt.strftime('%Y%m%d %H:%M:%S')
-    elif isinstance(dt, date):
-        s = dt.strftime('%Y%m%d 23:59:59')
+    elif isinstance(t, dt.datetime):
+        # convert to UTC timezone
+        t = t.astimezone(tz=dt.timezone.utc)
+        s = t.strftime('%Y%m%d %H:%M:%S UTC')
+    elif isinstance(t, dt.date):
+        t = dt.datetime(
+            t.year, t.month, t.day, 23, 59, 59).astimezone(tz=dt.timezone.utc)
+        s = t.strftime('%Y%m%d %H:%M:%S UTC')
     else:
-        s = dt
+        s = t
     return s
 
 
-def parseIBDatetime(s: str) -> Union[date, datetime]:
+def parseIBDatetime(s: str) -> Union[dt.date, dt.datetime]:
     """Parse string in IB date or datetime format to datetime."""
     if len(s) == 8:
         # YYYYmmdd
         y = int(s[0:4])
         m = int(s[4:6])
         d = int(s[6:8])
-        dt = date(y, m, d)
+        t = dt.date(y, m, d)
     elif s.isdigit():
-        dt = datetime.fromtimestamp(int(s), timezone.utc)
+        t = dt.datetime.fromtimestamp(int(s), dt.timezone.utc)
+    elif s.count(' ') >= 2:
+        # 20221125 10:00:00 Europe/Amsterdam
+        s0, s1, s2 = s.split(' ', 2)
+        t = dt.datetime.strptime(s0 + s1, '%Y%m%d%H:%M:%S')
+        t = t.replace(tzinfo=ZoneInfo(s2))
     else:
         # YYYYmmdd  HH:MM:SS
         # or
         # YYYY-mm-dd HH:MM:SS.0
         ss = s.replace(' ', '').replace('-', '')[:16]
-        dt = datetime.strptime(ss, '%Y%m%d%H:%M:%S')
-    return dt
+        t = dt.datetime.strptime(ss, '%Y%m%d%H:%M:%S')
+    return t

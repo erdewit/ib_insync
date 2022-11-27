@@ -32,11 +32,6 @@ Installation
 
     pip install ib_insync
 
-For Python 3.6 install the ``dataclasses`` package as well
-(newer Python versions already have it)::
-
-    pip install dataclasses
-
 Requirements:
 
 * Python 3.6 or higher;

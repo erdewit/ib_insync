@@ -14,7 +14,7 @@ from .objects import (
     HistoricalTickLast, NewsProvider, PriceIncrement, SmartComponent,
     SoftDollarTier, TagValue, TickAttribBidAsk, TickAttribLast)
 from .order import Order, OrderComboLeg, OrderCondition, OrderState
-from .util import UNSET_DOUBLE, parseIBDatetime
+from .util import UNSET_DOUBLE, ZoneInfo, parseIBDatetime
 from .wrapper import Wrapper
 
 
@@ -445,9 +445,10 @@ class Decoder:
         self.parse(c)
         self.parse(ex)
         time = cast(datetime, parseIBDatetime(timeStr))
-        tz = self.wrapper.ib.TimezoneTWS
-        if tz:
-            time = tz.localize(time)
+        if not time.tzinfo:
+            tz = self.wrapper.ib.TimezoneTWS
+            if tz:
+                time = time.replace(tzinfo=ZoneInfo(str(tz)))
         ex.time = time.astimezone(timezone.utc)
         self.wrapper.execDetails(int(reqId), c, ex)
 
