@@ -4,6 +4,13 @@ Changelog
 0.9
 ---
 
+Version 0.9.78
+^^^^^^^^^^^^^^
+
+* Added ``account`` parameter to ``ib.portfolio()``.
+* Added ``IBC.on2fatimeout`` field.
+* Removed obsolete ``IBController``.
+* Fixed: :issue:`530`: Use explicit timezone in requests as per new API requirement.
 
 Version 0.9.77
 ^^^^^^^^^^^^^^

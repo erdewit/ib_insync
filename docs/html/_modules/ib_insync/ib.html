@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.ib &mdash; ib_insync 0.9.74 documentation</title>
+  <title>ib_insync.ib &mdash; ib_insync 0.9.78 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/ib.html"/>
@@ -167,7 +167,7 @@
 <span class="sd">          * :data:`True`: Raise a :class:`.RequestError`.</span>
 <span class="sd">        MaxSyncedSubAccounts (int): Do not use sub-account updates</span>
 <span class="sd">          if the number of sub-accounts exceeds this number (50 by default).</span>
-<span class="sd">        TimezoneTWS (pytz.timezone): Specifies what timezone TWS (or gateway)</span>
+<span class="sd">        TimezoneTWS (str): Specifies what timezone TWS (or gateway)</span>
 <span class="sd">          is using. The default is to assume local system timezone.</span>
 
 <span class="sd">    Events:</span>
@@ -268,7 +268,7 @@
     <span class="n">RequestTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">RaiseRequestErrors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">MaxSyncedSubAccounts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span>
-    <span class="n">TimezoneTWS</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">TimezoneTWS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_createEvents</span><span class="p">()</span>
@@ -476,10 +476,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accountSummaryAsync</span><span class="p">(</span><span class="n">account</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IB.portfolio"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.portfolio">[docs]</a>    <span class="k">def</span> <span class="nf">portfolio</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PortfolioItem</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;List of portfolio items of the default account.&quot;&quot;&quot;</span>
-        <span class="n">account</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">accounts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">portfolio</span><span class="p">[</span><span class="n">account</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span></div>
+<div class="viewcode-block" id="IB.portfolio"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.portfolio">[docs]</a>    <span class="k">def</span> <span class="nf">portfolio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PortfolioItem</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of portfolio items for the given account,</span>
+<span class="sd">        or of all retrieved portfolio items if account is left blank.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            account: If specified, filter for this account name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">account</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">portfolio</span><span class="p">[</span><span class="n">account</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">portfolio</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span></div>
 
 <div class="viewcode-block" id="IB.positions"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.positions">[docs]</a>    <span class="k">def</span> <span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Position</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
