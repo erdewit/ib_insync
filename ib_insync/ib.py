@@ -402,10 +402,19 @@ class IB:
         """
         return self._run(self.accountSummaryAsync(account))
 
-    def portfolio(self) -> List[PortfolioItem]:
-        """List of portfolio items of the default account."""
-        account = self.wrapper.accounts[0]
-        return [v for v in self.wrapper.portfolio[account].values()]
+    def portfolio(self, account: str = '') -> List[PortfolioItem]:
+        """
+        List of portfolio items for the given account,
+        or of all retrieved portfolio items if account is left blank.
+
+        Args:
+            account: If specified, filter for this account name.
+        """
+        if account:
+            return list(self.wrapper.portfolio[account].values())
+        else:
+            return [v for d in self.wrapper.portfolio.values()
+                    for v in d.values()]
 
     def positions(self, account: str = '') -> List[Position]:
         """
