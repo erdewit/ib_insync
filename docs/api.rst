@@ -60,10 +60,6 @@ IBC
 ---
 .. autoclass:: ib_insync.ibcontroller.IBC
 
-IBController
-------------
-.. autoclass:: ib_insync.ibcontroller.IBController
-
 Watchdog
 --------
 .. autoclass:: ib_insync.ibcontroller.Watchdog
