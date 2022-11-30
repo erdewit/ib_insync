@@ -1762,7 +1762,8 @@ class IB:
             self.client.reqMktData(
                 reqId, contract, '', True, regulatorySnapshot, [])
         await asyncio.gather(*futures)
-        for ticker in tickers:
+        for ticker, reqId in zip(tickers, reqIds):
+            self.client.cancelMktData(reqId)
             self.wrapper.endTicker(ticker, 'snapshot')
         return tickers
 
