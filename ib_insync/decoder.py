@@ -646,6 +646,11 @@ class Decoder:
             m = int(m)
             cd.derivativeSecTypes = fields[:m]
             fields = fields[m:]
+            if self.serverVersion >= 176:
+                (
+                    cd.contract.description,
+                    cd.contract.issuerId,
+                    *fields) = fields
             cds.append(cd)
 
         self.wrapper.symbolSamples(int(reqId), cds)
