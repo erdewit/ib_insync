@@ -178,7 +178,7 @@ class Client:
 
         Args:
             connectOptions: Use "+PACEAPI" to use request-pacing built
-                into TWS/gateway 974+.
+                into TWS/gateway 974+ (obsolete).
         """
         self.connectOptions = connectOptions.encode()
 
