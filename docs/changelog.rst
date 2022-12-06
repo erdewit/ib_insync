@@ -4,6 +4,17 @@ Changelog
 0.9
 ---
 
+
+Version 0.9.80
+^^^^^^^^^^^^^^
+
+* Fix ``ib.reqMatchingSymbols`` to handle bond contracts.
+
+Version 0.9.79
+^^^^^^^^^^^^^^
+
+* Fix datetime parsing.
+
 Version 0.9.78
 ^^^^^^^^^^^^^^
 
