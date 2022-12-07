@@ -1,5 +1,6 @@
 """Financial instrument types used by Interactive Brokers."""
 
+import datetime as dt
 from dataclasses import dataclass, field
 from typing import List, NamedTuple, Optional
 
@@ -461,6 +462,11 @@ class DeltaNeutralContract:
     price: float = 0.0
 
 
+class TradingSession(NamedTuple):
+    start: dt.datetime
+    end: dt.datetime
+
+
 @dataclass
 class ContractDetails:
     contract: Optional[Contract] = None
@@ -508,6 +514,21 @@ class ContractDetails:
     nextOptionType: str = ''
     nextOptionPartial: bool = False
     notes: str = ''
+
+    def tradingSessions(self) -> List[TradingSession]:
+        return self._parseSessions(self.tradingHours)
+
+    def liquidSessions(self) -> List[TradingSession]:
+        return self._parseSessions(self.liquidHours)
+
+    def _parseSessions(self, s: str) -> List[TradingSession]:
+        tz = util.ZoneInfo(self.timeZoneId)
+        sessions = [
+            TradingSession(*[
+                dt.datetime.strptime(t, '%Y%m%d:%H%M').replace(tzinfo=tz)
+                for t in sess.split('-')])
+            for sess in s.split(';')]
+        return sessions
 
 
 @dataclass
