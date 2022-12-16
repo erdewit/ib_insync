@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.contract &mdash; ib_insync 0.9.71 documentation</title>
+  <title>ib_insync.contract &mdash; ib_insync 0.9.81 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/contract.html"/>
@@ -74,6 +74,7 @@
   <h1>Source code for ib_insync.contract</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Financial instrument types used by Interactive Brokers.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span>
 
@@ -535,6 +536,11 @@
     <span class="n">price</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span></div>
 
 
+<div class="viewcode-block" id="TradingSession"><a class="viewcode-back" href="../../api.html#ib_insync.contract.TradingSession">[docs]</a><span class="k">class</span> <span class="nc">TradingSession</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span>
+    <span class="n">end</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span></div>
+
+
 <div class="viewcode-block" id="ContractDetails"><a class="viewcode-back" href="../../api.html#ib_insync.contract.ContractDetails">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">ContractDetails</span><span class="p">:</span>
     <span class="n">contract</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Contract</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -581,7 +587,22 @@
     <span class="n">nextOptionDate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">nextOptionType</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">nextOptionPartial</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">notes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
+    <span class="n">notes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<div class="viewcode-block" id="ContractDetails.tradingSessions"><a class="viewcode-back" href="../../api.html#ib_insync.contract.ContractDetails.tradingSessions">[docs]</a>    <span class="k">def</span> <span class="nf">tradingSessions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TradingSession</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseSessions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tradingHours</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContractDetails.liquidSessions"><a class="viewcode-back" href="../../api.html#ib_insync.contract.ContractDetails.liquidSessions">[docs]</a>    <span class="k">def</span> <span class="nf">liquidSessions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TradingSession</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseSessions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">liquidHours</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_parseSessions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TradingSession</span><span class="p">]:</span>
+        <span class="n">tz</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">ZoneInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeZoneId</span><span class="p">)</span>
+        <span class="n">sessions</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">TradingSession</span><span class="p">(</span><span class="o">*</span><span class="p">[</span>
+                <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">:%H%M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">tz</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">sess</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)])</span>
+            <span class="k">for</span> <span class="n">sess</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">sessions</span></div>
 
 
 <div class="viewcode-block" id="ContractDescription"><a class="viewcode-back" href="../../api.html#ib_insync.contract.ContractDescription">[docs]</a><span class="nd">@dataclass</span>

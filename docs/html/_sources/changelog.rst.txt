@@ -5,6 +5,13 @@ Changelog
 ---
 
 
+Version 0.9.81
+^^^^^^^^^^^^^^
+
+* Add ``ContractDetails.tradingSessions()`` and
+  ``ContractDetails.liquidSessions()`` to parse session times.
+* Fix ``IBC.on2fatimeout`` command line argument for Unix.
+
 Version 0.9.80
 ^^^^^^^^^^^^^^
 

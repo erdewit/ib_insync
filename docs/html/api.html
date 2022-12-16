@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API docs &mdash; ib_insync 0.9.80 documentation</title>
+  <title>API docs &mdash; ib_insync 0.9.81 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.ioapi.html"/>
@@ -793,6 +793,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.DeltaNeutralContract.update"><code class="docutils literal notranslate"><span class="pre">DeltaNeutralContract.update()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#ib_insync.contract.TradingSession"><code class="docutils literal notranslate"><span class="pre">TradingSession</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.TradingSession.start"><code class="docutils literal notranslate"><span class="pre">TradingSession.start</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.TradingSession.end"><code class="docutils literal notranslate"><span class="pre">TradingSession.end</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#ib_insync.contract.ContractDetails"><code class="docutils literal notranslate"><span class="pre">ContractDetails</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.ContractDetails.contract"><code class="docutils literal notranslate"><span class="pre">ContractDetails.contract</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.ContractDetails.marketName"><code class="docutils literal notranslate"><span class="pre">ContractDetails.marketName</span></code></a></li>
@@ -838,6 +843,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.ContractDetails.nextOptionType"><code class="docutils literal notranslate"><span class="pre">ContractDetails.nextOptionType</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.ContractDetails.nextOptionPartial"><code class="docutils literal notranslate"><span class="pre">ContractDetails.nextOptionPartial</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.ContractDetails.notes"><code class="docutils literal notranslate"><span class="pre">ContractDetails.notes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.ContractDetails.tradingSessions"><code class="docutils literal notranslate"><span class="pre">ContractDetails.tradingSessions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.ContractDetails.liquidSessions"><code class="docutils literal notranslate"><span class="pre">ContractDetails.liquidSessions()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.ContractDetails.dict"><code class="docutils literal notranslate"><span class="pre">ContractDetails.dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.ContractDetails.nonDefaults"><code class="docutils literal notranslate"><span class="pre">ContractDetails.nonDefaults()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.contract.ContractDetails.tuple"><code class="docutils literal notranslate"><span class="pre">ContractDetails.tuple()</span></code></a></li>
@@ -1598,7 +1605,7 @@
              
   <section id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this heading"></a></h1>
-<p>Release 0.9.80.</p>
+<p>Release 0.9.81.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -7658,6 +7665,22 @@ This is a non-recursive variant of <code class="docutils literal notranslate"><s
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="ib_insync.contract.TradingSession">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ib_insync.contract.</span></span><span class="sig-name descname"><span class="pre">TradingSession</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#TradingSession"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.contract.TradingSession" title="Permalink to this definition"></a></dt>
+<dd><p>Create new instance of TradingSession(start, end)</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ib_insync.contract.TradingSession.start">
+<span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></em><a class="headerlink" href="#ib_insync.contract.TradingSession.start" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ib_insync.contract.TradingSession.end">
+<span class="sig-name descname"><span class="pre">end</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></em><a class="headerlink" href="#ib_insync.contract.TradingSession.end" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="ib_insync.contract.ContractDetails">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ib_insync.contract.</span></span><span class="sig-name descname"><span class="pre">ContractDetails</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contract=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marketName=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minTick=0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderTypes=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validExchanges=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priceMagnifier=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underConId=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longName=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractMonth=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">industry=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subcategory=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeZoneId=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tradingHours=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquidHours=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evRule=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evMultiplier=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdSizeMultiplier=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggGroup=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underSymbol=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underSecType=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marketRuleIds=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secIdList=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">realExpirationDate=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lastTradeTime=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stockType=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minSize=0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizeIncrement=0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suggestedSizeIncrement=0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cusip=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratings=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descAppend=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bondType=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">couponType=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callable=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">putable=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coupon=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convertible=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maturity=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">issueDate=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nextOptionDate=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nextOptionType=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nextOptionPartial=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notes=''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#ContractDetails"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.contract.ContractDetails" title="Permalink to this definition"></a></dt>
 <dd><dl class="py attribute">
@@ -7879,6 +7902,26 @@ This is a non-recursive variant of <code class="docutils literal notranslate"><s
 <dt class="sig sig-object py" id="ib_insync.contract.ContractDetails.notes">
 <span class="sig-name descname"><span class="pre">notes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#ib_insync.contract.ContractDetails.notes" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.contract.ContractDetails.tradingSessions">
+<span class="sig-name descname"><span class="pre">tradingSessions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#ContractDetails.tradingSessions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.contract.ContractDetails.tradingSessions" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#ib_insync.contract.TradingSession" title="ib_insync.contract.TradingSession"><code class="xref py py-class docutils literal notranslate"><span class="pre">TradingSession</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.contract.ContractDetails.liquidSessions">
+<span class="sig-name descname"><span class="pre">liquidSessions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/contract.html#ContractDetails.liquidSessions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.contract.ContractDetails.liquidSessions" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#ib_insync.contract.TradingSession" title="ib_insync.contract.TradingSession"><code class="xref py py-class docutils literal notranslate"><span class="pre">TradingSession</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ib_insync.contract.ContractDetails.dict">
