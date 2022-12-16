@@ -139,7 +139,7 @@ class IBC:
             password=('--pw=', '/PW:'),
             fixuserid=('--fix-user=', '/FIXUser:'),
             fixpassword=('--fix-pw=', '/FIXPW:'),
-            on2fatimeout=('--2fatimeoutaction=', '/On2FATimeout:'),
+            on2fatimeout=('--on2fatimeout=', '/On2FATimeout:'),
         )
 
         # create shell command
