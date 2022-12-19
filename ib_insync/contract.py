@@ -525,7 +525,7 @@ class ContractDetails:
         tz = util.ZoneInfo(self.timeZoneId)
         sessions = []
         for sess in s.split(';'):
-            if 'CLOSED' in sess:
+            if not sess or 'CLOSED' in sess:
                 continue
             sessions.append(TradingSession(*[
                 dt.datetime.strptime(t, '%Y%m%d:%H%M').replace(tzinfo=tz)
