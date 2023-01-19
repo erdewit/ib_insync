@@ -52,7 +52,7 @@ Scanner data (blocking)
 
 .. code-block:: python
 
-    allParams = ib.reqScannerParameters())
+    allParams = ib.reqScannerParameters()
     print(allParams)
 
     sub = ScannerSubscription(
@@ -88,11 +88,11 @@ Option calculations
     option = Option('EOE', '20171215', 490, 'P', 'FTA', multiplier=100)
 
     calc = ib.calculateImpliedVolatility(
-        option, optionPrice=6.1, underPrice=525))
+        option, optionPrice=6.1, underPrice=525)
     print(calc)
 
     calc = ib.calculateOptionPrice(
-        option, volatility=0.14, underPrice=525))
+        option, volatility=0.14, underPrice=525)
     print(calc)
 
 Order book
