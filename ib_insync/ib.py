@@ -1945,14 +1945,16 @@ class IB:
             ignoreSize, miscOptions)
         return future
 
-    def reqHeadTimeStampAsync(
+    async def reqHeadTimeStampAsync(
             self, contract: Contract, whatToShow: str,
-            useRTH: bool, formatDate: int) -> Awaitable[datetime.datetime]:
+            useRTH: bool, formatDate: int) -> datetime.datetime:
         reqId = self.client.getReqId()
         future = self.wrapper.startReq(reqId, contract)
         self.client.reqHeadTimeStamp(
             reqId, contract, whatToShow, useRTH, formatDate)
-        return future
+        await future
+        self.client.cancelHeadTimeStamp(reqId)
+        return future.result()
 
     def reqSmartComponentsAsync(self, bboExchange):
         reqId = self.client.getReqId()
