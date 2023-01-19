@@ -146,7 +146,7 @@ class Decoder:
             94: self.wrap(
                 'pnl', [int, float, float, float], skip=1),
             95: self.wrap(
-                'pnlSingle', [int, int, float, float, float, float], skip=1),
+                'pnlSingle', [int, float, float, float, float, float], skip=1),
             96: self.historicalTicks,
             97: self.historicalTicksBidAsk,
             98: self.historicalTicksLast,
