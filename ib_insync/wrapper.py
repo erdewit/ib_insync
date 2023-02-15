@@ -379,7 +379,7 @@ class Wrapper:
                 self.ib.openOrderEvent.emit(trade)
             else:
                 # response to reqOpenOrders or reqAllOpenOrders
-                results.append(order)
+                results.append(trade)
 
         # make sure that the client issues order ids larger than any
         # order id encountered (even from other clients) to avoid

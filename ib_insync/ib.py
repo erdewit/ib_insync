@@ -778,7 +778,7 @@ class IB:
         """
         self.client.reqAutoOpenOrders(autoBind)
 
-    def reqOpenOrders(self) -> List[Order]:
+    def reqOpenOrders(self) -> List[Trade]:
         """
         Request and return a list of open orders.
 
@@ -791,7 +791,7 @@ class IB:
         """
         return self._run(self.reqOpenOrdersAsync())
 
-    def reqAllOpenOrders(self) -> List[Order]:
+    def reqAllOpenOrders(self) -> List[Trade]:
         """
         Request and return a list of all open orders over all clients.
         Note that the orders of other clients will not be kept in sync,
@@ -1821,12 +1821,12 @@ class IB:
         self.client.reqAccountSummary(reqId, 'All', tags)
         return future
 
-    def reqOpenOrdersAsync(self) -> Awaitable[List[Order]]:
+    def reqOpenOrdersAsync(self) -> Awaitable[List[Trade]]:
         future = self.wrapper.startReq('openOrders')
         self.client.reqOpenOrders()
         return future
 
-    def reqAllOpenOrdersAsync(self) -> Awaitable[List[Order]]:
+    def reqAllOpenOrdersAsync(self) -> Awaitable[List[Trade]]:
         future = self.wrapper.startReq('openOrders')
         self.client.reqAllOpenOrders()
         return future
