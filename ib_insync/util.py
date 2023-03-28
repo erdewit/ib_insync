@@ -11,6 +11,10 @@ from dataclasses import fields, is_dataclass
 from typing import (
     AsyncIterator, Awaitable, Callable, Iterator, List, Optional, Union)
 
+from pytz import timezone
+from dateutil.parser import parse
+
+
 import eventkit as ev
 
 try:
@@ -541,6 +545,9 @@ def parseIBDatetime(s: str) -> Union[dt.date, dt.datetime]:
         s0, s1, s2 = s.split(' ', 2)
         t = dt.datetime.strptime(s0 + s1, '%Y%m%d%H:%M:%S')
         t = t.replace(tzinfo=ZoneInfo(s2))
+    elif s.includes('/'):
+        s0, s1 = s.split(' ')
+        t = parse('12:07:17', tzinfos={s1: timezone(s1)})
     else:
         # YYYYmmdd  HH:MM:SS
         # or
