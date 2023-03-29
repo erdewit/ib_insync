@@ -547,7 +547,7 @@ def parseIBDatetime(s: str) -> Union[dt.date, dt.datetime]:
         t = t.replace(tzinfo=ZoneInfo(s2))
     elif '/' in s:
         s0, s1 = s.split(' ')
-        t = parse('12:07:17', tzinfos={s1: timezone(s1)})
+        t = parse(s0, tzinfos={s1: timezone(s1)})
     else:
         # YYYYmmdd  HH:MM:SS
         # or
