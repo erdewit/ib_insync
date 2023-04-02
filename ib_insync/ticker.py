@@ -347,7 +347,7 @@ class VolumeBars(Op):
         self.bars = BarList()
 
     def on_source(self, time, price, size):
-        if not self.bars or self.bars[-1].volume == self._volume:
+        if not self.bars or self.bars[-1].volume >= self._volume:
             bar = Bar(time, price, price, price, price, size, 1)
             self.bars.append(bar)
         else:
