@@ -222,6 +222,19 @@ class Tickfilter(Op):
         """
         return TickBars(count, self)
 
+    def volumebars(self, volume: int) -> "VolumeBars":
+        """
+        Aggregate ticks into bars that have the same volume.
+        Emits a completed :class:`Bar`.
+
+        This event stores a :class:`BarList` of all created bars in the
+        ``bars`` property.
+
+        Args:
+            count: Number of ticks to use to form one bar.
+        """
+        return VolumeBars(volume, self)
+
 
 class Midpoints(Tickfilter):
     __slots__ = ()
@@ -318,5 +331,32 @@ class TickBars(Op):
             bar.volume += size
             bar.count += 1
         if bar.count == self._count:
+            self.bars.updateEvent.emit(self.bars, True)
+            self.emit(self.bars)
+
+
+class VolumeBars(Op):
+    __slots__ = ('_volume', 'bars')
+    __doc__ = Tickfilter.volumebars.__doc__
+
+    bars: BarList
+
+    def __init__(self, volume, source=None):
+        Op.__init__(self, source)
+        self._volume = volume
+        self.bars = BarList()
+
+    def on_source(self, time, price, size):
+        if not self.bars or self.bars[-1].volume >= self._volume:
+            bar = Bar(time, price, price, price, price, size, 1)
+            self.bars.append(bar)
+        else:
+            bar = self.bars[-1]
+            bar.high = max(bar.high, price)
+            bar.low = min(bar.low, price)
+            bar.close = price
+            bar.volume += size
+            bar.count += 1
+        if bar.volume >= self._volume:
             self.bars.updateEvent.emit(self.bars, True)
             self.emit(self.bars)
