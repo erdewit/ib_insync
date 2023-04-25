@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.ticker &mdash; ib_insync 0.9.71 documentation</title>
+  <title>ib_insync.ticker &mdash; ib_insync 0.9.82 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/ticker.html"/>
@@ -294,7 +294,20 @@
 <span class="sd">        Args:</span>
 <span class="sd">            count: Number of ticks to use to form one bar.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">TickBars</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">TickBars</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Tickfilter.volumebars"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Tickfilter.volumebars">[docs]</a>    <span class="k">def</span> <span class="nf">volumebars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;VolumeBars&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Aggregate ticks into bars that have the same volume.</span>
+<span class="sd">        Emits a completed :class:`Bar`.</span>
+
+<span class="sd">        This event stores a :class:`BarList` of all created bars in the</span>
+<span class="sd">        ``bars`` property.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            count: Number of ticks to use to form one bar.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">VolumeBars</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Midpoints"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.Midpoints">[docs]</a><span class="k">class</span> <span class="nc">Midpoints</span><span class="p">(</span><span class="n">Tickfilter</span><span class="p">):</span>
@@ -392,6 +405,33 @@
             <span class="n">bar</span><span class="o">.</span><span class="n">volume</span> <span class="o">+=</span> <span class="n">size</span>
             <span class="n">bar</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">bar</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="VolumeBars"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.VolumeBars">[docs]</a><span class="k">class</span> <span class="nc">VolumeBars</span><span class="p">(</span><span class="n">Op</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_volume&#39;</span><span class="p">,</span> <span class="s1">&#39;bars&#39;</span><span class="p">)</span>
+    <span class="vm">__doc__</span> <span class="o">=</span> <span class="n">Tickfilter</span><span class="o">.</span><span class="n">volumebars</span><span class="o">.</span><span class="vm">__doc__</span>
+
+    <span class="n">bars</span><span class="p">:</span> <span class="n">BarList</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">Op</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_volume</span> <span class="o">=</span> <span class="n">volume</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bars</span> <span class="o">=</span> <span class="n">BarList</span><span class="p">()</span>
+
+<div class="viewcode-block" id="VolumeBars.on_source"><a class="viewcode-back" href="../../api.html#ib_insync.ticker.VolumeBars.on_source">[docs]</a>    <span class="k">def</span> <span class="nf">on_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bars</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">volume</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_volume</span><span class="p">:</span>
+            <span class="n">bar</span> <span class="o">=</span> <span class="n">Bar</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">bar</span><span class="o">.</span><span class="n">high</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">bar</span><span class="o">.</span><span class="n">high</span><span class="p">,</span> <span class="n">price</span><span class="p">)</span>
+            <span class="n">bar</span><span class="o">.</span><span class="n">low</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">bar</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="n">price</span><span class="p">)</span>
+            <span class="n">bar</span><span class="o">.</span><span class="n">close</span> <span class="o">=</span> <span class="n">price</span>
+            <span class="n">bar</span><span class="o">.</span><span class="n">volume</span> <span class="o">+=</span> <span class="n">size</span>
+            <span class="n">bar</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">bar</span><span class="o">.</span><span class="n">volume</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_volume</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="o">.</span><span class="n">updateEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bars</span><span class="p">)</span></div></div>
 </pre></div>

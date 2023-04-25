@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API docs &mdash; ib_insync 0.9.81 documentation</title>
+  <title>API docs &mdash; ib_insync 0.9.82 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.ioapi.html"/>
@@ -970,6 +970,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ticker.Tickfilter.on_source"><code class="docutils literal notranslate"><span class="pre">Tickfilter.on_source()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ticker.Tickfilter.timebars"><code class="docutils literal notranslate"><span class="pre">Tickfilter.timebars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ticker.Tickfilter.tickbars"><code class="docutils literal notranslate"><span class="pre">Tickfilter.tickbars()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.ticker.Tickfilter.volumebars"><code class="docutils literal notranslate"><span class="pre">Tickfilter.volumebars()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#ib_insync.ticker.Midpoints"><code class="docutils literal notranslate"><span class="pre">Midpoints</span></code></a><ul>
@@ -995,6 +996,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#ib_insync.ticker.TickBars"><code class="docutils literal notranslate"><span class="pre">TickBars</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ticker.TickBars.bars"><code class="docutils literal notranslate"><span class="pre">TickBars.bars</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ticker.TickBars.on_source"><code class="docutils literal notranslate"><span class="pre">TickBars.on_source()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ib_insync.ticker.VolumeBars"><code class="docutils literal notranslate"><span class="pre">VolumeBars</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.ticker.VolumeBars.bars"><code class="docutils literal notranslate"><span class="pre">VolumeBars.bars</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.ticker.VolumeBars.on_source"><code class="docutils literal notranslate"><span class="pre">VolumeBars.on_source()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -1605,7 +1611,7 @@
              
   <section id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this heading"></a></h1>
-<p>Release 0.9.81.</p>
+<p>Release 0.9.82.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -6390,7 +6396,7 @@ Last Trading Day.</p></li>
 <li><p><strong>strike</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – The option’s strike price.</p></li>
 <li><p><strong>right</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Put or Call.
 Valid values are ‘P’, ‘PUT’, ‘C’, ‘CALL’, or ‘’ for non-options.</p></li>
-<li><p><strong>multiplier</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – he instrument’s multiplier (i.e. options, futures).</p></li>
+<li><p><strong>multiplier</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The instrument’s multiplier (i.e. options, futures).</p></li>
 <li><p><strong>exchange</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The destination exchange.</p></li>
 <li><p><strong>currency</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The underlying’s currency.</p></li>
 <li><p><strong>localSymbol</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The contract’s symbol within its primary exchange.
@@ -8701,6 +8707,23 @@ Emits a completed <a class="reference internal" href="#ib_insync.ticker.Bar" tit
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.ticker.Tickfilter.volumebars">
+<span class="sig-name descname"><span class="pre">volumebars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ticker.html#Tickfilter.volumebars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ticker.Tickfilter.volumebars" title="Permalink to this definition"></a></dt>
+<dd><p>Aggregate ticks into bars that have the same volume.
+Emits a completed <a class="reference internal" href="#ib_insync.ticker.Bar" title="ib_insync.ticker.Bar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bar</span></code></a>.</p>
+<p>This event stores a <a class="reference internal" href="#ib_insync.ticker.BarList" title="ib_insync.ticker.BarList"><code class="xref py py-class docutils literal notranslate"><span class="pre">BarList</span></code></a> of all created bars in the
+<code class="docutils literal notranslate"><span class="pre">bars</span></code> property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>count</strong> – Number of ticks to use to form one bar.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#ib_insync.ticker.VolumeBars" title="ib_insync.ticker.VolumeBars"><code class="xref py py-class docutils literal notranslate"><span class="pre">VolumeBars</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -8815,6 +8838,36 @@ Emits a completed <a class="reference internal" href="#ib_insync.ticker.Bar" tit
 <dl class="py method">
 <dt class="sig sig-object py" id="ib_insync.ticker.TickBars.on_source">
 <span class="sig-name descname"><span class="pre">on_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ticker.html#TickBars.on_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ticker.TickBars.on_source" title="Permalink to this definition"></a></dt>
+<dd><p>Emit a new value to all connected listeners.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>args</strong> – Argument values to emit to listeners.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ib_insync.ticker.VolumeBars">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ib_insync.ticker.</span></span><span class="sig-name descname"><span class="pre">VolumeBars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ticker.html#VolumeBars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ticker.VolumeBars" title="Permalink to this definition"></a></dt>
+<dd><p>Aggregate ticks into bars that have the same volume.
+Emits a completed <a class="reference internal" href="#ib_insync.ticker.Bar" title="ib_insync.ticker.Bar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bar</span></code></a>.</p>
+<p>This event stores a <a class="reference internal" href="#ib_insync.ticker.BarList" title="ib_insync.ticker.BarList"><code class="xref py py-class docutils literal notranslate"><span class="pre">BarList</span></code></a> of all created bars in the
+<code class="docutils literal notranslate"><span class="pre">bars</span></code> property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>count</strong> – Number of ticks to use to form one bar.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ib_insync.ticker.VolumeBars.bars">
+<span class="sig-name descname"><span class="pre">bars</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#ib_insync.ticker.BarList" title="ib_insync.ticker.BarList"><span class="pre">BarList</span></a></em><a class="headerlink" href="#ib_insync.ticker.VolumeBars.bars" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.ticker.VolumeBars.on_source">
+<span class="sig-name descname"><span class="pre">on_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ticker.html#VolumeBars.on_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ticker.VolumeBars.on_source" title="Permalink to this definition"></a></dt>
 <dd><p>Emit a new value to all connected listeners.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
