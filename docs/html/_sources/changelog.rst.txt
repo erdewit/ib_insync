@@ -5,6 +5,22 @@ Changelog
 ---
 
 
+Version 0.9.82
+^^^^^^^^^^^^^^
+
+* Fixed: :issue:`534`: Session parsing for Forex contracts.
+* Fixed: :issue:`536`: Handle empty session field.
+* Fixed: :issue:`541`: Remove superfluous closing bracket.
+* Fixed: :issue:`542`: Use float size for ``pnlSingle``.
+* Fixed: :issue:`544`: Cancel head-time request after completion.
+* Fixed: :issue:`545`: Return ``Trade`` instead of ``Order`` for
+  ``reqOpenOrders`` and ``reqAllOpenOrders``.
+* :pull:`553`: Volume bar added.
+* :pull:`565`: Typo fix.
+
+
+
+
 Version 0.9.81
 ^^^^^^^^^^^^^^
 
