@@ -133,7 +133,7 @@ and further back in time until there is no more data returned.</p>
 </section>
 <section id="scanner-data-blocking">
 <h2>Scanner data (blocking)<a class="headerlink" href="#scanner-data-blocking" title="Permalink to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">allParams</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqScannerParameters</span><span class="p">())</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">allParams</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqScannerParameters</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">allParams</span><span class="p">)</span>
 
 <span class="n">sub</span> <span class="o">=</span> <span class="n">ScannerSubscription</span><span class="p">(</span>
@@ -167,11 +167,11 @@ and further back in time until there is no more data returned.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">option</span> <span class="o">=</span> <span class="n">Option</span><span class="p">(</span><span class="s1">&#39;EOE&#39;</span><span class="p">,</span> <span class="s1">&#39;20171215&#39;</span><span class="p">,</span> <span class="mi">490</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;FTA&#39;</span><span class="p">,</span> <span class="n">multiplier</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
 <span class="n">calc</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">calculateImpliedVolatility</span><span class="p">(</span>
-    <span class="n">option</span><span class="p">,</span> <span class="n">optionPrice</span><span class="o">=</span><span class="mf">6.1</span><span class="p">,</span> <span class="n">underPrice</span><span class="o">=</span><span class="mi">525</span><span class="p">))</span>
+    <span class="n">option</span><span class="p">,</span> <span class="n">optionPrice</span><span class="o">=</span><span class="mf">6.1</span><span class="p">,</span> <span class="n">underPrice</span><span class="o">=</span><span class="mi">525</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">calc</span><span class="p">)</span>
 
 <span class="n">calc</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">calculateOptionPrice</span><span class="p">(</span>
-    <span class="n">option</span><span class="p">,</span> <span class="n">volatility</span><span class="o">=</span><span class="mf">0.14</span><span class="p">,</span> <span class="n">underPrice</span><span class="o">=</span><span class="mi">525</span><span class="p">))</span>
+    <span class="n">option</span><span class="p">,</span> <span class="n">volatility</span><span class="o">=</span><span class="mf">0.14</span><span class="p">,</span> <span class="n">underPrice</span><span class="o">=</span><span class="mi">525</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">calc</span><span class="p">)</span>
 </pre></div>
 </div>

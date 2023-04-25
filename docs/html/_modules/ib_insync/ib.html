@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.ib &mdash; ib_insync 0.9.78 documentation</title>
+  <title>ib_insync.ib &mdash; ib_insync 0.9.81 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/ib.html"/>
@@ -852,7 +852,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqAutoOpenOrders</span><span class="p">(</span><span class="n">autoBind</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IB.reqOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqOpenOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]:</span>
+<div class="viewcode-block" id="IB.reqOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqOpenOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Trade</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request and return a list of open orders.</span>
 
@@ -865,7 +865,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqOpenOrdersAsync</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="IB.reqAllOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAllOpenOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqAllOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]:</span>
+<div class="viewcode-block" id="IB.reqAllOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAllOpenOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqAllOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Trade</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request and return a list of all open orders over all clients.</span>
 <span class="sd">        Note that the orders of other clients will not be kept in sync,</span>
@@ -1895,12 +1895,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqAccountSummary</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span></div>
 
-<div class="viewcode-block" id="IB.reqOpenOrdersAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqOpenOrdersAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqOpenOrdersAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]]:</span>
+<div class="viewcode-block" id="IB.reqOpenOrdersAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqOpenOrdersAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqOpenOrdersAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Trade</span><span class="p">]]:</span>
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="s1">&#39;openOrders&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqOpenOrders</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">future</span></div>
 
-<div class="viewcode-block" id="IB.reqAllOpenOrdersAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAllOpenOrdersAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqAllOpenOrdersAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]]:</span>
+<div class="viewcode-block" id="IB.reqAllOpenOrdersAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqAllOpenOrdersAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqAllOpenOrdersAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Trade</span><span class="p">]]:</span>
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="s1">&#39;openOrders&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqAllOpenOrders</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">future</span></div>
@@ -2019,14 +2019,16 @@
             <span class="n">ignoreSize</span><span class="p">,</span> <span class="n">miscOptions</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span></div>
 
-<div class="viewcode-block" id="IB.reqHeadTimeStampAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHeadTimeStampAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqHeadTimeStampAsync</span><span class="p">(</span>
+<div class="viewcode-block" id="IB.reqHeadTimeStampAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqHeadTimeStampAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">reqHeadTimeStampAsync</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">useRTH</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">formatDate</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]:</span>
+            <span class="n">useRTH</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">formatDate</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span>
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqHeadTimeStamp</span><span class="p">(</span>
             <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span> <span class="n">useRTH</span><span class="p">,</span> <span class="n">formatDate</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">future</span></div>
+        <span class="k">await</span> <span class="n">future</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelHeadTimeStamp</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="IB.reqSmartComponentsAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqSmartComponentsAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqSmartComponentsAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bboExchange</span><span class="p">):</span>
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>

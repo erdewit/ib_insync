@@ -597,11 +597,13 @@
 
     <span class="k">def</span> <span class="nf">_parseSessions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TradingSession</span><span class="p">]:</span>
         <span class="n">tz</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">ZoneInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeZoneId</span><span class="p">)</span>
-        <span class="n">sessions</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">TradingSession</span><span class="p">(</span><span class="o">*</span><span class="p">[</span>
+        <span class="n">sessions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">sess</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">sess</span> <span class="ow">or</span> <span class="s1">&#39;CLOSED&#39;</span> <span class="ow">in</span> <span class="n">sess</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">sessions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TradingSession</span><span class="p">(</span><span class="o">*</span><span class="p">[</span>
                 <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">:%H%M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">tz</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">sess</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)])</span>
-            <span class="k">for</span> <span class="n">sess</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)]</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">sess</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)]))</span>
         <span class="k">return</span> <span class="n">sessions</span></div>
 
 
