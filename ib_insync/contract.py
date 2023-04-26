@@ -44,6 +44,7 @@ class Contract:
             * 'NEWS' = News
             * 'FUND' = Mutual fund
             * 'CRYPTO' = Crypto currency
+            * 'EVENT' = Bet on an event
         lastTradeDateOrContractMonth (str): The contract's last trading
             day or contract month (for Options and Futures).
             Strings with format YYYYMM will be interpreted as the
@@ -126,7 +127,8 @@ class Contract:
             'IOPT': Warrant,
             'BAG': Bag,
             'CRYPTO': Crypto,
-            'NEWS': Contract
+            'NEWS': Contract,
+            'EVENT': Contract,
         }.get(secType, Contract)
         if cls is not Contract:
             kwargs.pop('secType', '')
