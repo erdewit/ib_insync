@@ -4,6 +4,12 @@ Changelog
 0.9
 ---
 
+Version 0.9.83
+^^^^^^^^^^^^^^
+* Added support for WSH (Wall Street Horizon) requests plus
+  the (blocking) convenience methods ``getWshMetaData`` and ``getWshEventData``.
+* Updated socket protocol to version 177.
+* Added support for ``Event`` security type.
 
 Version 0.9.82
 ^^^^^^^^^^^^^^
@@ -17,9 +23,6 @@ Version 0.9.82
   ``reqOpenOrders`` and ``reqAllOpenOrders``.
 * :pull:`553`: Volume bar added.
 * :pull:`565`: Typo fix.
-
-
-
 
 Version 0.9.81
 ^^^^^^^^^^^^^^

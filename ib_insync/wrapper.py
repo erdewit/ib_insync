@@ -95,6 +95,9 @@ class Wrapper:
         self.pnlSingleKey2ReqId: Dict[tuple, int] = {}
         #    (account, modelCode, conId) -> reqId
 
+        self.wshMetaReqId: int = 0
+        self.wshEventReqId: int = 0
+
         # futures and results are linked by key:
         self._futures: Dict[Any, asyncio.Future] = {}
         self._results: Dict[Any, Any] = {}
@@ -1067,6 +1070,14 @@ class Wrapper:
         schedule = HistoricalSchedule(
             startDateTime, endDateTime, timeZone, sessions)
         self._endReq(reqId, schedule)
+
+    def wshMetaData(self, reqId: int, dataJson: str):
+        self.ib.wshMetaEvent.emit(dataJson)
+        self._endReq(reqId, dataJson)
+
+    def wshEventData(self, reqId: int, dataJson: str):
+        self.ib.wshEvent.emit(dataJson)
+        self._endReq(reqId, dataJson)
 
     def userInfo(self, reqId: int, whiteBrandingId: str):
         self._endReq(reqId)

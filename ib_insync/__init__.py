@@ -26,7 +26,7 @@ from .objects import (
     Position, PriceIncrement, RealTimeBar, RealTimeBarList, ScanDataList,
     ScannerSubscription, SmartComponent, SoftDollarTier, TickAttrib,
     TickAttribBidAsk, TickAttribLast, TickByTickAllLast, TickByTickBidAsk,
-    TickByTickMidPoint, TickData, TradeLogEntry)
+    TickByTickMidPoint, TickData, TradeLogEntry, WshEventData)
 from .order import (
     BracketOrder, ExecutionCondition, LimitOrder, MarginCondition, MarketOrder,
     Order, OrderComboLeg, OrderCondition, OrderState, OrderStatus,
@@ -53,7 +53,7 @@ __all__ = [
     'OptionComputation', 'PnL', 'PnLSingle', 'PortfolioItem', 'Position',
     'PriceIncrement', 'RealTimeBar', 'RealTimeBarList', 'ScanDataList',
     'ScannerSubscription', 'SmartComponent', 'SoftDollarTier', 'TickAttrib',
-    'TickAttribBidAsk', 'TickAttribLast', 'TickByTickAllLast',
+    'TickAttribBidAsk', 'TickAttribLast', 'TickByTickAllLast', 'WshEventData',
     'TickByTickBidAsk', 'TickByTickMidPoint', 'TickData', 'TradeLogEntry',
     'BracketOrder', 'ExecutionCondition', 'LimitOrder', 'MarginCondition',
     'MarketOrder', 'Order', 'OrderComboLeg', 'OrderCondition', 'OrderState',

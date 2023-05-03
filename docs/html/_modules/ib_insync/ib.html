@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.ib &mdash; ib_insync 0.9.81 documentation</title>
+  <title>ib_insync.ib &mdash; ib_insync 0.9.82 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/ib.html"/>
@@ -92,7 +92,7 @@
     <span class="n">NewsArticle</span><span class="p">,</span> <span class="n">NewsBulletin</span><span class="p">,</span> <span class="n">NewsProvider</span><span class="p">,</span> <span class="n">NewsTick</span><span class="p">,</span> <span class="n">OptionChain</span><span class="p">,</span>
     <span class="n">OptionComputation</span><span class="p">,</span> <span class="n">PnL</span><span class="p">,</span> <span class="n">PnLSingle</span><span class="p">,</span> <span class="n">PortfolioItem</span><span class="p">,</span> <span class="n">Position</span><span class="p">,</span> <span class="n">PriceIncrement</span><span class="p">,</span>
     <span class="n">RealTimeBarList</span><span class="p">,</span> <span class="n">ScanDataList</span><span class="p">,</span> <span class="n">ScannerSubscription</span><span class="p">,</span> <span class="n">SmartComponent</span><span class="p">,</span>
-    <span class="n">TagValue</span><span class="p">,</span> <span class="n">TradeLogEntry</span><span class="p">)</span>
+    <span class="n">TagValue</span><span class="p">,</span> <span class="n">TradeLogEntry</span><span class="p">,</span> <span class="n">WshEventData</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ib_insync.order</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BracketOrder</span><span class="p">,</span> <span class="n">LimitOrder</span><span class="p">,</span> <span class="n">Order</span><span class="p">,</span> <span class="n">OrderState</span><span class="p">,</span> <span class="n">OrderStatus</span><span class="p">,</span> <span class="n">StopOrder</span><span class="p">,</span> <span class="n">Trade</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ib_insync.ticker</span> <span class="kn">import</span> <span class="n">Ticker</span>
@@ -238,6 +238,13 @@
 <span class="sd">        * ``scannerDataEvent`` (data: :class:`.ScanDataList`):</span>
 <span class="sd">          Emit data from a scanner subscription.</span>
 
+<span class="sd">        * ``wshMetaEvent`` (dataJson: str):</span>
+<span class="sd">          Emit WSH metadata.</span>
+
+<span class="sd">        * ``wshEvent`` (dataJson: str):</span>
+<span class="sd">          Emit WSH event data (such as earnings dates, dividend dates,</span>
+<span class="sd">          options expiration dates, splits, spinoffs and conferences).</span>
+
 <span class="sd">        * ``errorEvent`` (reqId: int, errorCode: int, errorString: str,</span>
 <span class="sd">          contract: :class:`.Contract`):</span>
 <span class="sd">          Emits the reqId/orderId and TWS error code and string (see</span>
@@ -263,6 +270,7 @@
         <span class="s1">&#39;updatePortfolioEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;positionEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;accountValueEvent&#39;</span><span class="p">,</span>
         <span class="s1">&#39;accountSummaryEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;pnlEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;pnlSingleEvent&#39;</span><span class="p">,</span>
         <span class="s1">&#39;scannerDataEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;tickNewsEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;newsBulletinEvent&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;wshMetaEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;wshEvent&#39;</span><span class="p">,</span>
         <span class="s1">&#39;errorEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;timeoutEvent&#39;</span><span class="p">)</span>
 
     <span class="n">RequestTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
@@ -300,6 +308,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">scannerDataEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;scannerDataEvent&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tickNewsEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;tickNewsEvent&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">newsBulletinEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;newsBulletinEvent&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wshMetaEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;wshMetaEvent&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wshEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;wshEvent&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">errorEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;errorEvent&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeoutEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;timeoutEvent&#39;</span><span class="p">)</span>
 
@@ -1730,6 +1740,74 @@
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">replaceFA</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">faDataType</span><span class="p">,</span> <span class="n">xml</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="IB.reqWshMetaData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqWshMetaData">[docs]</a>    <span class="k">def</span> <span class="nf">reqWshMetaData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request Wall Street Horizon metadata.</span>
+
+<span class="sd">        https://interactivebrokers.github.io/tws-api/fundamentals.html</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wshMetaReqId</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;reqWshMetaData already active&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wshMetaReqId</span> <span class="o">=</span> <span class="n">reqId</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqWshMetaData</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IB.cancelWshMetaData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelWshMetaData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelWshMetaData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cancel WSH metadata.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wshMetaReqId</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">reqId</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;reqWshMetaData not active&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelWshMetaData</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wshMetaReqId</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="IB.reqWshEventData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqWshEventData">[docs]</a>    <span class="k">def</span> <span class="nf">reqWshEventData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">WshEventData</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request Wall Street Horizon event data.</span>
+
+<span class="sd">        :meth:`.reqWshMetaData` must have been called first before using this</span>
+<span class="sd">        method.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: Filters for selecting the corporate event data.</span>
+
+<span class="sd">        https://interactivebrokers.github.io/tws-api/wshe_filters.html</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wshEventReqId</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;reqWshEventData already active&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wshEventReqId</span> <span class="o">=</span> <span class="n">reqId</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">reqWshEventData</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IB.cancelWshEventData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.cancelWshEventData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelWshEventData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cancel active WHS event data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wshEventReqId</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">reqId</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;reqWshEventData not active&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cancelWshEventData</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wshEventReqId</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="IB.getWshMetaData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.getWshMetaData">[docs]</a>    <span class="k">def</span> <span class="nf">getWshMetaData</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Blocking convenience method that returns the WSH metadata as</span>
+<span class="sd">        a JSON string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getWshMetaDataAsync</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="IB.getWshEventData"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.getWshEventData">[docs]</a>    <span class="k">def</span> <span class="nf">getWshEventData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">WshEventData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Blocking convenience method that returns the WSH event data as</span>
+<span class="sd">        a JSON string. The request is automatically cancelled after completion.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getWshEventDataAsync</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
+
 <div class="viewcode-block" id="IB.reqUserInfo"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqUserInfo">[docs]</a>    <span class="k">def</span> <span class="nf">reqUserInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the White Branding ID of the user.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reqUserInfoAsync</span><span class="p">())</span></div>
@@ -2168,6 +2246,25 @@
             <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
         <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;requestFAAsync: Timeout&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IB.getWshMetaDataAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.getWshMetaDataAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">getWshMetaDataAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wshMetaReqId</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cancelWshMetaData</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reqWshMetaData</span><span class="p">()</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wshMetaReqId</span><span class="p">,</span> <span class="n">container</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">future</span>
+        <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="IB.getWshEventDataAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.getWshEventDataAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">getWshEventDataAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">WshEventData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wshEventReqId</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cancelWshEventData</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reqWshEventData</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">startReq</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wshEventReqId</span><span class="p">,</span> <span class="n">container</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">future</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancelWshEventData</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="IB.reqUserInfoAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ib.IB.reqUserInfoAsync">[docs]</a>    <span class="k">def</span> <span class="nf">reqUserInfoAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">reqId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">getReqId</span><span class="p">()</span>

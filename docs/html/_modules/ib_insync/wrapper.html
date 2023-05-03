@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.wrapper &mdash; ib_insync 0.9.81 documentation</title>
+  <title>ib_insync.wrapper &mdash; ib_insync 0.9.82 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/wrapper.html"/>
@@ -168,6 +168,9 @@
         <span class="c1">#    (account, modelCode) -&gt; reqId</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pnlSingleKey2ReqId</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1">#    (account, modelCode, conId) -&gt; reqId</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">wshMetaReqId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wshEventReqId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="c1"># futures and results are linked by key:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_futures</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1141,6 +1144,14 @@
         <span class="n">schedule</span> <span class="o">=</span> <span class="n">HistoricalSchedule</span><span class="p">(</span>
             <span class="n">startDateTime</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">,</span> <span class="n">timeZone</span><span class="p">,</span> <span class="n">sessions</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">schedule</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">wshMetaData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dataJson</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">wshMetaEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">dataJson</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">dataJson</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">wshEventData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dataJson</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">wshEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">dataJson</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">,</span> <span class="n">dataJson</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">userInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">whiteBrandingId</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_endReq</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>

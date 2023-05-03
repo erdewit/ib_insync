@@ -18,7 +18,7 @@ from ib_insync.objects import (
     NewsArticle, NewsBulletin, NewsProvider, NewsTick, OptionChain,
     OptionComputation, PnL, PnLSingle, PortfolioItem, Position, PriceIncrement,
     RealTimeBarList, ScanDataList, ScannerSubscription, SmartComponent,
-    TagValue, TradeLogEntry)
+    TagValue, TradeLogEntry, WshEventData)
 from ib_insync.order import (
     BracketOrder, LimitOrder, Order, OrderState, OrderStatus, StopOrder, Trade)
 from ib_insync.ticker import Ticker
@@ -164,6 +164,13 @@ class IB:
         * ``scannerDataEvent`` (data: :class:`.ScanDataList`):
           Emit data from a scanner subscription.
 
+        * ``wshMetaEvent`` (dataJson: str):
+          Emit WSH metadata.
+
+        * ``wshEvent`` (dataJson: str):
+          Emit WSH event data (such as earnings dates, dividend dates,
+          options expiration dates, splits, spinoffs and conferences).
+
         * ``errorEvent`` (reqId: int, errorCode: int, errorString: str,
           contract: :class:`.Contract`):
           Emits the reqId/orderId and TWS error code and string (see
@@ -189,6 +196,7 @@ class IB:
         'updatePortfolioEvent', 'positionEvent', 'accountValueEvent',
         'accountSummaryEvent', 'pnlEvent', 'pnlSingleEvent',
         'scannerDataEvent', 'tickNewsEvent', 'newsBulletinEvent',
+        'wshMetaEvent', 'wshEvent',
         'errorEvent', 'timeoutEvent')
 
     RequestTimeout: float = 0
@@ -226,6 +234,8 @@ class IB:
         self.scannerDataEvent = Event('scannerDataEvent')
         self.tickNewsEvent = Event('tickNewsEvent')
         self.newsBulletinEvent = Event('newsBulletinEvent')
+        self.wshMetaEvent = Event('wshMetaEvent')
+        self.wshEvent = Event('wshEvent')
         self.errorEvent = Event('errorEvent')
         self.timeoutEvent = Event('timeoutEvent')
 
@@ -1656,6 +1666,70 @@ class IB:
         reqId = self.client.getReqId()
         self.client.replaceFA(reqId, faDataType, xml)
 
+    def reqWshMetaData(self):
+        """
+        Request Wall Street Horizon metadata.
+
+        https://interactivebrokers.github.io/tws-api/fundamentals.html
+        """
+        if self.wrapper.wshMetaReqId:
+            self._logger.warning('reqWshMetaData already active')
+        else:
+            reqId = self.client.getReqId()
+            self.wrapper.wshMetaReqId = reqId
+            self.client.reqWshMetaData(reqId)
+
+    def cancelWshMetaData(self):
+        """Cancel WSH metadata."""
+        reqId = self.wrapper.wshMetaReqId
+        if not reqId:
+            self._logger.warning('reqWshMetaData not active')
+        else:
+            self.client.cancelWshMetaData(reqId)
+            self.wrapper.wshMetaReqId = 0
+
+    def reqWshEventData(self, data: WshEventData):
+        """
+        Request Wall Street Horizon event data.
+
+        :meth:`.reqWshMetaData` must have been called first before using this
+        method.
+
+        Args:
+            data: Filters for selecting the corporate event data.
+
+        https://interactivebrokers.github.io/tws-api/wshe_filters.html
+        """
+        if self.wrapper.wshEventReqId:
+            self._logger.warning('reqWshEventData already active')
+        else:
+            reqId = self.client.getReqId()
+            self.wrapper.wshEventReqId = reqId
+            self.client.reqWshEventData(reqId, data)
+
+    def cancelWshEventData(self):
+        """Cancel active WHS event data."""
+        reqId = self.wrapper.wshEventReqId
+        if not reqId:
+            self._logger.warning('reqWshEventData not active')
+        else:
+            self.client.cancelWshEventData(reqId)
+            self.wrapper.wshEventReqId = 0
+
+    def getWshMetaData(self) -> str:
+        """
+        Blocking convenience method that returns the WSH metadata as
+        a JSON string.
+        """
+        return self._run(self.getWshMetaDataAsync())
+
+    def getWshEventData(self, data: WshEventData) -> str:
+        """
+        Blocking convenience method that returns the WSH event data as
+        a JSON string. The request is automatically cancelled after completion.
+        """
+        return self._run(self.getWshEventDataAsync(data))
+
     def reqUserInfo(self) -> str:
         """Get the White Branding ID of the user."""
         return self._run(self.reqUserInfoAsync())
@@ -2094,6 +2168,25 @@ class IB:
             return future.result()
         except asyncio.TimeoutError:
             self._logger.error('requestFAAsync: Timeout')
+
+    async def getWshMetaDataAsync(self) -> str:
+        if self.wrapper.wshMetaReqId:
+            self.cancelWshMetaData()
+        self.reqWshMetaData()
+        future = self.wrapper.startReq(
+            self.wrapper.wshMetaReqId, container='')
+        await future
+        return future.result()
+
+    async def getWshEventDataAsync(self, data: WshEventData) -> str:
+        if self.wrapper.wshEventReqId:
+            self.cancelWshEventData()
+        self.reqWshEventData(data)
+        future = self.wrapper.startReq(
+            self.wrapper.wshEventReqId, container='')
+        await future
+        self.cancelWshEventData()
+        return future.result()
 
     def reqUserInfoAsync(self):
         reqId = self.client.getReqId()

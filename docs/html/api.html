@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API docs &mdash; ib_insync 0.9.82 documentation</title>
+  <title>API docs &mdash; ib_insync 0.9.83 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.ioapi.html"/>
@@ -139,6 +139,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.cancelNewsBulletins"><code class="docutils literal notranslate"><span class="pre">IB.cancelNewsBulletins()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.requestFA"><code class="docutils literal notranslate"><span class="pre">IB.requestFA()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.replaceFA"><code class="docutils literal notranslate"><span class="pre">IB.replaceFA()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.reqWshMetaData"><code class="docutils literal notranslate"><span class="pre">IB.reqWshMetaData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.cancelWshMetaData"><code class="docutils literal notranslate"><span class="pre">IB.cancelWshMetaData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.reqWshEventData"><code class="docutils literal notranslate"><span class="pre">IB.reqWshEventData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.cancelWshEventData"><code class="docutils literal notranslate"><span class="pre">IB.cancelWshEventData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.getWshMetaData"><code class="docutils literal notranslate"><span class="pre">IB.getWshMetaData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.getWshEventData"><code class="docutils literal notranslate"><span class="pre">IB.getWshEventData()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.reqUserInfo"><code class="docutils literal notranslate"><span class="pre">IB.reqUserInfo()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.connectAsync"><code class="docutils literal notranslate"><span class="pre">IB.connectAsync()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.qualifyContractsAsync"><code class="docutils literal notranslate"><span class="pre">IB.qualifyContractsAsync()</span></code></a></li>
@@ -174,6 +180,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.reqNewsArticleAsync"><code class="docutils literal notranslate"><span class="pre">IB.reqNewsArticleAsync()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.reqHistoricalNewsAsync"><code class="docutils literal notranslate"><span class="pre">IB.reqHistoricalNewsAsync()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.requestFAAsync"><code class="docutils literal notranslate"><span class="pre">IB.requestFAAsync()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.getWshMetaDataAsync"><code class="docutils literal notranslate"><span class="pre">IB.getWshMetaDataAsync()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.getWshEventDataAsync"><code class="docutils literal notranslate"><span class="pre">IB.getWshEventDataAsync()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.ib.IB.reqUserInfoAsync"><code class="docutils literal notranslate"><span class="pre">IB.reqUserInfoAsync()</span></code></a></li>
 </ul>
 </li>
@@ -1253,6 +1261,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.objects.WshEventData.startDate"><code class="docutils literal notranslate"><span class="pre">WshEventData.startDate</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.objects.WshEventData.endDate"><code class="docutils literal notranslate"><span class="pre">WshEventData.endDate</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ib_insync.objects.WshEventData.totalLimit"><code class="docutils literal notranslate"><span class="pre">WshEventData.totalLimit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.objects.WshEventData.dict"><code class="docutils literal notranslate"><span class="pre">WshEventData.dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.objects.WshEventData.nonDefaults"><code class="docutils literal notranslate"><span class="pre">WshEventData.nonDefaults()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.objects.WshEventData.tuple"><code class="docutils literal notranslate"><span class="pre">WshEventData.tuple()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ib_insync.objects.WshEventData.update"><code class="docutils literal notranslate"><span class="pre">WshEventData.update()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#ib_insync.objects.AccountValue"><code class="docutils literal notranslate"><span class="pre">AccountValue</span></code></a><ul>
@@ -1611,7 +1623,7 @@
              
   <section id="api-docs">
 <span id="api"></span><h1>API docs<a class="headerlink" href="#api-docs" title="Permalink to this heading"></a></h1>
-<p>Release 0.9.82.</p>
+<p>Release 0.9.83.</p>
 <div class="toctree-wrapper compound">
 </div>
 <p>Also see the official
@@ -1734,6 +1746,11 @@ Emit a new news headline.</p></li>
 Emit a new news bulletin.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">scannerDataEvent</span></code> (data: <a class="reference internal" href="#ib_insync.objects.ScanDataList" title="ib_insync.objects.ScanDataList"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanDataList</span></code></a>):
 Emit data from a scanner subscription.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wshMetaEvent</span></code> (dataJson: str):
+Emit WSH metadata.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wshEvent</span></code> (dataJson: str):
+Emit WSH event data (such as earnings dates, dividend dates,
+options expiration dates, splits, spinoffs and conferences).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">errorEvent</span></code> (reqId: int, errorCode: int, errorString: str,
 contract: <a class="reference internal" href="#ib_insync.contract.Contract" title="ib_insync.contract.Contract"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contract</span></code></a>):
 Emits the reqId/orderId and TWS error code and string (see
@@ -1751,7 +1768,7 @@ handler as it may lead to too much recursion.</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ib_insync.ib.IB.events">
-<span class="sig-name descname"><span class="pre">events</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('connectedEvent',</span> <span class="pre">'disconnectedEvent',</span> <span class="pre">'updateEvent',</span> <span class="pre">'pendingTickersEvent',</span> <span class="pre">'barUpdateEvent',</span> <span class="pre">'newOrderEvent',</span> <span class="pre">'orderModifyEvent',</span> <span class="pre">'cancelOrderEvent',</span> <span class="pre">'openOrderEvent',</span> <span class="pre">'orderStatusEvent',</span> <span class="pre">'execDetailsEvent',</span> <span class="pre">'commissionReportEvent',</span> <span class="pre">'updatePortfolioEvent',</span> <span class="pre">'positionEvent',</span> <span class="pre">'accountValueEvent',</span> <span class="pre">'accountSummaryEvent',</span> <span class="pre">'pnlEvent',</span> <span class="pre">'pnlSingleEvent',</span> <span class="pre">'scannerDataEvent',</span> <span class="pre">'tickNewsEvent',</span> <span class="pre">'newsBulletinEvent',</span> <span class="pre">'errorEvent',</span> <span class="pre">'timeoutEvent')</span></em><a class="headerlink" href="#ib_insync.ib.IB.events" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">events</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('connectedEvent',</span> <span class="pre">'disconnectedEvent',</span> <span class="pre">'updateEvent',</span> <span class="pre">'pendingTickersEvent',</span> <span class="pre">'barUpdateEvent',</span> <span class="pre">'newOrderEvent',</span> <span class="pre">'orderModifyEvent',</span> <span class="pre">'cancelOrderEvent',</span> <span class="pre">'openOrderEvent',</span> <span class="pre">'orderStatusEvent',</span> <span class="pre">'execDetailsEvent',</span> <span class="pre">'commissionReportEvent',</span> <span class="pre">'updatePortfolioEvent',</span> <span class="pre">'positionEvent',</span> <span class="pre">'accountValueEvent',</span> <span class="pre">'accountSummaryEvent',</span> <span class="pre">'pnlEvent',</span> <span class="pre">'pnlSingleEvent',</span> <span class="pre">'scannerDataEvent',</span> <span class="pre">'tickNewsEvent',</span> <span class="pre">'newsBulletinEvent',</span> <span class="pre">'wshMetaEvent',</span> <span class="pre">'wshEvent',</span> <span class="pre">'errorEvent',</span> <span class="pre">'timeoutEvent')</span></em><a class="headerlink" href="#ib_insync.ib.IB.events" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3353,6 +3370,63 @@ by meaningful names rather than account numbers.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.ib.IB.reqWshMetaData">
+<span class="sig-name descname"><span class="pre">reqWshMetaData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqWshMetaData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ib.IB.reqWshMetaData" title="Permalink to this definition"></a></dt>
+<dd><p>Request Wall Street Horizon metadata.</p>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/fundamentals.html">https://interactivebrokers.github.io/tws-api/fundamentals.html</a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.ib.IB.cancelWshMetaData">
+<span class="sig-name descname"><span class="pre">cancelWshMetaData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelWshMetaData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelWshMetaData" title="Permalink to this definition"></a></dt>
+<dd><p>Cancel WSH metadata.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.ib.IB.reqWshEventData">
+<span class="sig-name descname"><span class="pre">reqWshEventData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqWshEventData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ib.IB.reqWshEventData" title="Permalink to this definition"></a></dt>
+<dd><p>Request Wall Street Horizon event data.</p>
+<p><a class="reference internal" href="#ib_insync.ib.IB.reqWshMetaData" title="ib_insync.ib.IB.reqWshMetaData"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reqWshMetaData()</span></code></a> must have been called first before using this
+method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="#ib_insync.objects.WshEventData" title="ib_insync.objects.WshEventData"><code class="xref py py-class docutils literal notranslate"><span class="pre">WshEventData</span></code></a>) – Filters for selecting the corporate event data.</p>
+</dd>
+</dl>
+<p><a class="reference external" href="https://interactivebrokers.github.io/tws-api/wshe_filters.html">https://interactivebrokers.github.io/tws-api/wshe_filters.html</a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.ib.IB.cancelWshEventData">
+<span class="sig-name descname"><span class="pre">cancelWshEventData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.cancelWshEventData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ib.IB.cancelWshEventData" title="Permalink to this definition"></a></dt>
+<dd><p>Cancel active WHS event data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.ib.IB.getWshMetaData">
+<span class="sig-name descname"><span class="pre">getWshMetaData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.getWshMetaData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ib.IB.getWshMetaData" title="Permalink to this definition"></a></dt>
+<dd><p>Blocking convenience method that returns the WSH metadata as
+a JSON string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.ib.IB.getWshEventData">
+<span class="sig-name descname"><span class="pre">getWshEventData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.getWshEventData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ib.IB.getWshEventData" title="Permalink to this definition"></a></dt>
+<dd><p>Blocking convenience method that returns the WSH event data as
+a JSON string. The request is automatically cancelled after completion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ib_insync.ib.IB.reqUserInfo">
 <span class="sig-name descname"><span class="pre">reqUserInfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqUserInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ib.IB.reqUserInfo" title="Permalink to this definition"></a></dt>
 <dd><p>Get the White Branding ID of the user.</p>
@@ -3689,6 +3763,26 @@ by meaningful names rather than account numbers.</p></li>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.ib.IB.getWshMetaDataAsync">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getWshMetaDataAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.getWshMetaDataAsync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ib.IB.getWshMetaDataAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.ib.IB.getWshEventDataAsync">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getWshEventDataAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.getWshEventDataAsync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ib.IB.getWshEventDataAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ib_insync.ib.IB.reqUserInfoAsync">
 <span class="sig-name descname"><span class="pre">reqUserInfoAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.reqUserInfoAsync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ib.IB.reqUserInfoAsync" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -3777,7 +3871,7 @@ one batch instead of item by item.</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ib_insync.client.Client.MaxClientVersion">
-<span class="sig-name descname"><span class="pre">MaxClientVersion</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">176</span></em><a class="headerlink" href="#ib_insync.client.Client.MaxClientVersion" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">MaxClientVersion</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">177</span></em><a class="headerlink" href="#ib_insync.client.Client.MaxClientVersion" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -6386,6 +6480,7 @@ Some examples:</p>
 <li><p>’NEWS’ = News</p></li>
 <li><p>’FUND’ = Mutual fund</p></li>
 <li><p>’CRYPTO’ = Crypto currency</p></li>
+<li><p>’EVENT’ = Bet on an event</p></li>
 </ul>
 </p></li>
 <li><p><strong>lastTradeDateOrContractMonth</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The contract’s last trading
@@ -10438,6 +10533,54 @@ This is a non-recursive variant of <code class="docutils literal notranslate"><s
 <dt class="sig sig-object py" id="ib_insync.objects.WshEventData.totalLimit">
 <span class="sig-name descname"><span class="pre">totalLimit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2147483647</span></em><a class="headerlink" href="#ib_insync.objects.WshEventData.totalLimit" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.objects.WshEventData.dict">
+<span class="sig-name descname"><span class="pre">dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.WshEventData.dict" title="Permalink to this definition"></a></dt>
+<dd><p>Return dataclass values as <code class="docutils literal notranslate"><span class="pre">dict</span></code>.
+This is a non-recursive variant of <code class="docutils literal notranslate"><span class="pre">dataclasses.asdict</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#ib_insync.objects.WshEventData.dict" title="ib_insync.objects.WshEventData.dict"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.objects.WshEventData.nonDefaults">
+<span class="sig-name descname"><span class="pre">nonDefaults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.WshEventData.nonDefaults" title="Permalink to this definition"></a></dt>
+<dd><p>For a <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> instance get the fields that are different from the
+default values and return as <code class="docutils literal notranslate"><span class="pre">dict</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#ib_insync.objects.WshEventData.dict" title="ib_insync.objects.WshEventData.dict"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.objects.WshEventData.tuple">
+<span class="sig-name descname"><span class="pre">tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.WshEventData.tuple" title="Permalink to this definition"></a></dt>
+<dd><p>Return dataclass values as <code class="docutils literal notranslate"><span class="pre">tuple</span></code>.
+This is a non-recursive variant of <code class="docutils literal notranslate"><span class="pre">dataclasses.astuple</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#ib_insync.objects.WshEventData.tuple" title="ib_insync.objects.WshEventData.tuple"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ib_insync.objects.WshEventData.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">srcObjs</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ib_insync.objects.WshEventData.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update fields of the given <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> object from zero or more
+<code class="docutils literal notranslate"><span class="pre">dataclass</span></code> source objects and/or from keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
