@@ -232,13 +232,13 @@ class Client:
         self.conn.disconnect()
         self.reset()
 
-    def send(self, *fields):
+    def send(self, *fields, makeEmpty=True):
         """Serialize and send the given fields using the IB socket protocol."""
         if not self.isConnected():
             raise ConnectionError('Not connected')
 
         msg = io.StringIO()
-        empty = (None, UNSET_INTEGER, UNSET_DOUBLE)
+        empty = (None, UNSET_INTEGER, UNSET_DOUBLE) if makeEmpty else (None,)
         for field in fields:
             typ = type(field)
             if field in empty:
@@ -987,7 +987,7 @@ class Client:
                 data.startDate,
                 data.endDate,
                 data.totalLimit]
-        self.send(*fields)
+        self.send(*fields, makeEmpty=False)
 
     def cancelWshEventData(self, reqId):
         self.send(103, reqId)
