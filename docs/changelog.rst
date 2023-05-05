@@ -7,6 +7,10 @@ Changelog
 
 Version 0.9.84
 ^^^^^^^^^^^^^^
+ * Fixed: :issue:`586`: Revert socket protocol back to version 176.
+
+Version 0.9.84
+^^^^^^^^^^^^^^
 * Potential fix for ``reqWshEventData``.
 
 Version 0.9.83
