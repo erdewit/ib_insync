@@ -4,6 +4,11 @@ Changelog
 0.9
 ---
 
+
+Version 0.9.84
+^^^^^^^^^^^^^^
+* Potential fix for ``reqWshEventData``.
+
 Version 0.9.83
 ^^^^^^^^^^^^^^
 * Added support for WSH (Wall Street Horizon) requests plus
