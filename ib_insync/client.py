@@ -85,7 +85,7 @@ class Client:
     RequestsInterval = 1
 
     MinClientVersion = 157
-    MaxClientVersion = 177
+    MaxClientVersion = 176
 
     (DISCONNECTED, CONNECTING, CONNECTED) = range(3)
 
