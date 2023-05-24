@@ -491,9 +491,4 @@ class DynamicObject:
 
 
 class FundamentalRatios(DynamicObject):
-    """
-    See:
-    https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html
-    """
-
     pass
