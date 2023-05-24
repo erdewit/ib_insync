@@ -11,7 +11,7 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'ib_insync'
-copyright = '2022, Ewald de Wit'
+copyright = '2023, Ewald de Wit'
 author = 'Ewald de Wit'
 
 __version__ = ''
