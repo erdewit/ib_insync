@@ -1883,8 +1883,8 @@ class IB:
         tags = (
             'AccountType,NetLiquidation,TotalCashValue,SettledCash,'
             'AccruedCash,BuyingPower,EquityWithLoanValue,'
-            'PreviousEquityWithLoanValue,GrossPositionValue,ReqTEquity,'
-            'ReqTMargin,SMA,InitMarginReq,MaintMarginReq,AvailableFunds,'
+            'PreviousEquityWithLoanValue,GrossPositionValue,RegTEquity,'
+            'RegTMargin,SMA,InitMarginReq,MaintMarginReq,AvailableFunds,'
             'ExcessLiquidity,Cushion,FullInitMarginReq,FullMaintMarginReq,'
             'FullAvailableFunds,FullExcessLiquidity,LookAheadNextChange,'
             'LookAheadInitMarginReq,LookAheadMaintMarginReq,'
