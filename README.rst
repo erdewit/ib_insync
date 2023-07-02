@@ -60,7 +60,7 @@ This is a complete script to download historical data:
         contract, endDateTime='', durationStr='30 D',
         barSizeSetting='1 hour', whatToShow='MIDPOINT', useRTH=True)
 
-    # convert to pandas dataframe:
+    # convert to pandas dataframe (pandas needs to be installed):
     df = util.df(bars)
     print(df)
 

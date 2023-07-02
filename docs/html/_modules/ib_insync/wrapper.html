@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.wrapper &mdash; ib_insync 0.9.82 documentation</title>
+  <title>ib_insync.wrapper &mdash; ib_insync 0.9.85 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/wrapper.html"/>
@@ -60,9 +60,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>ib_insync.wrapper</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">ib_insync.wrapper</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -105,13 +105,13 @@
 
 
 <div class="viewcode-block" id="RequestError"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.RequestError">[docs]</a><span class="k">class</span> <span class="nc">RequestError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exception to raise when the API reports an error that can be tied to</span>
 <span class="sd">    a single request.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">          reqId: Original request ID.</span>
 <span class="sd">          code: Original error code.</span>
@@ -124,7 +124,7 @@
 
 
 <span class="k">class</span> <span class="nc">Wrapper</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Wrapper implementation for use with the IB class.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper implementation for use with the IB class.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ib</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ib</span> <span class="o">=</span> <span class="n">ib</span>
@@ -186,7 +186,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">setEventsDone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set all subscription-type events as done.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set all subscription-type events as done.&quot;&quot;&quot;</span>
         <span class="n">events</span> <span class="o">=</span> <span class="p">[</span><span class="n">ticker</span><span class="o">.</span><span class="n">updateEvent</span> <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tickers</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
         <span class="n">events</span> <span class="o">+=</span> <span class="p">[</span><span class="n">sub</span><span class="o">.</span><span class="n">updateEvent</span> <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Subscriber</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
         <span class="k">for</span> <span class="n">trade</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -206,7 +206,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">startReq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">container</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start a new request and return the future that is associated</span>
 <span class="sd">        with the key and container. The container is a list by default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -218,7 +218,7 @@
         <span class="k">return</span> <span class="n">future</span>
 
     <span class="k">def</span> <span class="nf">_endReq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Finish the future of corresponding key with the given result.</span>
 <span class="sd">        If no result is given then it will be popped of the general results.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -235,7 +235,7 @@
 
     <span class="k">def</span> <span class="nf">startTicker</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">tickType</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start a tick request that has the reqId associated with the contract.</span>
 <span class="sd">        Return the ticker.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -256,12 +256,12 @@
         <span class="k">return</span> <span class="n">reqId</span>
 
     <span class="k">def</span> <span class="nf">startSubscription</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">subscriber</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Register a live subscription.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a live subscription.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reqId2Contract</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">=</span> <span class="n">contract</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Subscriber</span><span class="p">[</span><span class="n">reqId</span><span class="p">]</span> <span class="o">=</span> <span class="n">subscriber</span>
 
     <span class="k">def</span> <span class="nf">endSubscription</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subscriber</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unregister a live subscription.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister a live subscription.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reqId2Contract</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">subscriber</span><span class="o">.</span><span class="n">reqId</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Subscriber</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">subscriber</span><span class="o">.</span><span class="n">reqId</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
@@ -416,7 +416,7 @@
     <span class="k">def</span> <span class="nf">openOrder</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">orderId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">,</span>
             <span class="n">orderState</span><span class="p">:</span> <span class="n">OrderState</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This wrapper is called to:</span>
 
 <span class="sd">        * feed in open orders at startup;</span>
@@ -526,7 +526,7 @@
 
     <span class="k">def</span> <span class="nf">execDetails</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span><span class="p">,</span> <span class="n">execution</span><span class="p">:</span> <span class="n">Execution</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This wrapper handles both live fills and responses to</span>
 <span class="sd">        reqExecutions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1175,7 +1175,7 @@
             <span class="n">isWarning</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot;Warning&quot;</span> <span class="k">if</span> <span class="n">isWarning</span> <span class="k">else</span> <span class="s2">&quot;Error&quot;</span><span class="si">}</span><span class="s1"> &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot;Warning&quot;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">isWarning</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">&quot;Error&quot;</span><span class="si">}</span><span class="s1"> &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">errorCode</span><span class="si">}</span><span class="s1">, reqId </span><span class="si">{</span><span class="n">reqId</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">errorString</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">contract</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqId2Contract</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reqId</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">contract</span><span class="p">:</span>
