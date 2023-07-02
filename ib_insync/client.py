@@ -465,8 +465,10 @@ class Client:
             order.goodTillDate,
             order.faGroup,
             order.faMethod,
-            order.faPercentage,
-            order.faProfile,
+            order.faPercentage]
+        if version < 177:
+            fields += [order.faProfile]
+        fields += [
             order.modelCode,
             order.shortSaleSlot,
             order.designatedLocation,

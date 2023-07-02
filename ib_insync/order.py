@@ -50,7 +50,7 @@ class Order:
     trailStopPrice: float = UNSET_DOUBLE
     trailingPercent: float = UNSET_DOUBLE
     faGroup: str = ''
-    faProfile: str = ''
+    faProfile: str = ''  # obsolete
     faMethod: str = ''
     faPercentage: str = ''
     designatedLocation: str = ''

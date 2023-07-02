@@ -854,7 +854,10 @@ class Decoder:
             o.faGroup,
             o.faMethod,
             o.faPercentage,
-            o.faProfile,
+            *fields) = fields
+        if self.serverVersion < 177:
+            o.faProfile, *fields = fields
+        (
             o.modelCode,
             o.goodTillDate,
             o.rule80A,
@@ -1107,7 +1110,10 @@ class Decoder:
             o.faGroup,
             o.faMethod,
             o.faPercentage,
-            o.faProfile,
+            *fields) = fields
+        if self.serverVersion < 177:
+            o.faProfile, *fields = fields
+        (
             o.modelCode,
             o.goodTillDate,
             o.rule80A,
