@@ -558,7 +558,7 @@ class Client:
             order.randomizeSize,
             order.randomizePrice]
 
-        if order.orderType == 'PEG BENCH':
+        if order.orderType in ('PEG BENCH', 'PEGBENCH'):
             fields += [
                 order.referenceContractId,
                 order.isPeggedChangeAmountDecrease,
@@ -608,13 +608,13 @@ class Client:
         if version >= 170:
             if contract.exchange == 'IBKRATS':
                 fields += [order.minTradeQty]
-            if order.orderType == 'PEG BEST':
+            if order.orderType in ('PEG BEST', 'PEGBEST'):
                 fields += [
                     order.minCompeteSize,
                     order.competeAgainstBestOffset]
                 if order.competeAgainstBestOffset == math.inf:
                     fields += [order.midOffsetAtWhole, order.midOffsetAtHalf]
-            elif order.orderType == 'PEG MID':
+            elif order.orderType in ('PEG MID', 'PEGMID'):
                 fields += [order.midOffsetAtWhole, order.midOffsetAtHalf]
 
         self.send(*fields)

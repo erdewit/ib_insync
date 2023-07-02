@@ -1007,7 +1007,7 @@ class Decoder:
             o.randomizePrice,
             *fields) = fields
 
-        if o.orderType == 'PEG BENCH':
+        if o.orderType in ('PEG BENCH', 'PEGBENCH'):
             (
                 o.referenceContractId,
                 o.isPeggedChangeAmountDecrease,
@@ -1230,7 +1230,7 @@ class Decoder:
             o.randomizePrice,
             *fields) = fields
 
-        if o.orderType == 'PEG BENCH':
+        if o.orderType in ('PEG BENCH', 'PEGBENCH'):
             (
                 o.referenceContractId,
                 o.isPeggedChangeAmountDecrease,
