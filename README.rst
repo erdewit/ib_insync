@@ -1,4 +1,4 @@
-|Build| |Group| |PyVersion| |Status| |PyPiVersion| |CondaVersion| |License| |Downloads| |Docs|
+|Build| |Group| |PyVersion| |Status| |PyPiVersion| |License| |Downloads| |Docs|
 
 Introduction
 ============
