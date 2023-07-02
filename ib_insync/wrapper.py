@@ -800,7 +800,7 @@ class Wrapper:
             elif tickType == 84:
                 ticker.lastExchange = value
             elif tickType == 47:
-                # https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html
+                # https://web.archive.org/web/20200725010343/https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html
                 d = dict(t.split('=')                     # type: ignore
                          for t in value.split(';') if t)  # type: ignore
                 for k, v in d.items():
