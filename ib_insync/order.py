@@ -306,15 +306,15 @@ class Trade:
         self.cancelEvent = Event('cancelEvent')
         self.cancelledEvent = Event('cancelledEvent')
 
-    def isActive(self):
+    def isActive(self) -> bool:
         """True if eligible for execution, false otherwise."""
         return self.orderStatus.status in OrderStatus.ActiveStates
 
-    def isDone(self):
+    def isDone(self) -> bool:
         """True if completely filled or cancelled, false otherwise."""
         return self.orderStatus.status in OrderStatus.DoneStates
 
-    def filled(self):
+    def filled(self) -> float:
         """Number of shares filled."""
         fills = self.fills
         if self.contract.secType == 'BAG':
@@ -322,7 +322,7 @@ class Trade:
             fills = [f for f in fills if f.contract.secType == 'BAG']
         return sum(f.execution.shares for f in fills)
 
-    def remaining(self):
+    def remaining(self) -> float:
         """Number of shares remaining to be filled."""
         return self.order.totalQuantity - self.filled()
 
