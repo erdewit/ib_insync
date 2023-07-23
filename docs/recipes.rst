@@ -171,6 +171,27 @@ Fundemental ratios
     ib.sleep(2)
     print(ticker.fundamentalRatios)
 
+
+Short-lived connections
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This IB socket protocol is designed to be used for a long-lived connection,
+lasting a day or so. For short connections, where for example just a few
+orders are fired of, it is best to add one second of delay before closing the
+connection. This gives the connection some time to flush
+the data that has not been sent yet.
+
+.. code-block:: python
+
+    ib = IB()
+    ib.connect()
+
+    ...  # create and submit some orders
+
+    ib.sleep(1)  # added delay
+    ib.disconnect()
+
+
 Async streaming ticks
 ^^^^^^^^^^^^^^^^^^^^^
 
