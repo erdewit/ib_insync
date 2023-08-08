@@ -53,9 +53,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#minimum-price-increments">Minimum price increments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#news-articles">News articles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#news-bulletins">News bulletins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wsh-event-calendar">WSH Event Calendar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dividends">Dividends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fundemental-ratios">Fundemental ratios</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#async-streaming-ticks">Async streaming ticks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#short-lived-connections">Short-lived connections</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#integration-with-pyqt5-or-pyside2">Integration with PyQt5 or PySide2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#integration-with-tkinter">Integration with Tkinter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#integration-with-pygame">Integration with PyGame</a></li>
@@ -224,6 +225,41 @@ and further back in time until there is no more data returned.</p>
 </pre></div>
 </div>
 </section>
+<section id="wsh-event-calendar">
+<h2>WSH Event Calendar<a class="headerlink" href="#wsh-event-calendar" title="Permalink to this heading"></a></h2>
+<p>A  <a class="reference external" href="https://www.wallstreethorizon.com/interactive-brokers">Wall Street Horizon subscription</a>
+is needed to get corporate event data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ib_insync</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">ib</span> <span class="o">=</span> <span class="n">IB</span><span class="p">()</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">7497</span><span class="p">,</span> <span class="n">clientId</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Get the conId of an instrument (IBM in this case):</span>
+<span class="n">ibm</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;IBM&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">qualifyContracts</span><span class="p">(</span><span class="n">ibm</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ibm</span><span class="o">.</span><span class="n">conId</span><span class="p">)</span>  <span class="c1"># is 8314</span>
+
+<span class="c1"># Get the list of available filters and event types:</span>
+<span class="n">meta</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">getWshMetaData</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
+
+<span class="c1"># For IBM (with conId=8314) query the:</span>
+<span class="c1">#   - Earnings Dates (wsh_ed)</span>
+<span class="c1">#   - Board of Directors meetings (wshe_bod)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">WshEventData</span><span class="p">(</span>
+    <span class="nb">filter</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;{</span>
+<span class="s1">      &quot;country&quot;: &quot;All&quot;,</span>
+<span class="s1">      &quot;watchlist&quot;: [&quot;8314&quot;],</span>
+<span class="s1">      &quot;limit_region&quot;: 10,</span>
+<span class="s1">      &quot;limit&quot;: 10,</span>
+<span class="s1">      &quot;wsh_ed&quot;: &quot;true&quot;,</span>
+<span class="s1">      &quot;wshe_bod&quot;: &quot;true&quot;</span>
+<span class="s1">    }&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="n">events</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">getWshEventData</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
 <section id="dividends">
 <h2>Dividends<a class="headerlink" href="#dividends" title="Permalink to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contract</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;INTC&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
@@ -246,37 +282,20 @@ and further back in time until there is no more data returned.</p>
 </pre></div>
 </div>
 </section>
-<section id="async-streaming-ticks">
-<h2>Async streaming ticks<a class="headerlink" href="#async-streaming-ticks" title="Permalink to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<section id="short-lived-connections">
+<h2>Short-lived connections<a class="headerlink" href="#short-lived-connections" title="Permalink to this heading"></a></h2>
+<p>This IB socket protocol is designed to be used for a long-lived connection,
+lasting a day or so. For short connections, where for example just a few
+orders are fired of, it is best to add one second of delay before closing the
+connection. This gives the connection some time to flush
+the data that has not been sent yet.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ib</span> <span class="o">=</span> <span class="n">IB</span><span class="p">()</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
 
-<span class="kn">import</span> <span class="nn">ib_insync</span> <span class="k">as</span> <span class="nn">ibi</span>
+<span class="o">...</span>  <span class="c1"># create and submit some orders</span>
 
-
-<span class="k">class</span> <span class="nc">App</span><span class="p">:</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ib</span> <span class="o">=</span> <span class="n">ibi</span><span class="o">.</span><span class="n">IB</span><span class="p">()</span>
-        <span class="k">with</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">():</span>
-            <span class="n">contracts</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">ibi</span><span class="o">.</span><span class="n">Stock</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;AAPL&#39;</span><span class="p">,</span> <span class="s1">&#39;TSLA&#39;</span><span class="p">,</span> <span class="s1">&#39;AMD&#39;</span><span class="p">,</span> <span class="s1">&#39;INTC&#39;</span><span class="p">]]</span>
-            <span class="k">for</span> <span class="n">contract</span> <span class="ow">in</span> <span class="n">contracts</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">reqMktData</span><span class="p">(</span><span class="n">contract</span><span class="p">)</span>
-
-            <span class="k">async</span> <span class="k">for</span> <span class="n">tickers</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">pendingTickersEvent</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
-
-
-<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">())</span>
-<span class="k">except</span> <span class="p">(</span><span class="ne">KeyboardInterrupt</span><span class="p">,</span> <span class="ne">SystemExit</span><span class="p">):</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># added delay</span>
+<span class="n">ib</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>

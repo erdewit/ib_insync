@@ -1718,15 +1718,46 @@ class IB:
 
     def getWshMetaData(self) -> str:
         """
-        Blocking convenience method that returns the WSH metadata as
-        a JSON string.
+        Blocking convenience method that returns the WSH metadata (that is
+        the available filters and event types) as a JSON string.
+
+        Please note that a `Wall Street Horizon subscription <https://www.wallstreethorizon.com/interactive-brokers>`_
+        is required.
+
+        .. code-block:: python
+
+            # Get the list of available filters and event types:
+            meta = ib.getWshMetaData()
+            print(meta)
         """
         return self._run(self.getWshMetaDataAsync())
 
     def getWshEventData(self, data: WshEventData) -> str:
         """
         Blocking convenience method that returns the WSH event data as
-        a JSON string. The request is automatically cancelled after completion.
+        a JSON string.
+        :meth:`.getWshMetaData` must have been called first before using this
+        method.
+
+        Please note that a  `Wall Street Horizon subscription <https://www.wallstreethorizon.com/interactive-brokers>`_
+        is required.
+
+        .. code-block:: python
+
+            # For IBM (with conId=8314) query the:
+            #   - Earnings Dates (wsh_ed)
+            #   - Board of Directors meetings (wshe_bod)
+            data = WshEventData(
+                filter = '''{
+                  "country": "All",
+                  "watchlist": ["8314"],
+                  "limit_region": 10,
+                  "limit": 10,
+                  "wsh_ed": "true",
+                  "wshe_bod": "true"
+                }''')
+            events = ib.getWshEventData(data)
+            print(events)
         """
         return self._run(self.getWshEventDataAsync(data))
 

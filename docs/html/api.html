@@ -3405,8 +3405,15 @@ method.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ib_insync.ib.IB.getWshMetaData">
 <span class="sig-name descname"><span class="pre">getWshMetaData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.getWshMetaData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ib.IB.getWshMetaData" title="Permalink to this definition"></a></dt>
-<dd><p>Blocking convenience method that returns the WSH metadata as
-a JSON string.</p>
+<dd><p>Blocking convenience method that returns the WSH metadata (that is
+the available filters and event types) as a JSON string.</p>
+<p>Please note that a <a class="reference external" href="https://www.wallstreethorizon.com/interactive-brokers">Wall Street Horizon subscription</a>
+is required.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the list of available filters and event types:</span>
+<span class="n">meta</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">getWshMetaData</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
@@ -3418,7 +3425,27 @@ a JSON string.</p>
 <dt class="sig sig-object py" id="ib_insync.ib.IB.getWshEventData">
 <span class="sig-name descname"><span class="pre">getWshEventData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/ib.html#IB.getWshEventData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.ib.IB.getWshEventData" title="Permalink to this definition"></a></dt>
 <dd><p>Blocking convenience method that returns the WSH event data as
-a JSON string. The request is automatically cancelled after completion.</p>
+a JSON string.
+<a class="reference internal" href="#ib_insync.ib.IB.getWshMetaData" title="ib_insync.ib.IB.getWshMetaData"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getWshMetaData()</span></code></a> must have been called first before using this
+method.</p>
+<p>Please note that a  <a class="reference external" href="https://www.wallstreethorizon.com/interactive-brokers">Wall Street Horizon subscription</a>
+is required.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For IBM (with conId=8314) query the:</span>
+<span class="c1">#   - Earnings Dates (wsh_ed)</span>
+<span class="c1">#   - Board of Directors meetings (wshe_bod)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">WshEventData</span><span class="p">(</span>
+    <span class="nb">filter</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;{</span>
+<span class="s1">      &quot;country&quot;: &quot;All&quot;,</span>
+<span class="s1">      &quot;watchlist&quot;: [&quot;8314&quot;],</span>
+<span class="s1">      &quot;limit_region&quot;: 10,</span>
+<span class="s1">      &quot;limit&quot;: 10,</span>
+<span class="s1">      &quot;wsh_ed&quot;: &quot;true&quot;,</span>
+<span class="s1">      &quot;wshe_bod&quot;: &quot;true&quot;</span>
+<span class="s1">    }&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="n">events</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">getWshEventData</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
@@ -3871,7 +3898,7 @@ one batch instead of item by item.</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ib_insync.client.Client.MaxClientVersion">
-<span class="sig-name descname"><span class="pre">MaxClientVersion</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">176</span></em><a class="headerlink" href="#ib_insync.client.Client.MaxClientVersion" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">MaxClientVersion</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">177</span></em><a class="headerlink" href="#ib_insync.client.Client.MaxClientVersion" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -5800,24 +5827,44 @@ fill: <a class="reference internal" href="#ib_insync.objects.Fill" title="ib_ins
 <dt class="sig sig-object py" id="ib_insync.order.Trade.isActive">
 <span class="sig-name descname"><span class="pre">isActive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#Trade.isActive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.order.Trade.isActive" title="Permalink to this definition"></a></dt>
 <dd><p>True if eligible for execution, false otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ib_insync.order.Trade.isDone">
 <span class="sig-name descname"><span class="pre">isDone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#Trade.isDone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.order.Trade.isDone" title="Permalink to this definition"></a></dt>
 <dd><p>True if completely filled or cancelled, false otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ib_insync.order.Trade.filled">
 <span class="sig-name descname"><span class="pre">filled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#Trade.filled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.order.Trade.filled" title="Permalink to this definition"></a></dt>
 <dd><p>Number of shares filled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ib_insync.order.Trade.remaining">
 <span class="sig-name descname"><span class="pre">remaining</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ib_insync/order.html#Trade.remaining"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ib_insync.order.Trade.remaining" title="Permalink to this definition"></a></dt>
 <dd><p>Number of shares remaining to be filled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

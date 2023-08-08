@@ -5,7 +5,14 @@ Changelog
 ---
 
 
-Version 0.9.84
+Version 0.9.86
+^^^^^^^^^^^^^^
+
+* Fixed: :issue:`588`: Fixed account summary tag.
+* Fixed: :issue:`589`: Fixed more account summary tags.
+* pull:`598`: Year updates
+
+Version 0.9.85
 ^^^^^^^^^^^^^^
  * Fixed: :issue:`586`: Revert socket protocol back to version 176.
 

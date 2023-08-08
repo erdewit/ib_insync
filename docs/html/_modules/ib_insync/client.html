@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.client &mdash; ib_insync 0.9.85 documentation</title>
+  <title>ib_insync.client &mdash; ib_insync 0.9.86 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/client.html"/>
@@ -60,9 +60,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>ib_insync.client</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">ib_insync.client</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -93,7 +93,7 @@
 
 
 <div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Replacement for ``ibapi.client.EClient`` that uses asyncio.</span>
 
 <span class="sd">    The client is fully asynchronous and has its own</span>
@@ -159,7 +159,7 @@
     <span class="n">RequestsInterval</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="n">MinClientVersion</span> <span class="o">=</span> <span class="mi">157</span>
-    <span class="n">MaxClientVersion</span> <span class="o">=</span> <span class="mi">176</span>
+    <span class="n">MaxClientVersion</span> <span class="o">=</span> <span class="mi">177</span>
 
     <span class="p">(</span><span class="n">DISCONNECTED</span><span class="p">,</span> <span class="n">CONNECTING</span><span class="p">,</span> <span class="n">CONNECTED</span><span class="p">)</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
@@ -215,11 +215,11 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">==</span> <span class="n">Client</span><span class="o">.</span><span class="n">CONNECTED</span></div>
 
 <div class="viewcode-block" id="Client.isReady"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.isReady">[docs]</a>    <span class="k">def</span> <span class="nf">isReady</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Is the API connection up and running?&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Is the API connection up and running?&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apiReady</span></div>
 
 <div class="viewcode-block" id="Client.connectionStats"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connectionStats">[docs]</a>    <span class="k">def</span> <span class="nf">connectionStats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConnectionStats</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get statistics about the connection.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get statistics about the connection.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s1">&#39;Not connected&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ConnectionStats</span><span class="p">(</span>
@@ -229,7 +229,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_numMsgRecv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">numMsgSent</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.getReqId"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.getReqId">[docs]</a>    <span class="k">def</span> <span class="nf">getReqId</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get new request ID.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get new request ID.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s1">&#39;Not connected&#39;</span><span class="p">)</span>
         <span class="n">newId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span>
@@ -237,17 +237,17 @@
         <span class="k">return</span> <span class="n">newId</span></div>
 
 <div class="viewcode-block" id="Client.updateReqId"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.updateReqId">[docs]</a>    <span class="k">def</span> <span class="nf">updateReqId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minReqId</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update the next reqId to be at least ``minReqId``.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the next reqId to be at least ``minReqId``.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span><span class="p">,</span> <span class="n">minReqId</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.getAccounts"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.getAccounts">[docs]</a>    <span class="k">def</span> <span class="nf">getAccounts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get the list of account names that are under management.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the list of account names that are under management.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s1">&#39;Not connected&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accounts</span></div>
 
 <div class="viewcode-block" id="Client.setConnectOptions"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.setConnectOptions">[docs]</a>    <span class="k">def</span> <span class="nf">setConnectOptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connectOptions</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set additional connect options.</span>
 
 <span class="sd">        Args:</span>
@@ -259,7 +259,7 @@
 <div class="viewcode-block" id="Client.connect"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">clientId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Connect to a running TWS or IB gateway application.</span>
 
 <span class="sd">        Args:</span>
@@ -300,14 +300,14 @@
             <span class="k">raise</span></div>
 
 <div class="viewcode-block" id="Client.disconnect"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Disconnect from IB connection.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect from IB connection.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Disconnecting&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">=</span> <span class="n">Client</span><span class="o">.</span><span class="n">DISCONNECTED</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Client.send"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">,</span> <span class="n">makeEmpty</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Serialize and send the given fields using the IB socket protocol.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize and send the given fields using the IB socket protocol.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isConnected</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s1">&#39;Not connected&#39;</span><span class="p">)</span>
 
@@ -539,8 +539,10 @@
             <span class="n">order</span><span class="o">.</span><span class="n">goodTillDate</span><span class="p">,</span>
             <span class="n">order</span><span class="o">.</span><span class="n">faGroup</span><span class="p">,</span>
             <span class="n">order</span><span class="o">.</span><span class="n">faMethod</span><span class="p">,</span>
-            <span class="n">order</span><span class="o">.</span><span class="n">faPercentage</span><span class="p">,</span>
-            <span class="n">order</span><span class="o">.</span><span class="n">faProfile</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">faPercentage</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="o">&lt;</span> <span class="mi">177</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">faProfile</span><span class="p">]</span>
+        <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span>
             <span class="n">order</span><span class="o">.</span><span class="n">modelCode</span><span class="p">,</span>
             <span class="n">order</span><span class="o">.</span><span class="n">shortSaleSlot</span><span class="p">,</span>
             <span class="n">order</span><span class="o">.</span><span class="n">designatedLocation</span><span class="p">,</span>
@@ -632,7 +634,7 @@
             <span class="n">order</span><span class="o">.</span><span class="n">randomizeSize</span><span class="p">,</span>
             <span class="n">order</span><span class="o">.</span><span class="n">randomizePrice</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">orderType</span> <span class="o">==</span> <span class="s1">&#39;PEG BENCH&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">orderType</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;PEG BENCH&#39;</span><span class="p">,</span> <span class="s1">&#39;PEGBENCH&#39;</span><span class="p">):</span>
             <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span>
                 <span class="n">order</span><span class="o">.</span><span class="n">referenceContractId</span><span class="p">,</span>
                 <span class="n">order</span><span class="o">.</span><span class="n">isPeggedChangeAmountDecrease</span><span class="p">,</span>
@@ -682,13 +684,13 @@
         <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">170</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">contract</span><span class="o">.</span><span class="n">exchange</span> <span class="o">==</span> <span class="s1">&#39;IBKRATS&#39;</span><span class="p">:</span>
                 <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">minTradeQty</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">orderType</span> <span class="o">==</span> <span class="s1">&#39;PEG BEST&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">orderType</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;PEG BEST&#39;</span><span class="p">,</span> <span class="s1">&#39;PEGBEST&#39;</span><span class="p">):</span>
                 <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span>
                     <span class="n">order</span><span class="o">.</span><span class="n">minCompeteSize</span><span class="p">,</span>
                     <span class="n">order</span><span class="o">.</span><span class="n">competeAgainstBestOffset</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">competeAgainstBestOffset</span> <span class="o">==</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
                     <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">midOffsetAtWhole</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">midOffsetAtHalf</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">orderType</span> <span class="o">==</span> <span class="s1">&#39;PEG MID&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">orderType</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;PEG MID&#39;</span><span class="p">,</span> <span class="s1">&#39;PEGMID&#39;</span><span class="p">):</span>
                 <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">midOffsetAtWhole</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">midOffsetAtHalf</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)</span></div>
