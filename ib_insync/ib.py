@@ -1721,7 +1721,8 @@ class IB:
         Blocking convenience method that returns the WSH metadata (that is
         the available filters and event types) as a JSON string.
 
-        Please note that a `Wall Street Horizon subscription <https://www.wallstreethorizon.com/interactive-brokers>`_
+        Please note that a `Wall Street Horizon subscription
+        <https://www.wallstreethorizon.com/interactive-brokers>`_
         is required.
 
         .. code-block:: python
@@ -1739,7 +1740,8 @@ class IB:
         :meth:`.getWshMetaData` must have been called first before using this
         method.
 
-        Please note that a  `Wall Street Horizon subscription <https://www.wallstreethorizon.com/interactive-brokers>`_
+        Please note that a  `Wall Street Horizon subscription
+        <https://www.wallstreethorizon.com/interactive-brokers>`_
         is required.
 
         .. code-block:: python
