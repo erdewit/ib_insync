@@ -147,6 +147,44 @@ News bulletins
     ib.sleep(5)
     print(ib.newsBulletins())
 
+
+WSH Event Calendar
+^^^^^^^^^^^^^^^^^^
+
+A  `Wall Street Horizon subscription <https://www.wallstreethorizon.com/interactive-brokers>`_
+is needed to get corporate event data.
+
+.. code-block:: python
+
+    from ib_insync import *
+
+    ib = IB()
+    ib.connect('127.0.0.1', 7497, clientId=1)
+
+    # Get the conId of an instrument (IBM in this case):
+    ibm = Stock('IBM', 'SMART', 'USD')
+    ib.qualifyContracts(ibm)
+    print(ibm.conId)  # is 8314
+
+    # Get the list of available filters and event types:
+    meta = ib.getWshMetaData()
+    print(meta)
+
+    # For IBM (with conId=8314) query the:
+    #   - Earnings Dates (wsh_ed)
+    #   - Board of Directors meetings (wshe_bod)
+    data = WshEventData(
+        filter = '''{
+          "country": "All",
+          "watchlist": ["8314"],
+          "limit_region": 10,
+          "limit": 10,
+          "wsh_ed": "true",
+          "wshe_bod": "true"
+        }''')
+    events = ib.getWshEventData(data)
+    print(events)
+
 Dividends
 ^^^^^^^^^
 
