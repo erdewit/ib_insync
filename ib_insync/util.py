@@ -131,7 +131,7 @@ def isnamedtupleinstance(x):
     f = getattr(t, '_fields', None)
     if not isinstance(f, tuple):
         return False
-    return all(type(n) == str for n in f)
+    return all(type(n) is str for n in f)
 
 
 def tree(obj):
