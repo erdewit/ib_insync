@@ -127,7 +127,7 @@ Good luck and enjoy,
    :alt: Documentation
    :target: https://ib-insync.readthedocs.io/api.html
 
-.. |Downloads| image:: https://pepy.tech/badge/ib-insync
+.. |Downloads| image:: https://static.pepy.tech/badge/ib-insync
    :alt: Number of downloads
    :target: https://pepy.tech/project/ib-insync
 
