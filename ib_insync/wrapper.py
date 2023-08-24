@@ -1143,6 +1143,10 @@ class Wrapper:
         if errorCode == 110 and isRequest:
             # whatIf request failed
             isWarning = False
+        if errorCode == 110 and trade and \
+                trade.orderStatus.status == OrderStatus.PendingSubmit:
+            # invalid price for a new order must cancel it
+            isWarning = False
 
         msg = (
             f'{"Warning" if isWarning else "Error"} '
