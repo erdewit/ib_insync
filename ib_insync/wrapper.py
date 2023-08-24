@@ -5,7 +5,8 @@ import logging
 from collections import defaultdict
 from contextlib import suppress
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Set, Tuple, Union, cast
+from typing import (Any, Dict, List, Optional, Set, TYPE_CHECKING, Tuple,
+                    Union, cast)
 
 from ib_insync.contract import (
     Contract, ContractDescription, ContractDetails, DeltaNeutralContract,
@@ -25,6 +26,10 @@ from ib_insync.ticker import Ticker
 from ib_insync.util import (
     UNSET_DOUBLE, UNSET_INTEGER, dataclassAsDict, dataclassUpdate,
     getLoop, globalErrorEvent, isNan, parseIBDatetime)
+
+if TYPE_CHECKING:
+    from ib_insync.ib import IB
+
 
 OrderKeyType = Union[int, Tuple[int, int]]
 
@@ -50,6 +55,8 @@ class RequestError(Exception):
 
 class Wrapper:
     """Wrapper implementation for use with the IB class."""
+
+    ib: IB
 
     accountValues: Dict[tuple, AccountValue]
     """ (account, tag, currency, modelCode) -> AccountValue """
@@ -119,7 +126,10 @@ class Wrapper:
     _results: Dict[Any, Any]
     """ _futures and _results are linked by key. """
 
-    def __init__(self, ib):
+    _logger: logging.Logger
+    _timeoutHandle: Union[asyncio.TimerHandle, None]
+
+    def __init__(self, ib: IB):
         self.ib = ib
         self._logger = logging.getLogger('ib_insync.wrapper')
         self._timeoutHandle = None
