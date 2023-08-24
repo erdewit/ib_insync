@@ -5,8 +5,7 @@ import logging
 from collections import defaultdict
 from contextlib import suppress
 from datetime import datetime, timezone
-from typing import (
-    Any, Dict, List, Optional, Set, Tuple, Union, cast)
+from typing import Any, Dict, List, Optional, Set, Tuple, Union, cast
 
 from ib_insync.contract import (
     Contract, ContractDescription, ContractDetails, DeltaNeutralContract,
@@ -52,6 +51,74 @@ class RequestError(Exception):
 class Wrapper:
     """Wrapper implementation for use with the IB class."""
 
+    accountValues: Dict[tuple, AccountValue]
+    """ (account, tag, currency, modelCode) -> AccountValue """
+
+    acctSummary: Dict[tuple, AccountValue]
+    """ (account, tag, currency) -> AccountValue """
+
+    portfolio: Dict[str, Dict[int, PortfolioItem]]
+    """ account -> conId -> PortfolioItem """
+
+    positions: Dict[str, Dict[int, Position]]
+    """ account -> conId -> Position """
+
+    trades: Dict[OrderKeyType, Trade]
+    """ (client, orderId) or permId -> Trade """
+
+    permId2Trade: Dict[int, Trade]
+    """ permId -> Trade """
+
+    fills: Dict[str, Fill]
+    """ execId -> Fill """
+
+    newsTicks: List[NewsTick]
+
+    msgId2NewsBulletin: Dict[int, NewsBulletin]
+    """ msgId -> NewsBulletin """
+
+    tickers: Dict[int, Ticker]
+    """ id(Contract) -> Ticker """
+
+    pendingTickers: Set[Ticker]
+
+    reqId2Ticker: Dict[int, Ticker]
+    """ reqId -> Ticker """
+
+    ticker2ReqId: Dict[Union[int, str], Dict[Ticker, int]]
+    """ tickType -> Ticker -> reqId """
+
+    reqId2Subscriber: Dict[int, Any]
+    """ live bars or live scan data """
+
+    reqId2PnL: Dict[int, PnL]
+    """ reqId -> PnL """
+
+    reqId2PnlSingle: Dict[int, PnLSingle]
+    """ reqId -> PnLSingle """
+
+    pnlKey2ReqId: Dict[tuple, int]
+    """ (account, modelCode) -> reqId """
+
+    pnlSingleKey2ReqId: Dict[tuple, int]
+    """ (account, modelCode, conId) -> reqId """
+
+    lastTime: datetime
+    """ UTC time of last network packet arrival. """
+
+    accounts: List[str]
+    clientId: int
+    wshMetaReqId: int
+    wshEventReqId: int
+    _reqId2Contract: Dict[int, Contract]
+    _timeout: float
+
+    _futures: Dict[Any, asyncio.Future]
+    """ _futures and _results are linked by key. """
+
+    _results: Dict[Any, Any]
+    """ _futures and _results are linked by key. """
+
     def __init__(self, ib):
         self.ib = ib
         self._logger = logging.getLogger('ib_insync.wrapper')
@@ -59,56 +126,33 @@ class Wrapper:
         self.reset()
 
     def reset(self):
-        self.accountValues: Dict[tuple, AccountValue] = {}
-        #    (account, tag, currency, modelCode) -> AccountValue
-        self.acctSummary: Dict[tuple, AccountValue] = {}
-        #    (account, tag, currency) -> AccountValue
-        self.portfolio: Dict[str, Dict[int, PortfolioItem]] = defaultdict(dict)
-        #    account -> conId -> PortfolioItem
-        self.positions: Dict[str, Dict[int, Position]] = defaultdict(dict)
-        #    account -> conId -> Position
-        self.trades: Dict[OrderKeyType, Trade] = {}
-        #    (client, orderId) or permId -> Trade
-        self.permId2Trade: Dict[int, Trade] = {}
-        #    permId -> Trade
-        self.fills: Dict[str, Fill] = {}
-        #    execId -> Fill
-        self.newsTicks: List[NewsTick] = []
-        self.msgId2NewsBulletin: Dict[int, NewsBulletin] = {}
-        #    msgId -> NewsBulletin
-        self.tickers: Dict[int, Ticker] = {}
-        #    id(Contract) -> Ticker
-        self.pendingTickers: Set[Ticker] = set()
-        self.reqId2Ticker: Dict[int, Ticker] = {}
-        #    reqId -> Ticker
-        self.ticker2ReqId: Dict[Union[int, str], Dict[Ticker, int]] = \
-            defaultdict(dict)
-        #    tickType -> Ticker -> reqId
-        self.reqId2Subscriber: Dict[int, Any] = {}
-        #    live bars or live scan data
-        self.reqId2PnL: Dict[int, PnL] = {}
-        #    reqId -> PnL
-        self.reqId2PnlSingle: Dict[int, PnLSingle] = {}
-        #    reqId -> PnLSingle
-        self.pnlKey2ReqId: Dict[tuple, int] = {}
-        #    (account, modelCode) -> reqId
-        self.pnlSingleKey2ReqId: Dict[tuple, int] = {}
-        #    (account, modelCode, conId) -> reqId
-
-        self.wshMetaReqId: int = 0
-        self.wshEventReqId: int = 0
-
-        # futures and results are linked by key:
-        self._futures: Dict[Any, asyncio.Future] = {}
-        self._results: Dict[Any, Any] = {}
-
-        # UTC time of last network packet arrival:
-        self.lastTime: datetime = datetime.min
-
-        self._reqId2Contract: Dict[int, Contract] = {}
-        self.accounts: List[str] = []
-        self.clientId: int = -1
-        self._timeout: float = 0
+        self.accountValues = {}
+        self.acctSummary = {}
+        self.portfolio = defaultdict(dict)
+        self.positions = defaultdict(dict)
+        self.trades = {}
+        self.permId2Trade = {}
+        self.fills = {}
+        self.newsTicks = []
+        self.msgId2NewsBulletin = {}
+        self.tickers = {}
+        self.pendingTickers = set()
+        self.reqId2Ticker = {}
+        self.ticker2ReqId = defaultdict(dict)
+        self.reqId2Subscriber = {}
+        self.reqId2PnL = {}
+        self.reqId2PnlSingle = {}
+        self.pnlKey2ReqId = {}
+        self.pnlSingleKey2ReqId = {}
+        self.lastTime = datetime.min
+        self.accounts = []
+        self.clientId = -1
+        self.wshMetaReqId = 0
+        self.wshEventReqId = 0
+        self._reqId2Contract = {}
+        self._timeout = 0
+        self._futures = {}
+        self._results = {}
         self.setTimeout(0)
 
     def setEventsDone(self):
