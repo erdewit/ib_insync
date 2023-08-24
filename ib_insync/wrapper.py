@@ -56,7 +56,7 @@ class RequestError(Exception):
 class Wrapper:
     """Wrapper implementation for use with the IB class."""
 
-    ib: IB
+    ib: 'IB'
 
     accountValues: Dict[tuple, AccountValue]
     """ (account, tag, currency, modelCode) -> AccountValue """
@@ -129,7 +129,7 @@ class Wrapper:
     _logger: logging.Logger
     _timeoutHandle: Union[asyncio.TimerHandle, None]
 
-    def __init__(self, ib: IB):
+    def __init__(self, ib: 'IB'):
         self.ib = ib
         self._logger = logging.getLogger('ib_insync.wrapper')
         self._timeoutHandle = None
