@@ -1772,7 +1772,7 @@ class IB:
     async def connectAsync(
             self, host: str = '127.0.0.1', port: int = 7497,
             clientId: int = 1, timeout: Optional[float] = 4,
-            readonly: bool = False, account: str = ''):
+            readonly: bool = False, account: str = '', bailOnSyncFailure=False):
         clientId = int(clientId)
         self.wrapper.clientId = clientId
         timeout = timeout or None
@@ -1806,21 +1806,29 @@ class IB:
             tasks = [
                 asyncio.wait_for(req, timeout)
                 for req in reqs.values()]
+            failures = []
             resps = await asyncio.gather(*tasks, return_exceptions=True)
             for name, resp in zip(reqs, resps):
                 if isinstance(resp, asyncio.TimeoutError):
                     self._logger.error(f'{name} request timed out')
+                if isinstance(resp, Exception):
+                    failures.append(resp)
+
 
             # the request for executions must come after all orders are in
             try:
                 await asyncio.wait_for(self.reqExecutionsAsync(), timeout)
-            except asyncio.TimeoutError:
+            except asyncio.TimeoutError as e:
                 self._logger.error('executions request timed out')
+                failures.append(e)
 
             # final check if socket is still ready
             if not self.client.isReady():
                 raise ConnectionError(
                     'Socket connection broken while connecting')
+
+            if bailOnSyncFailure and len(failures) > 0:
+                raise ConnectionError(failures)
 
             self._logger.info('Synchronization complete')
             self.connectedEvent.emit()
