@@ -1,7 +1,7 @@
 """Order types used by Interactive Brokers."""
 
 from dataclasses import dataclass, field
-from typing import ClassVar, List, NamedTuple, Set
+from typing import ClassVar, FrozenSet, List, NamedTuple
 
 from eventkit import Event
 
@@ -238,9 +238,9 @@ class OrderStatus:
     Filled: ClassVar[str] = 'Filled'
     Inactive: ClassVar[str] = 'Inactive'
 
-    DoneStates: ClassVar[Set[str]] = frozenset(
+    DoneStates: ClassVar[FrozenSet[str]] = frozenset(
         ['Filled', 'Cancelled', 'ApiCancelled'])
-    ActiveStates: ClassVar[Set[str]] = frozenset(
+    ActiveStates: ClassVar[FrozenSet[str]] = frozenset(
         ['PendingSubmit', 'ApiPending', 'PreSubmitted', 'Submitted'])
 
 
