@@ -256,7 +256,8 @@ class IB:
 
     def connect(
             self, host: str = '127.0.0.1', port: int = 7497, clientId: int = 1,
-            timeout: float = 4, readonly: bool = False, account: str = ''):
+            timeout: float = 4, readonly: bool = False, account: str = '',
+            raiseSyncErrors: bool = False):
         """
         Connect to a running TWS or IB gateway application.
         After the connection is made the client is fully synchronized
@@ -275,9 +276,13 @@ class IB:
               is raised. Set to 0 to disable timeout.
             readonly: Set to ``True`` when API is in read-only mode.
             account: Main account to receive updates for.
+            raiseSyncErrors: When ``True`` this will cause an initial
+              sync request error to raise a `ConnectionError``.
+              When ``False`` the error will only be logged at error level.
         """
         return self._run(self.connectAsync(
-            host, port, clientId, timeout, readonly, account))
+            host, port, clientId, timeout, readonly, account,
+            raiseSyncErrors))
 
     def disconnect(self):
         """
@@ -1772,7 +1777,8 @@ class IB:
     async def connectAsync(
             self, host: str = '127.0.0.1', port: int = 7497,
             clientId: int = 1, timeout: Optional[float] = 4,
-            readonly: bool = False, account: str = '', bailOnSyncFailure=False):
+            readonly: bool = False, account: str = '',
+            raiseSyncErrors: bool = False):
         clientId = int(clientId)
         self.wrapper.clientId = clientId
         timeout = timeout or None
@@ -1806,29 +1812,29 @@ class IB:
             tasks = [
                 asyncio.wait_for(req, timeout)
                 for req in reqs.values()]
-            failures = []
+            errors = []
             resps = await asyncio.gather(*tasks, return_exceptions=True)
             for name, resp in zip(reqs, resps):
                 if isinstance(resp, asyncio.TimeoutError):
-                    self._logger.error(f'{name} request timed out')
-                if isinstance(resp, Exception):
-                    failures.append(resp)
-
+                    msg = f'{name} request timed out'
+                    errors.append(msg)
+                    self._logger.error(msg)
 
             # the request for executions must come after all orders are in
             try:
                 await asyncio.wait_for(self.reqExecutionsAsync(), timeout)
-            except asyncio.TimeoutError as e:
-                self._logger.error('executions request timed out')
-                failures.append(e)
+            except asyncio.TimeoutError:
+                msg = 'executions request timed out'
+                errors.append(msg)
+                self._logger.error(msg)
+
+            if raiseSyncErrors and len(errors) > 0:
+                raise ConnectionError(errors)
 
             # final check if socket is still ready
             if not self.client.isReady():
                 raise ConnectionError(
                     'Socket connection broken while connecting')
-
-            if bailOnSyncFailure and len(failures) > 0:
-                raise ConnectionError(failures)
 
             self._logger.info('Synchronization complete')
             self.connectedEvent.emit()

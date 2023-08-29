@@ -259,6 +259,7 @@ class Watchdog:
     retryDelay: float = 2
     readonly: bool = False
     account: str = ''
+    raiseSyncErrors: bool = False
     probeContract: Contract = Forex('EURUSD')
     probeTimeout: float = 4
 
@@ -310,7 +311,7 @@ class Watchdog:
                 await asyncio.sleep(self.appStartupTime)
                 await self.ib.connectAsync(
                     self.host, self.port, self.clientId, self.connectTimeout,
-                    self.readonly, self.account)
+                    self.readonly, self.account, self.raiseSyncErrors)
                 self.startedEvent.emit(self)
                 self.ib.setTimeout(self.appTimeout)
                 self.ib.timeoutEvent += onTimeout
