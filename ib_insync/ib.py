@@ -677,8 +677,7 @@ class IB:
             orderStatus = OrderStatus(
                 orderId=orderId, status=OrderStatus.PendingSubmit)
             logEntry = TradeLogEntry(now, orderStatus.status)
-            trade = Trade(
-                contract, order, orderStatus, [], [logEntry])
+            trade = Trade(contract, order, orderStatus, [], [logEntry])
             self.wrapper.trades[key] = trade
             self._logger.info(f'placeOrder: New order {trade}')
             self.newOrderEvent.emit(trade)

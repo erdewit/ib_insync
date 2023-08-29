@@ -238,9 +238,10 @@ class OrderStatus:
     Filled: ClassVar[str] = 'Filled'
     Inactive: ClassVar[str] = 'Inactive'
 
-    DoneStates: ClassVar[Set[str]] = {'Filled', 'Cancelled', 'ApiCancelled'}
-    ActiveStates: ClassVar[Set[str]] = {
-        'PendingSubmit', 'ApiPending', 'PreSubmitted', 'Submitted'}
+    DoneStates: ClassVar[Set[str]] = frozenset(
+        ['Filled', 'Cancelled', 'ApiCancelled'])
+    ActiveStates: ClassVar[Set[str]] = frozenset(
+        ['PendingSubmit', 'ApiPending', 'PreSubmitted', 'Submitted'])
 
 
 @dataclass
@@ -285,17 +286,17 @@ class Trade:
         * ``cancelledEvent`` (trade: :class:`.Trade`)
     """
 
-    events: ClassVar = (
-        'statusEvent', 'modifyEvent', 'fillEvent',
-        'commissionReportEvent', 'filledEvent',
-        'cancelEvent', 'cancelledEvent')
-
     contract: Contract = field(default_factory=Contract)
     order: Order = field(default_factory=Order)
     orderStatus: 'OrderStatus' = field(default_factory=OrderStatus)
     fills: List[Fill] = field(default_factory=list)
     log: List[TradeLogEntry] = field(default_factory=list)
     advancedError: str = ''
+
+    events: ClassVar = (
+        'statusEvent', 'modifyEvent', 'fillEvent',
+        'commissionReportEvent', 'filledEvent',
+        'cancelEvent', 'cancelledEvent')
 
     def __post_init__(self):
         self.statusEvent = Event('statusEvent')
