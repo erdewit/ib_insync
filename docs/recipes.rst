@@ -171,7 +171,7 @@ is needed to get corporate event data.
     print(meta)
 
     # For IBM (with conId=8314) query the:
-    #   - Earnings Dates (wsh_ed)
+    #   - Earnings Dates (wshe_ed)
     #   - Board of Directors meetings (wshe_bod)
     data = WshEventData(
         filter = '''{
@@ -179,7 +179,7 @@ is needed to get corporate event data.
           "watchlist": ["8314"],
           "limit_region": 10,
           "limit": 10,
-          "wsh_ed": "true",
+          "wshe_ed": "true",
           "wshe_bod": "true"
         }''')
     events = ib.getWshEventData(data)
