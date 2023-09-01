@@ -718,9 +718,9 @@ class Wrapper:
             ticker.auctionPrice = price
         elif tickType == 37:
             ticker.markPrice = price
-        elif tickType == 50:
+        elif tickType in (50, 103):
             ticker.bidYield = price
-        elif tickType == 51:
+        elif tickType in (51, 104):
             ticker.askYield = price
         elif tickType == 52:
             ticker.lastYield = price
