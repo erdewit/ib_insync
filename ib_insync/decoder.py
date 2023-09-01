@@ -440,7 +440,10 @@ class Decoder:
             ex.evRule,
             ex.evMultiplier,
             ex.modelCode,
-            ex.lastLiquidity) = fields
+            ex.lastLiquidity,
+            *fields) = fields
+        if self.serverVersion >= 178:
+            ex.pendingPriceRevision, *fields = fields
 
         self.parse(c)
         self.parse(ex)

@@ -67,6 +67,7 @@ class Execution:
     evMultiplier: float = 0.0
     modelCode: str = ''
     lastLiquidity: int = 0
+    pendingPriceRevision: bool = False
 
 
 @dataclass
