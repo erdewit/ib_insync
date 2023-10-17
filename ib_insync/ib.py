@@ -1856,12 +1856,6 @@ class IB:
                     f'Ambiguous contract: {contract}, '
                     f'possibles are {possibles}')
             else:
-                c = detailsList[0].contract
-                expiry = c.lastTradeDateOrContractMonth
-                if expiry:
-                    # remove time and timezone part as it will cause problems
-                    expiry = expiry.split()[0]
-                    c.lastTradeDateOrContractMonth = expiry
                 if contract.exchange == 'SMART':
                     # overwriting 'SMART' exchange can create invalid contract
                     c.exchange = contract.exchange
