@@ -1856,6 +1856,7 @@ class IB:
                     f'Ambiguous contract: {contract}, '
                     f'possibles are {possibles}')
             else:
+                c = detailsList[0].contract
                 if contract.exchange == 'SMART':
                     # overwriting 'SMART' exchange can create invalid contract
                     c.exchange = contract.exchange
