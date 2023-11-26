@@ -524,14 +524,15 @@ class ContractDetails:
         return self._parseSessions(self.liquidHours)
 
     def _parseSessions(self, s: str) -> List[TradingSession]:
-        tz = util.ZoneInfo(self.timeZoneId)
         sessions = []
-        for sess in s.split(';'):
-            if not sess or 'CLOSED' in sess:
-                continue
-            sessions.append(TradingSession(*[
-                dt.datetime.strptime(t, '%Y%m%d:%H%M').replace(tzinfo=tz)
-                for t in sess.split('-')]))
+        if self.timeZoneId:
+            tz = util.ZoneInfo(self.timeZoneId)
+            for sess in s.split(';'):
+                if not sess or 'CLOSED' in sess:
+                    continue
+                sessions.append(TradingSession(*[
+                    dt.datetime.strptime(t, '%Y%m%d:%H%M').replace(tzinfo=tz)
+                    for t in sess.split('-')]))
         return sessions
 
 
