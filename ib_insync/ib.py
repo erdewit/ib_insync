@@ -1857,6 +1857,7 @@ class IB:
                     f'possibles are {possibles}')
             else:
                 c = detailsList[0].contract
+                assert c
                 if contract.exchange == 'SMART':
                     # overwriting 'SMART' exchange can create invalid contract
                     c.exchange = contract.exchange
