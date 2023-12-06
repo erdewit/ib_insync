@@ -146,7 +146,7 @@ def tree(obj):
     elif isinstance(obj, dict):
         return {k: tree(v) for k, v in obj.items()}
     elif isnamedtupleinstance(obj):
-        return {f: tree(getattr(obj, f)) for f in obj._fields}
+        return {obj.__class__.__name__: {f: tree(getattr(obj, f)) for f in obj._fields}}
     elif isinstance(obj, (list, tuple, set)):
         return [tree(i) for i in obj]
     elif is_dataclass(obj):
