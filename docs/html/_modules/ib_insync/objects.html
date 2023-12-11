@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.objects &mdash; ib_insync 0.9.85 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/objects.html"/>
+  <title>ib_insync.objects &mdash; ib_insync 0.9.86 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/objects.html"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=b76974d2"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -24,14 +28,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> ib_insync
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ib_insync
           </a>
               <div class="version">
                 0.9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +68,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">ib_insync.objects</li>
       <li class="wy-breadcrumbs-aside">
@@ -86,7 +94,9 @@
 <span class="n">nan</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ScannerSubscription"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ScannerSubscription">[docs]</a><span class="nd">@dataclass</span>
+<div class="viewcode-block" id="ScannerSubscription">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.ScannerSubscription">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">ScannerSubscription</span><span class="p">:</span>
     <span class="n">numberOfRows</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
     <span class="n">instrument</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -111,7 +121,10 @@
     <span class="n">stockTypeFilter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
 
 
-<div class="viewcode-block" id="SoftDollarTier"><a class="viewcode-back" href="../../api.html#ib_insync.objects.SoftDollarTier">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="SoftDollarTier">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.SoftDollarTier">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">SoftDollarTier</span><span class="p">:</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">val</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -121,7 +134,10 @@
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">displayName</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Execution"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Execution">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="Execution">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.Execution">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">Execution</span><span class="p">:</span>
     <span class="n">execId</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">EPOCH</span><span class="p">)</span>
@@ -140,10 +156,14 @@
     <span class="n">evRule</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">evMultiplier</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">lastLiquidity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></div>
+    <span class="n">lastLiquidity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">pendingPriceRevision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="CommissionReport"><a class="viewcode-back" href="../../api.html#ib_insync.objects.CommissionReport">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="CommissionReport">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.CommissionReport">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">CommissionReport</span><span class="p">:</span>
     <span class="n">execId</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">commission</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -153,7 +173,10 @@
     <span class="n">yieldRedemptionDate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="ExecutionFilter"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ExecutionFilter">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="ExecutionFilter">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.ExecutionFilter">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">ExecutionFilter</span><span class="p">:</span>
     <span class="n">clientId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">acctCode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -164,7 +187,10 @@
     <span class="n">side</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
 
 
-<div class="viewcode-block" id="BarData"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarData">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="BarData">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.BarData">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">BarData</span><span class="p">:</span>
     <span class="n">date</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">date_</span><span class="p">,</span> <span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPOCH</span>
     <span class="nb">open</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -176,7 +202,10 @@
     <span class="n">barCount</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="RealTimeBar"><a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBar">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="RealTimeBar">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBar">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">RealTimeBar</span><span class="p">:</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">EPOCH</span>
     <span class="n">endTime</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
@@ -189,38 +218,56 @@
     <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="TickAttrib"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TickAttrib">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="TickAttrib">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.TickAttrib">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">TickAttrib</span><span class="p">:</span>
     <span class="n">canAutoExecute</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">pastLimit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">preOpen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="TickAttribBidAsk"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TickAttribBidAsk">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="TickAttribBidAsk">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.TickAttribBidAsk">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">TickAttribBidAsk</span><span class="p">:</span>
     <span class="n">bidPastLow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">askPastHigh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="TickAttribLast"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TickAttribLast">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="TickAttribLast">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.TickAttribLast">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">TickAttribLast</span><span class="p">:</span>
     <span class="n">pastLimit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">unreported</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="HistogramData"><a class="viewcode-back" href="../../api.html#ib_insync.objects.HistogramData">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="HistogramData">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.HistogramData">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">HistogramData</span><span class="p">:</span>
     <span class="n">price</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="NewsProvider"><a class="viewcode-back" href="../../api.html#ib_insync.objects.NewsProvider">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="NewsProvider">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.NewsProvider">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">NewsProvider</span><span class="p">:</span>
     <span class="n">code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
 
 
-<div class="viewcode-block" id="DepthMktDataDescription"><a class="viewcode-back" href="../../api.html#ib_insync.objects.DepthMktDataDescription">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="DepthMktDataDescription">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.DepthMktDataDescription">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">DepthMktDataDescription</span><span class="p">:</span>
     <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">secType</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -229,7 +276,10 @@
     <span class="n">aggGroup</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">UNSET_INTEGER</span></div>
 
 
-<div class="viewcode-block" id="PnL"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PnL">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="PnL">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.PnL">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">PnL</span><span class="p">:</span>
     <span class="n">account</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -238,7 +288,10 @@
     <span class="n">realizedPnL</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">nan</span></div>
 
 
-<div class="viewcode-block" id="TradeLogEntry"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TradeLogEntry">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="TradeLogEntry">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.TradeLogEntry">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">TradeLogEntry</span><span class="p">:</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -246,7 +299,10 @@
     <span class="n">errorCode</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="PnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PnLSingle">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="PnLSingle">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.PnLSingle">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">PnLSingle</span><span class="p">:</span>
     <span class="n">account</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -258,14 +314,20 @@
     <span class="n">value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">nan</span></div>
 
 
-<div class="viewcode-block" id="HistoricalSession"><a class="viewcode-back" href="../../api.html#ib_insync.objects.HistoricalSession">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="HistoricalSession">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.HistoricalSession">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">HistoricalSession</span><span class="p">:</span>
     <span class="n">startDateTime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">endDateTime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">refDate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
 
 
-<div class="viewcode-block" id="HistoricalSchedule"><a class="viewcode-back" href="../../api.html#ib_insync.objects.HistoricalSchedule">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="HistoricalSchedule">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.HistoricalSchedule">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">HistoricalSchedule</span><span class="p">:</span>
     <span class="n">startDateTime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">endDateTime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -273,7 +335,10 @@
     <span class="n">sessions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">HistoricalSession</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="WshEventData"><a class="viewcode-back" href="../../api.html#ib_insync.objects.WshEventData">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="WshEventData">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.WshEventData">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">WshEventData</span><span class="p">:</span>
     <span class="n">conId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">UNSET_INTEGER</span>
     <span class="nb">filter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -285,7 +350,10 @@
     <span class="n">totalLimit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">UNSET_INTEGER</span></div>
 
 
-<div class="viewcode-block" id="AccountValue"><a class="viewcode-back" href="../../api.html#ib_insync.objects.AccountValue">[docs]</a><span class="k">class</span> <span class="nc">AccountValue</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AccountValue">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.AccountValue">[docs]</a>
+<span class="k">class</span> <span class="nc">AccountValue</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">account</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">str</span>
@@ -293,20 +361,29 @@
     <span class="n">modelCode</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="TickData"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TickData">[docs]</a><span class="k">class</span> <span class="nc">TickData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TickData">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.TickData">[docs]</a>
+<span class="k">class</span> <span class="nc">TickData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">tickType</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">price</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">size</span><span class="p">:</span> <span class="nb">float</span></div>
 
 
-<div class="viewcode-block" id="HistoricalTick"><a class="viewcode-back" href="../../api.html#ib_insync.objects.HistoricalTick">[docs]</a><span class="k">class</span> <span class="nc">HistoricalTick</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HistoricalTick">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.HistoricalTick">[docs]</a>
+<span class="k">class</span> <span class="nc">HistoricalTick</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">price</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">size</span><span class="p">:</span> <span class="nb">float</span></div>
 
 
-<div class="viewcode-block" id="HistoricalTickBidAsk"><a class="viewcode-back" href="../../api.html#ib_insync.objects.HistoricalTickBidAsk">[docs]</a><span class="k">class</span> <span class="nc">HistoricalTickBidAsk</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HistoricalTickBidAsk">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.HistoricalTickBidAsk">[docs]</a>
+<span class="k">class</span> <span class="nc">HistoricalTickBidAsk</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">tickAttribBidAsk</span><span class="p">:</span> <span class="n">TickAttribBidAsk</span>
     <span class="n">priceBid</span><span class="p">:</span> <span class="nb">float</span>
@@ -315,7 +392,10 @@
     <span class="n">sizeAsk</span><span class="p">:</span> <span class="nb">float</span></div>
 
 
-<div class="viewcode-block" id="HistoricalTickLast"><a class="viewcode-back" href="../../api.html#ib_insync.objects.HistoricalTickLast">[docs]</a><span class="k">class</span> <span class="nc">HistoricalTickLast</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HistoricalTickLast">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.HistoricalTickLast">[docs]</a>
+<span class="k">class</span> <span class="nc">HistoricalTickLast</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">tickAttribLast</span><span class="p">:</span> <span class="n">TickAttribLast</span>
     <span class="n">price</span><span class="p">:</span> <span class="nb">float</span>
@@ -324,7 +404,10 @@
     <span class="n">specialConditions</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="TickByTickAllLast"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TickByTickAllLast">[docs]</a><span class="k">class</span> <span class="nc">TickByTickAllLast</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TickByTickAllLast">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.TickByTickAllLast">[docs]</a>
+<span class="k">class</span> <span class="nc">TickByTickAllLast</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">tickType</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">price</span><span class="p">:</span> <span class="nb">float</span>
@@ -334,7 +417,10 @@
     <span class="n">specialConditions</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="TickByTickBidAsk"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TickByTickBidAsk">[docs]</a><span class="k">class</span> <span class="nc">TickByTickBidAsk</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TickByTickBidAsk">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.TickByTickBidAsk">[docs]</a>
+<span class="k">class</span> <span class="nc">TickByTickBidAsk</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">bidPrice</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">askPrice</span><span class="p">:</span> <span class="nb">float</span>
@@ -343,12 +429,18 @@
     <span class="n">tickAttribBidAsk</span><span class="p">:</span> <span class="n">TickAttribBidAsk</span></div>
 
 
-<div class="viewcode-block" id="TickByTickMidPoint"><a class="viewcode-back" href="../../api.html#ib_insync.objects.TickByTickMidPoint">[docs]</a><span class="k">class</span> <span class="nc">TickByTickMidPoint</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TickByTickMidPoint">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.TickByTickMidPoint">[docs]</a>
+<span class="k">class</span> <span class="nc">TickByTickMidPoint</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">midPoint</span><span class="p">:</span> <span class="nb">float</span></div>
 
 
-<div class="viewcode-block" id="MktDepthData"><a class="viewcode-back" href="../../api.html#ib_insync.objects.MktDepthData">[docs]</a><span class="k">class</span> <span class="nc">MktDepthData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MktDepthData">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.MktDepthData">[docs]</a>
+<span class="k">class</span> <span class="nc">MktDepthData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">position</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">marketMaker</span><span class="p">:</span> <span class="nb">str</span>
@@ -358,18 +450,27 @@
     <span class="n">size</span><span class="p">:</span> <span class="nb">float</span></div>
 
 
-<div class="viewcode-block" id="DOMLevel"><a class="viewcode-back" href="../../api.html#ib_insync.objects.DOMLevel">[docs]</a><span class="k">class</span> <span class="nc">DOMLevel</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DOMLevel">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.DOMLevel">[docs]</a>
+<span class="k">class</span> <span class="nc">DOMLevel</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">price</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">size</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">marketMaker</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="PriceIncrement"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PriceIncrement">[docs]</a><span class="k">class</span> <span class="nc">PriceIncrement</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PriceIncrement">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.PriceIncrement">[docs]</a>
+<span class="k">class</span> <span class="nc">PriceIncrement</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">lowEdge</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">increment</span><span class="p">:</span> <span class="nb">float</span></div>
 
 
-<div class="viewcode-block" id="PortfolioItem"><a class="viewcode-back" href="../../api.html#ib_insync.objects.PortfolioItem">[docs]</a><span class="k">class</span> <span class="nc">PortfolioItem</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PortfolioItem">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.PortfolioItem">[docs]</a>
+<span class="k">class</span> <span class="nc">PortfolioItem</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span>
     <span class="n">position</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">marketPrice</span><span class="p">:</span> <span class="nb">float</span>
@@ -380,21 +481,30 @@
     <span class="n">account</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="Position"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Position">[docs]</a><span class="k">class</span> <span class="nc">Position</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Position">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.Position">[docs]</a>
+<span class="k">class</span> <span class="nc">Position</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">account</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span>
     <span class="n">position</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">avgCost</span><span class="p">:</span> <span class="nb">float</span></div>
 
 
-<div class="viewcode-block" id="Fill"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Fill">[docs]</a><span class="k">class</span> <span class="nc">Fill</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Fill">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.Fill">[docs]</a>
+<span class="k">class</span> <span class="nc">Fill</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span>
     <span class="n">execution</span><span class="p">:</span> <span class="n">Execution</span>
     <span class="n">commissionReport</span><span class="p">:</span> <span class="n">CommissionReport</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span></div>
 
 
-<div class="viewcode-block" id="OptionComputation"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OptionComputation">[docs]</a><span class="k">class</span> <span class="nc">OptionComputation</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="OptionComputation">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.OptionComputation">[docs]</a>
+<span class="k">class</span> <span class="nc">OptionComputation</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">tickAttrib</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">impliedVol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
     <span class="n">delta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
@@ -406,7 +516,10 @@
     <span class="n">undPrice</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="OptionChain"><a class="viewcode-back" href="../../api.html#ib_insync.objects.OptionChain">[docs]</a><span class="k">class</span> <span class="nc">OptionChain</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="OptionChain">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.OptionChain">[docs]</a>
+<span class="k">class</span> <span class="nc">OptionChain</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">underlyingConId</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">tradingClass</span><span class="p">:</span> <span class="nb">str</span>
@@ -415,26 +528,38 @@
     <span class="n">strikes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="Dividends"><a class="viewcode-back" href="../../api.html#ib_insync.objects.Dividends">[docs]</a><span class="k">class</span> <span class="nc">Dividends</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Dividends">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.Dividends">[docs]</a>
+<span class="k">class</span> <span class="nc">Dividends</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">past12Months</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
     <span class="n">next12Months</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
     <span class="n">nextDate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">date_</span><span class="p">]</span>
     <span class="n">nextAmount</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="NewsArticle"><a class="viewcode-back" href="../../api.html#ib_insync.objects.NewsArticle">[docs]</a><span class="k">class</span> <span class="nc">NewsArticle</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NewsArticle">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.NewsArticle">[docs]</a>
+<span class="k">class</span> <span class="nc">NewsArticle</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">articleType</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">articleText</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="HistoricalNews"><a class="viewcode-back" href="../../api.html#ib_insync.objects.HistoricalNews">[docs]</a><span class="k">class</span> <span class="nc">HistoricalNews</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HistoricalNews">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.HistoricalNews">[docs]</a>
+<span class="k">class</span> <span class="nc">HistoricalNews</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">providerCode</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">articleId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">headline</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="NewsTick"><a class="viewcode-back" href="../../api.html#ib_insync.objects.NewsTick">[docs]</a><span class="k">class</span> <span class="nc">NewsTick</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NewsTick">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.NewsTick">[docs]</a>
+<span class="k">class</span> <span class="nc">NewsTick</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">timeStamp</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">providerCode</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">articleId</span><span class="p">:</span> <span class="nb">str</span>
@@ -442,25 +567,37 @@
     <span class="n">extraData</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="NewsBulletin"><a class="viewcode-back" href="../../api.html#ib_insync.objects.NewsBulletin">[docs]</a><span class="k">class</span> <span class="nc">NewsBulletin</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NewsBulletin">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.NewsBulletin">[docs]</a>
+<span class="k">class</span> <span class="nc">NewsBulletin</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">msgId</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">msgType</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">origExchange</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="FamilyCode"><a class="viewcode-back" href="../../api.html#ib_insync.objects.FamilyCode">[docs]</a><span class="k">class</span> <span class="nc">FamilyCode</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FamilyCode">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.FamilyCode">[docs]</a>
+<span class="k">class</span> <span class="nc">FamilyCode</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">accountID</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">familyCodeStr</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="SmartComponent"><a class="viewcode-back" href="../../api.html#ib_insync.objects.SmartComponent">[docs]</a><span class="k">class</span> <span class="nc">SmartComponent</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SmartComponent">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.SmartComponent">[docs]</a>
+<span class="k">class</span> <span class="nc">SmartComponent</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">bitNumber</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">exchange</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">exchangeLetter</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="ConnectionStats"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ConnectionStats">[docs]</a><span class="k">class</span> <span class="nc">ConnectionStats</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ConnectionStats">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.ConnectionStats">[docs]</a>
+<span class="k">class</span> <span class="nc">ConnectionStats</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">startTime</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">numBytesRecv</span><span class="p">:</span> <span class="nb">int</span>
@@ -469,7 +606,10 @@
     <span class="n">numMsgSent</span><span class="p">:</span> <span class="nb">int</span></div>
 
 
-<div class="viewcode-block" id="BarDataList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.BarDataList">[docs]</a><span class="k">class</span> <span class="nc">BarDataList</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">BarData</span><span class="p">]):</span>
+
+<div class="viewcode-block" id="BarDataList">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.BarDataList">[docs]</a>
+<span class="k">class</span> <span class="nc">BarDataList</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">BarData</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List of :class:`.BarData` that also stores all request parameters.</span>
 
@@ -501,7 +641,10 @@
         <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="RealTimeBarList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBarList">[docs]</a><span class="k">class</span> <span class="nc">RealTimeBarList</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">RealTimeBar</span><span class="p">]):</span>
+
+<div class="viewcode-block" id="RealTimeBarList">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.RealTimeBarList">[docs]</a>
+<span class="k">class</span> <span class="nc">RealTimeBarList</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">RealTimeBar</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List of :class:`.RealTimeBar` that also stores all request parameters.</span>
 
@@ -529,7 +672,10 @@
         <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ScanDataList"><a class="viewcode-back" href="../../api.html#ib_insync.objects.ScanDataList">[docs]</a><span class="k">class</span> <span class="nc">ScanDataList</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">ScanData</span><span class="p">]):</span>
+
+<div class="viewcode-block" id="ScanDataList">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.ScanDataList">[docs]</a>
+<span class="k">class</span> <span class="nc">ScanDataList</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">ScanData</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List of :class:`.ScanData` that also stores all request parameters.</span>
 
@@ -553,7 +699,10 @@
         <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="DynamicObject"><a class="viewcode-back" href="../../api.html#ib_insync.objects.DynamicObject">[docs]</a><span class="k">class</span> <span class="nc">DynamicObject</span><span class="p">:</span>
+
+<div class="viewcode-block" id="DynamicObject">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.DynamicObject">[docs]</a>
+<span class="k">class</span> <span class="nc">DynamicObject</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -564,13 +713,17 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">clsName</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s1">)&#39;</span></div>
 
 
-<div class="viewcode-block" id="FundamentalRatios"><a class="viewcode-back" href="../../api.html#ib_insync.objects.FundamentalRatios">[docs]</a><span class="k">class</span> <span class="nc">FundamentalRatios</span><span class="p">(</span><span class="n">DynamicObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FundamentalRatios">
+<a class="viewcode-back" href="../../api.html#ib_insync.objects.FundamentalRatios">[docs]</a>
+<span class="k">class</span> <span class="nc">FundamentalRatios</span><span class="p">(</span><span class="n">DynamicObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    See:</span>
 <span class="sd">    https://web.archive.org/web/20200725010343/https://interactivebrokers.github.io/tws-api/fundamental_ratios_tags.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">pass</span></div>
+
 </pre></div>
 
            </div>

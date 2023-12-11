@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.ibcontroller &mdash; ib_insync 0.9.81 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/ibcontroller.html"/>
+  <title>ib_insync.ibcontroller &mdash; ib_insync 0.9.86 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/ibcontroller.html"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=b76974d2"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -24,14 +28,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> ib_insync
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ib_insync
           </a>
               <div class="version">
                 0.9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,9 +68,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>ib_insync.ibcontroller</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">ib_insync.ibcontroller</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -88,9 +96,11 @@
 <span class="kn">from</span> <span class="nn">ib_insync.ib</span> <span class="kn">import</span> <span class="n">IB</span>
 
 
-<div class="viewcode-block" id="IBC"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC">[docs]</a><span class="nd">@dataclass</span>
+<div class="viewcode-block" id="IBC">
+<a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">IBC</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Programmatic control over starting and stopping TWS/Gateway</span>
 <span class="sd">    using IBC (https://github.com/IbcAlpha/IBC).</span>
 
@@ -186,15 +196,23 @@
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_exc</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
 
-<div class="viewcode-block" id="IBC.start"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Launch TWS/IBG.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="IBC.start">
+<a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.start">[docs]</a>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Launch TWS/IBG.&quot;&quot;&quot;</span>
         <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startAsync</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="IBC.terminate"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.terminate">[docs]</a>    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Terminate TWS/IBG.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="IBC.terminate">
+<a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.terminate">[docs]</a>
+    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Terminate TWS/IBG.&quot;&quot;&quot;</span>
         <span class="n">util</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminateAsync</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="IBC.startAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.startAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">startAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="IBC.startAsync">
+<a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.startAsync">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">startAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting&#39;</span><span class="p">)</span>
@@ -235,7 +253,10 @@
             <span class="o">*</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">monitorAsync</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="IBC.terminateAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.terminateAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">terminateAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="IBC.terminateAsync">
+<a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.terminateAsync">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">terminateAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Terminating&#39;</span><span class="p">)</span>
@@ -252,17 +273,24 @@
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="IBC.monitorAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.monitorAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">monitorAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="IBC.monitorAsync">
+<a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.IBC.monitorAsync">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">monitorAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
                 <span class="k">break</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">IBC</span><span class="o">.</span><span class="n">IbcLogLevel</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">IBC</span><span class="o">.</span><span class="n">IbcLogLevel</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span></div>
+</div>
 
 
-<div class="viewcode-block" id="Watchdog"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="Watchdog">
+<a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">Watchdog</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Start, connect and watch over the TWS or gateway app and try to keep it</span>
 <span class="sd">    up and running. It is intended to be used in an event-driven</span>
 <span class="sd">    application that properly initializes itself upon (re-)connect.</span>
@@ -333,6 +361,7 @@
     <span class="n">retryDelay</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">readonly</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">account</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">raiseSyncErrors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">probeContract</span><span class="p">:</span> <span class="n">Contract</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;EURUSD&#39;</span><span class="p">)</span>
     <span class="n">probeTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">4</span>
 
@@ -352,19 +381,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_runner</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.Watchdog&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Watchdog.start"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Watchdog.start">
+<a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog.start">[docs]</a>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">startingEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_runner</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runAsync</span><span class="p">())</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runner</span></div>
 
-<div class="viewcode-block" id="Watchdog.stop"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Watchdog.stop">
+<a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog.stop">[docs]</a>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Stopping&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stoppingEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_runner</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Watchdog.runAsync"><a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog.runAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">runAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Watchdog.runAsync">
+<a class="viewcode-back" href="../../api.html#ib_insync.ibcontroller.Watchdog.runAsync">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">runAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="k">def</span> <span class="nf">onTimeout</span><span class="p">(</span><span class="n">idlePeriod</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">waiter</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
@@ -384,7 +421,7 @@
                 <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">appStartupTime</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectTimeout</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">raiseSyncErrors</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">startedEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">appTimeout</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ib</span><span class="o">.</span><span class="n">timeoutEvent</span> <span class="o">+=</span> <span class="n">onTimeout</span>
@@ -421,7 +458,9 @@
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">terminateAsync</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stoppedEvent</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runner</span><span class="p">:</span>
-                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">retryDelay</span><span class="p">)</span></div></div>
+                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">retryDelay</span><span class="p">)</span></div>
+</div>
+
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

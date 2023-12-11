@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ib_insync.order &mdash; ib_insync 0.9.86 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/order.html"/>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/order.html"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=b76974d2"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -24,14 +28,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> ib_insync
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ib_insync
           </a>
               <div class="version">
                 0.9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +68,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">ib_insync.order</li>
       <li class="wy-breadcrumbs-aside">
@@ -75,7 +83,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Order types used by Interactive Brokers.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">FrozenSet</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span>
 
 <span class="kn">from</span> <span class="nn">eventkit</span> <span class="kn">import</span> <span class="n">Event</span>
 
@@ -84,7 +92,9 @@
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">UNSET_DOUBLE</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span><span class="p">,</span> <span class="n">dataclassNonDefaults</span>
 
 
-<div class="viewcode-block" id="Order"><a class="viewcode-back" href="../../api.html#ib_insync.order.Order">[docs]</a><span class="nd">@dataclass</span>
+<div class="viewcode-block" id="Order">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.Order">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">Order</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Order for trading contracts.</span>
@@ -252,7 +262,10 @@
         <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="LimitOrder"><a class="viewcode-back" href="../../api.html#ib_insync.order.LimitOrder">[docs]</a><span class="k">class</span> <span class="nc">LimitOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>
+
+<div class="viewcode-block" id="LimitOrder">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.LimitOrder">[docs]</a>
+<span class="k">class</span> <span class="nc">LimitOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">totalQuantity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">lmtPrice</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -261,7 +274,10 @@
             <span class="n">totalQuantity</span><span class="o">=</span><span class="n">totalQuantity</span><span class="p">,</span> <span class="n">lmtPrice</span><span class="o">=</span><span class="n">lmtPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MarketOrder"><a class="viewcode-back" href="../../api.html#ib_insync.order.MarketOrder">[docs]</a><span class="k">class</span> <span class="nc">MarketOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MarketOrder">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.MarketOrder">[docs]</a>
+<span class="k">class</span> <span class="nc">MarketOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">totalQuantity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">Order</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -269,7 +285,10 @@
             <span class="n">totalQuantity</span><span class="o">=</span><span class="n">totalQuantity</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="StopOrder"><a class="viewcode-back" href="../../api.html#ib_insync.order.StopOrder">[docs]</a><span class="k">class</span> <span class="nc">StopOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>
+
+<div class="viewcode-block" id="StopOrder">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.StopOrder">[docs]</a>
+<span class="k">class</span> <span class="nc">StopOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">totalQuantity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">stopPrice</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -278,7 +297,10 @@
             <span class="n">totalQuantity</span><span class="o">=</span><span class="n">totalQuantity</span><span class="p">,</span> <span class="n">auxPrice</span><span class="o">=</span><span class="n">stopPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="StopLimitOrder"><a class="viewcode-back" href="../../api.html#ib_insync.order.StopLimitOrder">[docs]</a><span class="k">class</span> <span class="nc">StopLimitOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>
+
+<div class="viewcode-block" id="StopLimitOrder">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.StopLimitOrder">[docs]</a>
+<span class="k">class</span> <span class="nc">StopLimitOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">totalQuantity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">lmtPrice</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                  <span class="n">stopPrice</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -288,7 +310,10 @@
             <span class="n">auxPrice</span><span class="o">=</span><span class="n">stopPrice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="OrderStatus"><a class="viewcode-back" href="../../api.html#ib_insync.order.OrderStatus">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="OrderStatus">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.OrderStatus">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">OrderStatus</span><span class="p">:</span>
     <span class="n">orderId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -312,12 +337,16 @@
     <span class="n">Filled</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Filled&#39;</span>
     <span class="n">Inactive</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Inactive&#39;</span>
 
-    <span class="n">DoneStates</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Filled&#39;</span><span class="p">,</span> <span class="s1">&#39;Cancelled&#39;</span><span class="p">,</span> <span class="s1">&#39;ApiCancelled&#39;</span><span class="p">}</span>
-    <span class="n">ActiveStates</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;PendingSubmit&#39;</span><span class="p">,</span> <span class="s1">&#39;ApiPending&#39;</span><span class="p">,</span> <span class="s1">&#39;PreSubmitted&#39;</span><span class="p">,</span> <span class="s1">&#39;Submitted&#39;</span><span class="p">}</span></div>
+    <span class="n">DoneStates</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">&#39;Filled&#39;</span><span class="p">,</span> <span class="s1">&#39;Cancelled&#39;</span><span class="p">,</span> <span class="s1">&#39;ApiCancelled&#39;</span><span class="p">])</span>
+    <span class="n">ActiveStates</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">&#39;PendingSubmit&#39;</span><span class="p">,</span> <span class="s1">&#39;ApiPending&#39;</span><span class="p">,</span> <span class="s1">&#39;PreSubmitted&#39;</span><span class="p">,</span> <span class="s1">&#39;Submitted&#39;</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="OrderState"><a class="viewcode-back" href="../../api.html#ib_insync.order.OrderState">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="OrderState">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.OrderState">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">OrderState</span><span class="p">:</span>
     <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">initMarginBefore</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -338,12 +367,18 @@
     <span class="n">completedStatus</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
 
 
-<div class="viewcode-block" id="OrderComboLeg"><a class="viewcode-back" href="../../api.html#ib_insync.order.OrderComboLeg">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="OrderComboLeg">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.OrderComboLeg">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">OrderComboLeg</span><span class="p">:</span>
     <span class="n">price</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">UNSET_DOUBLE</span></div>
 
 
-<div class="viewcode-block" id="Trade"><a class="viewcode-back" href="../../api.html#ib_insync.order.Trade">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="Trade">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.Trade">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">Trade</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Trade keeps track of an order, its status and all its fills.</span>
@@ -359,17 +394,17 @@
 <span class="sd">        * ``cancelledEvent`` (trade: :class:`.Trade`)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">events</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;statusEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;modifyEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;fillEvent&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;commissionReportEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;filledEvent&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;cancelEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;cancelledEvent&#39;</span><span class="p">)</span>
-
     <span class="n">contract</span><span class="p">:</span> <span class="n">Contract</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Contract</span><span class="p">)</span>
     <span class="n">order</span><span class="p">:</span> <span class="n">Order</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Order</span><span class="p">)</span>
     <span class="n">orderStatus</span><span class="p">:</span> <span class="s1">&#39;OrderStatus&#39;</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">OrderStatus</span><span class="p">)</span>
     <span class="n">fills</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Fill</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">log</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TradeLogEntry</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">advancedError</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="n">events</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;statusEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;modifyEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;fillEvent&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;commissionReportEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;filledEvent&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;cancelEvent&#39;</span><span class="p">,</span> <span class="s1">&#39;cancelledEvent&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">statusEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;statusEvent&#39;</span><span class="p">)</span>
@@ -380,15 +415,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cancelEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;cancelEvent&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cancelledEvent</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="s1">&#39;cancelledEvent&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Trade.isActive"><a class="viewcode-back" href="../../api.html#ib_insync.order.Trade.isActive">[docs]</a>    <span class="k">def</span> <span class="nf">isActive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="Trade.isActive">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.Trade.isActive">[docs]</a>
+    <span class="k">def</span> <span class="nf">isActive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;True if eligible for execution, false otherwise.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">ActiveStates</span></div>
 
-<div class="viewcode-block" id="Trade.isDone"><a class="viewcode-back" href="../../api.html#ib_insync.order.Trade.isDone">[docs]</a>    <span class="k">def</span> <span class="nf">isDone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Trade.isDone">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.Trade.isDone">[docs]</a>
+    <span class="k">def</span> <span class="nf">isDone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;True if completely filled or cancelled, false otherwise.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">DoneStates</span></div>
 
-<div class="viewcode-block" id="Trade.filled"><a class="viewcode-back" href="../../api.html#ib_insync.order.Trade.filled">[docs]</a>    <span class="k">def</span> <span class="nf">filled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Trade.filled">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.Trade.filled">[docs]</a>
+    <span class="k">def</span> <span class="nf">filled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of shares filled.&quot;&quot;&quot;</span>
         <span class="n">fills</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fills</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">secType</span> <span class="o">==</span> <span class="s1">&#39;BAG&#39;</span><span class="p">:</span>
@@ -396,21 +439,33 @@
             <span class="n">fills</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fills</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">contract</span><span class="o">.</span><span class="n">secType</span> <span class="o">==</span> <span class="s1">&#39;BAG&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">execution</span><span class="o">.</span><span class="n">shares</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fills</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Trade.remaining"><a class="viewcode-back" href="../../api.html#ib_insync.order.Trade.remaining">[docs]</a>    <span class="k">def</span> <span class="nf">remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Trade.remaining">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.Trade.remaining">[docs]</a>
+    <span class="k">def</span> <span class="nf">remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of shares remaining to be filled.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">totalQuantity</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">filled</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">totalQuantity</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">filled</span><span class="p">()</span></div>
+</div>
 
 
-<div class="viewcode-block" id="BracketOrder"><a class="viewcode-back" href="../../api.html#ib_insync.order.BracketOrder">[docs]</a><span class="k">class</span> <span class="nc">BracketOrder</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+
+<div class="viewcode-block" id="BracketOrder">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.BracketOrder">[docs]</a>
+<span class="k">class</span> <span class="nc">BracketOrder</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="n">parent</span><span class="p">:</span> <span class="n">Order</span>
     <span class="n">takeProfit</span><span class="p">:</span> <span class="n">Order</span>
     <span class="n">stopLoss</span><span class="p">:</span> <span class="n">Order</span></div>
 
 
-<div class="viewcode-block" id="OrderCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.OrderCondition">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="OrderCondition">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.OrderCondition">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">OrderCondition</span><span class="p">:</span>
 
-<div class="viewcode-block" id="OrderCondition.createClass"><a class="viewcode-back" href="../../api.html#ib_insync.order.OrderCondition.createClass">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="OrderCondition.createClass">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.OrderCondition.createClass">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">createClass</span><span class="p">(</span><span class="n">condType</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
             <span class="mi">1</span><span class="p">:</span> <span class="n">PriceCondition</span><span class="p">,</span>
@@ -421,16 +476,26 @@
             <span class="mi">7</span><span class="p">:</span> <span class="n">PercentChangeCondition</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">d</span><span class="p">[</span><span class="n">condType</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="OrderCondition.And"><a class="viewcode-back" href="../../api.html#ib_insync.order.OrderCondition.And">[docs]</a>    <span class="k">def</span> <span class="nf">And</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="OrderCondition.And">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.OrderCondition.And">[docs]</a>
+    <span class="k">def</span> <span class="nf">And</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conjunction</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="OrderCondition.Or"><a class="viewcode-back" href="../../api.html#ib_insync.order.OrderCondition.Or">[docs]</a>    <span class="k">def</span> <span class="nf">Or</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="OrderCondition.Or">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.OrderCondition.Or">[docs]</a>
+    <span class="k">def</span> <span class="nf">Or</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conjunction</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
 
 
-<div class="viewcode-block" id="PriceCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.PriceCondition">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="PriceCondition">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.PriceCondition">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">PriceCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
     <span class="n">condType</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">conjunction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
@@ -441,7 +506,10 @@
     <span class="n">triggerMethod</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="TimeCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.TimeCondition">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="TimeCondition">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.TimeCondition">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">TimeCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
     <span class="n">condType</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">conjunction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
@@ -449,7 +517,10 @@
     <span class="n">time</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
 
 
-<div class="viewcode-block" id="MarginCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.MarginCondition">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="MarginCondition">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.MarginCondition">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">MarginCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
     <span class="n">condType</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span>
     <span class="n">conjunction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
@@ -457,7 +528,10 @@
     <span class="n">percent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="ExecutionCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.ExecutionCondition">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="ExecutionCondition">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.ExecutionCondition">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">ExecutionCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
     <span class="n">condType</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
     <span class="n">conjunction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
@@ -466,7 +540,10 @@
     <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
 
 
-<div class="viewcode-block" id="VolumeCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.VolumeCondition">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="VolumeCondition">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.VolumeCondition">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">VolumeCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
     <span class="n">condType</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span>
     <span class="n">conjunction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
@@ -476,7 +553,10 @@
     <span class="n">exch</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
 
 
-<div class="viewcode-block" id="PercentChangeCondition"><a class="viewcode-back" href="../../api.html#ib_insync.order.PercentChangeCondition">[docs]</a><span class="nd">@dataclass</span>
+
+<div class="viewcode-block" id="PercentChangeCondition">
+<a class="viewcode-back" href="../../api.html#ib_insync.order.PercentChangeCondition">[docs]</a>
+<span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">PercentChangeCondition</span><span class="p">(</span><span class="n">OrderCondition</span><span class="p">):</span>
     <span class="n">condType</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span>
     <span class="n">conjunction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
@@ -484,6 +564,7 @@
     <span class="n">changePercent</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">conId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">exch</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
+
 </pre></div>
 
            </div>

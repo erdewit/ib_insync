@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ib_insync.client &mdash; ib_insync 0.9.86 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/client.html"/>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/client.html"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=b76974d2"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -24,14 +28,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> ib_insync
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ib_insync
           </a>
               <div class="version">
                 0.9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +68,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">ib_insync.client</li>
       <li class="wy-breadcrumbs-aside">
@@ -92,7 +100,9 @@
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">UNSET_DOUBLE</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span><span class="p">,</span> <span class="n">dataclassAsTuple</span><span class="p">,</span> <span class="n">getLoop</span><span class="p">,</span> <span class="n">run</span>
 
 
-<div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">:</span>
+<div class="viewcode-block" id="Client">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client">[docs]</a>
+<span class="k">class</span> <span class="nc">Client</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Replacement for ``ibapi.client.EClient`` that uses asyncio.</span>
 
@@ -159,7 +169,7 @@
     <span class="n">RequestsInterval</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="n">MinClientVersion</span> <span class="o">=</span> <span class="mi">157</span>
-    <span class="n">MaxClientVersion</span> <span class="o">=</span> <span class="mi">177</span>
+    <span class="n">MaxClientVersion</span> <span class="o">=</span> <span class="mi">178</span>
 
     <span class="p">(</span><span class="n">DISCONNECTED</span><span class="p">,</span> <span class="n">CONNECTING</span><span class="p">,</span> <span class="n">CONNECTED</span><span class="p">)</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
@@ -189,7 +199,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">connectOptions</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Client.reset"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Client.reset">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reset">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">=</span> <span class="n">Client</span><span class="o">.</span><span class="n">DISCONNECTED</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_apiReady</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span> <span class="o">=</span> <span class="mi">0</span>
@@ -204,21 +216,36 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_msgQ</span><span class="p">:</span> <span class="n">Deque</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timeQ</span><span class="p">:</span> <span class="n">Deque</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Client.serverVersion"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.serverVersion">[docs]</a>    <span class="k">def</span> <span class="nf">serverVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Client.serverVersion">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.serverVersion">[docs]</a>
+    <span class="k">def</span> <span class="nf">serverVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serverVersion</span></div>
 
-<div class="viewcode-block" id="Client.run"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.run">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">loop</span> <span class="o">=</span> <span class="n">getLoop</span><span class="p">()</span>
         <span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Client.isConnected"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.isConnected">[docs]</a>    <span class="k">def</span> <span class="nf">isConnected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.isConnected">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.isConnected">[docs]</a>
+    <span class="k">def</span> <span class="nf">isConnected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">==</span> <span class="n">Client</span><span class="o">.</span><span class="n">CONNECTED</span></div>
 
-<div class="viewcode-block" id="Client.isReady"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.isReady">[docs]</a>    <span class="k">def</span> <span class="nf">isReady</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Client.isReady">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.isReady">[docs]</a>
+    <span class="k">def</span> <span class="nf">isReady</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Is the API connection up and running?&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apiReady</span></div>
 
-<div class="viewcode-block" id="Client.connectionStats"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connectionStats">[docs]</a>    <span class="k">def</span> <span class="nf">connectionStats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConnectionStats</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Client.connectionStats">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connectionStats">[docs]</a>
+    <span class="k">def</span> <span class="nf">connectionStats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConnectionStats</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get statistics about the connection.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s1">&#39;Not connected&#39;</span><span class="p">)</span>
@@ -228,7 +255,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_numBytesRecv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">numBytesSent</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_numMsgRecv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">numMsgSent</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.getReqId"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.getReqId">[docs]</a>    <span class="k">def</span> <span class="nf">getReqId</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Client.getReqId">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.getReqId">[docs]</a>
+    <span class="k">def</span> <span class="nf">getReqId</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get new request ID.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s1">&#39;Not connected&#39;</span><span class="p">)</span>
@@ -236,17 +266,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">newId</span></div>
 
-<div class="viewcode-block" id="Client.updateReqId"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.updateReqId">[docs]</a>    <span class="k">def</span> <span class="nf">updateReqId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minReqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.updateReqId">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.updateReqId">[docs]</a>
+    <span class="k">def</span> <span class="nf">updateReqId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minReqId</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the next reqId to be at least ``minReqId``.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reqIdSeq</span><span class="p">,</span> <span class="n">minReqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.getAccounts"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.getAccounts">[docs]</a>    <span class="k">def</span> <span class="nf">getAccounts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+
+<div class="viewcode-block" id="Client.getAccounts">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.getAccounts">[docs]</a>
+    <span class="k">def</span> <span class="nf">getAccounts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the list of account names that are under management.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s1">&#39;Not connected&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accounts</span></div>
 
-<div class="viewcode-block" id="Client.setConnectOptions"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.setConnectOptions">[docs]</a>    <span class="k">def</span> <span class="nf">setConnectOptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connectOptions</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.setConnectOptions">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.setConnectOptions">[docs]</a>
+    <span class="k">def</span> <span class="nf">setConnectOptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connectOptions</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set additional connect options.</span>
 
@@ -256,7 +295,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connectOptions</span> <span class="o">=</span> <span class="n">connectOptions</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Client.connect"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.connect">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connect">[docs]</a>
+    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">clientId</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -273,7 +315,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectAsync</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Client.connectAsync"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connectAsync">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">connectAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.connectAsync">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.connectAsync">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">connectAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientId</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;Connecting to </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1"> with clientId </span><span class="si">{</span><span class="n">clientId</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
@@ -299,14 +344,20 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Make sure API port on TWS/IBG is open&#39;</span><span class="p">)</span>
             <span class="k">raise</span></div>
 
-<div class="viewcode-block" id="Client.disconnect"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.disconnect">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.disconnect">[docs]</a>
+    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect from IB connection.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Disconnecting&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connState</span> <span class="o">=</span> <span class="n">Client</span><span class="o">.</span><span class="n">DISCONNECTED</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Client.send"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">,</span> <span class="n">makeEmpty</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.send">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.send">[docs]</a>
+    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">,</span> <span class="n">makeEmpty</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize and send the given fields using the IB socket protocol.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isConnected</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="s1">&#39;Not connected&#39;</span><span class="p">)</span>
@@ -342,7 +393,10 @@
             <span class="n">msg</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sendMsg</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="Client.sendMsg"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.sendMsg">[docs]</a>    <span class="k">def</span> <span class="nf">sendMsg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.sendMsg">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.sendMsg">[docs]</a>
+    <span class="k">def</span> <span class="nf">sendMsg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">loop</span> <span class="o">=</span> <span class="n">getLoop</span><span class="p">()</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeQ</span>
@@ -370,6 +424,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_isThrottling</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">throttleEnd</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Stopped to throttle requests&#39;</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="c1"># prefix a message with its length</span>
@@ -457,7 +512,9 @@
     <span class="c1"># client request methods</span>
     <span class="c1"># the message type id is sent first, often followed by a version number</span>
 
-<div class="viewcode-block" id="Client.reqMktData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMktData">[docs]</a>    <span class="k">def</span> <span class="nf">reqMktData</span><span class="p">(</span>
+<div class="viewcode-block" id="Client.reqMktData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMktData">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqMktData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">genericTickList</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">,</span>
             <span class="n">regulatorySnapshot</span><span class="p">,</span> <span class="n">mktDataOptions</span><span class="p">):</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">]</span>
@@ -478,10 +535,16 @@
             <span class="n">genericTickList</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">,</span> <span class="n">regulatorySnapshot</span><span class="p">,</span> <span class="n">mktDataOptions</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelMktData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelMktData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelMktData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelMktData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelMktData">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelMktData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.placeOrder"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.placeOrder">[docs]</a>    <span class="k">def</span> <span class="nf">placeOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.placeOrder">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.placeOrder">[docs]</a>
+    <span class="k">def</span> <span class="nf">placeOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
         <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
             <span class="mi">3</span><span class="p">,</span> <span class="n">orderId</span><span class="p">,</span>
@@ -695,19 +758,31 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelOrder"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelOrder">[docs]</a>    <span class="k">def</span> <span class="nf">cancelOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderId</span><span class="p">,</span> <span class="n">manualCancelOrderTime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelOrder">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelOrder">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderId</span><span class="p">,</span> <span class="n">manualCancelOrderTime</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">orderId</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">169</span><span class="p">:</span>
             <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">manualCancelOrderTime</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqOpenOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqOpenOrders">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqOpenOrders">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqAccountUpdates"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqAccountUpdates">[docs]</a>    <span class="k">def</span> <span class="nf">reqAccountUpdates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subscribe</span><span class="p">,</span> <span class="n">acctCode</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqAccountUpdates">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqAccountUpdates">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqAccountUpdates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subscribe</span><span class="p">,</span> <span class="n">acctCode</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">subscribe</span><span class="p">,</span> <span class="n">acctCode</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqExecutions"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqExecutions">[docs]</a>    <span class="k">def</span> <span class="nf">reqExecutions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">execFilter</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqExecutions">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqExecutions">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqExecutions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">execFilter</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span>
             <span class="n">execFilter</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span>
@@ -718,10 +793,16 @@
             <span class="n">execFilter</span><span class="o">.</span><span class="n">exchange</span><span class="p">,</span>
             <span class="n">execFilter</span><span class="o">.</span><span class="n">side</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqIds"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqIds">[docs]</a>    <span class="k">def</span> <span class="nf">reqIds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numIds</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqIds">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqIds">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqIds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numIds</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">numIds</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqContractDetails"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqContractDetails">[docs]</a>    <span class="k">def</span> <span class="nf">reqContractDetails</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqContractDetails">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqContractDetails">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqContractDetails</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">):</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
             <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span>
             <span class="n">contract</span><span class="p">,</span>
@@ -732,7 +813,10 @@
             <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">contract</span><span class="o">.</span><span class="n">issuerId</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqMktDepth"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMktDepth">[docs]</a>    <span class="k">def</span> <span class="nf">reqMktDepth</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.reqMktDepth">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMktDepth">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqMktDepth</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">numRows</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="p">,</span> <span class="n">mktDepthOptions</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span>
@@ -752,34 +836,64 @@
             <span class="n">isSmartDepth</span><span class="p">,</span>
             <span class="n">mktDepthOptions</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelMktDepth"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelMktDepth">[docs]</a>    <span class="k">def</span> <span class="nf">cancelMktDepth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelMktDepth">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelMktDepth">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelMktDepth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">isSmartDepth</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqNewsBulletins"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqNewsBulletins">[docs]</a>    <span class="k">def</span> <span class="nf">reqNewsBulletins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allMsgs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqNewsBulletins">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqNewsBulletins">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqNewsBulletins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allMsgs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">allMsgs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelNewsBulletins"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelNewsBulletins">[docs]</a>    <span class="k">def</span> <span class="nf">cancelNewsBulletins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelNewsBulletins">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelNewsBulletins">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelNewsBulletins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.setServerLogLevel"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.setServerLogLevel">[docs]</a>    <span class="k">def</span> <span class="nf">setServerLogLevel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logLevel</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.setServerLogLevel">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.setServerLogLevel">[docs]</a>
+    <span class="k">def</span> <span class="nf">setServerLogLevel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logLevel</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">logLevel</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqAutoOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqAutoOpenOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqAutoOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bAutoBind</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqAutoOpenOrders">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqAutoOpenOrders">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqAutoOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bAutoBind</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bAutoBind</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqAllOpenOrders"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqAllOpenOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqAllOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqAllOpenOrders">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqAllOpenOrders">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqAllOpenOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqManagedAccts"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqManagedAccts">[docs]</a>    <span class="k">def</span> <span class="nf">reqManagedAccts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqManagedAccts">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqManagedAccts">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqManagedAccts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.requestFA"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.requestFA">[docs]</a>    <span class="k">def</span> <span class="nf">requestFA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">faData</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.requestFA">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.requestFA">[docs]</a>
+    <span class="k">def</span> <span class="nf">requestFA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">faData</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">faData</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.replaceFA"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.replaceFA">[docs]</a>    <span class="k">def</span> <span class="nf">replaceFA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">faData</span><span class="p">,</span> <span class="n">cxml</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.replaceFA">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.replaceFA">[docs]</a>
+    <span class="k">def</span> <span class="nf">replaceFA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">faData</span><span class="p">,</span> <span class="n">cxml</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">faData</span><span class="p">,</span> <span class="n">cxml</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqHistoricalData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqHistoricalData">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistoricalData</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.reqHistoricalData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqHistoricalData">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqHistoricalData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">,</span> <span class="n">durationStr</span><span class="p">,</span> <span class="n">barSizeSetting</span><span class="p">,</span>
             <span class="n">whatToShow</span><span class="p">,</span> <span class="n">useRTH</span><span class="p">,</span> <span class="n">formatDate</span><span class="p">,</span> <span class="n">keepUpToDate</span><span class="p">,</span> <span class="n">chartOptions</span><span class="p">):</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
@@ -796,7 +910,10 @@
         <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">keepUpToDate</span><span class="p">,</span> <span class="n">chartOptions</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.exerciseOptions"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.exerciseOptions">[docs]</a>    <span class="k">def</span> <span class="nf">exerciseOptions</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.exerciseOptions">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.exerciseOptions">[docs]</a>
+    <span class="k">def</span> <span class="nf">exerciseOptions</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">exerciseAction</span><span class="p">,</span>
             <span class="n">exerciseQuantity</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">override</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
@@ -814,7 +931,10 @@
             <span class="n">contract</span><span class="o">.</span><span class="n">tradingClass</span><span class="p">,</span>
             <span class="n">exerciseAction</span><span class="p">,</span> <span class="n">exerciseQuantity</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">override</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqScannerSubscription"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqScannerSubscription">[docs]</a>    <span class="k">def</span> <span class="nf">reqScannerSubscription</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.reqScannerSubscription">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqScannerSubscription">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqScannerSubscription</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">subscription</span><span class="p">,</span> <span class="n">scannerSubscriptionOptions</span><span class="p">,</span>
             <span class="n">scannerSubscriptionFilterOptions</span><span class="p">):</span>
         <span class="n">sub</span> <span class="o">=</span> <span class="n">subscription</span>
@@ -844,29 +964,50 @@
             <span class="n">scannerSubscriptionFilterOptions</span><span class="p">,</span>
             <span class="n">scannerSubscriptionOptions</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelScannerSubscription"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelScannerSubscription">[docs]</a>    <span class="k">def</span> <span class="nf">cancelScannerSubscription</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelScannerSubscription">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelScannerSubscription">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelScannerSubscription</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqScannerParameters"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqScannerParameters">[docs]</a>    <span class="k">def</span> <span class="nf">reqScannerParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqScannerParameters">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqScannerParameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqScannerParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelHistoricalData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelHistoricalData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelHistoricalData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelHistoricalData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelHistoricalData">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelHistoricalData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqCurrentTime"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqCurrentTime">[docs]</a>    <span class="k">def</span> <span class="nf">reqCurrentTime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqCurrentTime">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqCurrentTime">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqCurrentTime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqRealTimeBars"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqRealTimeBars">[docs]</a>    <span class="k">def</span> <span class="nf">reqRealTimeBars</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.reqRealTimeBars">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqRealTimeBars">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqRealTimeBars</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">barSize</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span>
             <span class="n">useRTH</span><span class="p">,</span> <span class="n">realTimeBarsOptions</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="mi">50</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">barSize</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span>
             <span class="n">useRTH</span><span class="p">,</span> <span class="n">realTimeBarsOptions</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelRealTimeBars"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelRealTimeBars">[docs]</a>    <span class="k">def</span> <span class="nf">cancelRealTimeBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelRealTimeBars">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelRealTimeBars">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelRealTimeBars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqFundamentalData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqFundamentalData">[docs]</a>    <span class="k">def</span> <span class="nf">reqFundamentalData</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.reqFundamentalData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqFundamentalData">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqFundamentalData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">reportType</span><span class="p">,</span> <span class="n">fundamentalDataOptions</span><span class="p">):</span>
         <span class="n">options</span> <span class="o">=</span> <span class="n">fundamentalDataOptions</span> <span class="ow">or</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
@@ -880,153 +1021,282 @@
             <span class="n">contract</span><span class="o">.</span><span class="n">localSymbol</span><span class="p">,</span>
             <span class="n">reportType</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">),</span> <span class="n">options</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelFundamentalData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelFundamentalData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelFundamentalData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelFundamentalData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelFundamentalData">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelFundamentalData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">53</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.calculateImpliedVolatility"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.calculateImpliedVolatility">[docs]</a>    <span class="k">def</span> <span class="nf">calculateImpliedVolatility</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.calculateImpliedVolatility">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.calculateImpliedVolatility">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculateImpliedVolatility</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">optionPrice</span><span class="p">,</span> <span class="n">underPrice</span><span class="p">,</span> <span class="n">implVolOptions</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="mi">54</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">optionPrice</span><span class="p">,</span> <span class="n">underPrice</span><span class="p">,</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">implVolOptions</span><span class="p">),</span> <span class="n">implVolOptions</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.calculateOptionPrice"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.calculateOptionPrice">[docs]</a>    <span class="k">def</span> <span class="nf">calculateOptionPrice</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.calculateOptionPrice">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.calculateOptionPrice">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculateOptionPrice</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">volatility</span><span class="p">,</span> <span class="n">underPrice</span><span class="p">,</span> <span class="n">optPrcOptions</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="mi">55</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">volatility</span><span class="p">,</span> <span class="n">underPrice</span><span class="p">,</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">optPrcOptions</span><span class="p">),</span> <span class="n">optPrcOptions</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelCalculateImpliedVolatility"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelCalculateImpliedVolatility">[docs]</a>    <span class="k">def</span> <span class="nf">cancelCalculateImpliedVolatility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelCalculateImpliedVolatility">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelCalculateImpliedVolatility">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelCalculateImpliedVolatility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelCalculateOptionPrice"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelCalculateOptionPrice">[docs]</a>    <span class="k">def</span> <span class="nf">cancelCalculateOptionPrice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelCalculateOptionPrice">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelCalculateOptionPrice">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelCalculateOptionPrice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">57</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqGlobalCancel"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqGlobalCancel">[docs]</a>    <span class="k">def</span> <span class="nf">reqGlobalCancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqGlobalCancel">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqGlobalCancel">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqGlobalCancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">58</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqMarketDataType"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMarketDataType">[docs]</a>    <span class="k">def</span> <span class="nf">reqMarketDataType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marketDataType</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqMarketDataType">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMarketDataType">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqMarketDataType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marketDataType</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">59</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">marketDataType</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqPositions"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqPositions">[docs]</a>    <span class="k">def</span> <span class="nf">reqPositions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqPositions">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqPositions">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqPositions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">61</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqAccountSummary"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqAccountSummary">[docs]</a>    <span class="k">def</span> <span class="nf">reqAccountSummary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">groupName</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqAccountSummary">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqAccountSummary">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqAccountSummary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">groupName</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">62</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">groupName</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelAccountSummary"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelAccountSummary">[docs]</a>    <span class="k">def</span> <span class="nf">cancelAccountSummary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelAccountSummary">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelAccountSummary">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelAccountSummary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">63</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelPositions"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelPositions">[docs]</a>    <span class="k">def</span> <span class="nf">cancelPositions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelPositions">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelPositions">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelPositions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.verifyRequest"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.verifyRequest">[docs]</a>    <span class="k">def</span> <span class="nf">verifyRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiName</span><span class="p">,</span> <span class="n">apiVersion</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.verifyRequest">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.verifyRequest">[docs]</a>
+    <span class="k">def</span> <span class="nf">verifyRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiName</span><span class="p">,</span> <span class="n">apiVersion</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">apiName</span><span class="p">,</span> <span class="n">apiVersion</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.verifyMessage"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.verifyMessage">[docs]</a>    <span class="k">def</span> <span class="nf">verifyMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiData</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.verifyMessage">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.verifyMessage">[docs]</a>
+    <span class="k">def</span> <span class="nf">verifyMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiData</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">66</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">apiData</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.queryDisplayGroups"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.queryDisplayGroups">[docs]</a>    <span class="k">def</span> <span class="nf">queryDisplayGroups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.queryDisplayGroups">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.queryDisplayGroups">[docs]</a>
+    <span class="k">def</span> <span class="nf">queryDisplayGroups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">67</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.subscribeToGroupEvents"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.subscribeToGroupEvents">[docs]</a>    <span class="k">def</span> <span class="nf">subscribeToGroupEvents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">groupId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.subscribeToGroupEvents">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.subscribeToGroupEvents">[docs]</a>
+    <span class="k">def</span> <span class="nf">subscribeToGroupEvents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">groupId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">68</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">groupId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.updateDisplayGroup"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.updateDisplayGroup">[docs]</a>    <span class="k">def</span> <span class="nf">updateDisplayGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contractInfo</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.updateDisplayGroup">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.updateDisplayGroup">[docs]</a>
+    <span class="k">def</span> <span class="nf">updateDisplayGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contractInfo</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">69</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contractInfo</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.unsubscribeFromGroupEvents"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.unsubscribeFromGroupEvents">[docs]</a>    <span class="k">def</span> <span class="nf">unsubscribeFromGroupEvents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.unsubscribeFromGroupEvents">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.unsubscribeFromGroupEvents">[docs]</a>
+    <span class="k">def</span> <span class="nf">unsubscribeFromGroupEvents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.startApi"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.startApi">[docs]</a>    <span class="k">def</span> <span class="nf">startApi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.startApi">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.startApi">[docs]</a>
+    <span class="k">def</span> <span class="nf">startApi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">71</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optCapab</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.verifyAndAuthRequest"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.verifyAndAuthRequest">[docs]</a>    <span class="k">def</span> <span class="nf">verifyAndAuthRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiName</span><span class="p">,</span> <span class="n">apiVersion</span><span class="p">,</span> <span class="n">opaqueIsvKey</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.verifyAndAuthRequest">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.verifyAndAuthRequest">[docs]</a>
+    <span class="k">def</span> <span class="nf">verifyAndAuthRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiName</span><span class="p">,</span> <span class="n">apiVersion</span><span class="p">,</span> <span class="n">opaqueIsvKey</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">apiName</span><span class="p">,</span> <span class="n">apiVersion</span><span class="p">,</span> <span class="n">opaqueIsvKey</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.verifyAndAuthMessage"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.verifyAndAuthMessage">[docs]</a>    <span class="k">def</span> <span class="nf">verifyAndAuthMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiData</span><span class="p">,</span> <span class="n">xyzResponse</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.verifyAndAuthMessage">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.verifyAndAuthMessage">[docs]</a>
+    <span class="k">def</span> <span class="nf">verifyAndAuthMessage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiData</span><span class="p">,</span> <span class="n">xyzResponse</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">73</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">apiData</span><span class="p">,</span> <span class="n">xyzResponse</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqPositionsMulti"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqPositionsMulti">[docs]</a>    <span class="k">def</span> <span class="nf">reqPositionsMulti</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqPositionsMulti">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqPositionsMulti">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqPositionsMulti</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">74</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelPositionsMulti"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelPositionsMulti">[docs]</a>    <span class="k">def</span> <span class="nf">cancelPositionsMulti</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelPositionsMulti">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelPositionsMulti">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelPositionsMulti</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqAccountUpdatesMulti"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqAccountUpdatesMulti">[docs]</a>    <span class="k">def</span> <span class="nf">reqAccountUpdatesMulti</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">ledgerAndNLV</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqAccountUpdatesMulti">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqAccountUpdatesMulti">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqAccountUpdatesMulti</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">ledgerAndNLV</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">76</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">ledgerAndNLV</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelAccountUpdatesMulti"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelAccountUpdatesMulti">[docs]</a>    <span class="k">def</span> <span class="nf">cancelAccountUpdatesMulti</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelAccountUpdatesMulti">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelAccountUpdatesMulti">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelAccountUpdatesMulti</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">77</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqSecDefOptParams"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqSecDefOptParams">[docs]</a>    <span class="k">def</span> <span class="nf">reqSecDefOptParams</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.reqSecDefOptParams">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqSecDefOptParams">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqSecDefOptParams</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">underlyingSymbol</span><span class="p">,</span> <span class="n">futFopExchange</span><span class="p">,</span>
             <span class="n">underlyingSecType</span><span class="p">,</span> <span class="n">underlyingConId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="mi">78</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">underlyingSymbol</span><span class="p">,</span> <span class="n">futFopExchange</span><span class="p">,</span>
             <span class="n">underlyingSecType</span><span class="p">,</span> <span class="n">underlyingConId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqSoftDollarTiers"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqSoftDollarTiers">[docs]</a>    <span class="k">def</span> <span class="nf">reqSoftDollarTiers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqSoftDollarTiers">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqSoftDollarTiers">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqSoftDollarTiers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">79</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqFamilyCodes"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqFamilyCodes">[docs]</a>    <span class="k">def</span> <span class="nf">reqFamilyCodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqFamilyCodes">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqFamilyCodes">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqFamilyCodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqMatchingSymbols"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMatchingSymbols">[docs]</a>    <span class="k">def</span> <span class="nf">reqMatchingSymbols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqMatchingSymbols">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMatchingSymbols">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqMatchingSymbols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">81</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqMktDepthExchanges"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMktDepthExchanges">[docs]</a>    <span class="k">def</span> <span class="nf">reqMktDepthExchanges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqMktDepthExchanges">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMktDepthExchanges">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqMktDepthExchanges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">82</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqSmartComponents"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqSmartComponents">[docs]</a>    <span class="k">def</span> <span class="nf">reqSmartComponents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">bboExchange</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqSmartComponents">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqSmartComponents">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqSmartComponents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">bboExchange</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">83</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">bboExchange</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqNewsArticle"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqNewsArticle">[docs]</a>    <span class="k">def</span> <span class="nf">reqNewsArticle</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.reqNewsArticle">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqNewsArticle">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqNewsArticle</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">providerCode</span><span class="p">,</span> <span class="n">articleId</span><span class="p">,</span> <span class="n">newsArticleOptions</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">providerCode</span><span class="p">,</span> <span class="n">articleId</span><span class="p">,</span> <span class="n">newsArticleOptions</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqNewsProviders"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqNewsProviders">[docs]</a>    <span class="k">def</span> <span class="nf">reqNewsProviders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqNewsProviders">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqNewsProviders">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqNewsProviders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">85</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqHistoricalNews"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqHistoricalNews">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistoricalNews</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.reqHistoricalNews">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqHistoricalNews">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqHistoricalNews</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">conId</span><span class="p">,</span> <span class="n">providerCodes</span><span class="p">,</span> <span class="n">startDateTime</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">,</span>
             <span class="n">totalResults</span><span class="p">,</span> <span class="n">historicalNewsOptions</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="mi">86</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">conId</span><span class="p">,</span> <span class="n">providerCodes</span><span class="p">,</span> <span class="n">startDateTime</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">,</span>
             <span class="n">totalResults</span><span class="p">,</span> <span class="n">historicalNewsOptions</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqHeadTimeStamp"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqHeadTimeStamp">[docs]</a>    <span class="k">def</span> <span class="nf">reqHeadTimeStamp</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.reqHeadTimeStamp">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqHeadTimeStamp">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqHeadTimeStamp</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span> <span class="n">useRTH</span><span class="p">,</span> <span class="n">formatDate</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="mi">87</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">contract</span><span class="o">.</span><span class="n">includeExpired</span><span class="p">,</span>
             <span class="n">useRTH</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span> <span class="n">formatDate</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqHistogramData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqHistogramData">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistogramData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tickerId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">useRTH</span><span class="p">,</span> <span class="n">timePeriod</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqHistogramData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqHistogramData">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqHistogramData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tickerId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">useRTH</span><span class="p">,</span> <span class="n">timePeriod</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="mi">88</span><span class="p">,</span> <span class="n">tickerId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">contract</span><span class="o">.</span><span class="n">includeExpired</span><span class="p">,</span>
             <span class="n">useRTH</span><span class="p">,</span> <span class="n">timePeriod</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelHistogramData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelHistogramData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelHistogramData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tickerId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelHistogramData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelHistogramData">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelHistogramData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tickerId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">89</span><span class="p">,</span> <span class="n">tickerId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelHeadTimeStamp"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelHeadTimeStamp">[docs]</a>    <span class="k">def</span> <span class="nf">cancelHeadTimeStamp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelHeadTimeStamp">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelHeadTimeStamp">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelHeadTimeStamp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqMarketRule"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMarketRule">[docs]</a>    <span class="k">def</span> <span class="nf">reqMarketRule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marketRuleId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqMarketRule">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqMarketRule">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqMarketRule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marketRuleId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">91</span><span class="p">,</span> <span class="n">marketRuleId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqPnL"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqPnL">[docs]</a>    <span class="k">def</span> <span class="nf">reqPnL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqPnL">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqPnL">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqPnL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelPnL"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelPnL">[docs]</a>    <span class="k">def</span> <span class="nf">cancelPnL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelPnL">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelPnL">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelPnL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">93</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqPnLSingle">[docs]</a>    <span class="k">def</span> <span class="nf">reqPnLSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">conid</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqPnLSingle">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqPnLSingle">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqPnLSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">conid</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">modelCode</span><span class="p">,</span> <span class="n">conid</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelPnLSingle"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelPnLSingle">[docs]</a>    <span class="k">def</span> <span class="nf">cancelPnLSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelPnLSingle">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelPnLSingle">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelPnLSingle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqHistoricalTicks"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqHistoricalTicks">[docs]</a>    <span class="k">def</span> <span class="nf">reqHistoricalTicks</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.reqHistoricalTicks">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqHistoricalTicks">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqHistoricalTicks</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">startDateTime</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">,</span>
             <span class="n">numberOfTicks</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span> <span class="n">useRth</span><span class="p">,</span> <span class="n">ignoreSize</span><span class="p">,</span> <span class="n">miscOptions</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
@@ -1034,23 +1304,41 @@
             <span class="n">startDateTime</span><span class="p">,</span> <span class="n">endDateTime</span><span class="p">,</span> <span class="n">numberOfTicks</span><span class="p">,</span> <span class="n">whatToShow</span><span class="p">,</span>
             <span class="n">useRth</span><span class="p">,</span> <span class="n">ignoreSize</span><span class="p">,</span> <span class="n">miscOptions</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqTickByTickData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqTickByTickData">[docs]</a>    <span class="k">def</span> <span class="nf">reqTickByTickData</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Client.reqTickByTickData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqTickByTickData">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqTickByTickData</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">numberOfTicks</span><span class="p">,</span> <span class="n">ignoreSize</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">contract</span><span class="p">,</span> <span class="n">tickType</span><span class="p">,</span> <span class="n">numberOfTicks</span><span class="p">,</span> <span class="n">ignoreSize</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelTickByTickData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelTickByTickData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelTickByTickData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelTickByTickData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelTickByTickData">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelTickByTickData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqCompletedOrders"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqCompletedOrders">[docs]</a>    <span class="k">def</span> <span class="nf">reqCompletedOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiOnly</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqCompletedOrders">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqCompletedOrders">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqCompletedOrders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apiOnly</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="n">apiOnly</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqWshMetaData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqWshMetaData">[docs]</a>    <span class="k">def</span> <span class="nf">reqWshMetaData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqWshMetaData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqWshMetaData">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqWshMetaData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelWshMetaData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelWshMetaData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelWshMetaData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelWshMetaData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelWshMetaData">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelWshMetaData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqWshEventData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqWshEventData">[docs]</a>    <span class="k">def</span> <span class="nf">reqWshEventData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">WshEventData</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.reqWshEventData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqWshEventData">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqWshEventData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">WshEventData</span><span class="p">):</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="mi">102</span><span class="p">,</span> <span class="n">reqId</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">conId</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">serverVersion</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">171</span><span class="p">:</span>
             <span class="n">fields</span> <span class="o">+=</span> <span class="p">[</span>
@@ -1065,11 +1353,19 @@
                 <span class="n">data</span><span class="o">.</span><span class="n">totalLimit</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">,</span> <span class="n">makeEmpty</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.cancelWshEventData"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelWshEventData">[docs]</a>    <span class="k">def</span> <span class="nf">cancelWshEventData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Client.cancelWshEventData">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.cancelWshEventData">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancelWshEventData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">103</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.reqUserInfo"><a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqUserInfo">[docs]</a>    <span class="k">def</span> <span class="nf">reqUserInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">104</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="Client.reqUserInfo">
+<a class="viewcode-back" href="../../api.html#ib_insync.client.Client.reqUserInfo">[docs]</a>
+    <span class="k">def</span> <span class="nf">reqUserInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reqId</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">104</span><span class="p">,</span> <span class="n">reqId</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Code recipes &mdash; ib_insync 0.9.86 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://ib_insync.readthedocs.iorecipes.html"/>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://ib_insync.readthedocs.iorecipes.html"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=b76974d2"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -27,14 +31,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> ib_insync
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ib_insync
           </a>
               <div class="version">
                 0.9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -80,7 +88,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Code recipes</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/recipes.rst.txt" rel="nofollow"> View page source</a>
@@ -92,11 +100,11 @@
            <div itemprop="articleBody">
              
   <section id="code-recipes">
-<span id="recipes"></span><h1>Code recipes<a class="headerlink" href="#code-recipes" title="Permalink to this heading"></a></h1>
+<span id="recipes"></span><h1>Code recipes<a class="headerlink" href="#code-recipes" title="Link to this heading"></a></h1>
 <p>Collection of useful patterns, snippets and recipes.</p>
 <p>When using the recipes in a notebook, don’t forget to use <code class="docutils literal notranslate"><span class="pre">util.startLoop()</span></code>.</p>
 <section id="fetching-consecutive-historical-data">
-<h2>Fetching consecutive historical data<a class="headerlink" href="#fetching-consecutive-historical-data" title="Permalink to this heading"></a></h2>
+<h2>Fetching consecutive historical data<a class="headerlink" href="#fetching-consecutive-historical-data" title="Link to this heading"></a></h2>
 <p>Suppose we want to get the 1 min bar data of Tesla since the very beginning
 up until now. The best way is to start with now and keep requesting further
 and further back in time until there is no more data returned.</p>
@@ -133,7 +141,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </section>
 <section id="scanner-data-blocking">
-<h2>Scanner data (blocking)<a class="headerlink" href="#scanner-data-blocking" title="Permalink to this heading"></a></h2>
+<h2>Scanner data (blocking)<a class="headerlink" href="#scanner-data-blocking" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">allParams</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqScannerParameters</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">allParams</span><span class="p">)</span>
 
@@ -147,7 +155,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </section>
 <section id="scanner-data-streaming">
-<h2>Scanner data (streaming)<a class="headerlink" href="#scanner-data-streaming" title="Permalink to this heading"></a></h2>
+<h2>Scanner data (streaming)<a class="headerlink" href="#scanner-data-streaming" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">onScanData</span><span class="p">(</span><span class="n">scanData</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">scanData</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scanData</span><span class="p">))</span>
@@ -164,7 +172,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </section>
 <section id="option-calculations">
-<h2>Option calculations<a class="headerlink" href="#option-calculations" title="Permalink to this heading"></a></h2>
+<h2>Option calculations<a class="headerlink" href="#option-calculations" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">option</span> <span class="o">=</span> <span class="n">Option</span><span class="p">(</span><span class="s1">&#39;EOE&#39;</span><span class="p">,</span> <span class="s1">&#39;20171215&#39;</span><span class="p">,</span> <span class="mi">490</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;FTA&#39;</span><span class="p">,</span> <span class="n">multiplier</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
 <span class="n">calc</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">calculateImpliedVolatility</span><span class="p">(</span>
@@ -178,7 +186,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </section>
 <section id="order-book">
-<h2>Order book<a class="headerlink" href="#order-book" title="Permalink to this heading"></a></h2>
+<h2>Order book<a class="headerlink" href="#order-book" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eurusd</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;EURUSD&#39;</span><span class="p">)</span>
 <span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktDepth</span><span class="p">(</span><span class="n">eurusd</span><span class="p">)</span>
 <span class="k">while</span> <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
@@ -189,7 +197,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </section>
 <section id="minimum-price-increments">
-<h2>Minimum price increments<a class="headerlink" href="#minimum-price-increments" title="Permalink to this heading"></a></h2>
+<h2>Minimum price increments<a class="headerlink" href="#minimum-price-increments" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">usdjpy</span> <span class="o">=</span> <span class="n">Forex</span><span class="p">(</span><span class="s1">&#39;USDJPY&#39;</span><span class="p">)</span>
 <span class="n">cd</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqContractDetails</span><span class="p">(</span><span class="n">usdjpy</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cd</span><span class="o">.</span><span class="n">marketRuleIds</span><span class="p">)</span>
@@ -202,7 +210,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </section>
 <section id="news-articles">
-<h2>News articles<a class="headerlink" href="#news-articles" title="Permalink to this heading"></a></h2>
+<h2>News articles<a class="headerlink" href="#news-articles" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">newsProviders</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqNewsProviders</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">newsProviders</span><span class="p">)</span>
 <span class="n">codes</span> <span class="o">=</span> <span class="s1">&#39;+&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">code</span> <span class="k">for</span> <span class="n">np</span> <span class="ow">in</span> <span class="n">newsProviders</span><span class="p">)</span>
@@ -218,7 +226,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </section>
 <section id="news-bulletins">
-<h2>News bulletins<a class="headerlink" href="#news-bulletins" title="Permalink to this heading"></a></h2>
+<h2>News bulletins<a class="headerlink" href="#news-bulletins" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ib</span><span class="o">.</span><span class="n">reqNewsBulletins</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ib</span><span class="o">.</span><span class="n">newsBulletins</span><span class="p">())</span>
@@ -226,7 +234,7 @@ and further back in time until there is no more data returned.</p>
 </div>
 </section>
 <section id="wsh-event-calendar">
-<h2>WSH Event Calendar<a class="headerlink" href="#wsh-event-calendar" title="Permalink to this heading"></a></h2>
+<h2>WSH Event Calendar<a class="headerlink" href="#wsh-event-calendar" title="Link to this heading"></a></h2>
 <p>A  <a class="reference external" href="https://www.wallstreethorizon.com/interactive-brokers">Wall Street Horizon subscription</a>
 is needed to get corporate event data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ib_insync</span> <span class="kn">import</span> <span class="o">*</span>
@@ -244,7 +252,7 @@ is needed to get corporate event data.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
 
 <span class="c1"># For IBM (with conId=8314) query the:</span>
-<span class="c1">#   - Earnings Dates (wsh_ed)</span>
+<span class="c1">#   - Earnings Dates (wshe_ed)</span>
 <span class="c1">#   - Board of Directors meetings (wshe_bod)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">WshEventData</span><span class="p">(</span>
     <span class="nb">filter</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;{</span>
@@ -252,7 +260,7 @@ is needed to get corporate event data.</p>
 <span class="s1">      &quot;watchlist&quot;: [&quot;8314&quot;],</span>
 <span class="s1">      &quot;limit_region&quot;: 10,</span>
 <span class="s1">      &quot;limit&quot;: 10,</span>
-<span class="s1">      &quot;wsh_ed&quot;: &quot;true&quot;,</span>
+<span class="s1">      &quot;wshe_ed&quot;: &quot;true&quot;,</span>
 <span class="s1">      &quot;wshe_bod&quot;: &quot;true&quot;</span>
 <span class="s1">    }&#39;&#39;&#39;</span><span class="p">)</span>
 <span class="n">events</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">getWshEventData</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -261,7 +269,7 @@ is needed to get corporate event data.</p>
 </div>
 </section>
 <section id="dividends">
-<h2>Dividends<a class="headerlink" href="#dividends" title="Permalink to this heading"></a></h2>
+<h2>Dividends<a class="headerlink" href="#dividends" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contract</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;INTC&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
 <span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktData</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="s1">&#39;456&#39;</span><span class="p">)</span>
 <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -274,7 +282,7 @@ is needed to get corporate event data.</p>
 </div>
 </section>
 <section id="fundemental-ratios">
-<h2>Fundemental ratios<a class="headerlink" href="#fundemental-ratios" title="Permalink to this heading"></a></h2>
+<h2>Fundemental ratios<a class="headerlink" href="#fundemental-ratios" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contract</span> <span class="o">=</span> <span class="n">Stock</span><span class="p">(</span><span class="s1">&#39;IBM&#39;</span><span class="p">,</span> <span class="s1">&#39;SMART&#39;</span><span class="p">,</span> <span class="s1">&#39;USD&#39;</span><span class="p">)</span>
 <span class="n">ticker</span> <span class="o">=</span> <span class="n">ib</span><span class="o">.</span><span class="n">reqMktData</span><span class="p">(</span><span class="n">contract</span><span class="p">,</span> <span class="s1">&#39;258&#39;</span><span class="p">)</span>
 <span class="n">ib</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -283,7 +291,7 @@ is needed to get corporate event data.</p>
 </div>
 </section>
 <section id="short-lived-connections">
-<h2>Short-lived connections<a class="headerlink" href="#short-lived-connections" title="Permalink to this heading"></a></h2>
+<h2>Short-lived connections<a class="headerlink" href="#short-lived-connections" title="Link to this heading"></a></h2>
 <p>This IB socket protocol is designed to be used for a long-lived connection,
 lasting a day or so. For short connections, where for example just a few
 orders are fired of, it is best to add one second of delay before closing the
@@ -300,7 +308,7 @@ the data that has not been sent yet.</p>
 </div>
 </section>
 <section id="integration-with-pyqt5-or-pyside2">
-<h2>Integration with PyQt5 or PySide2<a class="headerlink" href="#integration-with-pyqt5-or-pyside2" title="Permalink to this heading"></a></h2>
+<h2>Integration with PyQt5 or PySide2<a class="headerlink" href="#integration-with-pyqt5-or-pyside2" title="Link to this heading"></a></h2>
 <img alt="_images/qt-tickertable.png" src="_images/qt-tickertable.png" />
 <p><a class="reference external" href="https://github.com/erdewit/ib_insync/blob/master/examples/qt_ticker_table.py">This example</a>
 of a ticker table shows how to integrate both
@@ -318,12 +326,12 @@ import and <code class="docutils literal notranslate"><span class="pre">util.use
 counterparts.</p>
 </section>
 <section id="integration-with-tkinter">
-<h2>Integration with Tkinter<a class="headerlink" href="#integration-with-tkinter" title="Permalink to this heading"></a></h2>
+<h2>Integration with Tkinter<a class="headerlink" href="#integration-with-tkinter" title="Link to this heading"></a></h2>
 <p>To integrate with the Tkinter event loop, take a look at
 <a class="reference external" href="https://github.com/erdewit/ib_insync/blob/master/examples/tk.py">this example app</a>.</p>
 </section>
 <section id="integration-with-pygame">
-<h2>Integration with PyGame<a class="headerlink" href="#integration-with-pygame" title="Permalink to this heading"></a></h2>
+<h2>Integration with PyGame<a class="headerlink" href="#integration-with-pygame" title="Link to this heading"></a></h2>
 <p>By calling <code class="docutils literal notranslate"><span class="pre">ib.sleep</span></code> from within the PyGame run loop, ib_insync can periodically
 run for short whiles and keep up to date:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ib_insync</span> <span class="k">as</span> <span class="nn">ibi</span>

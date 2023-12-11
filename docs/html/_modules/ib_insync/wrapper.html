@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ib_insync.wrapper &mdash; ib_insync 0.9.85 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/wrapper.html"/>
+  <title>ib_insync.wrapper &mdash; ib_insync 0.9.86 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://ib_insync.readthedocs.io_modules/ib_insync/wrapper.html"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=b76974d2"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -24,14 +28,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> ib_insync
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ib_insync
           </a>
               <div class="version">
                 0.9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +68,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">ib_insync.wrapper</li>
       <li class="wy-breadcrumbs-aside">
@@ -79,8 +87,8 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">suppress</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span>
+                    <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">ib_insync.contract</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Contract</span><span class="p">,</span> <span class="n">ContractDescription</span><span class="p">,</span> <span class="n">ContractDetails</span><span class="p">,</span> <span class="n">DeltaNeutralContract</span><span class="p">,</span>
@@ -101,10 +109,16 @@
     <span class="n">UNSET_DOUBLE</span><span class="p">,</span> <span class="n">UNSET_INTEGER</span><span class="p">,</span> <span class="n">dataclassAsDict</span><span class="p">,</span> <span class="n">dataclassUpdate</span><span class="p">,</span>
     <span class="n">getLoop</span><span class="p">,</span> <span class="n">globalErrorEvent</span><span class="p">,</span> <span class="n">isNan</span><span class="p">,</span> <span class="n">parseIBDatetime</span><span class="p">)</span>
 
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">ib_insync.ib</span> <span class="kn">import</span> <span class="n">IB</span>
+
+
 <span class="n">OrderKeyType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
 
 
-<div class="viewcode-block" id="RequestError"><a class="viewcode-back" href="../../api.html#ib_insync.wrapper.RequestError">[docs]</a><span class="k">class</span> <span class="nc">RequestError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="RequestError">
+<a class="viewcode-back" href="../../api.html#ib_insync.wrapper.RequestError">[docs]</a>
+<span class="k">class</span> <span class="nc">RequestError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exception to raise when the API reports an error that can be tied to</span>
 <span class="sd">    a single request.</span>
@@ -123,66 +137,117 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span></div>
 
 
+
 <span class="k">class</span> <span class="nc">Wrapper</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper implementation for use with the IB class.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ib</span><span class="p">):</span>
+    <span class="n">ib</span><span class="p">:</span> <span class="s1">&#39;IB&#39;</span>
+
+    <span class="n">accountValues</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">AccountValue</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; (account, tag, currency, modelCode) -&gt; AccountValue &quot;&quot;&quot;</span>
+
+    <span class="n">acctSummary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">AccountValue</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; (account, tag, currency) -&gt; AccountValue &quot;&quot;&quot;</span>
+
+    <span class="n">portfolio</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PortfolioItem</span><span class="p">]]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; account -&gt; conId -&gt; PortfolioItem &quot;&quot;&quot;</span>
+
+    <span class="n">positions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Position</span><span class="p">]]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; account -&gt; conId -&gt; Position &quot;&quot;&quot;</span>
+
+    <span class="n">trades</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">OrderKeyType</span><span class="p">,</span> <span class="n">Trade</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; (client, orderId) or permId -&gt; Trade &quot;&quot;&quot;</span>
+
+    <span class="n">permId2Trade</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Trade</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; permId -&gt; Trade &quot;&quot;&quot;</span>
+
+    <span class="n">fills</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Fill</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; execId -&gt; Fill &quot;&quot;&quot;</span>
+
+    <span class="n">newsTicks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NewsTick</span><span class="p">]</span>
+
+    <span class="n">msgId2NewsBulletin</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">NewsBulletin</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; msgId -&gt; NewsBulletin &quot;&quot;&quot;</span>
+
+    <span class="n">tickers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Ticker</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; id(Contract) -&gt; Ticker &quot;&quot;&quot;</span>
+
+    <span class="n">pendingTickers</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">Ticker</span><span class="p">]</span>
+
+    <span class="n">reqId2Ticker</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Ticker</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; reqId -&gt; Ticker &quot;&quot;&quot;</span>
+
+    <span class="n">ticker2ReqId</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Ticker</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; tickType -&gt; Ticker -&gt; reqId &quot;&quot;&quot;</span>
+
+    <span class="n">reqId2Subscriber</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; live bars or live scan data &quot;&quot;&quot;</span>
+
+    <span class="n">reqId2PnL</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PnL</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; reqId -&gt; PnL &quot;&quot;&quot;</span>
+
+    <span class="n">reqId2PnlSingle</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PnLSingle</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; reqId -&gt; PnLSingle &quot;&quot;&quot;</span>
+
+    <span class="n">pnlKey2ReqId</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; (account, modelCode) -&gt; reqId &quot;&quot;&quot;</span>
+
+    <span class="n">pnlSingleKey2ReqId</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; (account, modelCode, conId) -&gt; reqId &quot;&quot;&quot;</span>
+
+    <span class="n">lastTime</span><span class="p">:</span> <span class="n">datetime</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; UTC time of last network packet arrival. &quot;&quot;&quot;</span>
+
+    <span class="n">accounts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">clientId</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">wshMetaReqId</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">wshEventReqId</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">_reqId2Contract</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Contract</span><span class="p">]</span>
+    <span class="n">_timeout</span><span class="p">:</span> <span class="nb">float</span>
+
+    <span class="n">_futures</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; _futures and _results are linked by key. &quot;&quot;&quot;</span>
+
+    <span class="n">_results</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; _futures and _results are linked by key. &quot;&quot;&quot;</span>
+
+    <span class="n">_logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span>
+    <span class="n">_timeoutHandle</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">TimerHandle</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ib</span><span class="p">:</span> <span class="s1">&#39;IB&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ib</span> <span class="o">=</span> <span class="n">ib</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;ib_insync.wrapper&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timeoutHandle</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">accountValues</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">AccountValue</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    (account, tag, currency, modelCode) -&gt; AccountValue</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">acctSummary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">AccountValue</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    (account, tag, currency) -&gt; AccountValue</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">portfolio</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PortfolioItem</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
-        <span class="c1">#    account -&gt; conId -&gt; PortfolioItem</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Position</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
-        <span class="c1">#    account -&gt; conId -&gt; Position</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">trades</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">OrderKeyType</span><span class="p">,</span> <span class="n">Trade</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    (client, orderId) or permId -&gt; Trade</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">permId2Trade</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Trade</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    permId -&gt; Trade</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fills</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Fill</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    execId -&gt; Fill</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">newsTicks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NewsTick</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">msgId2NewsBulletin</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">NewsBulletin</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    msgId -&gt; NewsBulletin</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tickers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Ticker</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    id(Contract) -&gt; Ticker</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">Ticker</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Ticker</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Ticker</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    reqId -&gt; Ticker</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ticker2ReqId</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Ticker</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> \
-            <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
-        <span class="c1">#    tickType -&gt; Ticker -&gt; reqId</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Subscriber</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    live bars or live scan data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reqId2PnL</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PnL</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    reqId -&gt; PnL</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reqId2PnlSingle</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PnLSingle</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    reqId -&gt; PnLSingle</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pnlKey2ReqId</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    (account, modelCode) -&gt; reqId</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pnlSingleKey2ReqId</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1">#    (account, modelCode, conId) -&gt; reqId</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">wshMetaReqId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wshEventReqId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="c1"># futures and results are linked by key:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_futures</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="c1"># UTC time of last network packet arrival:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">min</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reqId2Contract</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Contract</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accountValues</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acctSummary</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">portfolio</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trades</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permId2Trade</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fills</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">newsTicks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msgId2NewsBulletin</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tickers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pendingTickers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Ticker</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ticker2ReqId</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reqId2Subscriber</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reqId2PnL</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reqId2PnlSingle</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pnlKey2ReqId</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pnlSingleKey2ReqId</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lastTime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">min</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clientId</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wshMetaReqId</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wshEventReqId</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reqId2Contract</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_futures</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">setEventsDone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -738,9 +803,9 @@
             <span class="n">ticker</span><span class="o">.</span><span class="n">auctionPrice</span> <span class="o">=</span> <span class="n">price</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">37</span><span class="p">:</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">markPrice</span> <span class="o">=</span> <span class="n">price</span>
-        <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">50</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">103</span><span class="p">):</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">bidYield</span> <span class="o">=</span> <span class="n">price</span>
-        <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">51</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">tickType</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">104</span><span class="p">):</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">askYield</span> <span class="o">=</span> <span class="n">price</span>
         <span class="k">elif</span> <span class="n">tickType</span> <span class="o">==</span> <span class="mi">52</span><span class="p">:</span>
             <span class="n">ticker</span><span class="o">.</span><span class="n">lastYield</span> <span class="o">=</span> <span class="n">price</span>
@@ -1172,6 +1237,10 @@
         <span class="n">isWarning</span> <span class="o">=</span> <span class="n">errorCode</span> <span class="ow">in</span> <span class="n">warningCodes</span> <span class="ow">or</span> <span class="mi">2100</span> <span class="o">&lt;=</span> <span class="n">errorCode</span> <span class="o">&lt;</span> <span class="mi">2200</span>
         <span class="k">if</span> <span class="n">errorCode</span> <span class="o">==</span> <span class="mi">110</span> <span class="ow">and</span> <span class="n">isRequest</span><span class="p">:</span>
             <span class="c1"># whatIf request failed</span>
+            <span class="n">isWarning</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">errorCode</span> <span class="o">==</span> <span class="mi">110</span> <span class="ow">and</span> <span class="n">trade</span> <span class="ow">and</span> \
+                <span class="n">trade</span><span class="o">.</span><span class="n">orderStatus</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">PendingSubmit</span><span class="p">:</span>
+            <span class="c1"># invalid price for a new order must cancel it</span>
             <span class="n">isWarning</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>

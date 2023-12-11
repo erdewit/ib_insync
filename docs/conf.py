@@ -46,8 +46,8 @@ intersphinx_mapping = {
 github_url = 'https://github.com/erdewit/ib_insync'
 
 extlinks = {
-    'issue': ('https://github.com/erdewit/ib_insync/issues/%s', 'issue '),
-    'pull': ('https://github.com/erdewit/ib_insync/pull/%s', 'pull '),
+    'issue': ('https://github.com/erdewit/ib_insync/issues/%s', 'issue %s'),
+    'pull': ('https://github.com/erdewit/ib_insync/pull/%s', 'pull %s'),
 }
 
 autoclass_content = 'both'
