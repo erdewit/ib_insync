@@ -1,5 +1,16 @@
 |Build| |Group| |PyVersion| |Status| |PyPiVersion| |License| |Downloads| |Docs|
 
+Notice
+============
+
+::
+
+  Unfortunately, our dear brother Ewald de Wit passed away monday, March eleven as a result of a serious illness last year.
+  Although we were not involved in his activities on this platform, we felt the due to inform you. 
+  We thank you for knowing him.
+
+  Maritza and Philippe de Wit
+
 Introduction
 ============
 
